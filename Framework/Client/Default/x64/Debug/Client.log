@@ -1,2 +1,5 @@
-﻿  MainApp.cpp
-  Client.vcxproj -> C:\Users\joo\source\repos\FrameWork\Client\Bin\Client.exe
+﻿  stdafx.cpp
+  MainApp.cpp
+  Client.cpp
+  코드를 생성하고 있습니다...
+  Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe
