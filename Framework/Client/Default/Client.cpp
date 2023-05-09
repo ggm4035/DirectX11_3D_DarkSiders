@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Client.h"
 
-#include "../Public/MainApp.h"
+#include "../Public/CMainApp.h"
 
 #define MAX_LOADSTRING 100
 
@@ -25,6 +25,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // _DEBUG
+
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -53,6 +57,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{		
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
+            if (WM_QUIT == msg.message)
+                break;
+
 			if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
 			{
 				TranslateMessage(&msg);
@@ -174,6 +181,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

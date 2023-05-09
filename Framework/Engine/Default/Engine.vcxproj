@@ -152,19 +152,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\public\Base.h" />
+    <ClInclude Include="..\public\CBase.h" />
+    <ClInclude Include="..\Public\CComponent.h" />
+    <ClInclude Include="..\Public\CLevel.h" />
+    <ClInclude Include="..\Public\CLevel_Manager.h" />
+    <ClInclude Include="..\Public\CTransform.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Function.h" />
     <ClInclude Include="..\Public\Engine_Struct.h" />
     <ClInclude Include="..\Public\Engine_Typedef.h" />
-    <ClInclude Include="..\public\GameInstance.h" />
-    <ClInclude Include="..\Public\Graphic_Device.h" />
+    <ClInclude Include="..\public\CGameInstance.h" />
+    <ClInclude Include="..\Public\CGraphic_Device.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\private\Base.cpp" />
-    <ClCompile Include="..\private\GameInstance.cpp" />
-    <ClCompile Include="..\Private\Graphic_Device.cpp" />
+    <ClCompile Include="..\private\CBase.cpp" />
+    <ClCompile Include="..\Private\CComponent.cpp" />
+    <ClCompile Include="..\private\CGameInstance.cpp" />
+    <ClCompile Include="..\Private\CGraphic_Device.cpp" />
+    <ClCompile Include="CLevel.cpp" />
+    <ClCompile Include="CLevel_Manager.cpp" />
+    <ClCompile Include="CTransform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

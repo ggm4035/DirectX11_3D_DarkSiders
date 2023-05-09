@@ -10,6 +10,18 @@
     <Filter Include="00.MainApp">
       <UniqueIdentifier>{00740b1c-55d6-4e82-b855-95dd954aaca4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Levels">
+      <UniqueIdentifier>{f0a603fb-ad79-4483-87b3-a9622a04dfe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\00. Level_Logo">
+      <UniqueIdentifier>{6a162262-b125-4168-8516-03bccf598898}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\01. Level_GamePlay">
+      <UniqueIdentifier>{8c7a8ca8-27c2-4ea6-bbbc-26ae3982147e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99. Level_Loading">
+      <UniqueIdentifier>{4d8384f4-e8a4-4783-8fc7-10622987d984}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -27,11 +39,20 @@
     <ClInclude Include="targetver.h">
       <Filter>98.Default</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MainApp.h">
+    <ClInclude Include="..\public\CMainApp.h">
       <Filter>00.MainApp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
       <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLevel_Logo.h">
+      <Filter>01. Levels\00. Level_Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLevel_GamePlay.h">
+      <Filter>01. Levels\01. Level_GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLevel_Loading.h">
+      <Filter>01. Levels\99. Level_Loading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -41,8 +62,17 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>98.Default</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MainApp.cpp">
+    <ClCompile Include="..\private\CMainApp.cpp">
       <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Logo.cpp">
+      <Filter>01. Levels\00. Level_Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_GamePlay.cpp">
+      <Filter>01. Levels\01. Level_GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Loading.cpp">
+      <Filter>01. Levels\99. Level_Loading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
