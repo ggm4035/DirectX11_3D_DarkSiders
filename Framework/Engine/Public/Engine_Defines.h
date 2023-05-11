@@ -8,6 +8,12 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <unordered_map>
+#include <string>
+#include <algorithm>
+#include <atlimage.h>
+#include <fstream>
+using namespace std;
 
 using namespace DirectX;
 

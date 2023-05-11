@@ -19,6 +19,33 @@
     <Filter Include="99. Headers">
       <UniqueIdentifier>{3d72aa4e-c515-40d6-8fa4-a5dec4d950f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. ETC">
+      <UniqueIdentifier>{29182b9a-f238-4bd3-b984-bca7c6a1d2e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. ETC\00. Terrain">
+      <UniqueIdentifier>{c67a9d29-f018-475b-877d-eda4865b199a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. ETC\01. FileInfo">
+      <UniqueIdentifier>{7abe81b5-f5d6-40ab-bfb3-e4850cf868d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs">
+      <UniqueIdentifier>{6dbaa2ab-03d4-44ef-82b6-1cfceae8164d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs\00. Tab_Terrain">
+      <UniqueIdentifier>{65b7bab6-ee36-4a7c-8bd1-c09afa6aed1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs\01. Tab_Mesh">
+      <UniqueIdentifier>{c73d8452-90c5-4dfe-abc6-452f6f149fba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs\02. Tab_NaviMesh">
+      <UniqueIdentifier>{6ca704a4-0880-41bd-8c18-9a352c5625b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs\03. Tab_Camera">
+      <UniqueIdentifier>{3ea2061b-df5c-41b3-9b87-e568136f5d36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs\04. Tab_Collider">
+      <UniqueIdentifier>{d281b35a-8753-44b0-9e17-130285442851}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -51,6 +78,27 @@
     <ClInclude Include="CMyForm.h">
       <Filter>01. ToolView\MyForm</Filter>
     </ClInclude>
+    <ClInclude Include="CTerrain.h">
+      <Filter>97. ETC\00. Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="CFileInfo.h">
+      <Filter>97. ETC\01. FileInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabTerrain.h">
+      <Filter>01. ToolView\MyForm\Tabs\00. Tab_Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabMesh.h">
+      <Filter>01. ToolView\MyForm\Tabs\01. Tab_Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabNaviMesh.h">
+      <Filter>01. ToolView\MyForm\Tabs\02. Tab_NaviMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabCamera.h">
+      <Filter>01. ToolView\MyForm\Tabs\03. Tab_Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabCollider.h">
+      <Filter>01. ToolView\MyForm\Tabs\04. Tab_Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -70,6 +118,27 @@
     </ClCompile>
     <ClCompile Include="CMyForm.cpp">
       <Filter>01. ToolView\MyForm</Filter>
+    </ClCompile>
+    <ClCompile Include="CTerrain.cpp">
+      <Filter>97. ETC\00. Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="CFileInfo.cpp">
+      <Filter>97. ETC\01. FileInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabTerrain.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\00. Tab_Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabMesh.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\01. Tab_Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabNaviMesh.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\02. Tab_NaviMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabCamera.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\03. Tab_Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabCollider.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\04. Tab_Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

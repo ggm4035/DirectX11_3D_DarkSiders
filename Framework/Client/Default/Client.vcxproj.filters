@@ -22,6 +22,15 @@
     <Filter Include="01. Levels\99. Level_Loading">
       <UniqueIdentifier>{4d8384f4-e8a4-4783-8fc7-10622987d984}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Levels\99. Level_Loading\Loader">
+      <UniqueIdentifier>{65e810a4-1df9-461d-81dc-bfdf48e72c83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject">
+      <UniqueIdentifier>{4421319e-a267-4e72-82e9-352a5166944f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\BackGround">
+      <UniqueIdentifier>{e1d3b298-7249-4a1d-8b9a-2cb769a60e9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -54,6 +63,12 @@
     <ClInclude Include="..\Public\CLevel_Loading.h">
       <Filter>01. Levels\99. Level_Loading</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CLoader.h">
+      <Filter>01. Levels\99. Level_Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBackGround.h">
+      <Filter>02. GameObject\BackGround</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -73,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="CLevel_Loading.cpp">
       <Filter>01. Levels\99. Level_Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="CLoader.cpp">
+      <Filter>01. Levels\99. Level_Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="CBackGround.cpp">
+      <Filter>02. GameObject\BackGround</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

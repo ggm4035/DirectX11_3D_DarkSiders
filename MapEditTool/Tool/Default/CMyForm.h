@@ -1,6 +1,10 @@
 ﻿#pragma once
 
-
+#include "CTabTerrain.h"
+#include "CTabMesh.h"
+#include "CTabNaviMesh.h"
+#include "CTabCamera.h"
+#include "CTabCollider.h"
 
 // CMyForm 폼 보기
 
@@ -27,6 +31,17 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult);
+	virtual void OnInitialUpdate();
+
+public:
+	CTabCtrl m_Tab;
+	CTabTerrain* m_dlgTerrain;
+	CTabMesh* m_dlgMesh;
+	CTabNaviMesh* m_dlgNaviMesh;
+	CTabCamera* m_dlgCamera;
+	CTabCollider* m_dlgCollider;
 };
 
 

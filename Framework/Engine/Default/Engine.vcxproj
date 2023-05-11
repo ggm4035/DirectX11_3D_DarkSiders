@@ -154,8 +154,11 @@
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h" />
     <ClInclude Include="..\Public\CComponent.h" />
+    <ClInclude Include="..\Public\CGameObject.h" />
+    <ClInclude Include="..\Public\CLayer.h" />
     <ClInclude Include="..\Public\CLevel.h" />
     <ClInclude Include="..\Public\CLevel_Manager.h" />
+    <ClInclude Include="..\Public\CObject_Manager.h" />
     <ClInclude Include="..\Public\CTransform.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
@@ -170,8 +173,11 @@
     <ClCompile Include="..\Private\CComponent.cpp" />
     <ClCompile Include="..\private\CGameInstance.cpp" />
     <ClCompile Include="..\Private\CGraphic_Device.cpp" />
+    <ClCompile Include="CGameObject.cpp" />
+    <ClCompile Include="CLayer.cpp" />
     <ClCompile Include="CLevel.cpp" />
     <ClCompile Include="CLevel_Manager.cpp" />
+    <ClCompile Include="CObject_Manager.cpp" />
     <ClCompile Include="CTransform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

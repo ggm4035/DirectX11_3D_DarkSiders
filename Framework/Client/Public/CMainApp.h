@@ -17,8 +17,11 @@ private:
 
 public:
 	HRESULT Initialize();
-	void Tick(double TimeDelta);
+	void Tick(_double TimeDelta);
 	HRESULT Render();
+
+public:
+	HRESULT Open_Level(LEVELID eLevelIndex);
 
 private:
 	ID3D11Device*			m_pDevice;

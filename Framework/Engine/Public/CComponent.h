@@ -7,15 +7,16 @@ BEGIN(Engine)
 class CComponent : public CBase
 {
 protected:
-	CComponent();
+	CComponent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CComponent();
 
 public:
-	void Update_Component(_double TileDelta);
-	HRESULT Render();
+	virtual void Update_Component(_double TimeDelta) {}
+	virtual HRESULT Render() { return S_OK; }
 
-private:
-	// 그래픽 디바이스
+protected:
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
 
 public:
 	virtual void Free() override;
@@ -24,11 +25,14 @@ public:
 class CComposite : public CComponent
 {
 private:
-	CComposite();
+	CComposite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CComposite();
 
+public:
+	virtual void Update_Component(_double TimeDelta);
+	virtual HRESULT Render();
+
 private:
-	// 그래픽 디바이스
 	std::vector<CComponent*> m_vecComponents;
 
 public:

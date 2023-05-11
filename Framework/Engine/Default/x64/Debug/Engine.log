@@ -1,9 +1,2 @@
-﻿  CBase.cpp
-  CComponent.cpp
-  CGameInstance.cpp
-  CGraphic_Device.cpp
-  CLevel.cpp
-  CLevel_Manager.cpp
-  CTransform.cpp
-  코드를 생성하고 있습니다...
+﻿  CGameInstance.cpp
   Engine.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine.dll

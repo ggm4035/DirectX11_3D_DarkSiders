@@ -18,21 +18,26 @@ private:
 	virtual ~CGameInstance() = default;
 
 public:
-	HRESULT Initialize_Engine(const GRAPHICDESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext);
+	HRESULT Initialize_Engine(_uint iNumLevels, const GRAPHICDESC & GraphicDesc, _Inout_ ID3D11Device * *ppDevice, _Inout_ ID3D11DeviceContext * *ppContext);
 	void Tick_Engine(_double TimeDelta);
+	void Clear_LevelResources(_uint iLevelIndex); // 레벨 리소스를 지운다.
 
 public: /* For.Graphic_Device */
-	/* 백버퍼를 지운다. */
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
-
-	/* 깊이버퍼 + 스텐실버퍼를 지운다. */
 	HRESULT Clear_DepthStencil_View();
-
-	/* 후면 버퍼를 전면버퍼로 교체한다.(백버퍼를 화면에 직접 보여준다.) */
 	HRESULT Present();
 
+public: /* For.Level_Manager */
+	HRESULT Open_Level(_uint iNumLevels, class CLevel* pNewLevel);
+
+public: /* For.Object_Manager */
+	HRESULT Add_Prototype(const _tchar * pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_GameObject(_uint iNumLayer, const _tchar * pPrototypeTag, const _tchar * pLayerTag, void* pArg = nullptr);
+
 private:
-	class CGraphic_Device* m_pGraphic_Device;
+	class CGraphic_Device* m_pGraphic_Device = { nullptr };
+	class CLevel_Manager* m_pLevel_Manager = { nullptr };
+	class CObject_Manager* m_pObject_Manager = { nullptr };
 	
 public:
 	static void Release_Engine();

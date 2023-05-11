@@ -1,0 +1,18 @@
+﻿  CFileInfo.cpp
+  CMyForm.cpp
+  CTabCamera.cpp
+  CTabCollider.cpp
+  CTabMesh.cpp
+  CTabNaviMesh.cpp
+  CTabTerrain.cpp
+  CTerrain.cpp
+  MainFrm.cpp
+  Tool.cpp
+  ToolDoc.cpp
+  ToolView.cpp
+  코드를 생성하고 있습니다.
+  78 of 326 functions (23.9%) were compiled, the rest were copied from previous compilation.
+    57 functions were new in current compilation
+    12 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\x64\Release\Tool.exe

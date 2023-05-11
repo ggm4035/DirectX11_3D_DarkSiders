@@ -84,10 +84,10 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	m_MainSplitter.CreateStatic(this, 1, 2);
 
-	m_MainSplitter.CreateView(0, 0, RUNTIME_CLASS(CMyForm), CSize(300, g_iWinSizeY), pContext);
+	m_MainSplitter.CreateView(0, 0, RUNTIME_CLASS(CMyForm), CSize(450, g_iWinSizeY), pContext);
 	m_MainSplitter.CreateView(0, 1, RUNTIME_CLASS(CToolView), CSize(g_iWinSizeX, g_iWinSizeY), pContext);
 
-	m_MainSplitter.SetColumnInfo(0, 300, 10);
+	m_MainSplitter.SetColumnInfo(0, 450, 10);
 
 	return TRUE;/*CFrameWnd::OnCreateClient(lpcs, pContext)*/
 }

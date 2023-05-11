@@ -2,6 +2,7 @@
 #include "..\Public\CMainApp.h"
 
 #include "CGameInstance.h"
+#include "CLevel_Loading.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -20,15 +21,19 @@ HRESULT Client::CMainApp::Initialize()
 	GraphicDesc.eWinMode = GRAPHICDESC::WM_WIN;
 
 	/* 엔진을 초기화한다. */
-	if (FAILED(m_pGameInstance->Initialize_Engine(GraphicDesc, &m_pDevice, &m_pContext)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext)))
+		return E_FAIL;
+
+	/* 초기 레벨을 생성하고 초기화 한다. */
+	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CMainApp::Tick(double TimeDelta)
+void CMainApp::Tick(_double TimeDelta)
 {
-
+	m_pGameInstance->Tick_Engine(TimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -39,6 +44,14 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Present();
 
 	return S_OK;
+}
+
+HRESULT CMainApp::Open_Level(LEVELID eLevelIndex)
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	return m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelIndex));
 }
 
 CMainApp * CMainApp::Create()

@@ -130,7 +130,7 @@ void CToolView::OnInitialUpdate()
 	graphicDesc.iViewportSizeX = g_iWinSizeX;
 	graphicDesc.iViewportSizeY = g_iWinSizeY;
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(graphicDesc, &m_pDevice, &m_pContext)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(0, graphicDesc, &m_pDevice, &m_pContext)))
 	{
 		AfxMessageBox(L"Device Create Failed");
 		return;
