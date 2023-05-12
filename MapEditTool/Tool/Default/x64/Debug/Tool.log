@@ -1,2 +1,12 @@
 ﻿  CMyForm.cpp
+  CTabCamera.cpp
+  CTabCollider.cpp
+  CTabMesh.cpp
+  CTabNaviMesh.cpp
+  CTabTerrain.cpp
+  MainFrm.cpp
+  Tool.cpp
+  ToolDoc.cpp
+  ToolView.cpp
+  코드를 생성하고 있습니다...
   Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe

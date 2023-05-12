@@ -20,4 +20,12 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+
+public:
+	virtual BOOL OnInitDialog();
+	afx_msg void OnDeltaposSpin1(NMHDR* pNMHDR, LRESULT* pResult);
+
+public:
+	CEdit m_edXCount[3];
+	CSpinButtonCtrl m_spXCount[3];
 };
