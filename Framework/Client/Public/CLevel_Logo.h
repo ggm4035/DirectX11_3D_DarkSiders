@@ -17,6 +17,7 @@ public:
 	virtual HRESULT Render();
 
 private:
+	HRESULT Ready_Prototype_Component_For_Logo();
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
 
 public:

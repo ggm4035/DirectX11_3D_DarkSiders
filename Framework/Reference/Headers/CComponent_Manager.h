@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CRenderer.h"
+#include "CVIBuffer_Rect.h"
 
 BEGIN(Engine)
 

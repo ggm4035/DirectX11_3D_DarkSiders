@@ -24,6 +24,9 @@ HRESULT Client::CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Prototype_Component_For_Static()))
+		return E_FAIL;
+
 	/* 초기 레벨을 생성하고 초기화 한다. */
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
@@ -41,7 +44,23 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
+	m_pRenderer->Draw_RenderGroup();
+
 	m_pGameInstance->Present();
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Prototype_Component_For_Static()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Renderer",
+		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	Safe_AddRef(m_pRenderer);
 
 	return S_OK;
 }
@@ -68,6 +87,7 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 

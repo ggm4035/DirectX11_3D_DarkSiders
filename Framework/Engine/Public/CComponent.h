@@ -14,7 +14,6 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
-	virtual void Update_Component(_double TimeDelta) {}
 
 protected:
 	ID3D11Device* m_pDevice = { nullptr };
@@ -28,7 +27,7 @@ public:
 
 class ENGINE_DLL CComposite abstract : public CComponent
 {
-private:
+protected:
 	CComposite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CComposite(const CComposite& rhs);
 	virtual ~CComposite() = default;
@@ -36,9 +35,8 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Update_Component(_double TimeDelta);
 
-private:
+protected:
 	std::vector<CComponent*> m_vecComponents;
 
 public:

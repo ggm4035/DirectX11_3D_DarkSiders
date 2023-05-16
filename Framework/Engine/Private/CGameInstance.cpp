@@ -12,11 +12,13 @@ CGameInstance::CGameInstance()
 	, m_pLevel_Manager{ CLevel_Manager::GetInstance() }
 	, m_pObject_Manager{ CObject_Manager::GetInstance() }
 	, m_pTimer_Manager{ CTimer_Manager::GetInstance() }
+	, m_pComponent_Manager{ CComponent_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pTimer_Manager);
+	Safe_AddRef(m_pComponent_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -39,6 +41,9 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& Gr
 	if (FAILED(m_pObject_Manager->Reserve_Containers(iNumLevels)))
 		return E_FAIL;
 
+	if (FAILED(m_pComponent_Manager->Reserve_Containers(iNumLevels)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -49,21 +54,23 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	if (nullptr == m_pLevel_Manager)
 		return;
 
-	m_pLevel_Manager->Tick(TimeDelta);
+	m_pObject_Manager->Tick(TimeDelta);
+	m_pObject_Manager->Late_Tick(TimeDelta);
 
-	m_pObject_Manager->Tick(1, TimeDelta);
+	m_pLevel_Manager->Tick(TimeDelta);
 }
 
 void CGameInstance::Clear_LevelResources(_uint iLevelIndex)
 {
-	if (nullptr == m_pObject_Manager)
+	if (nullptr == m_pObject_Manager ||
+		nullptr == m_pComponent_Manager)
 		return;
 
 	// 삭제할 레벨의 게임 오브젝트의 리소스 삭제.
 	m_pObject_Manager->Clear_LevelResources(iLevelIndex);
 
 	// 삭제할 레벨의 컴포넌트 삭제.
-
+	m_pComponent_Manager->Clear_LevelResources(iLevelIndex);
 }
 
 HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
@@ -171,6 +178,8 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	if (m_pComponent_Manager)
+		Safe_Release(m_pComponent_Manager);
 	if(m_pLevel_Manager)
 		Safe_Release(m_pLevel_Manager);
 	if(m_pObject_Manager)

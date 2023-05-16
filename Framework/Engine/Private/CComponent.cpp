@@ -64,12 +64,6 @@ HRESULT CComposite::Initialize(void* pArg)
 	return result;
 }
 
-void CComposite::Update_Component(_double TimeDelta)
-{
-	for (auto& Component : m_vecComponents)
-		Component->Update_Component(TimeDelta);
-}
-
 void CComposite::Free()
 {
 	m_vecComponents.clear();

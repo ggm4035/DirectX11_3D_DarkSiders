@@ -9,4 +9,10 @@ namespace Engine
 		unsigned int	iViewportSizeX, iViewportSizeY;
 		WINMODE			eWinMode;		
 	}GRAPHICDESC;
+
+	typedef struct tagVertex_Position_TexCoord
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT2 vTexCoord;
+	}VTXPOSTEX;
 }

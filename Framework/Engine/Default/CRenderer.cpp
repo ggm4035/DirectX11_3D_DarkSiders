@@ -27,6 +27,7 @@ void CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameObje
 		return;
 
 	m_RenderObjects[eRenderGroup].push_back(pGameObject);
+	Safe_AddRef(pGameObject);
 }
 
 HRESULT CRenderer::Draw_RenderGroup()

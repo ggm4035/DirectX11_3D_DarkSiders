@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CBase.h"
+#include "CComponent_Manager.h"
 
 /* 0. 클라이언트 엔진의 연결 역활한다. */
 /* 0.0 게임인스턴스라는 객체를 통해서 엔진의다양한기능을 활요앟ㄹ 수 있게 한다. */

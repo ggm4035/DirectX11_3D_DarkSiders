@@ -14,6 +14,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(CLevel::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Prototype_Component_For_Logo()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
 		return E_FAIL;
 
@@ -35,6 +38,18 @@ void CLevel_Logo::Tick(_double TimeDelta)
 HRESULT CLevel_Logo::Render()
 {
 	if (FAILED(CLevel::Render()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Prototype_Component_For_Logo()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Rect",
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

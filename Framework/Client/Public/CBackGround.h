@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CRenderer;
+class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
@@ -25,6 +26,10 @@ public:
 
 private:
 	CRenderer* m_pRendererCom = { nullptr };
+	CVIBuffer_Rect* m_pBufferCom = { nullptr };
+
+private:
+	HRESULT Add_Components();
 
 public:
 	static CBackGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -59,16 +59,22 @@ HRESULT CObject_Manager::Add_GameObject(_uint iLayerIndex, const _tchar* pProtot
 	return S_OK;
 }
 
-void CObject_Manager::Tick(_uint iLevelIndex, _double TimeDelta)
+void CObject_Manager::Tick(_double TimeDelta)
 {
-	for (auto& Pair : m_pLayers[iLevelIndex])
-		Pair.second->Tick(TimeDelta);
+	for (_uint i = 0; i < m_iNumLevels; ++i)
+	{
+		for (auto& Pair : m_pLayers[i])
+			Pair.second->Tick(TimeDelta);
+	}
 }
 
-void CObject_Manager::Late_Tick(_uint iLevelIndex, _double TimeDelta)
+void CObject_Manager::Late_Tick(_double TimeDelta)
 {
-	for (auto& Pair : m_pLayers[iLevelIndex])
-		Pair.second->Late_Tick(TimeDelta);
+	for (_uint i = 0; i < m_iNumLevels; ++i)
+	{
+		for (auto& Pair : m_pLayers[i])
+			Pair.second->Late_Tick(TimeDelta);
+	}
 }
 
 void CObject_Manager::Clear_LevelResources(_uint iLevelIndex)

@@ -16,8 +16,8 @@ public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
 	HRESULT Reserve_Containers(_uint iNumLevels);
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(_uint iNumLayer, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg);
-	void Tick(_uint iLevelIndex, _double TimeDelta);
-	void Late_Tick(_uint iLevelIndex, _double TimeDelta);
+	void Tick(_double TimeDelta);
+	void Late_Tick(_double TimeDelta);
 	void Clear_LevelResources(_uint iLevelIndex);
 
 private:
@@ -28,7 +28,6 @@ private:
 	typedef unordered_map<const _tchar*, class CLayer*> LAYERS;
 	
 	_uint m_iNumLevels = { 0 };
-	_uint m_iCurrentLevel = { 0 };
 
 private:
 	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);

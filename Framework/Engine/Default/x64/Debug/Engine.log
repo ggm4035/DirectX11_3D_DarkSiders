@@ -1,7 +1,2 @@
-﻿  CGameInstance.cpp
-  CComponent_Manager.cpp
-  CLevel.cpp
-  CLevel_Manager.cpp
-  코드를 생성하고 있습니다...
-     ..\Bin\Engine.lib 라이브러리 및 ..\Bin\Engine.exp 개체를 생성하고 있습니다.
+﻿  CVIBuffer.cpp
   Engine.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine.dll

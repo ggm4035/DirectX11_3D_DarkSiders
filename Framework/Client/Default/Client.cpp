@@ -83,7 +83,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         TimerAcc += pGameInstance->Get_Timer(L"Timer_Default");
 
 		/* MainApp °´Ã¼ÀÇ Ã³¸®. */
-        if (TimerAcc > 1.0 / 60.0)
+        if (TimerAcc >= 1.0 / 60.0)
         {
             pGameInstance->Set_Timer(L"Timer_60");
 

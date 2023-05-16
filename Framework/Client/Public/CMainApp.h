@@ -4,6 +4,7 @@
 #include "CBase.h"
 
 BEGIN(Engine)
+class CRenderer;
 class CGameInstance;
 END
 
@@ -21,13 +22,15 @@ public:
 	HRESULT Render();
 
 public:
+	HRESULT Ready_Prototype_Component_For_Static();
 	HRESULT Open_Level(LEVELID eLevelIndex);
 
 private:
-	ID3D11Device*			m_pDevice;
-	ID3D11DeviceContext*	m_pContext;
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
 
-	CGameInstance*			m_pGameInstance;
+	CGameInstance* m_pGameInstance = { nullptr };
+	CRenderer* m_pRenderer = { nullptr };
 
 public:
 	static CMainApp* Create();
