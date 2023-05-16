@@ -13,7 +13,9 @@
 #define IDD_DIALOG_TAB_MESH             315
 #define IDD_DIALOG_TAB_NAVIMESH         317
 #define IDD_DIALOG_TAB_CAMERA           319
-#define IDD_DIALOG_TAB_COLLIDER         321
+#define IDD_DIALOG_TAB_EFFECT           323
+#define IDD_DIALOG_TAB_ANIMATION        325
+#define IDD_DIALOG_TAB_UI               327
 #define IDC_TAB_MAIN                    1003
 #define IDC_CHECK1                      1005
 #define IDC_SPIN1                       1007
@@ -37,6 +39,7 @@
 #define IDC_SPIN13                      1021
 #define IDC_EDIT4                       1022
 #define IDC_SPIN14                      1022
+#define IDC_EDIT24                      1022
 #define IDC_BUTTON1                     1023
 #define IDC_EDIT7                       1024
 #define IDC_EDIT6                       1024
@@ -50,6 +53,7 @@
 #define IDC_EDIT12                      1029
 #define IDC_SPIN9                       1030
 #define IDC_EDIT22                      1030
+#define IDC_BUTTON10                    1030
 #define IDC_SPIN10                      1031
 #define IDC_EDIT23                      1031
 #define IDC_BUTTON2                     1032
@@ -77,14 +81,15 @@
 #define IDC_EDIT30                      1053
 #define IDC_EDIT32                      1054
 #define IDC_SLIDER3                     1059
+#define IDC_TREE2                       1060
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        323
+#define _APS_NEXT_RESOURCE_VALUE        329
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1060
+#define _APS_NEXT_CONTROL_VALUE         1062
 #define _APS_NEXT_SYMED_VALUE           313
 #endif
 #endif

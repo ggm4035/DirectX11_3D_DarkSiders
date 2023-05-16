@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "CBackGround.h"
+#include "CRenderer.h"
+#include "CGameInstance.h"
 
 CBackGround::CBackGround(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)

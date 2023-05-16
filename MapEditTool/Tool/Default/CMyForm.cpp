@@ -21,7 +21,9 @@ CMyForm::~CMyForm()
 	delete m_dlgNaviMesh;
 	delete m_dlgMesh;
 	delete m_dlgCamera;
-	delete m_dlgCollider;
+	delete m_dlgEffect;
+	delete m_dlgAnimation;
+	delete m_dlgUI;
 }
 
 void CMyForm::DoDataExchange(CDataExchange* pDX)
@@ -67,7 +69,9 @@ void CMyForm::OnInitialUpdate()
 	m_Tab.InsertItem(1, L"Mesh");
 	m_Tab.InsertItem(2, L"NaviMesh");
 	m_Tab.InsertItem(3, L"Camera");
-	m_Tab.InsertItem(4, L"Collider");
+	m_Tab.InsertItem(4, L"Effect");
+	m_Tab.InsertItem(5, L"Animation");
+	m_Tab.InsertItem(6, L"UI");
 
 	m_Tab.SetCurSel(0);
 
@@ -91,10 +95,20 @@ void CMyForm::OnInitialUpdate()
 	m_dlgCamera->MoveWindow(0, 20, rect.Width(), rect.Height());
 	m_dlgCamera->ShowWindow(SW_HIDE);
 
-	m_dlgCollider = new CTabCollider;
-	m_dlgCollider->Create(IDD_DIALOG_TAB_COLLIDER, &m_Tab);
-	m_dlgCollider->MoveWindow(0, 20, rect.Width(), rect.Height());
-	m_dlgCollider->ShowWindow(SW_HIDE);
+	m_dlgEffect = new CTabEffect;
+	m_dlgEffect->Create(IDD_DIALOG_TAB_EFFECT, &m_Tab);
+	m_dlgEffect->MoveWindow(0, 20, rect.Width(), rect.Height());
+	m_dlgEffect->ShowWindow(SW_HIDE);
+
+	m_dlgAnimation = new CTabAnimation;
+	m_dlgAnimation->Create(IDD_DIALOG_TAB_ANIMATION, &m_Tab);
+	m_dlgAnimation->MoveWindow(0, 20, rect.Width(), rect.Height());
+	m_dlgAnimation->ShowWindow(SW_HIDE);
+
+	m_dlgUI = new CTabUI;
+	m_dlgUI->Create(IDD_DIALOG_TAB_UI, &m_Tab);
+	m_dlgUI->MoveWindow(0, 20, rect.Width(), rect.Height());
+	m_dlgUI->ShowWindow(SW_HIDE);
 }
 
 
@@ -112,7 +126,9 @@ void CMyForm::OnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
 			m_dlgMesh->ShowWindow(SW_HIDE);
 			m_dlgNaviMesh->ShowWindow(SW_HIDE);
 			m_dlgCamera->ShowWindow(SW_HIDE);
-			m_dlgCollider->ShowWindow(SW_HIDE);
+			m_dlgEffect->ShowWindow(SW_HIDE);
+			m_dlgAnimation->ShowWindow(SW_HIDE);
+			m_dlgUI->ShowWindow(SW_HIDE);
 			break;
 
 		case 1:
@@ -120,7 +136,9 @@ void CMyForm::OnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
 			m_dlgMesh->ShowWindow(SW_SHOW);
 			m_dlgNaviMesh->ShowWindow(SW_HIDE);
 			m_dlgCamera->ShowWindow(SW_HIDE);
-			m_dlgCollider->ShowWindow(SW_HIDE);
+			m_dlgEffect->ShowWindow(SW_HIDE);
+			m_dlgAnimation->ShowWindow(SW_HIDE);
+			m_dlgUI->ShowWindow(SW_HIDE);
 			break;
 
 		case 2:
@@ -128,7 +146,9 @@ void CMyForm::OnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
 			m_dlgMesh->ShowWindow(SW_HIDE);
 			m_dlgNaviMesh->ShowWindow(SW_SHOW);
 			m_dlgCamera->ShowWindow(SW_HIDE);
-			m_dlgCollider->ShowWindow(SW_HIDE);
+			m_dlgEffect->ShowWindow(SW_HIDE);
+			m_dlgAnimation->ShowWindow(SW_HIDE);
+			m_dlgUI->ShowWindow(SW_HIDE);
 			break;
 
 		case 3:
@@ -136,7 +156,9 @@ void CMyForm::OnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
 			m_dlgMesh->ShowWindow(SW_HIDE);
 			m_dlgNaviMesh->ShowWindow(SW_HIDE);
 			m_dlgCamera->ShowWindow(SW_SHOW);
-			m_dlgCollider->ShowWindow(SW_HIDE);
+			m_dlgEffect->ShowWindow(SW_HIDE);
+			m_dlgAnimation->ShowWindow(SW_HIDE);
+			m_dlgUI->ShowWindow(SW_HIDE);
 			break;
 
 		case 4:
@@ -144,7 +166,29 @@ void CMyForm::OnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
 			m_dlgMesh->ShowWindow(SW_HIDE);
 			m_dlgNaviMesh->ShowWindow(SW_HIDE);
 			m_dlgCamera->ShowWindow(SW_HIDE);
-			m_dlgCollider->ShowWindow(SW_SHOW);
+			m_dlgEffect->ShowWindow(SW_SHOW);
+			m_dlgAnimation->ShowWindow(SW_HIDE);
+			m_dlgUI->ShowWindow(SW_HIDE);
+			break;
+
+		case 5:
+			m_dlgTerrain->ShowWindow(SW_HIDE);
+			m_dlgMesh->ShowWindow(SW_HIDE);
+			m_dlgNaviMesh->ShowWindow(SW_HIDE);
+			m_dlgCamera->ShowWindow(SW_HIDE);
+			m_dlgEffect->ShowWindow(SW_HIDE);
+			m_dlgAnimation->ShowWindow(SW_SHOW);
+			m_dlgUI->ShowWindow(SW_HIDE);
+			break;
+
+		case 6:
+			m_dlgTerrain->ShowWindow(SW_HIDE);
+			m_dlgMesh->ShowWindow(SW_HIDE);
+			m_dlgNaviMesh->ShowWindow(SW_HIDE);
+			m_dlgCamera->ShowWindow(SW_HIDE);
+			m_dlgEffect->ShowWindow(SW_HIDE);
+			m_dlgAnimation->ShowWindow(SW_HIDE);
+			m_dlgUI->ShowWindow(SW_SHOW);
 			break;
 		}
 	}

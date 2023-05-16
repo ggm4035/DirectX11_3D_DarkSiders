@@ -4,7 +4,9 @@
 #include "CTabMesh.h"
 #include "CTabNaviMesh.h"
 #include "CTabCamera.h"
-#include "CTabCollider.h"
+#include "CTabEffect.h"
+#include "CTabAnimation.h"
+#include "CTabUI.h"
 
 // CMyForm 폼 보기
 
@@ -41,7 +43,9 @@ public:
 	CTabMesh* m_dlgMesh;
 	CTabNaviMesh* m_dlgNaviMesh;
 	CTabCamera* m_dlgCamera;
-	CTabCollider* m_dlgCollider;
+	CTabEffect* m_dlgEffect;
+	CTabAnimation* m_dlgAnimation;
+	CTabUI* m_dlgUI;
 };
 
 

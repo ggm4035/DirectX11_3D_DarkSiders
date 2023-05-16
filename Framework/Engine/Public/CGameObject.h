@@ -18,9 +18,13 @@ public:
 	virtual void Late_Tick(_double TimeDelta);
 	virtual HRESULT Render();
 
+protected:
+	HRESULT Add_Component();
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
+	unordered_map<const _tchar*, class C> m;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

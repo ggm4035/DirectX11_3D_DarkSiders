@@ -10,6 +10,8 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cgraphic_
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cgameinstance.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccomponent.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cbase.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\timer_manager.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\timer.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.dll
@@ -19,6 +21,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tl
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\cl.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\cl.write.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\engine.write.1u.tlog
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.26244.delete.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.command.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.write.1.tlog

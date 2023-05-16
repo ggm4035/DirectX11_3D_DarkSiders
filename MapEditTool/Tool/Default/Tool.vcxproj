@@ -192,11 +192,13 @@
   <ItemGroup>
     <ClInclude Include="CFileInfo.h" />
     <ClInclude Include="CMyForm.h" />
+    <ClInclude Include="CTabAnimation.h" />
     <ClInclude Include="CTabCamera.h" />
-    <ClInclude Include="CTabCollider.h" />
+    <ClInclude Include="CTabEffect.h" />
     <ClInclude Include="CTabMesh.h" />
     <ClInclude Include="CTabNaviMesh.h" />
     <ClInclude Include="CTabTerrain.h" />
+    <ClInclude Include="CTabUI.h" />
     <ClInclude Include="CTerrain.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
@@ -211,11 +213,13 @@
   <ItemGroup>
     <ClCompile Include="CFileInfo.cpp" />
     <ClCompile Include="CMyForm.cpp" />
+    <ClCompile Include="CTabAnimation.cpp" />
     <ClCompile Include="CTabCamera.cpp" />
-    <ClCompile Include="CTabCollider.cpp" />
+    <ClCompile Include="CTabEffect.cpp" />
     <ClCompile Include="CTabMesh.cpp" />
     <ClCompile Include="CTabNaviMesh.cpp" />
     <ClCompile Include="CTabTerrain.cpp" />
+    <ClCompile Include="CTabUI.cpp" />
     <ClCompile Include="CTerrain.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">

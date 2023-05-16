@@ -46,6 +46,18 @@
     <Filter Include="01.Utility\02. GameObject\Manager\Layer">
       <UniqueIdentifier>{b5ba568e-3931-4e94-8988-8bd653364d72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.System\01. Timer">
+      <UniqueIdentifier>{97cc0140-9731-4f86-bcf7-979a4347e2b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\01. Timer\Manager">
+      <UniqueIdentifier>{1fb7a308-ab6e-47aa-b35f-577dfaf68811}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03. Component\02. Renderer">
+      <UniqueIdentifier>{97aa850b-3b75-4a67-b880-53a704e58f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03. Component\Manager">
+      <UniqueIdentifier>{2fc5268e-7084-4f9f-9fe9-a73c7bda4e7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -93,6 +105,18 @@
     <ClInclude Include="..\Public\CLayer.h">
       <Filter>01.Utility\02. GameObject\Manager\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Timer.h">
+      <Filter>00.System\01. Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Timer_Manager.h">
+      <Filter>00.System\01. Timer\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRenderer.h">
+      <Filter>01.Utility\03. Component\02. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CComponent_Manager.h">
+      <Filter>01.Utility\03. Component\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -124,6 +148,18 @@
     </ClCompile>
     <ClCompile Include="CLayer.cpp">
       <Filter>01.Utility\02. GameObject\Manager\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Timer.cpp">
+      <Filter>00.System\01. Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Timer_Manager.cpp">
+      <Filter>00.System\01. Timer\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderer.cpp">
+      <Filter>01.Utility\03. Component\02. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="CComponent_Manager.cpp">
+      <Filter>01.Utility\03. Component\Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

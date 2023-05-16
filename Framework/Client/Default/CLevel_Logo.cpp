@@ -24,8 +24,6 @@ void CLevel_Logo::Tick(_double TimeDelta)
 {
 	CLevel::Tick(TimeDelta);
 
-	m_pGameInstance->Tick_Engine(TimeDelta);
-
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))

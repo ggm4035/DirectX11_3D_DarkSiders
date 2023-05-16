@@ -5,6 +5,7 @@
 #include "Client.h"
 
 #include "../Public/CMainApp.h"
+#include "CGameInstance.h"
 
 #define MAX_LOADSTRING 100
 
@@ -48,9 +49,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     pMainApp = CMainApp::Create();
 
+
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
-    MSG msg;
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Default"))))
+		return FALSE;
+	if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))
+		return FALSE;
+
+	MSG msg;
+
+    _double TimerAcc = { 0.0 };
 
     // 기본 메시지 루프입니다.
 	while (true)
@@ -67,11 +79,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
+        pGameInstance->Set_Timer(L"Timer_Default");
+        TimerAcc += pGameInstance->Get_Timer(L"Timer_Default");
+
 		/* MainApp 객체의 처리. */
-        pMainApp->Tick(0.0);
-        pMainApp->Render();
+        if (TimerAcc > 1.0 / 60.0)
+        {
+            pGameInstance->Set_Timer(L"Timer_60");
+
+            pMainApp->Tick(pGameInstance->Get_Timer(L"Timer_60"));
+			pMainApp->Render();
+
+            TimerAcc = 0.0;
+        }
 	}
 
+    Safe_Release(pGameInstance);
     Safe_Release(pMainApp);
 
     return (int) msg.wParam;

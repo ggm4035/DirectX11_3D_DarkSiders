@@ -1,9 +1,11 @@
 ﻿  CMyForm.cpp
+  CTabAnimation.cpp
   CTabCamera.cpp
-  CTabCollider.cpp
+  CTabEffect.cpp
   CTabMesh.cpp
   CTabNaviMesh.cpp
   CTabTerrain.cpp
+  CTabUI.cpp
   MainFrm.cpp
   Tool.cpp
   ToolDoc.cpp

@@ -43,8 +43,14 @@
     <Filter Include="01. ToolView\MyForm\Tabs\03. Tab_Camera">
       <UniqueIdentifier>{3ea2061b-df5c-41b3-9b87-e568136f5d36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. ToolView\MyForm\Tabs\04. Tab_Collider">
-      <UniqueIdentifier>{d281b35a-8753-44b0-9e17-130285442851}</UniqueIdentifier>
+    <Filter Include="01. ToolView\MyForm\Tabs\04. Tab_Effect">
+      <UniqueIdentifier>{0a781c4b-7918-4375-8de9-1ee5d5ac53bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs\05. Tab_Animation">
+      <UniqueIdentifier>{30d67def-bf09-48d9-9191-c17a5d6cb472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ToolView\MyForm\Tabs\06. Tab_UI">
+      <UniqueIdentifier>{f4ed6009-b37f-4888-bd96-89d751a07524}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,8 +102,14 @@
     <ClInclude Include="CTabCamera.h">
       <Filter>01. ToolView\MyForm\Tabs\03. Tab_Camera</Filter>
     </ClInclude>
-    <ClInclude Include="CTabCollider.h">
-      <Filter>01. ToolView\MyForm\Tabs\04. Tab_Collider</Filter>
+    <ClInclude Include="CTabEffect.h">
+      <Filter>01. ToolView\MyForm\Tabs\04. Tab_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabAnimation.h">
+      <Filter>01. ToolView\MyForm\Tabs\05. Tab_Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabUI.h">
+      <Filter>01. ToolView\MyForm\Tabs\06. Tab_UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -137,8 +149,14 @@
     <ClCompile Include="CTabCamera.cpp">
       <Filter>01. ToolView\MyForm\Tabs\03. Tab_Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CTabCollider.cpp">
-      <Filter>01. ToolView\MyForm\Tabs\04. Tab_Collider</Filter>
+    <ClCompile Include="CTabEffect.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\04. Tab_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabAnimation.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\05. Tab_Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabUI.cpp">
+      <Filter>01. ToolView\MyForm\Tabs\06. Tab_UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -12,9 +12,9 @@ private:
 	virtual ~CLevel_GamePlay() = default;
 
 public:
-	HRESULT Initialize();
-	void Tick(_double TileDelta);
-	HRESULT Render();
+	virtual HRESULT Initialize();
+	virtual void Tick(_double TimeDelta);
+	virtual HRESULT Render();
 
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

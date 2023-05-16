@@ -12,9 +12,9 @@ private:
 	virtual ~CLevel_Logo() = default;
 
 public:
-	HRESULT Initialize();
-	void Tick(_double TimeDelta);
-	HRESULT Render();
+	virtual HRESULT Initialize();
+	virtual void Tick(_double TimeDelta);
+	virtual HRESULT Render();
 
 private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);

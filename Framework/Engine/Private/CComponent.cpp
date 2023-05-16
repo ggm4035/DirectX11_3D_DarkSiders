@@ -12,8 +12,22 @@ CComponent::CComponent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pContext);
 }
 
-CComponent::~CComponent()
+CComponent::CComponent(const CComponent& rhs)
+	: m_pDevice{ rhs.m_pDevice }
+	, m_pContext{ rhs.m_pContext }
 {
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
+}
+
+HRESULT CComponent::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CComponent::Initialize(void* pArg)
+{
+	return S_OK;
 }
 
 void CComponent::Free()
@@ -31,27 +45,29 @@ CComposite::CComposite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 }
 
-CComposite::~CComposite()
+CComposite::CComposite(const CComposite& rhs)
+	:CComponent(rhs)
 {
+}
+
+HRESULT CComposite::Initialize_Prototype()
+{
+	HRESULT result = CComponent::Initialize_Prototype();
+
+	return result;
+}
+
+HRESULT CComposite::Initialize(void* pArg)
+{
+	HRESULT result = CComponent::Initialize(pArg);
+
+	return result;
 }
 
 void CComposite::Update_Component(_double TimeDelta)
 {
 	for (auto& Component : m_vecComponents)
 		Component->Update_Component(TimeDelta);
-}
-
-HRESULT CComposite::Render()
-{
-	HRESULT result{};
-
-	for (auto& Component : m_vecComponents)
-	{
-		result = Component->Render();
-		if (E_FAIL == result)
-			return E_FAIL;
-	}
-	return S_OK;
 }
 
 void CComposite::Free()
