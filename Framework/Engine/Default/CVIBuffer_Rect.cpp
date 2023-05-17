@@ -13,7 +13,10 @@ CVIBuffer_Rect::CVIBuffer_Rect(const CVIBuffer_Rect& rhs)
 HRESULT CVIBuffer_Rect::Initialize_Prototype()
 {
 	m_iStride = { sizeof(VTXPOSTEX) };
+	m_iIndexStride = { sizeof(_ushort) };
 	m_iNumVertices = 4; // 사각형이니까 버텍스 개수는 4개읾
+	m_iNumIndices = 6;
+	m_iVertexBuffers = { 1 };
 
 	/*=================*/
 	//  Vertex_Buffer  //
@@ -43,27 +46,53 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
 
-	Safe_Delete_Array(pVertices);
-
 	if (FAILED(CVIBuffer::Create_Buffer(&m_pVB)))
 		return E_FAIL;
+
+	Safe_Delete_Array(pVertices);
 
 	/*================*/
 	//  Index_Buffer  //
 	/*================*/
-	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };
+	m_BufferDesc.ByteWidth = { m_iIndexStride * m_iNumIndices };
 	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
 	m_BufferDesc.BindFlags = { D3D11_BIND_INDEX_BUFFER };
-	m_BufferDesc.StructureByteStride = m_iStride;
+	m_BufferDesc.StructureByteStride = { 0 };
 
 	m_BufferDesc.CPUAccessFlags = { 0 };
 	m_BufferDesc.MiscFlags = { 0 };
+
+	_ushort* pIndices = new _ushort[m_iNumIndices];
+
+	pIndices[0] = 0;
+	pIndices[1] = 1;
+	pIndices[2] = 2;
+
+	pIndices[3] = 0;
+	pIndices[4] = 2;
+	pIndices[5] = 3;
+
+	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
+	m_SubResourceData.pSysMem = pIndices;
+
+	if (FAILED(CVIBuffer::Create_Buffer(&m_pIB)))
+		return E_FAIL;
+
+	Safe_Delete_Array(pIndices);
 
 	return S_OK;
 }
 
 HRESULT CVIBuffer_Rect::Initialize(void* pArg)
 {
+	return S_OK;
+}
+
+HRESULT CVIBuffer_Rect::Render()
+{
+	if (FAILED(CVIBuffer::Render()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -91,5 +91,6 @@ CGameObject* CBackGround::Clone(void* pArg)
 void CBackGround::Free()
 {
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pBufferCom);
 	CGameObject::Free();
 }
