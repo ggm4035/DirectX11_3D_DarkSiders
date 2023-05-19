@@ -176,7 +176,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>../../../Framework/Reference/Librarys/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Engine.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -191,6 +191,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CFileInfo.h" />
+    <ClInclude Include="CMainApp.h" />
     <ClInclude Include="CMyForm.h" />
     <ClInclude Include="CTabAnimation.h" />
     <ClInclude Include="CTabCamera.h" />
@@ -212,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CFileInfo.cpp" />
+    <ClCompile Include="CMainApp.cpp" />
     <ClCompile Include="CMyForm.cpp" />
     <ClCompile Include="CTabAnimation.cpp" />
     <ClCompile Include="CTabCamera.cpp" />

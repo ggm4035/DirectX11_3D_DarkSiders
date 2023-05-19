@@ -9,6 +9,9 @@ CComponent_Manager::CComponent_Manager()
 
 HRESULT CComponent_Manager::Reserve_Containers(_uint iNumLevels)
 {
+	if (0 == iNumLevels)
+		return E_FAIL;
+
 	if (nullptr != m_pPrototypes)
 		return E_FAIL;
 

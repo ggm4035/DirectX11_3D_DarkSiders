@@ -1,2 +1,2 @@
-﻿  Tool.cpp
-C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\Tool.cpp(196): error C4700: 초기화되지 않은 'msg' 지역 변수를 사용했습니다.
+﻿  CTerrain.cpp
+  Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe

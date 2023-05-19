@@ -34,6 +34,9 @@
     <Filter Include="97. ShaderFiles">
       <UniqueIdentifier>{e00542d5-bcff-4309-9d4a-11f315bae038}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Terrain">
+      <UniqueIdentifier>{33d642fa-3091-46e2-a765-b922d6528579}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

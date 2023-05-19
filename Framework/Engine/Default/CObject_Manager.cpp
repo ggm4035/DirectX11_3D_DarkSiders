@@ -11,7 +11,7 @@ CObject_Manager::CObject_Manager()
 HRESULT CObject_Manager::Reserve_Containers(_uint iNumLevels)
 {
 	if (0 == iNumLevels)
-		return S_OK;
+		return E_FAIL;
 
 	if (nullptr != m_pLayers)
 		return E_FAIL;
