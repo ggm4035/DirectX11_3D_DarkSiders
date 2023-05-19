@@ -48,10 +48,6 @@ HRESULT CLevel_Logo::Ready_Prototype_Component_For_Logo()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Rect",
-		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	return S_OK;
 }
 

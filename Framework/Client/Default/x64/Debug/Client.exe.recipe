@@ -5,7 +5,11 @@
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
-  <ContentFiles />
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_Vtxtex.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />
 </Project>

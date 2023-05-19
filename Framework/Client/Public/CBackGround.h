@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CRenderer;
 class CVIBuffer_Rect;
+class CShader;
 END
 
 BEGIN(Client)
@@ -27,6 +28,7 @@ public:
 private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CVIBuffer_Rect* m_pBufferCom = { nullptr };
+	CShader* m_pShaderCom = { nullptr };
 
 private:
 	HRESULT Add_Components();

@@ -12,18 +12,19 @@ private:
 	virtual ~CShader() = default;
 
 public:
-	HRESULT Initialize_Prototype(const _tchar * pShaderFilePath);
+	HRESULT Initialize_Prototype(const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pInputElementsDesc, const _uint iNumElements);
 	HRESULT Initialize(void* pArg) override;
 
 public:
-	HRESULT Begin();
+	HRESULT Begin(const _uint iNumIndex);
 
 private:
 	ID3DX11Effect* m_pEffect = { nullptr };
-	ID3D11InputLayout* m_pInputLayout = { nullptr };
+	_uint m_iNumPasses = { 0 };
+	vector<ID3D11InputLayout*> m_InputLayouts;
 
 public:
-	static CShader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pShaderFilePath);
+	static CShader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pInputElementsDesc, const _uint iNumElements);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

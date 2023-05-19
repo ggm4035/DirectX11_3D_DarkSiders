@@ -40,13 +40,18 @@ void CBackGround::Tick(_double TimeDelta)
 void CBackGround::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+	if(nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 }
 
 HRESULT CBackGround::Render()
 {
 	if (FAILED(CGameObject::Render()))
 		return E_FAIL;
+
+	m_pShaderCom->Begin(0);
+
+	m_pBufferCom->Render();
 
 	return S_OK;
 }
@@ -57,8 +62,12 @@ HRESULT CBackGround::Add_Components()
 		L"Com_Renderer", (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Rect",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_VIBuffer_Rect",
 		L"Com_Buffer", (CComponent**)&m_pBufferCom)))
+		return E_FAIL;
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Shader_Vtxtex",
+		L"Com_Shader_Vtxtex", (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -90,6 +99,7 @@ CGameObject* CBackGround::Clone(void* pArg)
 
 void CBackGround::Free()
 {
+	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pBufferCom);
 	CGameObject::Free();

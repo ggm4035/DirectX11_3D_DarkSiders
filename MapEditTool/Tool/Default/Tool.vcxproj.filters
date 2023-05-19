@@ -52,6 +52,9 @@
     <Filter Include="01. ToolView\MyForm\Tabs\06. Tab_UI">
       <UniqueIdentifier>{f4ed6009-b37f-4888-bd96-89d751a07524}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. MainApp">
+      <UniqueIdentifier>{ada701e6-53cf-4b98-8486-df362138286b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

@@ -1,9 +1,2 @@
-﻿  CMainApp.cpp
-  CBackGround.cpp
-  CLevel_GamePlay.cpp
-  CLevel_Loading.cpp
-  CLevel_Logo.cpp
-  CLoader.cpp
-  Client.cpp
-  코드를 생성하고 있습니다...
+﻿  CBackGround.cpp
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

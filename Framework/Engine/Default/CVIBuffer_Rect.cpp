@@ -12,15 +12,19 @@ CVIBuffer_Rect::CVIBuffer_Rect(const CVIBuffer_Rect& rhs)
 
 HRESULT CVIBuffer_Rect::Initialize_Prototype()
 {
-	m_iStride = { sizeof(VTXPOSTEX) };
-	m_iIndexStride = { sizeof(_ushort) };
-	m_iNumVertices = 4; // 사각형이니까 버텍스 개수는 4개읾
-	m_iNumIndices = 6;
 	m_iVertexBuffers = { 1 };
+	m_iStride = { sizeof(VTXPOSTEX) };
+	m_iNumVertices = 4; // 사각형이니까 버텍스 개수는 4개읾
+	m_iIndexStride = { sizeof(_ushort) };
+	m_iNumIndices = 6;
+	m_eFormat = DXGI_FORMAT_R16_UINT;
+	m_eTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	/*=================*/
 	//  Vertex_Buffer  //
 	/*=================*/
+
+	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };
 	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
 	m_BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
@@ -34,14 +38,14 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
 	pVertices[0].vTexCoord = _float2(0.f, 0.f);
 
-	pVertices[0].vPosition = _float3(0.5f, 0.5f, 0.f);
-	pVertices[0].vTexCoord = _float2(1.f, 0.f);
+	pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
+	pVertices[1].vTexCoord = _float2(1.f, 0.f);
 
-	pVertices[0].vPosition = _float3(0.5f, -0.5f, 0.f);
-	pVertices[0].vTexCoord = _float2(1.f, 1.f);
+	pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
+	pVertices[2].vTexCoord = _float2(1.f, 1.f);
 
-	pVertices[0].vPosition = _float3(-0.5f, -0.5f, 0.f);
-	pVertices[0].vTexCoord = _float2(0.f, 1.f);
+	pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
+	pVertices[3].vTexCoord = _float2(0.f, 1.f);
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
@@ -54,6 +58,8 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	/*================*/
 	//  Index_Buffer  //
 	/*================*/
+
+	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 	m_BufferDesc.ByteWidth = { m_iIndexStride * m_iNumIndices };
 	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
 	m_BufferDesc.BindFlags = { D3D11_BIND_INDEX_BUFFER };

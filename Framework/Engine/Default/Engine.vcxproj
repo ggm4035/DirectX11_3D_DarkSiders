@@ -184,6 +184,7 @@
     <ClCompile Include="..\Private\CGraphic_Device.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
+    <ClCompile Include="..\Public\Engine_Struct.cpp" />
     <ClCompile Include="CComponent_Manager.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CLayer.cpp" />

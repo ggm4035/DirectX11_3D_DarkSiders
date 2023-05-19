@@ -121,6 +121,10 @@ BOOL CToolApp::InitInstance()
 	// 응용 프로그램이 /RegServer, /Register, /Unregserver 또는 /Unregister로 시작된 경우 FALSE를 반환합니다.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
+	//toolview -> init 이게 먼저불림
+	//pMainapp->Init;
+
+	int j = 0; 
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -179,3 +183,23 @@ void CToolApp::OnAppAbout()
 }
 
 // CToolApp 메시지 처리기
+
+BOOL CToolApp::OnIdle(LONG lCount)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	//pMainapp->Update();
+
+	MSG msg;
+
+	while (true)
+	{
+		if (WM_QUIT == msg.message)
+			break;
+
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			int i = 0;
+		}
+	}
+	return CWinApp::OnIdle(lCount);
+}

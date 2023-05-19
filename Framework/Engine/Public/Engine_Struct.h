@@ -15,4 +15,10 @@ namespace Engine
 		XMFLOAT3 vPosition;
 		XMFLOAT2 vTexCoord;
 	}VTXPOSTEX;
+
+	typedef struct ENGINE_DLL tagVertex_Position_TexCoord_Declaration
+	{
+		static const _uint iNumElements = { 2 };
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXPOSTEX_DECL;
 }

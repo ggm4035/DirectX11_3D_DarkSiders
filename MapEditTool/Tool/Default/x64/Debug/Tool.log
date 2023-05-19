@@ -1,14 +1,2 @@
-﻿  CMyForm.cpp
-  CTabAnimation.cpp
-  CTabCamera.cpp
-  CTabEffect.cpp
-  CTabMesh.cpp
-  CTabNaviMesh.cpp
-  CTabTerrain.cpp
-  CTabUI.cpp
-  MainFrm.cpp
-  Tool.cpp
-  ToolDoc.cpp
-  ToolView.cpp
-  코드를 생성하고 있습니다...
-  Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe
+﻿  Tool.cpp
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\Tool.cpp(196): error C4700: 초기화되지 않은 'msg' 지역 변수를 사용했습니다.

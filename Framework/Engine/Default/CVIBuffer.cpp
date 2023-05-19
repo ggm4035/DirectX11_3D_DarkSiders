@@ -15,6 +15,8 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_BufferDesc(rhs.m_BufferDesc)
 	, m_SubResourceData(rhs.m_SubResourceData)
 	, m_iVertexBuffers(rhs.m_iVertexBuffers)
+	, m_eFormat(rhs.m_eFormat)
+	, m_eTopology(rhs.m_eTopology)
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
@@ -48,20 +50,8 @@ HRESULT CVIBuffer::Render()
 		0,
 	};
 	m_pContext->IASetVertexBuffers(0, m_iVertexBuffers, pBuffers, iStrides, iOffsets);
-	m_pContext->IASetIndexBuffer(m_pIB, DXGI_FORMAT_R16_UINT, 0);
+	m_pContext->IASetIndexBuffer(m_pIB, m_eFormat, 0);
 	m_pContext->IASetPrimitiveTopology(m_eTopology);
-
-	ID3D11InputLayout* pInputLayout = { nullptr };
-
-	D3D11_INPUT_ELEMENT_DESC Elements[2] = {
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	//m_pDevice->CreateInputLayout(Elements, 2, , , &pInputLayout);
-
-	m_pContext->IASetInputLayout(pInputLayout);
-
 	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
 
 	return S_OK;

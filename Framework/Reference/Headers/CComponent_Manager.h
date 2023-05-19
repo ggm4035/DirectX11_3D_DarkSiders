@@ -2,6 +2,7 @@
 
 #include "CRenderer.h"
 #include "CVIBuffer_Rect.h"
+#include "CShader.h"
 
 BEGIN(Engine)
 
