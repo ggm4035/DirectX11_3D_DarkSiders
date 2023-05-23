@@ -31,7 +31,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 
 private:
-	HRESULT Add_Components();
+	virtual HRESULT Add_Components() override;
 
 public:
 	static CBackGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

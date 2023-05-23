@@ -9,10 +9,13 @@
 
 #include "resource.h"       // 주 기호입니다.
 
-
 // CToolApp:
 // 이 클래스의 구현에 대해서는 Tool.cpp을(를) 참조하세요.
 //
+namespace Engine
+{
+	class CGameInstance;
+}
 
 class CToolApp : public CWinApp
 {
@@ -20,19 +23,22 @@ public:
 	CToolApp() noexcept;
 
 
-// 재정의입니다.
+	// 재정의입니다.
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 
-// 구현입니다.
+	// 구현입니다.
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL OnIdle(LONG lCount);
 
+private:
+	class CMainApp* m_pMainApp = { nullptr };
+	Engine::CGameInstance* m_pGameInstance = { nullptr };
 
 private:
-	//CMainapp* pMainapp;
+	double m_TimeAcc = { 0.0 };
 };
 
 extern CToolApp theApp;

@@ -70,6 +70,12 @@
     <Filter Include="01.Utility\03. Component\03. Shader">
       <UniqueIdentifier>{0de9c93d-cdfa-4808-ace7-31ff588862c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03. Component\01. VIBuffer\Camera">
+      <UniqueIdentifier>{63547414-993b-4705-ae1b-5784a8ce2272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03. Component\01. VIBuffer\Camera\Manager">
+      <UniqueIdentifier>{c58eb43c-9afa-4b67-a8d9-0c8ce7bec03d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -138,6 +144,15 @@
     <ClInclude Include="..\Public\CShader.h">
       <Filter>01.Utility\03. Component\03. Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CCamera.h">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CVIBuffer_Terrain.h">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCamera_Manager.h">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Camera\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -152,47 +167,56 @@
     <ClCompile Include="..\Private\CComponent.cpp">
       <Filter>01.Utility\03. Component</Filter>
     </ClCompile>
-    <ClCompile Include="CTransform.cpp">
-      <Filter>01.Utility\03. Component\00. Transform</Filter>
-    </ClCompile>
-    <ClCompile Include="CLevel_Manager.cpp">
-      <Filter>01.Utility\01. Levels\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="CLevel.cpp">
-      <Filter>01.Utility\01. Levels</Filter>
-    </ClCompile>
-    <ClCompile Include="CGameObject.cpp">
-      <Filter>01.Utility\02. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="CObject_Manager.cpp">
-      <Filter>01.Utility\02. GameObject\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="CLayer.cpp">
-      <Filter>01.Utility\02. GameObject\Manager\Layer</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Timer.cpp">
       <Filter>00.System\01. Timer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Timer_Manager.cpp">
       <Filter>00.System\01. Timer\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="CRenderer.cpp">
-      <Filter>01.Utility\03. Component\02. Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="CComponent_Manager.cpp">
-      <Filter>01.Utility\03. Component\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="CVIBuffer.cpp">
-      <Filter>01.Utility\03. Component\01. VIBuffer</Filter>
-    </ClCompile>
-    <ClCompile Include="CVIBuffer_Rect.cpp">
-      <Filter>01.Utility\03. Component\01. VIBuffer\Rect</Filter>
-    </ClCompile>
-    <ClCompile Include="CShader.cpp">
-      <Filter>01.Utility\03. Component\03. Shader</Filter>
-    </ClCompile>
     <ClCompile Include="..\Public\Engine_Struct.cpp">
       <Filter>99.Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CVIBuffer_Rect.cpp">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CVIBuffer_Terrain.cpp">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRenderer.cpp">
+      <Filter>01.Utility\03. Component\02. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CShader.cpp">
+      <Filter>01.Utility\03. Component\03. Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CVIBuffer.cpp">
+      <Filter>01.Utility\03. Component\01. VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CComponent_Manager.cpp">
+      <Filter>01.Utility\03. Component\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLayer.cpp">
+      <Filter>01.Utility\02. GameObject\Manager\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CObject_Manager.cpp">
+      <Filter>01.Utility\02. GameObject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CGameObject.cpp">
+      <Filter>01.Utility\02. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel_Manager.cpp">
+      <Filter>01.Utility\01. Levels\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel.cpp">
+      <Filter>01.Utility\01. Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CTransform.cpp">
+      <Filter>01.Utility\03. Component\00. Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCamera.cpp">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCamera_Manager.cpp">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Camera\Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

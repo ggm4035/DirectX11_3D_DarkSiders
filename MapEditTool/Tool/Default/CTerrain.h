@@ -1,23 +1,40 @@
 #pragma once
 
-#include "Engine_Defines.h"
+#include "Tool_Defines.h"
+#include "CGameObject.h"
 
-class CToolView;
-class CTerrain
+BEGIN(Engine)
+class CShader;
+class CVIBuffer_Terrain;
+class CRenderer;
+END
+
+class CTerrain final : public CGameObject
 {
 private:
-	CTerrain();
+	CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CTerrain(const CTerrain& rhs);
 	virtual ~CTerrain() = default;
 
 public:
-	HRESULT Initialize();
-	void Tick(_double TimeDelta);
-	HRESULT Render();
-
-public:
-	void Set_mainView(CToolView* pMainView) { m_pMainView = pMainView; }
-	void Set_Ratio(_float4x4* pOut, const _float fRatioX, const _float fRatioY);
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Tick(_double TimeDelta) override;
+	virtual void Late_Tick(_double TimeDelta) override;
+	virtual HRESULT Render() override;
 
 private:
-	CToolView* m_pMainView = { nullptr };
+	CShader* m_pShaderCom = { nullptr };
+	CVIBuffer_Terrain* m_pBufferCom = { nullptr };
+	CRenderer* m_pRenderCom = { nullptr };
+
+	_matrix WVPMatrix;
+
+private:
+	virtual HRESULT Add_Components() override;
+
+public:
+	static CTerrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void Free() override;
 };

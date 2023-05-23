@@ -2,7 +2,9 @@
 
 #include "CRenderer.h"
 #include "CVIBuffer_Rect.h"
+#include "CVIBuffer_Terrain.h"
 #include "CShader.h"
+#include "CCamera.h"
 
 BEGIN(Engine)
 

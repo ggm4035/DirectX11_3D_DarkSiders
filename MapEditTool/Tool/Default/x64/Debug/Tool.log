@@ -1,2 +1,4 @@
-﻿  Tool.cpp
-C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\Tool.cpp(196): error C4700: 초기화되지 않은 'msg' 지역 변수를 사용했습니다.
+﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_Vtxtex.cso
+  Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe

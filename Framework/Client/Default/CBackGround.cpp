@@ -49,6 +49,9 @@ HRESULT CBackGround::Render()
 	if (FAILED(CGameObject::Render()))
 		return E_FAIL;
 
+	_matrix WorldMatrix = XMMatrixIdentity();
+	m_pShaderCom->Set_Matrix("g_WorldMatrix", &WorldMatrix);
+
 	m_pShaderCom->Begin(0);
 
 	m_pBufferCom->Render();

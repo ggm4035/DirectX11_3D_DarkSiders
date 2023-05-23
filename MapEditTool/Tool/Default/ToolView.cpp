@@ -35,8 +35,6 @@ END_MESSAGE_MAP()
 
 // CToolView 생성/소멸
 
-HWND g_hWnd;
-
 CToolView::CToolView() noexcept
 	:m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -122,19 +120,6 @@ void CToolView::OnInitialUpdate()
 	_float fColFrame = _float(rcWnd.bottom - rcMainView.bottom);
 
 	pMainFrame->SetWindowPos(nullptr, 0, 0, _int(g_iWinSizeX + fRowFrame), _int(g_iWinSizeY + fColFrame), SWP_NOZORDER);
-
-	g_hWnd = m_hWnd;
-	GRAPHICDESC graphicDesc{};
-	graphicDesc.hWnd = g_hWnd;
-	graphicDesc.eWinMode = GRAPHICDESC::WM_WIN;
-	graphicDesc.iViewportSizeX = g_iWinSizeX;
-	graphicDesc.iViewportSizeY = g_iWinSizeY;
-
-	if (FAILED(m_pGameInstance->Initialize_Engine(0, graphicDesc, &m_pDevice, &m_pContext)))
-	{
-		AfxMessageBox(L"Device Create Failed");
-		return;
-	}
 }
 
 // CToolView 그리기
@@ -146,11 +131,6 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
-
-	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
-	m_pGameInstance->Clear_DepthStencil_View();
-
-	m_pGameInstance->Present();
 }
 
 void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -160,16 +140,11 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	CView::OnLButtonDown(nFlags, point);
 }
 
-
 void CToolView::OnDestroy()
 {
 	CView::OnDestroy();
 
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-	Safe_Release(m_pContext);
-	Safe_Release(m_pDevice);
 
 	Safe_Release(m_pGameInstance);
-
-	CGameInstance::Release_Engine();
 }

@@ -12,6 +12,9 @@ private:
 	virtual ~CShader() = default;
 
 public:
+	HRESULT Set_Matrix(const char* pTypename, const _matrix * pMatrix);
+
+public:
 	HRESULT Initialize_Prototype(const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pInputElementsDesc, const _uint iNumElements);
 	HRESULT Initialize(void* pArg) override;
 

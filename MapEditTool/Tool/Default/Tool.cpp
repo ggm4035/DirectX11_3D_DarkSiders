@@ -8,9 +8,12 @@
 #include "afxdialogex.h"
 #include "Tool.h"
 #include "MainFrm.h"
+#include "CMainApp.h"
 
 #include "ToolDoc.h"
 #include "ToolView.h"
+
+#include "CGameInstance.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,6 +33,8 @@ END_MESSAGE_MAP()
 
 
 // CToolApp 생성
+
+HWND g_hWnd;
 
 CToolApp::CToolApp() noexcept
 {
@@ -122,9 +127,14 @@ BOOL CToolApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 	//toolview -> init 이게 먼저불림
-	//pMainapp->Init;
+	m_pMainApp = CMainApp::Create();
+	m_pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(m_pGameInstance);
 
-	int j = 0; 
+	if (FAILED(m_pGameInstance->Ready_Timer(TEXT("Timer_Default"))))
+		return FALSE;
+	if (FAILED(m_pGameInstance->Ready_Timer(TEXT("Timer_60"))))
+		return FALSE;
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -136,6 +146,9 @@ int CToolApp::ExitInstance()
 {
 	//TODO: 추가한 추가 리소스를 처리합니다.
 	AfxOleTerm(FALSE);
+
+	Safe_Release(m_pMainApp);
+	Safe_Release(m_pGameInstance);
 
 	return CWinApp::ExitInstance();
 }
@@ -187,19 +200,19 @@ void CToolApp::OnAppAbout()
 BOOL CToolApp::OnIdle(LONG lCount)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	//pMainapp->Update();
 
-	MSG msg;
+	m_pGameInstance->Set_Timer(L"Timer_Default");
+	m_TimeAcc += m_pGameInstance->Get_Timer(L"Timer_Default");
 
-	while (true)
+	if (m_TimeAcc >= 1.0 / 60.0)
 	{
-		if (WM_QUIT == msg.message)
-			break;
+		m_pGameInstance->Set_Timer(L"Timer_60");
 
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			int i = 0;
-		}
+		m_pMainApp->Tick(m_pGameInstance->Get_Timer(L"Timer_60"));
+		m_pMainApp->Render();
+
+		m_TimeAcc = 0.0;
 	}
+
 	return CWinApp::OnIdle(lCount);
 }
