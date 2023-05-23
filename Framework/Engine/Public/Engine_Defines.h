@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include "fx11/d3dx11effect.h"
+using namespace DirectX;
 
 #include <vector>
 #include <list>
@@ -17,8 +18,6 @@
 #include <atlimage.h>
 #include <fstream>
 using namespace std;
-
-using namespace DirectX;
 
 #include "Engine_Function.h"
 #include "Engine_TypeDef.h"

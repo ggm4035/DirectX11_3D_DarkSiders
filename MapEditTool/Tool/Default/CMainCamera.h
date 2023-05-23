@@ -1,0 +1,36 @@
+#pragma once
+
+#include "Tool_Defines.h"
+#include "CGameObject.h"
+
+BEGIN(Engine)
+class CShader;
+class CCamera;
+END
+
+class CMainCamera final : public CGameObject
+{
+private:
+	CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CMainCamera(const CMainCamera& rhs);
+	virtual ~CMainCamera() = default;
+
+public:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Tick(_double TimeDelta) override;
+	virtual void Late_Tick(_double TimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	CCamera* m_pCameraCom = { nullptr };
+
+private:
+	virtual HRESULT Add_Components() override;
+
+public:
+	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void Free() override;
+};
+

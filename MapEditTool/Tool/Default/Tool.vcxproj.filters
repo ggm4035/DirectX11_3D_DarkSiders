@@ -61,6 +61,15 @@
     <Filter Include="01. GameOjbect\00. Terrain">
       <UniqueIdentifier>{c67a9d29-f018-475b-877d-eda4865b199a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. ShaderFiles">
+      <UniqueIdentifier>{594b3092-1b41-46fa-875a-4cb86ac48de7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. GameOjbect\01. MainCamera">
+      <UniqueIdentifier>{89987f25-15ab-42d2-90c0-5487657a1b29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Levels">
+      <UniqueIdentifier>{b5fa6558-049c-46e4-9c66-7b31667ff231}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -123,6 +132,12 @@
     <ClInclude Include="CMainApp.h">
       <Filter>00. MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="CMainCamera.h">
+      <Filter>01. GameOjbect\01. MainCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="CToolMap.h">
+      <Filter>02. Levels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -173,6 +188,12 @@
     <ClCompile Include="CMainApp.cpp">
       <Filter>00. MainApp</Filter>
     </ClCompile>
+    <ClCompile Include="CMainCamera.cpp">
+      <Filter>01. GameOjbect\01. MainCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="CToolMap.cpp">
+      <Filter>02. Levels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ToolDoc.ico">
@@ -194,5 +215,10 @@
     <ResourceCompile Include="Tool.rc">
       <Filter>98. Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtxtex.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

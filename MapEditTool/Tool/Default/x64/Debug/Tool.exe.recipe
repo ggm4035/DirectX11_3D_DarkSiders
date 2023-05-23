@@ -5,7 +5,11 @@
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
-  <ContentFiles />
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_Vtxtex.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />
 </Project>

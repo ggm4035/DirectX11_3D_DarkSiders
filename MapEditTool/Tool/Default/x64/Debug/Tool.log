@@ -1,2 +1,4 @@
-﻿  CTerrain.cpp
+﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_Vtxtex.cso
   Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe

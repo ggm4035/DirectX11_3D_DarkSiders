@@ -43,12 +43,20 @@ public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void* pArg = nullptr);
 
+public: /* For.Camera_Manager */
+	const _matrix* Get_Current_CameraViewMatrix() const;
+	const _matrix* Get_Current_CameraProjMatrix() const;
+	HRESULT Add_Camera(_uint iLevelIndex, const _tchar * pCameraTag, class CCamera* pCamera);
+	HRESULT Remove_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
+	HRESULT On_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
+
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Manager* m_pLevel_Manager = { nullptr };
 	class CObject_Manager* m_pObject_Manager = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CComponent_Manager* m_pComponent_Manager = { nullptr };
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	
 public:
 	static void Release_Engine();

@@ -1,4 +1,6 @@
 
+matrix g_WorldMatrix;
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -15,7 +17,8 @@ VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
 
-	Out.vPosition = float4(In.vPosition, 1.f);
+    Out.vPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+	//Out.vPosition = float4(In.vPosition, 1.f);
 
 	return Out;
 }

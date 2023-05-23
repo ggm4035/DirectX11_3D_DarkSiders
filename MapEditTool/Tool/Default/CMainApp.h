@@ -28,6 +28,7 @@ private:
 	CRenderer* m_pRenderer = { nullptr };
 
 private:
+	HRESULT Ready_Prototype_GameObject_For_Static();
 	HRESULT Ready_Prototype_Component_For_Static();
 
 public:

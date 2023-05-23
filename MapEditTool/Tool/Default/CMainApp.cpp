@@ -8,6 +8,11 @@
 #include "CGameInstance.h"
 #include "Tool_Defines.h"
 
+#include "CToolMap.h"
+
+#include "CTerrain.h"
+#include "CMainCamera.h"
+
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -28,10 +33,16 @@ HRESULT CMainApp::Initialize()
 	GraphicDesc.iViewportSizeY = g_iWinSizeY;
 	GraphicDesc.eWinMode = GRAPHICDESC::WM_WIN;
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(1, GraphicDesc, &m_pDevice, &m_pContext)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Prototype_GameObject_For_Static()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component_For_Static()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Open_Level(LEVEL_TOOLMAP, CToolMap::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;
@@ -54,12 +65,42 @@ HRESULT CMainApp::Render()
 	return S_OK;
 }
 
+HRESULT CMainApp::Ready_Prototype_GameObject_For_Static()
+{
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain",
+		CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera",
+		CMainCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 {
-	if (FAILED(m_pGameInstance->Add_Prototype(0, L"Prototype_Component_Renderer",
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Renderer",
 		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	Safe_AddRef(m_pRenderer);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_VIBuffer_Terrain",
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_VIBuffer_Rect",
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Shader_Vtxtex",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Vtxtex.hlsl",
+			VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
+		return E_FAIL;
+
+	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Camera",
+		CCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

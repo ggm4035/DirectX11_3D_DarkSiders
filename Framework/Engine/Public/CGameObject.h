@@ -22,6 +22,7 @@ protected:
 	unordered_map<const _tchar*, CComponent*> m_pComponents;
 
 protected:
+	virtual HRESULT Add_Components() = 0;
 	HRESULT Add_Component(_uint iNumLevel, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent * *ppOut, void* pArg = nullptr);
 
 public:
