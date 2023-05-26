@@ -1,5 +1,11 @@
 
-matrix g_WorldMatrix;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+texture2D g_Texture[2];
+
+sampler LinearSampler = sampler_state
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+};
 
 struct VS_IN
 {
@@ -16,9 +22,12 @@ struct VS_OUT
 VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
+	
+    matrix ViewProjMatrix = mul(g_ViewMatrix, g_ProjMatrix);
+    matrix WVPMatrix = mul(g_WorldMatrix, ViewProjMatrix);
 
-    Out.vPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-	//Out.vPosition = float4(In.vPosition, 1.f);
+    Out.vPosition = mul(float4(In.vPosition, 1.f), WVPMatrix);
+    Out.vTexUV = In.vTexUV;
 
 	return Out;
 }
@@ -31,8 +40,10 @@ struct PS_IN
 
 float4 PS_MAIN(PS_IN In) : SV_TARGET0
 {
-	float4 vColor = (float4)0;
-
+    float4 vColor = (float4) 0;
+	
+    vColor = g_Texture[0].Sample(LinearSampler, In.vTexUV);
+	
 	return vColor;
 }
 

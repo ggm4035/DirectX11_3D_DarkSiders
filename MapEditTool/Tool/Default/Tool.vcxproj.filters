@@ -70,6 +70,9 @@
     <Filter Include="02. Levels">
       <UniqueIdentifier>{b5fa6558-049c-46e4-9c66-7b31667ff231}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. ETC\00. ToolInstance">
+      <UniqueIdentifier>{f14ced87-ff60-4062-8309-58f2744a30c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="CToolMap.h">
       <Filter>02. Levels</Filter>
     </ClInclude>
+    <ClInclude Include="CToolInstance.h">
+      <Filter>97. ETC\00. ToolInstance</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -193,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="CToolMap.cpp">
       <Filter>02. Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="CToolInstance.cpp">
+      <Filter>97. ETC\00. ToolInstance</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

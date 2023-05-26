@@ -8,20 +8,16 @@ CCamera_Manager::CCamera_Manager()
 {
 }
 
-const _matrix* CCamera_Manager::Get_Current_CameraViewMatrix() const
+_matrix CCamera_Manager::Get_Current_CameraViewMatrix()
 {
-	if (nullptr == m_pCurCamera)
-		return nullptr;
-
-	return m_pCurCamera->Get_CameraViewMatrix();
+	if (nullptr != m_pCurCamera)
+		return m_pCurCamera->Get_CameraViewMatrix();
 }
 
-const _matrix* CCamera_Manager::Get_Current_CameraProjMatrix() const
+_matrix CCamera_Manager::Get_Current_CameraProjMatrix()
 {
-	if (nullptr == m_pCurCamera)
-		return nullptr;
-
-	return m_pCurCamera->Get_CameraProjMatrix();
+	if (nullptr != m_pCurCamera)
+		return m_pCurCamera->Get_CameraProjMatrix();
 }
 
 HRESULT CCamera_Manager::Reserve_Containers(_uint iNumLevels)
@@ -51,12 +47,6 @@ HRESULT CCamera_Manager::Add_Camera(_uint iLevelIndex, const _tchar* pCameraTag,
 	Safe_AddRef(pCamera);
 
 	return S_OK;
-}
-
-void CCamera_Manager::Tick(_double TimeDelta)
-{
-	if (m_pCurCamera)
-		m_pCurCamera->Tick(TimeDelta);
 }
 
 HRESULT CCamera_Manager::Remove_Camera(_uint iLevelIndex, const _tchar* pCameraTag)

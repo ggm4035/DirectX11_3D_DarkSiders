@@ -17,16 +17,70 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pEffect);
 }
 
-HRESULT CShader::Set_Matrix(const char* pTypename, const _matrix* pMatrix)
+HRESULT CShader::Bind_Float4x4(const _char* pTypename, const _float4x4* pMatrix)
 {
-	ID3DX11EffectVariable* pMatVar = m_pEffect->GetVariableByName(pTypename);
-	if (nullptr == pMatVar)
+	if (nullptr == m_pEffect)
 		return E_FAIL;
 
-	if (FAILED(pMatVar->SetRawValue(pMatrix, 0, sizeof(*pMatrix))))
+	/* 해당하는 이름의 전역변수에 해당하는 컴객체를 얻어오낟. */
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	if (nullptr == pVariable)
 		return E_FAIL;
 
-	return S_OK;
+	ID3DX11EffectMatrixVariable* pVariableMatrix = pVariable->AsMatrix();
+	if (nullptr == pVariableMatrix)
+		return E_FAIL;
+
+	/* 해당 컴객체로 변수에 값을 던진다. */
+	return pVariableMatrix->SetMatrix((_float*)pMatrix);
+}
+
+HRESULT CShader::Bind_Rasterizer(const _char* pTypename, _uint _iIndex, ID3D11RasterizerState* _pRasterizer)
+{
+	if (nullptr == m_pEffect || nullptr == _pRasterizer)
+		return E_FAIL;
+
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	ID3DX11EffectRasterizerVariable* pRasterizer = pVariable->AsRasterizer();
+	if (nullptr == pRasterizer)
+		return E_FAIL;
+
+	return pRasterizer->SetRasterizerState(_iIndex, _pRasterizer);
+}
+
+HRESULT CShader::Bind_ShaderResource(const _char* pTypename, ID3D11ShaderResourceView* pSRV)
+{
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+	
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	ID3DX11EffectShaderResourceVariable* pVariableShaderResource = pVariable->AsShaderResource();
+	if (nullptr == pVariableShaderResource)
+		return E_FAIL;
+
+	return pVariableShaderResource->SetResource(pSRV);
+}
+
+HRESULT CShader::Bind_ShaderResources(const _char* pTypename, ID3D11ShaderResourceView** ppSRV, _uint iNumTextures)
+{
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	ID3DX11EffectShaderResourceVariable* pVariableShaderResource = pVariable->AsShaderResource();
+	if (nullptr == pVariableShaderResource)
+		return E_FAIL;
+
+	return pVariableShaderResource->SetResourceArray(ppSRV, 0, iNumTextures);
 }
 
 HRESULT CShader::Initialize_Prototype(const _tchar* pShaderFilePath, 

@@ -44,11 +44,20 @@ public: /* For.Component_Manager */
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void* pArg = nullptr);
 
 public: /* For.Camera_Manager */
-	const _matrix* Get_Current_CameraViewMatrix() const;
-	const _matrix* Get_Current_CameraProjMatrix() const;
+	_matrix Get_Current_CameraViewMatrix();
+	_matrix Get_Current_CameraProjMatrix();
 	HRESULT Add_Camera(_uint iLevelIndex, const _tchar * pCameraTag, class CCamera* pCamera);
 	HRESULT Remove_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
 	HRESULT On_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
+
+public: /* For.Input_Manager */
+	_bool	Key_Pressing(_ubyte ubyKey);
+	_bool	Key_Down(_ubyte ubyKey);
+	_bool	Key_Up(_ubyte ubyKey);
+	_bool	Mouse_Down(_uint iMouseID);
+	_bool	Mouse_Pressing(_uint iMouseID);
+	_bool	Mouse_Up(_uint iMouseID);
+	_long	Get_DIMouseMove(_uint iMouseMoveID);
 
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
@@ -57,6 +66,7 @@ private:
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CComponent_Manager* m_pComponent_Manager = { nullptr };
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+	class CDInput_Manager* m_pInput_Manager = { nullptr };
 	
 public:
 	static void Release_Engine();

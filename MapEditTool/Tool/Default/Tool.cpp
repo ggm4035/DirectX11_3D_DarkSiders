@@ -35,6 +35,7 @@ END_MESSAGE_MAP()
 // CToolApp 생성
 
 HWND g_hWnd;
+HINSTANCE g_hInst;
 
 CToolApp::CToolApp() noexcept
 {
@@ -214,5 +215,5 @@ BOOL CToolApp::OnIdle(LONG lCount)
 		m_TimeAcc = 0.0;
 	}
 
-	return CWinApp::OnIdle(lCount);
+	return true;
 }

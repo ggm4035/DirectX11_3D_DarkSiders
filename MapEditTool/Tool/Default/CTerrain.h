@@ -7,6 +7,8 @@ BEGIN(Engine)
 class CShader;
 class CVIBuffer_Terrain;
 class CRenderer;
+class CTexture;
+class CTransform;
 END
 
 class CTerrain final : public CGameObject
@@ -23,12 +25,19 @@ public:
 	virtual void Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	HRESULT Reset_Data(_uint iXCount, _uint iZCount, _float fInterval);
+	HRESULT Reset_Rasterizer(const D3D11_RASTERIZER_DESC& RasterizerDesc);
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CVIBuffer_Terrain* m_pBufferCom = { nullptr };
 	CRenderer* m_pRenderCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
+	CTransform* m_pTransformCom = { nullptr };
 
-	_matrix WVPMatrix;
+private:
+	ID3D11RasterizerState* m_pRasterizer = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

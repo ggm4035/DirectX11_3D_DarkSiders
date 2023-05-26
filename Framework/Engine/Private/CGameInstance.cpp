@@ -5,6 +5,7 @@
 #include "Timer_Manager.h"
 #include "CComponent_Manager.h"
 #include "CCamera_Manager.h"
+#include "CDInput_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -15,6 +16,7 @@ CGameInstance::CGameInstance()
 	, m_pTimer_Manager{ CTimer_Manager::GetInstance() }
 	, m_pComponent_Manager{ CComponent_Manager::GetInstance() }
 	, m_pCamera_Manager{ CCamera_Manager::GetInstance() }
+	, m_pInput_Manager{ CDInput_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
@@ -22,6 +24,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pCamera_Manager);
+	Safe_AddRef(m_pInput_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -38,6 +41,9 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& Gr
 		GraphicDesc.iViewportSizeY, 
 		ppDevice, ppContext)))
 		return E_FAIL;
+
+	if (FAILED(m_pInput_Manager->Ready_DInput(GraphicDesc.hInst, GraphicDesc.hWnd)))
+		return EFAULT;
 
 	/* 레벨매니져 오브젝트 매니져, 컴포넌트 매니져들은 Reserve 한다.  */
 	// 게임 오브젝트의 레벨 개수만큼 동적 배열 생성
@@ -58,10 +64,10 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	if (nullptr == m_pLevel_Manager)
 		return;
 
+	m_pInput_Manager->Update_DInput();
+
 	m_pObject_Manager->Tick(TimeDelta);
 	m_pObject_Manager->Late_Tick(TimeDelta);
-
-	m_pCamera_Manager->Tick(TimeDelta);
 
 	m_pLevel_Manager->Tick(TimeDelta);
 }
@@ -170,18 +176,18 @@ CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar* pPro
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 }
 
-const _matrix* CGameInstance::Get_Current_CameraViewMatrix() const
+_matrix CGameInstance::Get_Current_CameraViewMatrix()
 {
 	if (nullptr == m_pCamera_Manager)
-		return nullptr;
+		return _matrix();
 
 	return m_pCamera_Manager->Get_Current_CameraViewMatrix();
 }
 
-const _matrix* CGameInstance::Get_Current_CameraProjMatrix() const
+_matrix CGameInstance::Get_Current_CameraProjMatrix()
 {
 	if (nullptr == m_pCamera_Manager)
-		return nullptr;
+		return _matrix();
 
 	return m_pCamera_Manager->Get_Current_CameraProjMatrix();
 }
@@ -210,35 +216,93 @@ HRESULT CGameInstance::On_Camera(_uint iLevelIndex, const _tchar* pCameraTag)
 	return m_pCamera_Manager->On_Camera(iLevelIndex, pCameraTag);
 }
 
+_bool CGameInstance::Key_Pressing(_ubyte ubyKey)
+{
+	if (nullptr == m_pInput_Manager)
+		return false;
+
+	return m_pInput_Manager->Key_Pressing(ubyKey);
+}
+
+_bool CGameInstance::Key_Down(_ubyte ubyKey)
+{
+	if (nullptr == m_pInput_Manager)
+		return false;
+
+	return m_pInput_Manager->Key_Down(ubyKey);
+}
+
+_bool CGameInstance::Key_Up(_ubyte ubyKey)
+{
+	if (nullptr == m_pInput_Manager)
+		return false;
+
+	return m_pInput_Manager->Key_Up(ubyKey);
+}
+
+_bool CGameInstance::Mouse_Down(_uint iMouseID)
+{
+	if (nullptr == m_pInput_Manager ||
+		iMouseID < 0 || iMouseID >= CDInput_Manager::DIM_END)
+		return false;
+
+	return m_pInput_Manager->Mouse_Down(CDInput_Manager::MOUSEKEYSTATE(iMouseID));
+}
+
+_bool CGameInstance::Mouse_Pressing(_uint iMouseID)
+{
+	if (nullptr == m_pInput_Manager ||
+		iMouseID < 0 || iMouseID >= CDInput_Manager::DIM_END)
+		return false;
+
+	return m_pInput_Manager->Mouse_Pressing(CDInput_Manager::MOUSEKEYSTATE(iMouseID));
+}
+
+_bool CGameInstance::Mouse_Up(_uint iMouseID)
+{
+	if (nullptr == m_pInput_Manager ||
+		iMouseID < 0 || iMouseID >= CDInput_Manager::DIM_END)
+		return false;
+
+	return m_pInput_Manager->Mouse_Up(CDInput_Manager::MOUSEKEYSTATE(iMouseID));
+}
+
+_long CGameInstance::Get_DIMouseMove(_uint iMouseMoveID)
+{
+	if (nullptr == m_pInput_Manager ||
+		iMouseMoveID < 0 || iMouseMoveID >= CDInput_Manager::DIMS_END)
+		return false;
+
+	return m_pInput_Manager->Get_DIMouseMove(CDInput_Manager::MOUSEMOVESTATE(iMouseMoveID));
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
+
+	CObject_Manager::GetInstance()->DestroyInstance();
 
 	CCamera_Manager::GetInstance()->DestroyInstance();
 
 	CComponent_Manager::GetInstance()->DestroyInstance();
 
-	CObject_Manager::GetInstance()->DestroyInstance();
-
 	CLevel_Manager::GetInstance()->DestroyInstance();
 
 	CTimer_Manager::GetInstance()->DestroyInstance();
+
+	CDInput_Manager::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
 {
-	if (m_pCamera_Manager)
-		Safe_Release(m_pCamera_Manager);
-	if (m_pComponent_Manager)
-		Safe_Release(m_pComponent_Manager);
-	if(m_pLevel_Manager)
-		Safe_Release(m_pLevel_Manager);
-	if(m_pObject_Manager)
-		Safe_Release(m_pObject_Manager);
-	if (m_pTimer_Manager)
-		Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pCamera_Manager);
+	Safe_Release(m_pComponent_Manager);
+	Safe_Release(m_pLevel_Manager);
+	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pInput_Manager);
 
 	Safe_Release(m_pGraphic_Device);
 }

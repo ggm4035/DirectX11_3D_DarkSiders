@@ -13,13 +13,12 @@ private:
 	virtual ~CCamera_Manager() = default;
 
 public:
-	const _matrix* Get_Current_CameraViewMatrix() const;
-	const _matrix* Get_Current_CameraProjMatrix() const;
+	_matrix Get_Current_CameraViewMatrix();
+	_matrix Get_Current_CameraProjMatrix();
 
 public:
 	HRESULT Reserve_Containers(_uint iNumLevels);
 	HRESULT Add_Camera(_uint iLevelIndex, const _tchar* pCameraTag, class CCamera* pCamera);
-	void Tick(_double TimeDelta);
 	HRESULT Remove_Camera(_uint iLevelIndex, const _tchar* pCameraTag);
 	void Clear_LevelResources(_uint iLevelIndex);
 

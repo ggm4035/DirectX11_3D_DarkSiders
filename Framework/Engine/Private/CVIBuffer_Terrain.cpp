@@ -13,14 +13,17 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 {
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Prototype()
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iXCount, _uint iZCount, _float fInterval)
 {
+	Safe_Release(m_pVB);
+	Safe_Release(m_pIB);
+
 	if (FAILED(CVIBuffer::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_iXCount = 1025;
-	m_iZCount = 1025;
-	m_fInterval = 0.1f;
+	m_iXCount = iXCount;
+	m_iZCount = iZCount;
+	m_fInterval = fInterval;
 
 	m_iVertexBuffers = { 1 };
 	m_iStride = { sizeof(VTXPOSTEX) };
@@ -39,11 +42,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype()
 	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
 	m_BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
 	m_BufferDesc.StructureByteStride = m_iStride;
-
 	m_BufferDesc.CPUAccessFlags = { 0 };
 	m_BufferDesc.MiscFlags = { 0 };
 
 	VTXPOSTEX* pVertices = new VTXPOSTEX[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXPOSTEX) * m_iNumVertices);
 
 	for (_uint i = 0; i < m_iZCount; ++i)
 	{
@@ -53,11 +56,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype()
 
 			pVertices[iIndex].vPosition = _float3(
 				(_float)j * m_fInterval,
-				(_float)i * m_fInterval,
-				0.f);
+				0.f,
+				(_float)i * m_fInterval);
 			pVertices[iIndex].vTexCoord = _float2(
-				(_float)j / (_float)m_iXCount, 
-				(_float)i / (_float)m_iZCount);
+				(_float)j / (_float)(m_iXCount - 1), 
+				(_float)i / (_float)(m_iZCount - 1));
 		}
 	}
 
@@ -83,6 +86,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype()
 	m_BufferDesc.MiscFlags = { 0 };
 
 	_uint* pIndices = new _uint[(m_iNumIndices + 1)];
+	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);
+
 	_uint iCountIndex = 0;
 
 	for (_uint i = 0; i < m_iZCount - 1; ++i)
@@ -128,11 +133,11 @@ HRESULT CVIBuffer_Terrain::Render()
 	return S_OK;
 }
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iXCount, _uint iZCount, _float fInterval)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize_Prototype(iXCount, iZCount, fInterval)))
 	{
 		MSG_BOX("Failed to Created CVIBuffer_Terrain");
 		Safe_Release(pInstance);

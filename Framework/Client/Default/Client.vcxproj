@@ -178,13 +178,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\CBackGround.cpp" />
+    <ClCompile Include="..\Private\CLevel_GamePlay.cpp" />
+    <ClCompile Include="..\Private\CLevel_Loading.cpp" />
+    <ClCompile Include="..\Private\CLevel_Logo.cpp" />
+    <ClCompile Include="..\Private\CLoader.cpp" />
     <ClCompile Include="..\private\CMainApp.cpp" />
-    <ClCompile Include="CBackGround.cpp" />
-    <ClCompile Include="CLevel_GamePlay.cpp" />
-    <ClCompile Include="CLevel_Loading.cpp" />
-    <ClCompile Include="CLevel_Logo.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="CLoader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

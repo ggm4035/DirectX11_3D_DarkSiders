@@ -4,8 +4,8 @@
 #include "CGameObject.h"
 
 BEGIN(Engine)
-class CShader;
 class CCamera;
+class CTransform;
 END
 
 class CMainCamera final : public CGameObject
@@ -24,13 +24,17 @@ public:
 
 private:
 	CCamera* m_pCameraCom = { nullptr };
+	CTransform* m_pTransform = { nullptr };
+	_bool m_bFix = { false };
 
 private:
 	virtual HRESULT Add_Components() override;
+	void KeyInput(const _double TimeDelta);
+	void Mouse_Move(_double TimeDelta);
+	void Fix_Mouse();
 
 public:
 	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
-

@@ -26,6 +26,8 @@ private:
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CRenderer* m_pRenderer = { nullptr };
+	class CToolView* m_pToolView = { nullptr };
+	class CMainFrame* m_pMainFrame = { nullptr };
 
 private:
 	HRESULT Ready_Prototype_GameObject_For_Static();

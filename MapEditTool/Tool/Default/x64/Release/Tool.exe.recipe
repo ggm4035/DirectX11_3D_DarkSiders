@@ -2,10 +2,14 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\x64\Release\Tool.exe</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
-  <ContentFiles />
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_Vtxtex.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />
 </Project>

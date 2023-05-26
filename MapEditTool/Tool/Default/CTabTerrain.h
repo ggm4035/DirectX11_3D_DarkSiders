@@ -28,4 +28,11 @@ public:
 public:
 	CEdit m_edXCount[10];
 	CSpinButtonCtrl m_spXCount[10];
+	CButton m_RenderStyle[2];
+	CButton m_RenderCoordnate_Axis[2];
+
+public:
+	afx_msg void OnBnClickedApply();
+	afx_msg void OnBnClickedRenderStyle();
+	afx_msg void OnBnClickedRenderCoordnate_Axis();
 };

@@ -40,27 +40,6 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-HRESULT CGameObject::Add_Component(_uint iNumLevel, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	CComponent* pComponent = pGameInstance->Clone_Component(iNumLevel, pPrototypeTag, pArg);
-	if (nullptr == pComponent)
-		return E_FAIL;
-
-	auto& iter = find_if(m_pComponents.begin(), m_pComponents.end(), CTag_Finder(pComponentTag));
-	if (iter != m_pComponents.end())
-		return E_FAIL;
-
-	m_pComponents.emplace(pComponentTag, pComponent);
-	*ppOut = pComponent;
-
-	Safe_Release(pGameInstance);
-
-	return S_OK;
-}
-
 void CGameObject::Free()
 {
 	CComposite::Free();

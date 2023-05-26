@@ -24,7 +24,6 @@ public:
 	virtual void Free() override;
 };
 
-
 class ENGINE_DLL CComposite abstract : public CComponent
 {
 protected:
@@ -37,7 +36,10 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 protected:
-	std::vector<CComponent*> m_vecComponents;
+	unordered_map<const _tchar*, CComponent*> m_Components;
+
+protected:
+	HRESULT Add_Component(_uint iNumLevel, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent * *ppOut, void* pArg = nullptr);
 
 public:
 	virtual CComponent* Clone(void* pArg) = 0;

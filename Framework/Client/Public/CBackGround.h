@@ -7,6 +7,8 @@ BEGIN(Engine)
 class CRenderer;
 class CVIBuffer_Rect;
 class CShader;
+class CTexture;
+class CTransform;
 END
 
 BEGIN(Client)
@@ -29,9 +31,16 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CVIBuffer_Rect* m_pBufferCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
+	CTransform* m_pTransformCom = { nullptr };
+
+private:
+	_float4x4 m_ViewMatrix, m_ProjMatrix;
+	_float m_fX, m_fY, m_fSizeX, m_fSizeY;
 
 private:
 	virtual HRESULT Add_Components() override;
+	HRESULT SetUp_ShaderResources();
 
 public:
 	static CBackGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

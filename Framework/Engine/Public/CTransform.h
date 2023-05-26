@@ -1,49 +1,67 @@
 #pragma once
 
 #include "CComponent.h"
+/* 객체의 월드 변환 상태를 가진다.(월드행렬을 보관한다.) */
+/* 월드에서의 변환 기능을 가진다.(Go_Straight(), Go_Backword(), Turn() )*/
 
-class CTransform final : public CComponent
+BEGIN(Engine)
+
+class ENGINE_DLL CTransform final : public CComponent
 {
 public:
-	enum MOVETYPE { LANDOBJECT, AIRCRAFT, MOVE_END };
+	enum STATE { STATE_RIGHT, STATE_UP, STATE_LOOK, STATE_POSITION, STATE_END };
+public:
+	typedef struct tagTransformDesc
+	{
+		tagTransformDesc(_double _SpeedPerSec, _double _RotationPerSec)
+			: SpeedPerSec(_SpeedPerSec)
+			, RotationPerSec(_RotationPerSec)
+		{ }
+		_double SpeedPerSec;
+		_double RotationPerSec;
+	}TRASNFORMDESC;
 
 private:
-	CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CTransform(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
 	CTransform(const CTransform& rhs);
 	virtual ~CTransform() = default;
 
 public:
-	const _matrix Get_WorldMatrix() const { return XMLoadFloat4x4(&m_WorldMatrix); }
+	_float4x4 Get_WorldMatrix() {
+		return m_WorldMatrix;
+	}
+	_float3 Get_Scaled();
+	_vector Get_State(STATE _eState) {
+		return XMLoadFloat4x4(&m_WorldMatrix).r[_eState];
+	}
+	void Set_State(STATE _eState, _fvector _vState);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	void Tick(_double TimeDelta);
+	void Go_Straight(_double TimeDelta);
+	void Go_Backword(_double TimeDelta);
+	void Go_Right(_double TimeDelta);
+	void Go_Left(_double TimeDelta);
+	void Go_Up(_double TimeDelta);
+	void Go_Down(_double TimeDelta);
+	void Chase(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance = 0.1f);
+	void LookAt(_fvector vTargetPosition);
+	void Rotation(_fvector vAxis, _float fRadian);
+	void Turn(_fvector vAxis, _double TimeDelta);
 
-	void Move_Strafe(const _float& fUnits, const _float& fTimeDelta);// Move-Right
-	void Move_Fly(const _float& fUnits, const _float& fTimeDelta);	// Move-Up
-	void Move_Walk(const _float& fUnits, const _float& fTimeDelta);  // Move-Look
-
-	void Rot_Pitch(const _float& fAngle, const _float& fTimeDelta);// Rot-Right
-	void Rot_Yaw(const _float& fAngle, const _float& fTimeDelta);  // Rot-Up
-	void Rot_Roll(const _float& fAngle, const _float& fTimeDelta); // Rot-Look
+	void Scaled(const _float3& vScale);
 
 private:
-	_float3 m_vRight;
-	_float3 m_vUp;
-	_float3 m_vLook;
-	_float3 m_vPosition;
-	_float3 m_vScale;
-
 	_float4x4 m_WorldMatrix;
-
-	MOVETYPE m_eMoveType;
+	TRASNFORMDESC m_TransformDesc;
 
 public:
-	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CTransform* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 
+END

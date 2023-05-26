@@ -12,26 +12,25 @@ private:
 	virtual ~CCamera() = default;
 
 public:
-	const _matrix* Get_CameraViewMatrix() const { return &m_ViewElements.ViewMatrix; }
-	const _matrix* Get_CameraProjMatrix() const { return &m_ProjElements.ProjectionMatrix; }
+	_matrix Get_CameraViewMatrix() { return XMLoadFloat4x4(&m_ViewMatrix); }
+	_matrix Get_CameraProjMatrix() { return XMLoadFloat4x4(&m_ProjectionMatrix); }
 
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
 
 public:
-	void Tick(_double TimeDelta);
-
-public:
+	void Set_View(_fmatrix _WorldMatrix);
+	void Set_Projection(const _float& _fFov, const _float& _fAspect, const _float& _fNear, const _float& _fFar);
 	void OnCamera() { m_bSwitch = true; }
 	void OffCamera() { m_bSwitch = false; }
 
 private:
-	VIEWELEM m_ViewElements;
-	PROJELEM m_ProjElements;
+	_float4x4 m_ViewMatrix;
+	_float4x4 m_ProjectionMatrix;
 
 private:
-	_bool m_bSwitch = true;
+	_bool m_bSwitch = { false };
 
 public:
 	static CCamera* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);

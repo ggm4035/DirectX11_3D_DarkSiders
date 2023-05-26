@@ -6,6 +6,9 @@
 #include "CTabTerrain.h"
 #include "afxdialogex.h"
 
+#include "CToolInstance.h"
+
+#include "CTerrain.h"
 
 // CTabTerrain 대화 상자
 
@@ -45,6 +48,10 @@ void CTabTerrain::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPIN14, m_spXCount[7]);
 	DDX_Control(pDX, IDC_SPIN15, m_spXCount[8]);
 	DDX_Control(pDX, IDC_SPIN16, m_spXCount[9]);
+	DDX_Control(pDX, IDC_RADIO1, m_RenderStyle[0]);
+	DDX_Control(pDX, IDC_RADIO2, m_RenderStyle[1]);
+	DDX_Control(pDX, IDC_RADIO3, m_RenderCoordnate_Axis[0]);
+	DDX_Control(pDX, IDC_RADIO4, m_RenderCoordnate_Axis[1]);
 }
 
 
@@ -59,6 +66,11 @@ BEGIN_MESSAGE_MAP(CTabTerrain, CDialogEx)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN14, &CTabTerrain::OnDeltaposSpin1)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN15, &CTabTerrain::OnDeltaposSpin1)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN16, &CTabTerrain::OnDeltaposSpin1)
+	ON_BN_CLICKED(IDC_BUTTON1, &CTabTerrain::OnBnClickedApply)
+	ON_BN_CLICKED(IDC_RADIO1, &CTabTerrain::OnBnClickedRenderStyle)
+	ON_BN_CLICKED(IDC_RADIO2, &CTabTerrain::OnBnClickedRenderStyle)
+	ON_BN_CLICKED(IDC_RADIO3, &CTabTerrain::OnBnClickedRenderCoordnate_Axis)
+	ON_BN_CLICKED(IDC_RADIO4, &CTabTerrain::OnBnClickedRenderCoordnate_Axis)
 END_MESSAGE_MAP()
 
 // CTabTerrain 메시지 처리기
@@ -75,6 +87,8 @@ BOOL CTabTerrain::OnInitDialog()
 		m_spXCount[i].SetRange(0, 1000);
 		m_spXCount[i].SetPos(0);
 	}
+	m_RenderStyle[1].SetCheck(TRUE);
+	m_RenderCoordnate_Axis[1].SetCheck(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -133,14 +147,66 @@ void CTabTerrain::OnDeltaposSpin1(NMHDR* pNMHDR, LRESULT* pResult)
 		return;
 	}
 
-	float fVal = float(pNMUpDown->iPos + pNMUpDown->iDelta);
+	int iVal = pNMUpDown->iPos + pNMUpDown->iDelta;
 
-	if ((0.f <= fVal) && (1000.f >= fVal))
+	if ((0 <= iVal) && (1000 >= iVal))
 	{
 		CString sValue;
-		sValue.Format(L"%f\n", fVal);
+		sValue.Format(L"%d\n", iVal);
 		m_edXCount[iIndex].SetWindowTextW(sValue);
 	}
 
 	*pResult = 0;
+}
+
+
+void CTabTerrain::OnBnClickedApply()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strXCount = L"";
+	CString strZCount = L"";
+	CString strInterval = L"";
+	CString strDetail = L"";
+
+	m_edXCount[0].GetWindowTextW(strXCount); // XCount
+	m_edXCount[2].GetWindowTextW(strZCount); // ZCount
+	m_edXCount[1].GetWindowTextW(strInterval); // Interval
+	m_edXCount[3].GetWindowTextW(strDetail); // Detail
+
+	_uint iXCount = _ttoi(strXCount);
+	_uint iZCount = _ttoi(strZCount);
+	_float fInterval = _ttof(strInterval);
+	_float fDetail = _ttof(strDetail);
+
+	if(TOOL->m_pTerrain)
+		TOOL->m_pTerrain->Reset_Data(iXCount, iZCount, fInterval);
+}
+
+// RenderStyle, RenderCoordnate_Axis
+void CTabTerrain::OnBnClickedRenderStyle()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	D3D11_RASTERIZER_DESC RasterizerDesc;
+	ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+
+	RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+	RasterizerDesc.FrontCounterClockwise = { false };
+
+	if (m_RenderStyle[0].GetCheck())
+		RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+
+	if (m_RenderStyle[1].GetCheck())
+		RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+
+	TOOL->m_pTerrain->Reset_Rasterizer(RasterizerDesc);
+}
+
+void CTabTerrain::OnBnClickedRenderCoordnate_Axis()
+{
+	if (m_RenderCoordnate_Axis[0].GetCheck())
+		int i = 0;
+
+	if (m_RenderCoordnate_Axis[1].GetCheck())
+		int i = 0;
 }

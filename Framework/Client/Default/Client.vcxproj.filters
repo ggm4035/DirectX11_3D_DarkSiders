@@ -86,20 +86,20 @@
     <ClCompile Include="..\private\CMainApp.cpp">
       <Filter>00.MainApp</Filter>
     </ClCompile>
-    <ClCompile Include="CLevel_Logo.cpp">
-      <Filter>01. Levels\00. Level_Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="CLevel_GamePlay.cpp">
-      <Filter>01. Levels\01. Level_GamePlay</Filter>
-    </ClCompile>
-    <ClCompile Include="CLevel_Loading.cpp">
-      <Filter>01. Levels\99. Level_Loading</Filter>
-    </ClCompile>
-    <ClCompile Include="CLoader.cpp">
+    <ClCompile Include="..\Private\CLoader.cpp">
       <Filter>01. Levels\99. Level_Loading\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="CBackGround.cpp">
+    <ClCompile Include="..\Private\CBackGround.cpp">
       <Filter>02. GameObject\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel_GamePlay.cpp">
+      <Filter>01. Levels\01. Level_GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel_Logo.cpp">
+      <Filter>01. Levels\00. Level_Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel_Loading.cpp">
+      <Filter>01. Levels\99. Level_Loading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

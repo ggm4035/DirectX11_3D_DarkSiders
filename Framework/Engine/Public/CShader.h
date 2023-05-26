@@ -12,7 +12,10 @@ private:
 	virtual ~CShader() = default;
 
 public:
-	HRESULT Set_Matrix(const char* pTypename, const _matrix * pMatrix);
+	HRESULT Bind_Float4x4(const _char* pTypename, const _float4x4 * pMatrix);
+	HRESULT Bind_Rasterizer(const _char * pTypename, _uint iIndex, ID3D11RasterizerState * _pRasterizer);
+	HRESULT Bind_ShaderResource(const _char* pTypename, ID3D11ShaderResourceView * pSRV);
+	HRESULT Bind_ShaderResources(const _char* pTypename, ID3D11ShaderResourceView ** ppSRV, _uint iNumTextures);
 
 public:
 	HRESULT Initialize_Prototype(const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pInputElementsDesc, const _uint iNumElements);

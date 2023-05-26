@@ -12,9 +12,10 @@ private:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Prototype(_uint iXCount, _uint iZCount, _float fInterval);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render() override;
+	HRESULT Reset_Buffer(_uint iXCount, _uint iZCount, _float fInterval);
 
 private:
 	_uint m_iXCount = { 0 };
@@ -22,7 +23,7 @@ private:
 	_float m_fInterval = { 0.f };
 
 public:
-	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iXCount = 129, _uint iZCount = 129, _float fInterval = 1.f);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

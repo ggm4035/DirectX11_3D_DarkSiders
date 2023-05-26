@@ -1,4 +1,6 @@
-#include "..\Public\CComponent.h"
+#include "CComponent.h"
+
+#include "CGameInstance.h"
 
 /*=======================================*/
 //				COMPONENT
@@ -64,10 +66,34 @@ HRESULT CComposite::Initialize(void* pArg)
 	return result;
 }
 
+HRESULT CComposite::Add_Component(_uint iNumLevel, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CComponent* pComponent = pGameInstance->Clone_Component(iNumLevel, pPrototypeTag, pArg);
+	if (nullptr == pComponent)
+		return E_FAIL;
+
+	auto& iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(pComponentTag));
+	if (iter != m_Components.end())
+		return E_FAIL;
+
+	m_Components.insert({ pComponentTag, pComponent });
+	*ppOut = pComponent;
+	Safe_AddRef(pComponent);
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+
 void CComposite::Free()
 {
-	m_vecComponents.clear();
-	m_vecComponents.shrink_to_fit();
+	for (auto& Pair : m_Components)
+		Safe_Release(Pair.second);
+	m_Components.clear();
 
 	CComponent::Free();
 }

@@ -6,6 +6,7 @@
 #include "CMyForm.h"
 
 #include "CGameInstance.h"
+#include "CToolInstance.h"
 #include "Tool_Defines.h"
 
 #include "CToolMap.h"
@@ -21,14 +22,19 @@ CMainApp::CMainApp()
 
 HRESULT CMainApp::Initialize()
 {
-	CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-	CToolView* pToolView = dynamic_cast<CToolView*>(pMainFrame->m_MainSplitter.GetPane(0, 1));
-	g_hWnd = pToolView->m_hWnd;
+	m_pMainFrame = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	m_pToolView = dynamic_cast<CToolView*>(m_pMainFrame->m_MainSplitter.GetPane(0, 1));
+	g_hWnd = m_pToolView->m_hWnd;
+	g_hInst = AfxGetInstanceHandle();
+
+	TOOL->m_pToolView = m_pToolView;
+	TOOL->m_pMainFrm = m_pMainFrame;
 
 	GRAPHICDESC		GraphicDesc;
 	ZeroMemory(&GraphicDesc, sizeof GraphicDesc);
 
 	GraphicDesc.hWnd = g_hWnd;
+	GraphicDesc.hInst = g_hInst;
 	GraphicDesc.iViewportSizeX = g_iWinSizeX;
 	GraphicDesc.iViewportSizeY = g_iWinSizeY;
 	GraphicDesc.eWinMode = GRAPHICDESC::WM_WIN;
@@ -55,6 +61,7 @@ void CMainApp::Tick(const _double TimeDelta)
 
 HRESULT CMainApp::Render()
 {
+
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
@@ -102,6 +109,14 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Texture_Test",
+		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/De3.png"))))
+		return E_FAIL;
+
+	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Transform",
+		CTransform::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -125,6 +140,7 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 
 	Safe_Release(m_pGameInstance);
+	CToolInstance::DestroyInstance();
 
 	CGameInstance::Release_Engine();
 }

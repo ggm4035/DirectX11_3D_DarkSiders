@@ -215,6 +215,7 @@
     <ClInclude Include="CTabTerrain.h" />
     <ClInclude Include="CTabUI.h" />
     <ClInclude Include="CTerrain.h" />
+    <ClInclude Include="CToolInstance.h" />
     <ClInclude Include="CToolMap.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="CTabTerrain.cpp" />
     <ClCompile Include="CTabUI.cpp" />
     <ClCompile Include="CTerrain.cpp" />
+    <ClCompile Include="CToolInstance.cpp" />
     <ClCompile Include="CToolMap.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">

@@ -1,6 +1,13 @@
 
- float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
- float4x4 g_WorldViewProjMatrix;
+RasterizerState g_Rasterizer;
+float4x4 g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+float4x4 g_WorldViewProjMatrix;
+texture2D g_Texture;
+
+sampler LinearSampler = sampler_state
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+};
 
 struct VS_IN
 {
@@ -33,7 +40,9 @@ struct PS_IN
 
 float4 PS_MAIN(PS_IN In) : SV_TARGET
 {
-    float4 vColor = float4(0.f, 0.f, 0.f, 1.f);
+    float4 vColor = (float4) 0;
+	
+    vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
 	return vColor;
 }
@@ -41,7 +50,7 @@ float4 PS_MAIN(PS_IN In) : SV_TARGET
 RasterizerState WireframeRS
 {
     FillMode = Wireframe;
-    CullMode = None;
+    CullMode = Back;
     FrontCounterClockwise = false;
 };
 
@@ -52,6 +61,6 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN();
 
-        SetRasterizerState(WireframeRS);
+        SetRasterizerState(g_Rasterizer);
     }
 };

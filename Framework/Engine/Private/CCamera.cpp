@@ -1,15 +1,17 @@
 #include "CCamera.h"
 
 CCamera::CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CComponent(pDevice, pContext)
+	: CComponent(pDevice, pContext)
 {
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjectionMatrix, XMMatrixIdentity());
 }
 
 CCamera::CCamera(const CCamera& rhs)
 	: CComponent(rhs)
-	, m_ViewElements(rhs.m_ViewElements)
-	, m_ProjElements(rhs.m_ProjElements)
 	, m_bSwitch(rhs.m_bSwitch)
+	, m_ViewMatrix(rhs.m_ViewMatrix)
+	, m_ProjectionMatrix(rhs.m_ProjectionMatrix)
 {
 }
 
@@ -18,17 +20,7 @@ HRESULT CCamera::Initialize_Prototype()
 	if (FAILED(CComponent::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_ViewElements.vEye = XMVectorSet(10.f, 10.f, -20.f, 1.f);
-	m_ViewElements.vAt = XMVectorSet(1.f, 0.f, 1.f, 0.f);
-	m_ViewElements.vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	m_ProjElements.fFov = XMConvertToRadians(60.f);
-	m_ProjElements.fAspect = 1280.f / 720.f;
-	m_ProjElements.fNear = 0.3f;
-	m_ProjElements.fFar = 1000.f;
-
-	m_ViewElements.LookAtLH();
-	m_ProjElements.PerspectiveLH();
+	Set_Projection(XMConvertToRadians(60.f), 1280.f / 720.f, 1.f, 1000.f);
 
 	return S_OK;
 }
@@ -41,13 +33,14 @@ HRESULT CCamera::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCamera::Tick(_double TimeDelta)
+void CCamera::Set_View(_fmatrix _WorldMatrix)
 {
-	if (false == m_bSwitch)
-		return;
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixInverse(nullptr, _WorldMatrix));
+}
 
-	m_ViewElements.LookAtLH();
-	m_ProjElements.PerspectiveLH();
+void CCamera::Set_Projection(const _float& fFov, const _float& fAspect, const _float& fNear, const _float& fFar)
+{
+	XMStoreFloat4x4(&m_ProjectionMatrix, XMMatrixPerspectiveFovLH(fFov, fAspect, fNear, fFar));
 }
 
 CCamera* CCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
