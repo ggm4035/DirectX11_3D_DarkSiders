@@ -42,7 +42,10 @@ void CLevel_Loading::Tick(_double TimeDelta)
 			if (nullptr == pLevel)
 				return;
 
-			m_pGameInstance->Open_Level(m_eNextLevelID, pLevel);
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			Safe_AddRef(pGameInstance);
+			pGameInstance->Open_Level(m_eNextLevelID, pLevel);
+			Safe_Release(pGameInstance);
 
 			return;
 		}

@@ -1,4 +1,5 @@
 #include "CGameInstance.h"
+#include "CApplication.h"
 #include "CGraphic_Device.h"
 #include "CLevel_Manager.h"
 #include "CObject_Manager.h"
@@ -17,7 +18,9 @@ CGameInstance::CGameInstance()
 	, m_pComponent_Manager{ CComponent_Manager::GetInstance() }
 	, m_pCamera_Manager{ CCamera_Manager::GetInstance() }
 	, m_pInput_Manager{ CDInput_Manager::GetInstance() }
+	, m_pPipeLine{ CPipeLine::GetInstance() }
 {
+	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pObject_Manager);
@@ -37,10 +40,13 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& Gr
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(
 		GraphicDesc.hWnd, 
 		GraphicDesc.eWinMode, 
-		GraphicDesc.iViewportSizeX, 
-		GraphicDesc.iViewportSizeY, 
+		GraphicDesc.iViewportSizeX,
+		GraphicDesc.iViewportSizeY,
 		ppDevice, ppContext)))
 		return E_FAIL;
+
+	CApplication::m_iWinSizeX = GraphicDesc.iViewportSizeX;
+	CApplication::m_iWinSizeY = GraphicDesc.iViewportSizeY;
 
 	if (FAILED(m_pInput_Manager->Ready_DInput(GraphicDesc.hInst, GraphicDesc.hWnd)))
 		return EFAULT;
@@ -50,7 +56,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& Gr
 	if (FAILED(m_pObject_Manager->Reserve_Containers(iNumLevels)))
 		return E_FAIL;
 
-	if (FAILED(m_pComponent_Manager->Reserve_Containers(iNumLevels)))
+	if (FAILED(m_pComponent_Manager->Reserve_Containers(iNumLevels, *ppDevice, *ppContext)))
 		return E_FAIL;
 
 	if (FAILED(m_pCamera_Manager->Reserve_Containers(iNumLevels)))
@@ -67,6 +73,9 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pInput_Manager->Update_DInput();
 
 	m_pObject_Manager->Tick(TimeDelta);
+
+	m_pPipeLine->Tick();
+
 	m_pObject_Manager->Late_Tick(TimeDelta);
 
 	m_pLevel_Manager->Tick(TimeDelta);
@@ -176,20 +185,12 @@ CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar* pPro
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 }
 
-_matrix CGameInstance::Get_Current_CameraViewMatrix()
+CComponent* CGameInstance::Clone_Transform(void* pArg)
 {
-	if (nullptr == m_pCamera_Manager)
-		return _matrix();
+	if (nullptr == m_pComponent_Manager)
+		return nullptr;
 
-	return m_pCamera_Manager->Get_Current_CameraViewMatrix();
-}
-
-_matrix CGameInstance::Get_Current_CameraProjMatrix()
-{
-	if (nullptr == m_pCamera_Manager)
-		return _matrix();
-
-	return m_pCamera_Manager->Get_Current_CameraProjMatrix();
+	return m_pComponent_Manager->Clone_Transform(pArg);
 }
 
 HRESULT CGameInstance::Add_Camera(_uint iLevelIndex, const _tchar* pCameraTag, CCamera* pCamera)
@@ -276,9 +277,83 @@ _long CGameInstance::Get_DIMouseMove(_uint iMouseMoveID)
 	return m_pInput_Manager->Get_DIMouseMove(CDInput_Manager::MOUSEMOVESTATE(iMouseMoveID));
 }
 
+_matrix CGameInstance::Get_Transform_Matrix(CPipeLine::TRANSFORMSTATE eState)
+{
+	if (nullptr == m_pPipeLine)
+		return _matrix();
+
+	return m_pPipeLine->Get_Transform_Matrix(eState);
+}
+
+_matrix CGameInstance::Get_Transform_Inverse_Matrix(CPipeLine::TRANSFORMSTATE eState)
+{
+	if (nullptr == m_pPipeLine)
+		return _matrix();
+
+	return m_pPipeLine->Get_Transform_Inverse_Matrix(eState);
+}
+
+_float4x4 CGameInstance::Get_Transform_Float4x4(CPipeLine::TRANSFORMSTATE eState)
+{
+	if (nullptr == m_pPipeLine)
+		return _float4x4();
+
+	return m_pPipeLine->Get_Transform_Float4x4(eState);
+}
+
+_float4x4 CGameInstance::Get_Trasnform_Inverse_Float4x4(CPipeLine::TRANSFORMSTATE eState)
+{
+	if (nullptr == m_pPipeLine)
+		return _float4x4();
+
+	return m_pPipeLine->Get_Trasnform_Inverse_Float4x4(eState);
+}
+
+_matrix CGameInstance::Get_UI_View_Matrix()
+{
+	if (nullptr == m_pPipeLine)
+		return _matrix();
+
+	return m_pPipeLine->Get_UI_View_Matrix();
+}
+
+_float4x4 CGameInstance::Get_UI_View_Float4x4()
+{
+	if (nullptr == m_pPipeLine)
+		return _float4x4();
+
+	return m_pPipeLine->Get_UI_View_Float4x4();
+}
+
+_matrix CGameInstance::Get_UI_Proj_Matrix(const _uint iWinSizeX, const _uint iWinSizeY)
+{
+	if (nullptr == m_pPipeLine)
+		return _matrix();
+
+	return m_pPipeLine->Get_UI_Proj_Matrix(iWinSizeX, iWinSizeY);
+}
+
+_float4x4 CGameInstance::Get_UI_Proj_Float4x4(const _uint iWinSizeX, const _uint iWinSizeY)
+{
+	if (nullptr == m_pPipeLine)
+		return _float4x4();
+
+	return m_pPipeLine->Get_UI_Proj_Float4x4(iWinSizeX, iWinSizeY);
+}
+
+HRESULT CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix _Matrix)
+{
+	if (nullptr == m_pPipeLine)
+		return E_FAIL;
+
+	return m_pPipeLine->Set_Transform(eState, _Matrix);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
+
+	CPipeLine::GetInstance()->DestroyInstance();
 
 	CObject_Manager::GetInstance()->DestroyInstance();
 
@@ -297,6 +372,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pLevel_Manager);

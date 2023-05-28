@@ -2,7 +2,7 @@
 
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
-	, m_TransformDesc(0.0, 0.0)
+	, m_TransformDesc()
 {
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
 }
@@ -12,6 +12,11 @@ CTransform::CTransform(const CTransform& rhs)
 	, m_WorldMatrix(rhs.m_WorldMatrix)
 	, m_TransformDesc(rhs.m_TransformDesc)
 {
+}
+
+_matrix CTransform::Get_WorldMatrix_Inverse()
+{
+	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
 }
 
 _float3 CTransform::Get_Scaled()
@@ -30,17 +35,11 @@ void CTransform::Set_State(STATE _eState, _fvector _vState)
 
 HRESULT CTransform::Initialize_Prototype()
 {
-	if (FAILED(CComponent::Initialize_Prototype()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CTransform::Initialize(void* pArg)
 {
-	if (FAILED(CComponent::Initialize(pArg)))
-		return E_FAIL;
-
 	if (nullptr != pArg)
 		memmove(&m_TransformDesc, pArg, sizeof m_TransformDesc);
 
@@ -57,7 +56,7 @@ void CTransform::Go_Straight(_double TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Backword(_double TimeDelta)
+void CTransform::Go_Backward(_double TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);

@@ -26,8 +26,8 @@ public:
 	afx_msg void OnDeltaposSpin1(NMHDR* pNMHDR, LRESULT* pResult);
 
 public:
-	CEdit m_edXCount[10];
-	CSpinButtonCtrl m_spXCount[10];
+	CEdit m_edit[10];
+	CSpinButtonCtrl m_spEdit[10];
 	CButton m_RenderStyle[2];
 	CButton m_RenderCoordnate_Axis[2];
 
@@ -35,4 +35,6 @@ public:
 	afx_msg void OnBnClickedApply();
 	afx_msg void OnBnClickedRenderStyle();
 	afx_msg void OnBnClickedRenderCoordnate_Axis();
+	afx_msg void OnEnChangePosition();
+	afx_msg void OnEnChangeRotation();
 };

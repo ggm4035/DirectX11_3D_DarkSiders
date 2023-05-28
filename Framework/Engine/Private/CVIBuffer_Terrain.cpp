@@ -18,15 +18,12 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iXCount, _uint iZCount, _f
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
 
-	if (FAILED(CVIBuffer::Initialize_Prototype()))
-		return E_FAIL;
-
 	m_iXCount = iXCount;
 	m_iZCount = iZCount;
 	m_fInterval = fInterval;
 
 	m_iVertexBuffers = { 1 };
-	m_iStride = { sizeof(VTXPOSTEX) };
+	m_iStride = { sizeof(VTXPOSNORTEX) };
 	m_iNumVertices = m_iXCount * m_iZCount;
 	m_iIndexStride = { sizeof(_uint) };
 	m_iNumIndices = (m_iXCount - 1) * (m_iZCount - 1) * 6;
@@ -45,8 +42,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iXCount, _uint iZCount, _f
 	m_BufferDesc.CPUAccessFlags = { 0 };
 	m_BufferDesc.MiscFlags = { 0 };
 
-	VTXPOSTEX* pVertices = new VTXPOSTEX[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXPOSTEX) * m_iNumVertices);
+	VTXPOSNORTEX* pVertices = new VTXPOSNORTEX[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXPOSNORTEX) * m_iNumVertices);
 
 	for (_uint i = 0; i < m_iZCount; ++i)
 	{
@@ -119,9 +116,6 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iXCount, _uint iZCount, _f
 
 HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 {
-	if (FAILED(CVIBuffer::Initialize(pArg)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -145,7 +139,7 @@ CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11Device
 	return pInstance;
 }
 
-CComponent* CVIBuffer_Terrain::Clone(void* pArg)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Clone(void* pArg)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(*this);
 

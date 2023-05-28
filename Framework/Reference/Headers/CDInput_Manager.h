@@ -13,7 +13,7 @@ public:
 	enum MOUSEMOVESTATE { DIMS_X, DIMS_Y, DIMS_Z, DIMS_END };
 
 private:
-	CDInput_Manager();
+	explicit CDInput_Manager();
 	virtual ~CDInput_Manager() = default;
 
 public:

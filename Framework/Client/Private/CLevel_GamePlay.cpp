@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CLevel_GamePlay.h"
 
+#include "CGameInstance.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice, pContext)
 {
@@ -9,6 +11,12 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 HRESULT CLevel_GamePlay::Initialize()
 {
 	if (FAILED(CLevel::Initialize()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Cameras(L"Layer_Cameras")))
 		return E_FAIL;
 
 	return S_OK;
@@ -25,6 +33,40 @@ HRESULT CLevel_GamePlay::Render()
 {
 	if (FAILED(CLevel::Render()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
+{
+	if (nullptr == pLayerTag)
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Terrain",
+		pLayerTag)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Cameras(const _tchar* pLayerTag)
+{
+	if (nullptr == pLayerTag)
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Camera_Free",
+		pLayerTag)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

@@ -10,8 +10,8 @@ public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_NONBLEND, RENDER_NONLIGHT, RENDER_BLEND, RENDER_UI, RENDER_END };
 
 private:
-	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CRenderer(const CRenderer& rhs);
+	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CRenderer(const CRenderer& rhs);
 	virtual ~CRenderer() = default;
 
 public:

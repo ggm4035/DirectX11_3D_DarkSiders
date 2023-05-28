@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Tool_Defines.h"
-#include "CGameObject.h"
+#include "CCamera.h"
 
 BEGIN(Engine)
 class CCamera;
 class CTransform;
 END
 
-class CMainCamera final : public CGameObject
+class CMainCamera final : public CCamera
 {
 private:
 	CMainCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -23,8 +23,6 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	CCamera* m_pCameraCom = { nullptr };
-	CTransform* m_pTransform = { nullptr };
 	_bool m_bFix = { false };
 
 private:
@@ -35,6 +33,6 @@ private:
 
 public:
 	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg) override;
+	virtual CMainCamera* Clone(void* pArg) override;
 	virtual void Free() override;
 };

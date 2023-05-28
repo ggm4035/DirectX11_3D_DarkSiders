@@ -1,6 +1,7 @@
 
-xcopy				/y /s		.\Engine\Public\*.*					.\Reference\Headers\
+xcopy				/y /s		.\Engine\Public\*.*							.\Reference\Headers\
+xcopy				/y /s		..\MapEditTool\Tool\\Bin\ShaderFiles\*.*	.\Client\Bin\ShaderFiles\
 
-xcopy				/y			.\Engine\Bin\Engine.lib				.\Reference\Librarys\
-xcopy				/y			.\Engine\Bin\Engine.dll				.\Client\Bin\
-xcopy				/y			.\Engine\Bin\Engine.dll				..\MapEditTool.\Tool\Bin\
+xcopy				/y			.\Engine\Bin\Engine.lib						.\Reference\Librarys\
+xcopy				/y			.\Engine\Bin\Engine.dll						.\Client\Bin\
+xcopy				/y			.\Engine\Bin\Engine.dll						..\MapEditTool.\Tool\Bin\

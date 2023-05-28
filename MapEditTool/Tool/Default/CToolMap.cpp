@@ -41,7 +41,23 @@ HRESULT CToolMap::Ready_Layer_ToolMap(const _tchar* pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOLMAP, L"Prototype_GameObject_Terrain", pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOLMAP, L"Prototype_GameObject_Camera", pLayerTag)))
+	CCamera::CAMERADESC CameraDesc;
+	CameraDesc.vEye = _float4(0.f, 50.f, -10.f, 1.f);
+	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
+
+	CameraDesc.fFov = XMConvertToRadians(60.f);
+	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
+	CameraDesc.fNear = 0.3f;
+	CameraDesc.fFar = 300.f;
+
+	CameraDesc.TransformDesc.SpeedPerSec = 10.f;
+	CameraDesc.TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOLMAP, L"Prototype_GameObject_Camera", pLayerTag, &CameraDesc)))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOLMAP, L"Prototype_GameObject_Coordnate_Axis", pLayerTag)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

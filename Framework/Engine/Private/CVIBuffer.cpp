@@ -24,17 +24,11 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 
 HRESULT CVIBuffer::Initialize_Prototype()
 {
-	if (FAILED(CComponent::Initialize_Prototype()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CVIBuffer::Initialize(void* pArg)
 {
-	if (FAILED(CComponent::Initialize(pArg)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -63,11 +57,6 @@ HRESULT CVIBuffer::Create_Buffer(OUT ID3D11Buffer** ppOut)
 		return E_FAIL;
 	
 	return m_pDevice->CreateBuffer(&m_BufferDesc, &m_SubResourceData,ppOut);
-}
-
-CComponent* CVIBuffer::Clone(void* pArg)
-{
-	return nullptr;
 }
 
 void CVIBuffer::Free()

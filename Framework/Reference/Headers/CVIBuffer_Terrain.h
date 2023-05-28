@@ -7,15 +7,14 @@ BEGIN(Engine)
 class ENGINE_DLL CVIBuffer_Terrain final : public CVIBuffer
 {
 private:
-	CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs);
+	explicit CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs);
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype(_uint iXCount, _uint iZCount, _float fInterval);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render() override;
-	HRESULT Reset_Buffer(_uint iXCount, _uint iZCount, _float fInterval);
 
 private:
 	_uint m_iXCount = { 0 };
@@ -24,7 +23,7 @@ private:
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iXCount = 129, _uint iZCount = 129, _float fInterval = 1.f);
-	virtual CComponent* Clone(void* pArg) override;
+	virtual CVIBuffer_Terrain* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 

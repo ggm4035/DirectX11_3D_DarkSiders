@@ -7,25 +7,38 @@ CComponent_Manager::CComponent_Manager()
 {
 }
 
-HRESULT CComponent_Manager::Reserve_Containers(_uint iNumLevels)
+HRESULT CComponent_Manager::Reserve_Containers(_uint iNumLevels, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	if (0 == iNumLevels)
-		return E_FAIL;
-
-	if (nullptr != m_pPrototypes)
+	if (nullptr != m_pPrototypes || 0 == iNumLevels ||
+		nullptr == pDevice || nullptr == pContext)
 		return E_FAIL;
 
 	m_iNumLevels = iNumLevels;
 
 	m_pPrototypes = new PROTOTYPES[iNumLevels];
+	if (nullptr == m_pPrototypes)
+		return E_FAIL;
+
+	m_pPrototype_Transform = CTransform::Create(pDevice, pContext);
+	if (nullptr == m_pPrototype_Transform)
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrototype)
 {
-	if (nullptr != Find_Prototype(iLevelIndex, pPrototypeTag))
+	if (nullptr != dynamic_cast<CTransform*>(pPrototype))
+	{
+		MSG_BOX("Transform Prototype is already in Engine");
 		return E_FAIL;
+	}
+
+	if (nullptr != Find_Prototype(iLevelIndex, pPrototypeTag))
+	{
+		MSG_BOX("Prototype is already in Level");
+		return E_FAIL;
+	}
 
 	m_pPrototypes[iLevelIndex].emplace(pPrototypeTag, pPrototype);
 
@@ -41,6 +54,18 @@ CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const _tchar*
 
 	CComponent* pComponent = pPrototype->Clone(pArg);
 
+	if (nullptr == pComponent)
+		return nullptr;
+
+	return pComponent;
+}
+
+CComponent* CComponent_Manager::Clone_Transform(void* pArg)
+{
+	if (nullptr == m_pPrototype_Transform)
+		return nullptr;
+
+	CComponent* pComponent = m_pPrototype_Transform->Clone(pArg);
 	if (nullptr == pComponent)
 		return nullptr;
 
@@ -78,4 +103,5 @@ void CComponent_Manager::Free()
 		m_pPrototypes[i].clear();
 	}
 	Safe_Delete_Array(m_pPrototypes);
+	Safe_Release(m_pPrototype_Transform);
 }

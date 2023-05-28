@@ -8,18 +8,6 @@ CCamera_Manager::CCamera_Manager()
 {
 }
 
-_matrix CCamera_Manager::Get_Current_CameraViewMatrix()
-{
-	if (nullptr != m_pCurCamera)
-		return m_pCurCamera->Get_CameraViewMatrix();
-}
-
-_matrix CCamera_Manager::Get_Current_CameraProjMatrix()
-{
-	if (nullptr != m_pCurCamera)
-		return m_pCurCamera->Get_CameraProjMatrix();
-}
-
 HRESULT CCamera_Manager::Reserve_Containers(_uint iNumLevels)
 {
 	if (0 == iNumLevels)

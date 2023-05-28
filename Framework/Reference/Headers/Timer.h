@@ -7,7 +7,7 @@ BEGIN(Engine)
 class CTimer final : public CBase
 {
 private:
-	CTimer();
+	explicit CTimer();
 	virtual ~CTimer() = default;
 
 public:

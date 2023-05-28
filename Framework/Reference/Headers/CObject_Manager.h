@@ -9,7 +9,7 @@ class CObject_Manager final : public CBase
 	DECLARE_SINGLETON(CObject_Manager)
 
 private:
-	CObject_Manager();
+	explicit CObject_Manager();
 	virtual ~CObject_Manager() = default;
 
 public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */

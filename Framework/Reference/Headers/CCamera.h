@@ -1,40 +1,49 @@
 #pragma once
 
-#include "CComponent.h"
+#include "CGameObject3D.h"
+#include "CTransform.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL CCamera final : public CComponent
+class ENGINE_DLL CCamera abstract : public CGameObject3D
 {
-private:
-	CCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
-	CCamera(const CCamera& rhs);
+public:
+	typedef struct tagCameraDesc
+	{
+		_float4 vEye, vAt, vUp;
+		_float fFov, fAspect, fNear, fFar;
+		CTransform::TRASNFORMDESC TransformDesc;
+	}CAMERADESC;
+
+protected:
+	explicit CCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	explicit CCamera(const CCamera& rhs);
 	virtual ~CCamera() = default;
 
 public:
-	_matrix Get_CameraViewMatrix() { return XMLoadFloat4x4(&m_ViewMatrix); }
-	_matrix Get_CameraProjMatrix() { return XMLoadFloat4x4(&m_ProjectionMatrix); }
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Tick(_double TimeDelta) override;
+	virtual void Late_Tick(_double TimeDelta) override;
+	virtual HRESULT Render() override;
 
 public:
-	HRESULT Initialize_Prototype() override;
-	HRESULT Initialize(void* pArg) override;
-
-public:
-	void Set_View(_fmatrix _WorldMatrix);
-	void Set_Projection(const _float& _fFov, const _float& _fAspect, const _float& _fNear, const _float& _fFar);
 	void OnCamera() { m_bSwitch = true; }
 	void OffCamera() { m_bSwitch = false; }
 
-private:
-	_float4x4 m_ViewMatrix;
-	_float4x4 m_ProjectionMatrix;
+protected:
+	class CPipeLine* m_pPipeLine = { nullptr };
 
-private:
+protected:
+	_float4 m_vEye, m_vAt, m_vUp;
+	_float m_fFov, m_fAspect, m_fNear, m_fFar;
 	_bool m_bSwitch = { false };
 
+protected:
+	virtual HRESULT Add_Components() override = 0;
+
 public:
-	static CCamera* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
-	virtual CComponent* Clone(void* pArg) override;
+	virtual CGameObject3D* Clone(void* pArg) override = 0;
 	virtual void Free() override;
 };
 

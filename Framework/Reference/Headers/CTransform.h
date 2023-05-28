@@ -13,23 +13,25 @@ public:
 public:
 	typedef struct tagTransformDesc
 	{
+		tagTransformDesc() = default;
 		tagTransformDesc(_double _SpeedPerSec, _double _RotationPerSec)
 			: SpeedPerSec(_SpeedPerSec)
 			, RotationPerSec(_RotationPerSec)
 		{ }
-		_double SpeedPerSec;
-		_double RotationPerSec;
+		_double SpeedPerSec = { 0.0 };
+		_double RotationPerSec = { 0.0 };
 	}TRASNFORMDESC;
 
 private:
-	CTransform(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	CTransform(const CTransform& rhs);
+	explicit CTransform(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+	explicit CTransform(const CTransform& rhs);
 	virtual ~CTransform() = default;
 
 public:
 	_float4x4 Get_WorldMatrix() {
 		return m_WorldMatrix;
 	}
+	_matrix Get_WorldMatrix_Inverse();
 	_float3 Get_Scaled();
 	_vector Get_State(STATE _eState) {
 		return XMLoadFloat4x4(&m_WorldMatrix).r[_eState];
@@ -42,7 +44,7 @@ public:
 
 public:
 	void Go_Straight(_double TimeDelta);
-	void Go_Backword(_double TimeDelta);
+	void Go_Backward(_double TimeDelta);
 	void Go_Right(_double TimeDelta);
 	void Go_Left(_double TimeDelta);
 	void Go_Up(_double TimeDelta);

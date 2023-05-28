@@ -13,7 +13,7 @@ BEGIN(Client)
 class CMainApp final : public CBase
 {
 private:
-	CMainApp();
+	explicit CMainApp();
 	virtual ~CMainApp() = default;
 
 public:

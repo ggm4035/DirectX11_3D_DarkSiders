@@ -177,6 +177,7 @@
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../../../Framework/Reference/Headers/</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,6 +204,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CCoordnate_Axis.h" />
     <ClInclude Include="CFileInfo.h" />
     <ClInclude Include="CMainApp.h" />
     <ClInclude Include="CMainCamera.h" />
@@ -228,6 +230,7 @@
     <ClInclude Include="Tool_Defines.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCoordnate_Axis.cpp" />
     <ClCompile Include="CFileInfo.cpp" />
     <ClCompile Include="CMainApp.cpp" />
     <ClCompile Include="CMainCamera.cpp" />
@@ -265,6 +268,9 @@
     <Image Include="res\ToolDoc.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtx.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCol.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtxtex.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

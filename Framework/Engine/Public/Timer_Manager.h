@@ -9,7 +9,7 @@ class CTimer_Manager : public CBase
 	DECLARE_SINGLETON(CTimer_Manager)
 
 private:
-	CTimer_Manager();
+	explicit CTimer_Manager();
 	virtual ~CTimer_Manager() = default;
 
 public:

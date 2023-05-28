@@ -9,7 +9,7 @@ class CGraphic_Device final : public CBase
 	DECLARE_SINGLETON(CGraphic_Device)
 
 public:
-	CGraphic_Device();
+	explicit CGraphic_Device();
 	virtual ~CGraphic_Device() = default;
 
 public:

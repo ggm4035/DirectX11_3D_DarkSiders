@@ -13,6 +13,7 @@
 
 #include "CTerrain.h"
 #include "CMainCamera.h"
+#include "CCoordnate_Axis.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -62,7 +63,7 @@ void CMainApp::Tick(const _double TimeDelta)
 HRESULT CMainApp::Render()
 {
 
-	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_BackBuffer_View(_float4(0.3f, 0.5f, 0.34f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
 	m_pRenderer->Draw_RenderGroup();
@@ -82,6 +83,10 @@ HRESULT CMainApp::Ready_Prototype_GameObject_For_Static()
 		CMainCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Coordnate_Axis",
+		CCoordnate_Axis::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -96,25 +101,31 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_VIBuffer_Coordnate",
+		CVIBuffer_Coordnate::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_VIBuffer_Rect",
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Shader_Vtxtex",
-		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Vtxtex.hlsl",
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Shader_VtxCol",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxCol.hlsl",
+			VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Shader_VtxTex",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl",
 			VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
 		return E_FAIL;
 
-	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Camera",
-		CCamera::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Shader_VtxNorTex",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl",
+			VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Texture_Test",
 		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/De3.png"))))
-		return E_FAIL;
-
-	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Transform",
-		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

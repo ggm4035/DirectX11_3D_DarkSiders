@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "CGameObject.h"
+#include "CGameObjectUI.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -13,11 +13,11 @@ END
 
 BEGIN(Client)
 
-class CBackGround final : public CGameObject
+class CBackGround final : public CGameObjectUI
 {
 protected:
-	CBackGround(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CBackGround(const CBackGround& rhs);
+	explicit CBackGround(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CBackGround(const CBackGround& rhs);
 	virtual ~CBackGround() = default;
 
 public:
@@ -32,11 +32,6 @@ private:
 	CVIBuffer_Rect* m_pBufferCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
-	CTransform* m_pTransformCom = { nullptr };
-
-private:
-	_float4x4 m_ViewMatrix, m_ProjMatrix;
-	_float m_fX, m_fY, m_fSizeX, m_fSizeY;
 
 private:
 	virtual HRESULT Add_Components() override;
@@ -44,7 +39,7 @@ private:
 
 public:
 	static CBackGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg) override;
+	virtual CGameObjectUI* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 

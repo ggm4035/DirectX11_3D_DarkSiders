@@ -1,66 +1,52 @@
 #include "stdafx.h"
 #include "CBackGround.h"
-#include "CRenderer.h"
+
 #include "CGameInstance.h"
 
 CBackGround::CBackGround(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CGameObject(pDevice, pContext)
+	:CGameObjectUI(pDevice, pContext)
 {
 }
 
 CBackGround::CBackGround(const CBackGround& rhs)
-	:CGameObject(rhs)
+	: CGameObjectUI(rhs)
 {
 }
 
 HRESULT CBackGround::Initialize_Prototype()
 {
-	if (FAILED(CGameObject::Initialize_Prototype()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CBackGround::Initialize(void* pArg)
 {
-	if (FAILED(CGameObject::Initialize(pArg)))
-		return E_FAIL;
-
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fSizeX = g_iWinSizeX;
-	m_fSizeY = g_iWinSizeY;
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
+	CGameObjectUI::UIDESC UIDesc;
+	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
+	UIDesc.m_fY = _float(g_iWinSizeY >> 1);
+	UIDesc.m_fSizeX = (_float)g_iWinSizeX;
+	UIDesc.m_fSizeY = (_float)g_iWinSizeY;
 
-	m_pTransformCom->Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, 
-		XMVectorSet(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
-
-	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));
+	if (FAILED(CGameObjectUI::Initialize(&UIDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 void CBackGround::Tick(_double TimeDelta)
 {
-	CGameObject::Tick(TimeDelta);
 }
 
 void CBackGround::Late_Tick(_double TimeDelta)
 {
-	CGameObject::Late_Tick(TimeDelta);
 	if(nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 }
 
 HRESULT CBackGround::Render()
 {
-	if (FAILED(CGameObject::Render()))
-		return E_FAIL;
-
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
@@ -81,16 +67,12 @@ HRESULT CBackGround::Add_Components()
 		L"Com_Buffer", (CComponent**)&m_pBufferCom)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Shader_Vtxtex",
-		L"Com_Shader_Vtxtex", (CComponent**)&m_pShaderCom)))
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Shader_VtxTex",
+		L"Com_Shader_VtxTex", (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_LOGO, L"Prototype_Component_Texture_Logo",
 		L"Com_Texture_Test", (CComponent**)&m_pTextureCom)))
-		return E_FAIL;
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Transform",
-		L"Com_Transform", (CComponent**)&m_pTransformCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -98,17 +80,22 @@ HRESULT CBackGround::Add_Components()
 
 HRESULT CBackGround::SetUp_ShaderResources()
 {
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &pGameInstance->Get_UI_View_Float4x4())))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &pGameInstance->Get_UI_Proj_Float4x4(g_iWinSizeX, g_iWinSizeY))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_Texture")))
 		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -125,7 +112,7 @@ CBackGround* CBackGround::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return pInstance;
 }
 
-CGameObject* CBackGround::Clone(void* pArg)
+CGameObjectUI* CBackGround::Clone(void* pArg)
 {
 	CBackGround* pInstance = new CBackGround(*this);
 
@@ -139,10 +126,9 @@ CGameObject* CBackGround::Clone(void* pArg)
 
 void CBackGround::Free()
 {
-	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pBufferCom);
-	CGameObject::Free();
+	CGameObjectUI::Free();
 }

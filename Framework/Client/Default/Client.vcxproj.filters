@@ -37,6 +37,12 @@
     <Filter Include="02. GameObject\Terrain">
       <UniqueIdentifier>{33d642fa-3091-46e2-a765-b922d6528579}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Camera">
+      <UniqueIdentifier>{4a1653ab-30f2-4b57-90f9-c4af8aa416f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Camera\Camera_Free">
+      <UniqueIdentifier>{031c7df3-afbf-4335-a4da-3d32f52b6e35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -75,6 +81,12 @@
     <ClInclude Include="..\Public\CBackGround.h">
       <Filter>02. GameObject\BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CTerrain.h">
+      <Filter>02. GameObject\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCamera_Free.h">
+      <Filter>02. GameObject\Camera\Camera_Free</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -101,6 +113,12 @@
     <ClCompile Include="..\Private\CLevel_Loading.cpp">
       <Filter>01. Levels\99. Level_Loading</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CTerrain.cpp">
+      <Filter>02. GameObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCamera_Free.cpp">
+      <Filter>02. GameObject\Camera\Camera_Free</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -116,7 +134,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtxtex.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -1,4 +1,5 @@
 
+RasterizerState g_Rasterizer;
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture[2];
 
@@ -56,5 +57,6 @@ technique11 DefaultTechnique
 		HullShader = NULL/*compile hs_5_0 HS_MAIN()*/;
 		DomainShader = NULL/*compile ds_5_0 DS_MAIN()*/;
 		PixelShader = compile ps_5_0 PS_MAIN();
-	}
+        SetRasterizerState(g_Rasterizer);
+    }
 };

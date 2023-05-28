@@ -7,8 +7,8 @@ BEGIN(Engine)
 class ENGINE_DLL CTexture final : public CComponent
 {
 private:
-	CTexture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CTexture(const CTexture& rhs);
+	explicit CTexture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CTexture(const CTexture& rhs);
 	virtual ~CTexture() = default;
 
 public:

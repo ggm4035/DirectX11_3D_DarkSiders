@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CComponent_Manager.h"
+#include "CPipeLine.h"
 
 /* 0. 클라이언트 엔진의 연결 역활한다. */
 /* 0.0 게임인스턴스라는 객체를 통해서 엔진의다양한기능을 활요앟ㄹ 수 있게 한다. */
@@ -14,7 +15,7 @@ class ENGINE_DLL CGameInstance final : public CBase
 {
 	DECLARE_SINGLETON(CGameInstance)
 private:
-	CGameInstance();
+	explicit CGameInstance();
 	virtual ~CGameInstance() = default;
 
 public:
@@ -42,10 +43,9 @@ public: /* For.Object_Manager */
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void* pArg = nullptr);
+	class CComponent* Clone_Transform(void* pArg = nullptr);
 
 public: /* For.Camera_Manager */
-	_matrix Get_Current_CameraViewMatrix();
-	_matrix Get_Current_CameraProjMatrix();
 	HRESULT Add_Camera(_uint iLevelIndex, const _tchar * pCameraTag, class CCamera* pCamera);
 	HRESULT Remove_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
 	HRESULT On_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
@@ -59,6 +59,17 @@ public: /* For.Input_Manager */
 	_bool	Mouse_Up(_uint iMouseID);
 	_long	Get_DIMouseMove(_uint iMouseMoveID);
 
+public: /* For.PipeLine */
+	_matrix Get_Transform_Matrix(CPipeLine::TRANSFORMSTATE eState);
+	_matrix Get_Transform_Inverse_Matrix(CPipeLine::TRANSFORMSTATE eState);
+	_float4x4 Get_Transform_Float4x4(CPipeLine::TRANSFORMSTATE eState);
+	_float4x4 Get_Trasnform_Inverse_Float4x4(CPipeLine::TRANSFORMSTATE eState);
+	_matrix Get_UI_View_Matrix();
+	_float4x4 Get_UI_View_Float4x4();
+	_matrix Get_UI_Proj_Matrix(const _uint iWinSizeX, const _uint iWinSizeY);
+	_float4x4 Get_UI_Proj_Float4x4(const _uint iWinSizeX, const _uint iWinSizeY);
+	HRESULT Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix _Matrix);
+
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Manager* m_pLevel_Manager = { nullptr };
@@ -67,6 +78,7 @@ private:
 	class CComponent_Manager* m_pComponent_Manager = { nullptr };
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	class CDInput_Manager* m_pInput_Manager = { nullptr };
+	class CPipeLine* m_pPipeLine = { nullptr };
 	
 public:
 	static void Release_Engine();

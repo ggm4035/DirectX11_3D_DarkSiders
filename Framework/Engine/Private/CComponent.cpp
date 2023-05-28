@@ -54,16 +54,25 @@ CComposite::CComposite(const CComposite& rhs)
 
 HRESULT CComposite::Initialize_Prototype()
 {
-	HRESULT result = CComponent::Initialize_Prototype();
-
-	return result;
+	return S_OK;
 }
 
 HRESULT CComposite::Initialize(void* pArg)
 {
-	HRESULT result = CComponent::Initialize(pArg);
+	return S_OK;
+}
 
-	return result;
+void CComposite::Tick(_double TimeDelta)
+{
+}
+
+void CComposite::Late_Tick(_double TimeDelta)
+{
+}
+
+HRESULT CComposite::Render()
+{
+	return S_OK;
 }
 
 HRESULT CComposite::Add_Component(_uint iNumLevel, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
@@ -71,7 +80,7 @@ HRESULT CComposite::Add_Component(_uint iNumLevel, const _tchar* pPrototypeTag, 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	CComponent* pComponent = pGameInstance->Clone_Component(iNumLevel, pPrototypeTag, pArg);
+ 	CComponent* pComponent = pGameInstance->Clone_Component(iNumLevel, pPrototypeTag, pArg);
 	if (nullptr == pComponent)
 		return E_FAIL;
 
@@ -79,7 +88,7 @@ HRESULT CComposite::Add_Component(_uint iNumLevel, const _tchar* pPrototypeTag, 
 	if (iter != m_Components.end())
 		return E_FAIL;
 
-	m_Components.insert({ pComponentTag, pComponent });
+	m_Components.emplace(pComponentTag, pComponent);
 	*ppOut = pComponent;
 	Safe_AddRef(pComponent);
 
@@ -87,7 +96,6 @@ HRESULT CComposite::Add_Component(_uint iNumLevel, const _tchar* pPrototypeTag, 
 
 	return S_OK;
 }
-
 
 void CComposite::Free()
 {

@@ -28,7 +28,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };
 	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
 	m_BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
-	m_BufferDesc.StructureByteStride = m_iStride;
+	m_BufferDesc.StructureByteStride = { m_iStride };
 
 	m_BufferDesc.CPUAccessFlags = { 0 };
 	m_BufferDesc.MiscFlags = { 0 };
@@ -115,7 +115,7 @@ CVIBuffer_Rect* CVIBuffer_Rect::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CComponent* CVIBuffer_Rect::Clone(void* pArg)
+CVIBuffer_Rect* CVIBuffer_Rect::Clone(void* pArg)
 {
 	CVIBuffer_Rect* pInstance = new CVIBuffer_Rect(*this);
 

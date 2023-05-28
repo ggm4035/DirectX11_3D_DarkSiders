@@ -8,7 +8,7 @@ BEGIN(Client)
 class CLevel_Logo final : public CLevel
 {
 private:
-	CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CLevel_Logo() = default;
 
 public:

@@ -166,12 +166,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\CBackGround.h" />
+    <ClInclude Include="..\Public\CCamera_Free.h" />
     <ClInclude Include="..\Public\CLevel_GamePlay.h" />
     <ClInclude Include="..\Public\CLevel_Loading.h" />
     <ClInclude Include="..\Public\CLevel_Logo.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CLoader.h" />
     <ClInclude Include="..\public\CMainApp.h" />
+    <ClInclude Include="..\Public\CTerrain.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -179,11 +181,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\CBackGround.cpp" />
+    <ClCompile Include="..\Private\CCamera_Free.cpp" />
     <ClCompile Include="..\Private\CLevel_GamePlay.cpp" />
     <ClCompile Include="..\Private\CLevel_Loading.cpp" />
     <ClCompile Include="..\Private\CLevel_Logo.cpp" />
     <ClCompile Include="..\Private\CLoader.cpp" />
     <ClCompile Include="..\private\CMainApp.cpp" />
+    <ClCompile Include="..\Private\CTerrain.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -200,7 +204,8 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtxtex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

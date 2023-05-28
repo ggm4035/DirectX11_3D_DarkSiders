@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\CApplication.h" />
     <ClInclude Include="..\public\CBase.h" />
     <ClInclude Include="..\Public\CCamera.h" />
     <ClInclude Include="..\Public\CCamera_Manager.h" />
@@ -161,15 +162,19 @@
     <ClInclude Include="..\Public\CComponent_Manager.h" />
     <ClInclude Include="..\Public\CDInput_Manager.h" />
     <ClInclude Include="..\Public\CGameObject.h" />
+    <ClInclude Include="..\Public\CGameObjectUI.h" />
+    <ClInclude Include="..\Public\CGameObject3D.h" />
     <ClInclude Include="..\Public\CLayer.h" />
     <ClInclude Include="..\Public\CLevel.h" />
     <ClInclude Include="..\Public\CLevel_Manager.h" />
     <ClInclude Include="..\Public\CObject_Manager.h" />
+    <ClInclude Include="..\Public\CPipeLine.h" />
     <ClInclude Include="..\Public\CRenderer.h" />
     <ClInclude Include="..\Public\CShader.h" />
     <ClInclude Include="..\public\CTexture.h" />
     <ClInclude Include="..\Public\CTransform.h" />
     <ClInclude Include="..\Public\CVIBuffer.h" />
+    <ClInclude Include="..\Public\CVIBuffer_Coordnate.h" />
     <ClInclude Include="..\Public\CVIBuffer_Rect.h" />
     <ClInclude Include="..\Public\CVIBuffer_Terrain.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
@@ -184,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\source\repos\Framework\Client\Private\CDInput_Manager.cpp" />
+    <ClCompile Include="..\Private\CApplication.cpp" />
     <ClCompile Include="..\private\CBase.cpp" />
     <ClCompile Include="..\Private\CCamera.cpp" />
     <ClCompile Include="..\Private\CCamera_Manager.cpp" />
@@ -191,16 +197,20 @@
     <ClCompile Include="..\Private\CComponent_Manager.cpp" />
     <ClCompile Include="..\private\CGameInstance.cpp" />
     <ClCompile Include="..\Private\CGameObject.cpp" />
+    <ClCompile Include="..\Private\CGameObjectUI.cpp" />
+    <ClCompile Include="..\Private\CGameObject3D.cpp" />
     <ClCompile Include="..\Private\CGraphic_Device.cpp" />
     <ClCompile Include="..\Private\CLayer.cpp" />
     <ClCompile Include="..\Private\CLevel.cpp" />
     <ClCompile Include="..\Private\CLevel_Manager.cpp" />
     <ClCompile Include="..\Private\CObject_Manager.cpp" />
+    <ClCompile Include="..\Private\CPipeLine.cpp" />
     <ClCompile Include="..\Private\CRenderer.cpp" />
     <ClCompile Include="..\Private\CShader.cpp" />
     <ClCompile Include="..\private\CTexture.cpp" />
     <ClCompile Include="..\Private\CTransform.cpp" />
     <ClCompile Include="..\Private\CVIBuffer.cpp" />
+    <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Rect.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Terrain.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />

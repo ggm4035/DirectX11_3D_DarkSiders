@@ -7,6 +7,15 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_Vtx.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_VtxCol.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_VtxNorTex.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_Vtxtex.cso</FullPath>
     </ContentFile>
   </ContentFiles>

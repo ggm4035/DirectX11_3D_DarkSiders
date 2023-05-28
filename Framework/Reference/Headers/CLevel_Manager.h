@@ -9,7 +9,7 @@ class CLevel_Manager final : public CBase
 	DECLARE_SINGLETON(CLevel_Manager)
 
 private:
-	CLevel_Manager();
+	explicit CLevel_Manager();
 	virtual ~CLevel_Manager() = default;
 
 public:

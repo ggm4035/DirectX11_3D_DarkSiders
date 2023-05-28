@@ -18,9 +18,6 @@ CTexture::CTexture(const CTexture& rhs)
 
 HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNumTextures)
 {
-	if (FAILED(CComponent::Initialize_Prototype()))
-		return E_FAIL;
-
 	_tchar szTextureFilePath[MAX_PATH] = TEXT("");
 
 	m_iNumTextures = iNumTextures;
@@ -61,9 +58,6 @@ HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNu
 
 HRESULT CTexture::Initialize(void* pArg)
 {
-	if (FAILED(CComponent::Initialize(pArg)))
-		return E_FAIL;
-
 	return S_OK;
 }
 

@@ -1,16 +1,9 @@
 ﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
   
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_Vtxtex.cso
-  CMainApp.cpp
-  CBackGround.cpp
-  CLevel_GamePlay.cpp
-  CLevel_Loading.cpp
-  CLevel_Logo.cpp
-  CLoader.cpp
-  Client.cpp
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxNorTex.cso
   코드를 생성하고 있습니다.
-  39 of 205 functions (19.0%) were compiled, the rest were copied from previous compilation.
-    7 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+  0 of 246 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe
