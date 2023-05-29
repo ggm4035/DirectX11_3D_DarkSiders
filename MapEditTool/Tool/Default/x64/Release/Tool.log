@@ -1,9 +1,0 @@
-﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Shader_VtxNorTex.cso
-  코드를 생성하고 있습니다.
-  0 of 448 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  코드를 생성했습니다.
-  Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe
