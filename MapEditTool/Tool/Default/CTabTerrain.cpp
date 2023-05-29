@@ -9,6 +9,7 @@
 #include "CToolInstance.h"
 
 #include "CTerrain.h"
+#include "CCoordnate_Axis.h"
 
 // CTabTerrain 대화 상자
 
@@ -94,7 +95,7 @@ BOOL CTabTerrain::OnInitDialog()
 		m_spEdit[i].SetPos(0);
 	}
 	m_RenderStyle[1].SetCheck(TRUE);
-	m_RenderCoordnate_Axis[1].SetCheck(TRUE);
+	m_RenderCoordnate_Axis[0].SetCheck(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -106,7 +107,7 @@ void CTabTerrain::OnDeltaposSpin1(NMHDR* pNMHDR, LRESULT* pResult)
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
 	int iIndex = 0;
-
+	
 	switch (pNMHDR->idFrom)
 	{
 	case IDC_SPIN1:
@@ -217,10 +218,10 @@ void CTabTerrain::OnBnClickedRenderStyle()
 void CTabTerrain::OnBnClickedRenderCoordnate_Axis()
 {
 	if (m_RenderCoordnate_Axis[0].GetCheck())
-		int i = 0;
+		TOOL->m_pCoordnate_Axis->RenderOn();
 
 	if (m_RenderCoordnate_Axis[1].GetCheck())
-		int i = 0;
+		TOOL->m_pCoordnate_Axis->RenderOff();
 }
 
 
@@ -266,5 +267,4 @@ void CTabTerrain::OnEnChangeRotation()
 
 	if (TOOL->m_pTerrain)
 		TOOL->m_pTerrain->Set_Rotation(vDegrees);
-		//TOOL->m_pTerrain->Set_Rotation(vDegrees);
 }

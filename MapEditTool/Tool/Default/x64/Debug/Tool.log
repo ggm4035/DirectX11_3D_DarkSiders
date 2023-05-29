@@ -1,2 +1,10 @@
-﻿  CCoordnate_Axis.cpp
+﻿  CTabTerrain.cpp
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(191,19): warning C4244: '초기화 중': 'double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(192,17): warning C4244: '초기화 중': 'double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(244,67): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(244,51): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(244,35): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(266,66): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(266,50): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Default\CTabTerrain.cpp(266,34): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Tool.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\MapEditTool\Tool\Bin\Tool.exe

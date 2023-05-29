@@ -23,6 +23,10 @@ public:
 	virtual void Late_Tick(_double TimeDelta) override {}
 	virtual HRESULT Render() override;
 
+public:
+	void RenderOn() { m_bIsRender = true; }
+	void RenderOff() { m_bIsRender = false; }
+
 private:
 	CRenderer* m_pRenderer = { nullptr };
 	CShader* m_pShaderCom = { nullptr };

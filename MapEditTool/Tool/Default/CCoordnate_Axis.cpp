@@ -2,6 +2,7 @@
 #include "CCoordnate_Axis.h"
 
 #include "CGameInstance.h"
+#include "CToolInstance.h"
 
 CCoordnate_Axis::CCoordnate_Axis(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject3D(pDevice, pContext)
@@ -26,6 +27,8 @@ HRESULT CCoordnate_Axis::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	TOOL->m_pCoordnate_Axis = this;
 
 	return S_OK;
 }

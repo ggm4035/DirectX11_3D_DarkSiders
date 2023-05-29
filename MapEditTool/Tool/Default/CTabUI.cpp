@@ -26,7 +26,6 @@ void CTabUI::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-
 BEGIN_MESSAGE_MAP(CTabUI, CDialogEx)
 END_MESSAGE_MAP()
 

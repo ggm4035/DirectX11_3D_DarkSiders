@@ -56,11 +56,10 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iXCount, _uint iZCount, _f
 				0.f,
 				(_float)i * m_fInterval);
 			pVertices[iIndex].vTexCoord = _float2(
-				(_float)j / (_float)(m_iXCount - 1), 
+				(_float)j / (_float)(m_iXCount - 1),
 				(_float)i / (_float)(m_iZCount - 1));
 		}
 	}
-
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
 
@@ -127,7 +126,8 @@ HRESULT CVIBuffer_Terrain::Render()
 	return S_OK;
 }
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iXCount, _uint iZCount, _float fInterval)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
+	_uint iXCount, _uint iZCount, _float fInterval)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 

@@ -62,7 +62,6 @@ void CMainApp::Tick(const _double TimeDelta)
 
 HRESULT CMainApp::Render()
 {
-
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.3f, 0.5f, 0.34f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
@@ -125,7 +124,7 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOLMAP, L"Prototype_Component_Texture_Test",
-		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/De3.png"))))
+		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Test/De%d.png", 10))))
 		return E_FAIL;
 
 	return S_OK;

@@ -67,9 +67,6 @@ void CFileInfo::Extraction_Texture(const std::wstring& wstrPath, std::list<IMGPA
 			pImgPath->wstrPath = ConvertRelatePath(szPathBuf);
 
 			PathRemoveFileSpec(szPathBuf);
-			pImgPath->wstrStateKey = PathFindFileName(szPathBuf);
-
-			PathRemoveFileSpec(szPathBuf);
 			pImgPath->wstrObjKey = PathFindFileName(szPathBuf);
 
 			rPathInfoList.push_back(pImgPath);

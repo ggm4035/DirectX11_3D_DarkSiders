@@ -22,7 +22,8 @@ private:
 	_float m_fInterval = { 0.f };
 
 public:
-	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iXCount = 129, _uint iZCount = 129, _float fInterval = 1.f);
+	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
+		_uint iXCount = 129, _uint iZCount = 129, _float fInterval = 1.f);
 	virtual CVIBuffer_Terrain* Clone(void* pArg) override;
 	virtual void Free() override;
 };

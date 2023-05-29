@@ -1,7 +1,7 @@
 
 RasterizerState g_Rasterizer;
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D g_Texture[2];
+texture2D g_Texture[10];
 float g_fDetail;
 
 sampler LinearSampler = sampler_state

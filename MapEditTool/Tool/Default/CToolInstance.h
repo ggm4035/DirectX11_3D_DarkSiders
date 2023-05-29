@@ -15,6 +15,7 @@ public:
 	class CMainCamera* m_pCamera = { nullptr };
 	class CToolView* m_pToolView = { nullptr };
 	class CMainFrame* m_pMainFrm = { nullptr };
+	class CCoordnate_Axis* m_pCoordnate_Axis = { nullptr };
 
 private:
 	virtual void Free() override {}

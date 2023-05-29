@@ -8,10 +8,8 @@ BEGIN(Tool)
 typedef	struct tagTexturePath
 {
 	wstring			wstrObjKey = { L"" };
-	wstring			wstrStateKey = { L"" };
 	wstring			wstrPath = { L"" };
 	int				iCount = { 0 };
-
 }IMGPATH;
 
 END
