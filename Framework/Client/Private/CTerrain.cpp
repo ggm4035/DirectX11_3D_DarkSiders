@@ -95,7 +95,7 @@ HRESULT CTerrain::SetUp_ShaderResources()
 		return E_FAIL;
 	}
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_Texture")))
+	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_Diffuse_Texture")))
 	{
 		Safe_Release(pGameInstance);
 		return E_FAIL;

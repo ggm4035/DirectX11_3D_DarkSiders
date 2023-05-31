@@ -11,9 +11,6 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	if (FAILED(CLevel::Initialize()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Prototype_Component_For_Logo()))
 		return E_FAIL;
 
@@ -25,8 +22,6 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Tick(_double TimeDelta)
 {
-	CLevel::Tick(TimeDelta);
-
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
 		CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -43,9 +38,6 @@ void CLevel_Logo::Tick(_double TimeDelta)
 
 HRESULT CLevel_Logo::Render()
 {
-	if (FAILED(CLevel::Render()))
-		return E_FAIL;
-
 	return S_OK;
 }
 

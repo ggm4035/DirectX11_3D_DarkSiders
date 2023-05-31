@@ -17,6 +17,8 @@ _ulong CBase::Release()
 		Free();
 
 		delete this;
+
+		return 0;
 	}
 	
 	return m_dwRefCnt;

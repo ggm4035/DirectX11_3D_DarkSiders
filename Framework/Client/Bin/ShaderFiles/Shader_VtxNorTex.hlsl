@@ -1,8 +1,8 @@
 
 RasterizerState g_Rasterizer;
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D g_Texture[10];
-float g_fDetail;
+texture2D g_Diffuse_Texture[10];
+float g_fDetail = 1.f;
 
 sampler LinearSampler = sampler_state
 {
@@ -47,7 +47,7 @@ float4 PS_MAIN(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
 	
-    vColor = g_Texture[0].Sample(LinearSampler, In.vTexUV * g_fDetail);
+    vColor = g_Diffuse_Texture[0].Sample(LinearSampler, In.vTexUV * g_fDetail);
 	
 	return vColor;
 }

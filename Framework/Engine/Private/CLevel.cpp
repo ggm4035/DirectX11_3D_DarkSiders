@@ -14,20 +14,6 @@ CLevel::~CLevel()
 {
 }
 
-HRESULT CLevel::Initialize()
-{
-	return S_OK;
-}
-
-void CLevel::Tick(_double TimeDelta)
-{
-}
-
-HRESULT CLevel::Render()
-{
-	return S_OK;
-}
-
 void CLevel::Free()
 {
 	Safe_Release(m_pContext);

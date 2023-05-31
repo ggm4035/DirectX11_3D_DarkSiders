@@ -12,9 +12,9 @@ private:
 	virtual ~CLevel_Logo() = default;
 
 public:
-	virtual HRESULT Initialize();
-	virtual void Tick(_double TimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT Initialize() override;
+	virtual void Tick(_double TimeDelta) override;
+	virtual HRESULT Render() override;
 
 private:
 	HRESULT Ready_Prototype_Component_For_Logo();

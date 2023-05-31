@@ -73,9 +73,6 @@
     <Filter Include="01.Utility\03. Component\04. Texture">
       <UniqueIdentifier>{68733e2e-687e-4733-8a5e-ba8b5f8a5df4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.System\02. DInput">
-      <UniqueIdentifier>{f79716a0-a785-4515-8afa-97c6f28254fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\02. GameObject\CGameObject3D">
       <UniqueIdentifier>{a17d4c75-30a2-41e4-8d5d-aa575d0ee377}</UniqueIdentifier>
     </Filter>
@@ -91,11 +88,14 @@
     <Filter Include="01.Utility\02. GameObject\CGameObjectUI">
       <UniqueIdentifier>{d28c0133-d878-4c48-bcb5-19acf0c550c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.System\03. Application">
-      <UniqueIdentifier>{8c86548c-7b42-4ced-b2fc-b10dff367004}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03. Component\01. VIBuffer\Coordnate">
       <UniqueIdentifier>{944e35ed-324e-45e6-993c-18a9d47e1d5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\00.Device\Input">
+      <UniqueIdentifier>{437cbf70-c3a0-4d6a-85c0-63a71f3a1c02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\02. Application">
+      <UniqueIdentifier>{8c86548c-7b42-4ced-b2fc-b10dff367004}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +174,6 @@
     <ClInclude Include="..\public\CTexture.h">
       <Filter>01.Utility\03. Component\04. Texture</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CDInput_Manager.h">
-      <Filter>00.System\02. DInput</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CPipeLine.h">
       <Filter>04. PipeLine</Filter>
     </ClInclude>
@@ -190,10 +187,13 @@
       <Filter>01.Utility\02. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CApplication.h">
-      <Filter>00.System\03. Application</Filter>
+      <Filter>00.System\02. Application</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CVIBuffer_Coordnate.h">
       <Filter>01.Utility\03. Component\01. VIBuffer\Coordnate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CInput_Device.h">
+      <Filter>00.System\00.Device\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -260,9 +260,6 @@
     <ClCompile Include="..\private\CTexture.cpp">
       <Filter>01.Utility\03. Component\04. Texture</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\source\repos\Framework\Client\Private\CDInput_Manager.cpp">
-      <Filter>00.System\02. DInput</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CPipeLine.cpp">
       <Filter>04. PipeLine</Filter>
     </ClCompile>
@@ -276,10 +273,13 @@
       <Filter>01.Utility\02. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CApplication.cpp">
-      <Filter>00.System\03. Application</Filter>
+      <Filter>00.System\02. Application</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp">
       <Filter>01.Utility\03. Component\01. VIBuffer\Coordnate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\source\repos\Framework\Client\Private\CInput_Device.cpp">
+      <Filter>00.System\00.Device\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

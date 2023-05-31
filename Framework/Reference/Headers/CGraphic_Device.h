@@ -27,6 +27,9 @@ public:
 	/* 후면 버퍼를 전면버퍼로 교체한다.(백버퍼를 화면에 직접 보여준다.) */
 	HRESULT Present();
 
+	/* 화면 크기를 재조정 한다. */
+	void ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight);
+
 private:	
 
 	// IDirect3DDevice9* == LPDIRECT3DDEVICE9 == ID3D11Device + ID3D11DeviceContext 

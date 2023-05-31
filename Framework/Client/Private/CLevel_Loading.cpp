@@ -21,7 +21,6 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID)
 
 void CLevel_Loading::Tick(_double TimeDelta)
 {
-
 	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
 		if (true == m_pLoader->Get_Finished())
@@ -58,9 +57,6 @@ void CLevel_Loading::Tick(_double TimeDelta)
 
 HRESULT CLevel_Loading::Render()
 {
-	if (FAILED(CLevel::Render()))
-		return E_FAIL;
-
 	return S_OK;
 }
 

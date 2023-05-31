@@ -96,11 +96,25 @@ HRESULT CGraphic_Device::Present()
 	if (nullptr == m_pSwapChain)
 		return E_FAIL;
 
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
 	/* 전면 버퍼와 후면버퍼를 교체하여 후면버퍼를 전면으로 보여주는 역할을 한다. */
 	/* 후면버퍼를 직접화면에 보여줄께. */	
 	return m_pSwapChain->Present(0, 0);	
 }
 
+void CGraphic_Device::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
+{
+	Safe_Release(m_pBackBufferRTV);
+	Safe_Release(m_pDepthStencilView);
+
+	m_pSwapChain->ResizeBuffers(0, g_ResizeWidth, g_ResizeHeight, DXGI_FORMAT_UNKNOWN, 0);
+
+	Ready_BackBufferRenderTargetView();
+	Ready_DepthStencilRenderTargetView(g_ResizeWidth, g_ResizeHeight);
+	g_ResizeWidth = g_ResizeHeight = 0;
+
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
+}
 
 HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, _uint iWinCX, _uint iWinCY)
 {

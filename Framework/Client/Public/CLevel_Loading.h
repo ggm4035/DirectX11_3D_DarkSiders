@@ -13,8 +13,8 @@ private:
 
 public:
 	virtual HRESULT Initialize(LEVELID eNextLevelID);
-	virtual void Tick(_double TimeDelta);
-	virtual HRESULT Render();
+	virtual void Tick(_double TimeDelta) override;
+	virtual HRESULT Render() override;
 
 private:
 	class CLoader* m_pLoader = nullptr;

@@ -1,0 +1,15 @@
+(?)
+[ Copy "Hello, world!" to clipboard ]
+### Window options ###
+### Widgets ###
+### Layout & Scrolling ###
+### Popups & Modal windows ###
+### Tables & Columns ###
+### Inputs & Focus ###
+This is some useful text.
+[x] Demo Window
+[ ] Another Window
+{ 0.000 } float
+{ R:214 } { G:230 } { B:245 } clear color
+[ Button ] counter = 0
+Application average 16.667 ms/frame (60.0 FPS)

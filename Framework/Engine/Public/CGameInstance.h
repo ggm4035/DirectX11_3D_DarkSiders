@@ -2,6 +2,7 @@
 
 #include "CComponent_Manager.h"
 #include "CPipeLine.h"
+#include "CInput_Device.h"
 
 /* 0. 클라이언트 엔진의 연결 역활한다. */
 /* 0.0 게임인스턴스라는 객체를 통해서 엔진의다양한기능을 활요앟ㄹ 수 있게 한다. */
@@ -54,10 +55,10 @@ public: /* For.Input_Manager */
 	_bool	Key_Pressing(_ubyte ubyKey);
 	_bool	Key_Down(_ubyte ubyKey);
 	_bool	Key_Up(_ubyte ubyKey);
-	_bool	Mouse_Down(_uint iMouseID);
-	_bool	Mouse_Pressing(_uint iMouseID);
-	_bool	Mouse_Up(_uint iMouseID);
-	_long	Get_DIMouseMove(_uint iMouseMoveID);
+	_bool	Mouse_Down(CInput_Device::MOUSEKEYSTATE eMouseID);
+	_bool	Mouse_Pressing(CInput_Device::MOUSEKEYSTATE eMouseID);
+	_bool	Mouse_Up(CInput_Device::MOUSEKEYSTATE eMouseID);
+	_long	Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMouseMoveID);
 
 public: /* For.PipeLine */
 	_matrix Get_Transform_Matrix(CPipeLine::TRANSFORMSTATE eState);
@@ -70,6 +71,9 @@ public: /* For.PipeLine */
 	_float4x4 Get_UI_Proj_Float4x4(const _uint iWinSizeX, const _uint iWinSizeY);
 	HRESULT Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix _Matrix);
 
+public: /* For. Imgui */
+	void ResizeBuffers(_uint & g_ResizeWidth, _uint & g_ResizeHeight);
+
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Manager* m_pLevel_Manager = { nullptr };
@@ -77,7 +81,7 @@ private:
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CComponent_Manager* m_pComponent_Manager = { nullptr };
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
-	class CDInput_Manager* m_pInput_Manager = { nullptr };
+	class CInput_Device* m_pInput_Manager = { nullptr };
 	class CPipeLine* m_pPipeLine = { nullptr };
 	
 public:

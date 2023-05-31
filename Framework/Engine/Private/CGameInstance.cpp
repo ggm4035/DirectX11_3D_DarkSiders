@@ -6,7 +6,6 @@
 #include "Timer_Manager.h"
 #include "CComponent_Manager.h"
 #include "CCamera_Manager.h"
-#include "CDInput_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -17,7 +16,7 @@ CGameInstance::CGameInstance()
 	, m_pTimer_Manager{ CTimer_Manager::GetInstance() }
 	, m_pComponent_Manager{ CComponent_Manager::GetInstance() }
 	, m_pCamera_Manager{ CCamera_Manager::GetInstance() }
-	, m_pInput_Manager{ CDInput_Manager::GetInstance() }
+	, m_pInput_Manager{ CInput_Device::GetInstance() }
 	, m_pPipeLine{ CPipeLine::GetInstance() }
 {
 	Safe_AddRef(m_pPipeLine);
@@ -241,40 +240,40 @@ _bool CGameInstance::Key_Up(_ubyte ubyKey)
 	return m_pInput_Manager->Key_Up(ubyKey);
 }
 
-_bool CGameInstance::Mouse_Down(_uint iMouseID)
+_bool CGameInstance::Mouse_Down(CInput_Device::MOUSEKEYSTATE eMouseID)
 {
 	if (nullptr == m_pInput_Manager ||
-		iMouseID < 0 || iMouseID >= CDInput_Manager::DIM_END)
+		eMouseID < 0 || eMouseID >= CInput_Device::DIM_END)
 		return false;
 
-	return m_pInput_Manager->Mouse_Down(CDInput_Manager::MOUSEKEYSTATE(iMouseID));
+	return m_pInput_Manager->Mouse_Down(eMouseID);
 }
 
-_bool CGameInstance::Mouse_Pressing(_uint iMouseID)
+_bool CGameInstance::Mouse_Pressing(CInput_Device::MOUSEKEYSTATE eMouseID)
 {
 	if (nullptr == m_pInput_Manager ||
-		iMouseID < 0 || iMouseID >= CDInput_Manager::DIM_END)
+		eMouseID < 0 || eMouseID >= CInput_Device::DIM_END)
 		return false;
 
-	return m_pInput_Manager->Mouse_Pressing(CDInput_Manager::MOUSEKEYSTATE(iMouseID));
+	return m_pInput_Manager->Mouse_Pressing(eMouseID);
 }
 
-_bool CGameInstance::Mouse_Up(_uint iMouseID)
+_bool CGameInstance::Mouse_Up(CInput_Device::MOUSEKEYSTATE eMouseID)
 {
 	if (nullptr == m_pInput_Manager ||
-		iMouseID < 0 || iMouseID >= CDInput_Manager::DIM_END)
+		eMouseID < 0 || eMouseID >= CInput_Device::DIM_END)
 		return false;
 
-	return m_pInput_Manager->Mouse_Up(CDInput_Manager::MOUSEKEYSTATE(iMouseID));
+	return m_pInput_Manager->Mouse_Up(eMouseID);
 }
 
-_long CGameInstance::Get_DIMouseMove(_uint iMouseMoveID)
+_long CGameInstance::Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMouseMoveID)
 {
 	if (nullptr == m_pInput_Manager ||
-		iMouseMoveID < 0 || iMouseMoveID >= CDInput_Manager::DIMS_END)
+		eMouseMoveID < 0 || eMouseMoveID >= CInput_Device::DIMS_END)
 		return false;
 
-	return m_pInput_Manager->Get_DIMouseMove(CDInput_Manager::MOUSEMOVESTATE(iMouseMoveID));
+	return m_pInput_Manager->Get_DIMouseMove(eMouseMoveID);
 }
 
 _matrix CGameInstance::Get_Transform_Matrix(CPipeLine::TRANSFORMSTATE eState)
@@ -349,6 +348,14 @@ HRESULT CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix 
 	return m_pPipeLine->Set_Transform(eState, _Matrix);
 }
 
+void CGameInstance::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
+{
+	if (nullptr == m_pGraphic_Device)
+		return;
+
+	m_pGraphic_Device->ResizeBuffers(g_ResizeWidth, g_ResizeHeight);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
@@ -365,7 +372,7 @@ void CGameInstance::Release_Engine()
 
 	CTimer_Manager::GetInstance()->DestroyInstance();
 
-	CDInput_Manager::GetInstance()->DestroyInstance();
+	CInput_Device::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }

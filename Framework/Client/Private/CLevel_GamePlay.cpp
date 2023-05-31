@@ -10,9 +10,6 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
-	if (FAILED(CLevel::Initialize()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
 		return E_FAIL;
 
@@ -24,16 +21,11 @@ HRESULT CLevel_GamePlay::Initialize()
 
 void CLevel_GamePlay::Tick(_double TimeDelta)
 {
-	CLevel::Tick(TimeDelta);
-
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
 }
 
 HRESULT CLevel_GamePlay::Render()
 {
-	if (FAILED(CLevel::Render()))
-		return E_FAIL;
-
 	return S_OK;
 }
 

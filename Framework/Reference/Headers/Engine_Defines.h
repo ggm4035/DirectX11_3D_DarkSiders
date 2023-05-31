@@ -39,10 +39,21 @@ using namespace std;
 #ifndef DBG_NEW 
 
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
-#define new DBG_NEW 
 
-#endif
+#ifndef _USE_IMGUI
+#define new DBG_NEW 
+#else
+#define New DBG_NEW
+#endif // _USE_IMGUI
 
 #endif // _DEBUG
+#else
+
+#ifdef _USE_IMGUI
+#define New new
+#endif // _USE_IMGUI
+
+#endif // _DEBUG
+
 
 using namespace Engine;

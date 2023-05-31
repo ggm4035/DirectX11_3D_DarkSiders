@@ -134,6 +134,12 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtx.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCol.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>

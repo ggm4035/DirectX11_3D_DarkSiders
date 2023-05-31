@@ -1,4 +1,4 @@
-﻿  CDInput_Manager.cpp
+﻿  CInput_Device.cpp
   CApplication.cpp
   CBase.cpp
   CCamera.cpp
@@ -36,6 +36,7 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(116,
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(116,79): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(155,86): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CVIBuffer.cpp
+  CVIBuffer_Coordnate.cpp
   CVIBuffer_Rect.cpp
   CVIBuffer_Terrain.cpp
   Timer.cpp
@@ -43,9 +44,9 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(155,
   Engine_Struct.cpp
      ..\Bin\Engine.lib 라이브러리 및 ..\Bin\Engine.exp 개체를 생성하고 있습니다.
   코드를 생성하고 있습니다.
-  144 of 1596 functions ( 9.0%) were compiled, the rest were copied from previous compilation.
-    64 functions were new in current compilation
-    69 functions had inline decision re-evaluated but remain unchanged
+  327 of 1612 functions (20.3%) were compiled, the rest were copied from previous compilation.
+    73 functions were new in current compilation
+    33 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
 DirectXTK.lib(DDSTextureLoader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTK.lib(DDSTextureLoader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 DirectXTK.lib(pch.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTK.lib(pch.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
