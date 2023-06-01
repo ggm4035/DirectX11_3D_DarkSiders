@@ -6,6 +6,7 @@
 #include "Timer_Manager.h"
 #include "CComponent_Manager.h"
 #include "CCamera_Manager.h"
+#include "CFileInfo.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -18,7 +19,11 @@ CGameInstance::CGameInstance()
 	, m_pCamera_Manager{ CCamera_Manager::GetInstance() }
 	, m_pInput_Manager{ CInput_Device::GetInstance() }
 	, m_pPipeLine{ CPipeLine::GetInstance() }
+	, m_pFileInfo{ CFileInfo::GetInstance() }
+	, m_pLight_Manager{ CLight_Manager::GetInstance() }
 {
+	Safe_AddRef(m_pLight_Manager);
+	Safe_AddRef(m_pFileInfo);
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
@@ -29,7 +34,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pInput_Manager);
 }
 
-HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
+HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
 {
 	/* 디바이스 초기화. (그래픽, 사운드, 입력장치) */
 
@@ -64,7 +69,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHICDESC& Gr
 	return S_OK;
 }
 
-void CGameInstance::Tick_Engine(_double TimeDelta)
+void CGameInstance::Tick_Engine(const _double& TimeDelta)
 {
 	if (nullptr == m_pLevel_Manager)
 		return;
@@ -80,7 +85,7 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pLevel_Manager->Tick(TimeDelta);
 }
 
-void CGameInstance::Clear_LevelResources(_uint iLevelIndex)
+void CGameInstance::Clear_LevelResources(const _uint& iLevelIndex)
 {
 	if (nullptr == m_pObject_Manager ||
 		nullptr == m_pComponent_Manager)
@@ -96,7 +101,7 @@ void CGameInstance::Clear_LevelResources(_uint iLevelIndex)
 	m_pCamera_Manager->Clear_LevelResources(iLevelIndex);
 }
 
-HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
+HRESULT CGameInstance::Clear_BackBuffer_View(const _float4& vClearColor)
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
@@ -120,31 +125,31 @@ HRESULT CGameInstance::Present()
 	return m_pGraphic_Device->Present();
 }
 
-_double CGameInstance::Get_Timer(const _tchar* pTimerTag)
+_double CGameInstance::Get_Timer(wstring TimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return 0.0;
 
-	return m_pTimer_Manager->Get_Timer(pTimerTag);
+	return m_pTimer_Manager->Get_Timer(TimerTag);
 }
 
-void CGameInstance::Set_Timer(const _tchar* pTimerTag)
+void CGameInstance::Set_Timer(wstring TimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return;
 	
-	m_pTimer_Manager->Set_Timer(pTimerTag);
+	m_pTimer_Manager->Set_Timer(TimerTag);
 }
 
-HRESULT CGameInstance::Ready_Timer(const _tchar* pTimerTag)
+HRESULT CGameInstance::Ready_Timer(wstring TimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return E_FAIL;
 
-	return m_pTimer_Manager->Ready_Timer(pTimerTag);
+	return m_pTimer_Manager->Ready_Timer(TimerTag);
 }
 
-HRESULT CGameInstance::Open_Level(_uint iNumLevels, CLevel* pNewLevel)
+HRESULT CGameInstance::Open_Level(const _uint& iNumLevels, CLevel* pNewLevel)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
@@ -152,71 +157,87 @@ HRESULT CGameInstance::Open_Level(_uint iNumLevels, CLevel* pNewLevel)
 	return m_pLevel_Manager->Open_Level(iNumLevels, pNewLevel);
 }
 
-HRESULT CGameInstance::Add_Prototype(const _tchar* pPrototypeTag, CGameObject* pPrototype)
+HRESULT CGameInstance::Add_Prototype(wstring PrototypeTag, CGameObject* pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_Prototype(pPrototypeTag, pPrototype);
+	return m_pObject_Manager->Add_Prototype(PrototypeTag, pPrototype);
 }
 
-HRESULT CGameInstance::Add_GameObject(_uint iNumLayer, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg)
+HRESULT CGameInstance::Add_GameObject(const _uint& iNumLayer, wstring PrototypeTag, wstring GameObjectTag, wstring LayerTag, void* pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_GameObject(iNumLayer, pPrototypeTag, pLayerTag, pArg);
+	return m_pObject_Manager->Add_GameObject(iNumLayer, PrototypeTag, GameObjectTag, LayerTag, pArg);
 }
 
-HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrototype)
+list<CGameObject*> CGameInstance::Get_All_GameObject()
+{
+	if (nullptr == m_pObject_Manager)
+		return list<CGameObject*>();
+
+	return m_pObject_Manager->Get_All_GameObject();
+}
+
+HRESULT CGameInstance::Add_Prototype(const _uint& iLevelIndex, wstring PrototypeTag, CComponent* pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
 		return E_FAIL;
 
-	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrototype);
+	return m_pComponent_Manager->Add_Prototype(iLevelIndex, PrototypeTag, pPrototype);
 }
 
-CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg)
+CComponent* CGameInstance::Clone_Component(const _uint& iLevelIndex, wstring PrototypeTag, CComponent* pOwner, void* pArg)
 {
 	if (nullptr == m_pComponent_Manager)
 		return nullptr;
 
-	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+	return m_pComponent_Manager->Clone_Component(iLevelIndex, PrototypeTag, pOwner, pArg);
 }
 
-CComponent* CGameInstance::Clone_Transform(void* pArg)
+CComponent* CGameInstance::Clone_Transform(CComponent* pOwner, void* pArg)
 {
 	if (nullptr == m_pComponent_Manager)
 		return nullptr;
 
-	return m_pComponent_Manager->Clone_Transform(pArg);
+	return m_pComponent_Manager->Clone_Transform(pOwner, pArg);
 }
 
-HRESULT CGameInstance::Add_Camera(_uint iLevelIndex, const _tchar* pCameraTag, CCamera* pCamera)
+list<CComponent*> CGameInstance::Get_All_Prototypes()
+{
+	if(nullptr == m_pComponent_Manager)
+		return list<CComponent*>();
+
+	return m_pComponent_Manager->Get_All_Prototypes();
+}
+
+HRESULT CGameInstance::Add_Camera(const _uint& iLevelIndex, wstring CameraTag, CCamera* pCamera)
 {
 	if (nullptr == m_pCamera_Manager)
 		return E_FAIL;
 
-	return m_pCamera_Manager->Add_Camera(iLevelIndex, pCameraTag, pCamera);
+	return m_pCamera_Manager->Add_Camera(iLevelIndex, CameraTag, pCamera);
 }
 
-HRESULT CGameInstance::Remove_Camera(_uint iLevelIndex, const _tchar* pCameraTag)
+HRESULT CGameInstance::Remove_Camera(const _uint& iLevelIndex, wstring CameraTag)
 {
 	if (nullptr == m_pCamera_Manager)
 		return E_FAIL;
 
-	return m_pCamera_Manager->Remove_Camera(iLevelIndex, pCameraTag);
+	return m_pCamera_Manager->Remove_Camera(iLevelIndex, CameraTag);
 }
 
-HRESULT CGameInstance::On_Camera(_uint iLevelIndex, const _tchar* pCameraTag)
+HRESULT CGameInstance::On_Camera(const _uint& iLevelIndex, wstring CameraTag)
 {
 	if (nullptr == m_pCamera_Manager)
 		return E_FAIL;
 
-	return m_pCamera_Manager->On_Camera(iLevelIndex, pCameraTag);
+	return m_pCamera_Manager->On_Camera(iLevelIndex, CameraTag);
 }
 
-_bool CGameInstance::Key_Pressing(_ubyte ubyKey)
+_bool CGameInstance::Key_Pressing(const _ubyte& ubyKey)
 {
 	if (nullptr == m_pInput_Manager)
 		return false;
@@ -224,7 +245,7 @@ _bool CGameInstance::Key_Pressing(_ubyte ubyKey)
 	return m_pInput_Manager->Key_Pressing(ubyKey);
 }
 
-_bool CGameInstance::Key_Down(_ubyte ubyKey)
+_bool CGameInstance::Key_Down(const _ubyte& ubyKey)
 {
 	if (nullptr == m_pInput_Manager)
 		return false;
@@ -232,7 +253,7 @@ _bool CGameInstance::Key_Down(_ubyte ubyKey)
 	return m_pInput_Manager->Key_Down(ubyKey);
 }
 
-_bool CGameInstance::Key_Up(_ubyte ubyKey)
+_bool CGameInstance::Key_Up(const _ubyte& ubyKey)
 {
 	if (nullptr == m_pInput_Manager)
 		return false;
@@ -324,7 +345,7 @@ _float4x4 CGameInstance::Get_UI_View_Float4x4()
 	return m_pPipeLine->Get_UI_View_Float4x4();
 }
 
-_matrix CGameInstance::Get_UI_Proj_Matrix(const _uint iWinSizeX, const _uint iWinSizeY)
+_matrix CGameInstance::Get_UI_Proj_Matrix(const _uint& iWinSizeX, const _uint& iWinSizeY)
 {
 	if (nullptr == m_pPipeLine)
 		return _matrix();
@@ -332,7 +353,7 @@ _matrix CGameInstance::Get_UI_Proj_Matrix(const _uint iWinSizeX, const _uint iWi
 	return m_pPipeLine->Get_UI_Proj_Matrix(iWinSizeX, iWinSizeY);
 }
 
-_float4x4 CGameInstance::Get_UI_Proj_Float4x4(const _uint iWinSizeX, const _uint iWinSizeY)
+_float4x4 CGameInstance::Get_UI_Proj_Float4x4(const _uint& iWinSizeX, const _uint& iWinSizeY)
 {
 	if (nullptr == m_pPipeLine)
 		return _float4x4();
@@ -348,6 +369,38 @@ HRESULT CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix 
 	return m_pPipeLine->Set_Transform(eState, _Matrix);
 }
 
+wstring CGameInstance::strToWStr(string str)
+{
+	if (nullptr == m_pFileInfo)
+		return L"";
+
+	return m_pFileInfo->strToWStr(str);
+}
+
+string CGameInstance::wstrToStr(wstring wstr)
+{
+	if (nullptr == m_pFileInfo)
+		return "";
+
+	return m_pFileInfo->wstrToStr(wstr);
+}
+
+const CLight::LIGHTDESC* CGameInstance::Get_LightDesc(const _uint& iIndex)
+{
+	if (nullptr == m_pLight_Manager)
+		return nullptr;
+
+	return m_pLight_Manager->Get_LightDesc(iIndex);
+}
+
+HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CLight::LIGHTDESC& LightDesc)
+{
+	if (nullptr == m_pLight_Manager)
+		return E_FAIL;
+
+	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
+}
+
 void CGameInstance::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
 {
 	if (nullptr == m_pGraphic_Device)
@@ -359,6 +412,10 @@ void CGameInstance::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
+
+	CLight_Manager::GetInstance()->DestroyInstance();
+
+	CFileInfo::GetInstance()->DestroyInstance();
 
 	CPipeLine::GetInstance()->DestroyInstance();
 
@@ -379,6 +436,8 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pLight_Manager);
+	Safe_Release(m_pFileInfo);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pComponent_Manager);

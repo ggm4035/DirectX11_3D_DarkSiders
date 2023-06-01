@@ -19,22 +19,25 @@ private:
 	virtual ~CComponent_Manager() = default;
 
 public:
-	HRESULT Reserve_Containers(_uint iNumLevels, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg);
-	class CComponent* Clone_Transform(void* pArg);
-	void Clear_LevelResources(_uint iLevelIndex);
+	HRESULT Reserve_Containers(const _uint& iNumLevels, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	HRESULT Add_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag, class CComponent* pPrototype);
+	class CComponent* Clone_Component(const _uint& iLevelIndex, wstring& PrototypeTag, class CComponent* pOwner, void* pArg);
+	class CComponent* Clone_Transform(class CComponent* pOwner, void* pArg);
+	void Clear_LevelResources(const _uint& iLevelIndex);
+
+public:
+	list<class CComponent*> Get_All_Prototypes();
 
 private:
 	_uint m_iNumLevels = { 0 };
 
 private:
-	typedef unordered_map<const _tchar*, class CComponent*> PROTOTYPES;
+	typedef unordered_map<wstring, class CComponent*> PROTOTYPES;
 	PROTOTYPES* m_pPrototypes = { nullptr };
 	class CTransform* m_pPrototype_Transform = { nullptr };
 
 private:
-	class CComponent* Find_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag);
+	class CComponent* Find_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag);
 
 public:
 	virtual void Free() override;

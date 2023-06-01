@@ -19,11 +19,10 @@ private:
 
 public:
     HRESULT Initialize();
-    void Tick(_double TimeDelta);
+    void Tick(const _double& TimeDelta);
     HRESULT Render();
 
 public:
-    HRESULT Ready_Prototype_Component_For_Static();
     HRESULT Open_Level(LEVELID eLevelIndex);
 
 public:

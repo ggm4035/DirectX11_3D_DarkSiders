@@ -169,16 +169,16 @@
     <ClInclude Include="..\..\backends\imgui_impl_dx11.h" />
     <ClInclude Include="..\..\backends\imgui_impl_win32.h" />
     <ClInclude Include="CCoordnate_Axis.h" />
-    <ClInclude Include="CFileInfo.h" />
+    <ClInclude Include="CDummyObject3D.h" />
     <ClInclude Include="CImWindow_Base.h" />
-    <ClInclude Include="CImWindow_Bottom.h" />
     <ClInclude Include="CImWindow_Inspector.h" />
-    <ClInclude Include="CImWindow_Top.h" />
     <ClInclude Include="CLevel_Tool.h" />
     <ClInclude Include="CMainCamera.h" />
     <ClInclude Include="CTerrain.h" />
     <ClInclude Include="CToolInstance.h" />
     <ClInclude Include="CToolMainApp.h" />
+    <ClInclude Include="ImGuiFileDialog.h" />
+    <ClInclude Include="ImGuiFileDialogConfig.h" />
     <ClInclude Include="IMGUI_Defines.h" />
     <ClInclude Include="CImWindow.h" />
     <ClInclude Include="CImWindow_Manager.h" />
@@ -192,11 +192,9 @@
     <ClCompile Include="..\..\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="CCoordnate_Axis.cpp" />
-    <ClCompile Include="CFileInfo.cpp" />
+    <ClCompile Include="CDummyObject3D.cpp" />
     <ClCompile Include="CImWindow_Base.cpp" />
-    <ClCompile Include="CImWindow_Bottom.cpp" />
     <ClCompile Include="CImWindow_Inspector.cpp" />
-    <ClCompile Include="CImWindow_Top.cpp" />
     <ClCompile Include="CLevel_Tool.cpp" />
     <ClCompile Include="CMainCamera.cpp" />
     <ClCompile Include="CTerrain.cpp" />
@@ -204,6 +202,7 @@
     <ClCompile Include="CToolMainApp.cpp" />
     <ClCompile Include="CImWindow.cpp" />
     <ClCompile Include="CImWindow_Manager.cpp" />
+    <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

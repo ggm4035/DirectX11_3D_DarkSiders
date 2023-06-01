@@ -13,13 +13,13 @@ protected:
 
 public:
 	virtual HRESULT Initialize_Prototype() = 0;
-	virtual HRESULT Initialize(void* pArg) = 0;
-	virtual void Tick(_double TimeDelta) = 0;
-	virtual void Late_Tick(_double TimeDelta) = 0;
+	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) = 0;
+	virtual void Tick(const _double& TimeDelta) = 0;
+	virtual void Late_Tick(const _double& TimeDelta) = 0;
 	virtual HRESULT Render() = 0;
 
 public:
-	virtual CGameObject* Clone(void* pArg) = 0;
+	virtual CGameObject* Clone(CComponent * pOwner, void* pArg) = 0;
 	virtual void Free() = 0;
 };
 

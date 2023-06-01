@@ -7,7 +7,7 @@ CComponent_Manager::CComponent_Manager()
 {
 }
 
-HRESULT CComponent_Manager::Reserve_Containers(_uint iNumLevels, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CComponent_Manager::Reserve_Containers(const _uint& iNumLevels, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	if (nullptr != m_pPrototypes || 0 == iNumLevels ||
 		nullptr == pDevice || nullptr == pContext)
@@ -26,7 +26,7 @@ HRESULT CComponent_Manager::Reserve_Containers(_uint iNumLevels, ID3D11Device* p
 	return S_OK;
 }
 
-HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrototype)
+HRESULT CComponent_Manager::Add_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag, CComponent* pPrototype)
 {
 	if (nullptr != dynamic_cast<CTransform*>(pPrototype))
 	{
@@ -34,25 +34,26 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pProt
 		return E_FAIL;
 	}
 
-	if (nullptr != Find_Prototype(iLevelIndex, pPrototypeTag))
+	if (nullptr != Find_Prototype(iLevelIndex, PrototypeTag))
 	{
 		MSG_BOX("Prototype is already in Level");
 		return E_FAIL;
 	}
 
-	m_pPrototypes[iLevelIndex].emplace(pPrototypeTag, pPrototype);
+	m_pPrototypes[iLevelIndex].emplace(PrototypeTag, pPrototype);
+	pPrototype->Set_Tag(PrototypeTag);
 
 	return S_OK;
 }
 
-CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg)
+CComponent* CComponent_Manager::Clone_Component(const _uint& iLevelIndex, wstring& PrototypeTag, CComponent* pOwner, void* pArg)
 {
-	CComponent* pPrototype = Find_Prototype(iLevelIndex, pPrototypeTag);
+	CComponent* pPrototype = Find_Prototype(iLevelIndex, PrototypeTag);
 
 	if (nullptr == pPrototype)
 		return nullptr;
 
-	CComponent* pComponent = pPrototype->Clone(pArg);
+	CComponent* pComponent = pPrototype->Clone(pOwner, pArg);
 
 	if (nullptr == pComponent)
 		return nullptr;
@@ -60,19 +61,19 @@ CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const _tchar*
 	return pComponent;
 }
 
-CComponent* CComponent_Manager::Clone_Transform(void* pArg)
+CComponent* CComponent_Manager::Clone_Transform(CComponent* pOwner, void* pArg)
 {
 	if (nullptr == m_pPrototype_Transform)
 		return nullptr;
 
-	CComponent* pComponent = m_pPrototype_Transform->Clone(pArg);
+	CComponent* pComponent = m_pPrototype_Transform->Clone(pOwner, pArg);
 	if (nullptr == pComponent)
 		return nullptr;
 
 	return pComponent;
 }
 
-void CComponent_Manager::Clear_LevelResources(_uint iLevelIndex)
+void CComponent_Manager::Clear_LevelResources(const _uint& iLevelIndex)
 {
 	if (iLevelIndex >= m_iNumLevels || 0 > iLevelIndex)
 		return;
@@ -83,9 +84,20 @@ void CComponent_Manager::Clear_LevelResources(_uint iLevelIndex)
 	m_pPrototypes[iLevelIndex].clear();
 }
 
-CComponent* CComponent_Manager::Find_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag)
+list<class CComponent*> CComponent_Manager::Get_All_Prototypes()
 {
-	auto& iter = find_if(m_pPrototypes[iLevelIndex].begin(), m_pPrototypes[iLevelIndex].end(), CTag_Finder(pPrototypeTag));
+	list<CComponent*> retList;
+	for (_uint i = 0; i < m_iNumLevels; ++i)
+	{
+		for (auto& iter : m_pPrototypes[i])
+			retList.push_back(iter.second);
+	}
+	return retList;
+}
+
+CComponent* CComponent_Manager::Find_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag)
+{
+	auto& iter = m_pPrototypes[iLevelIndex].find(PrototypeTag);
 
 	if (iter == m_pPrototypes[iLevelIndex].end())
 		return nullptr;

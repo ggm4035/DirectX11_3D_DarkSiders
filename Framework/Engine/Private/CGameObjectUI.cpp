@@ -19,8 +19,11 @@ HRESULT CGameObjectUI::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CGameObjectUI::Initialize(void* pArg)
+HRESULT CGameObjectUI::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CComposite::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 	{
 		UIDESC UIDesc;
@@ -33,11 +36,11 @@ HRESULT CGameObjectUI::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CGameObjectUI::Tick(_double TimeDelta)
+void CGameObjectUI::Tick(const _double& TimeDelta)
 {
 }
 
-void CGameObjectUI::Late_Tick(_double TimeDelta)
+void CGameObjectUI::Late_Tick(const _double& TimeDelta)
 {
 }
 

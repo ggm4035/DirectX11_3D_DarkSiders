@@ -97,6 +97,15 @@
     <Filter Include="00.System\02. Application">
       <UniqueIdentifier>{8c86548c-7b42-4ced-b2fc-b10dff367004}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.System\03. FileInfo">
+      <UniqueIdentifier>{583d97da-6d91-44e4-a6ed-bb8a1f2ff815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Lights">
+      <UniqueIdentifier>{b9740140-9ff4-4a72-bb73-f4906b7941cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Lights\Manager">
+      <UniqueIdentifier>{23ea1519-1c1e-4b78-841b-5abffb5051c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -195,6 +204,15 @@
     <ClInclude Include="..\Public\CInput_Device.h">
       <Filter>00.System\00.Device\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CFileInfo.h">
+      <Filter>00.System\03. FileInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLight_Manager.h">
+      <Filter>05. Lights\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLight.h">
+      <Filter>05. Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -278,8 +296,17 @@
     <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp">
       <Filter>01.Utility\03. Component\01. VIBuffer\Coordnate</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\source\repos\Framework\Client\Private\CInput_Device.cpp">
+    <ClCompile Include="..\Private\CFileInfo.cpp">
+      <Filter>00.System\03. FileInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CInput_Device.cpp">
       <Filter>00.System\00.Device\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLight_Manager.cpp">
+      <Filter>05. Lights\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLight.cpp">
+      <Filter>05. Lights</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

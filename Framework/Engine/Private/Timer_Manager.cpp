@@ -7,29 +7,27 @@ CTimer_Manager::CTimer_Manager()
 {
 }
 
-
-
-_double Engine::CTimer_Manager::Get_Timer(const _tchar* pTimerTag)
+_double Engine::CTimer_Manager::Get_Timer(wstring& TimerTag)
 {
-	CTimer*		pTimer = Find_Timer(pTimerTag);
+	CTimer*		pTimer = Find_Timer(TimerTag);
 	if (nullptr == pTimer)
 		return 0.0;
 
 	return pTimer->Get_TimeDelta();
 }
 
-void CTimer_Manager::Set_Timer(const _tchar * pTimerTag)
+void CTimer_Manager::Set_Timer(wstring& TimerTag)
 {
-	CTimer*		pTimer = Find_Timer(pTimerTag);
+	CTimer*		pTimer = Find_Timer(TimerTag);
 	if (nullptr == pTimer)
 		return;
 
 	pTimer->Update_Timer();
 }
 
-CTimer* Engine::CTimer_Manager::Find_Timer(const _tchar* pTimerTag)
+CTimer* Engine::CTimer_Manager::Find_Timer(wstring& TimerTag)
 {
-	auto		iter = find_if(m_umapTimers.begin(), m_umapTimers.end(), CTag_Finder(pTimerTag));
+	auto iter = m_umapTimers.find(TimerTag);
 
 	if (iter == m_umapTimers.end())
 		return nullptr;
@@ -37,9 +35,9 @@ CTimer* Engine::CTimer_Manager::Find_Timer(const _tchar* pTimerTag)
 	return iter->second;
 }
 
-HRESULT Engine::CTimer_Manager::Ready_Timer(const _tchar* pTimerTag)
+HRESULT Engine::CTimer_Manager::Ready_Timer(wstring& TimerTag)
 {
-	CTimer*	pTimer = Find_Timer(pTimerTag);
+	CTimer*	pTimer = Find_Timer(TimerTag);
 	
 	if (nullptr != pTimer)
 		return E_FAIL;
@@ -48,7 +46,7 @@ HRESULT Engine::CTimer_Manager::Ready_Timer(const _tchar* pTimerTag)
 	if (nullptr == pTimer)
 		return E_FAIL;
 
-	m_umapTimers.insert({ pTimerTag, pTimer });
+	m_umapTimers.insert({ TimerTag, pTimer });
 
 	return S_OK;
 }

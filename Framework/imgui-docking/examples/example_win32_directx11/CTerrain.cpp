@@ -20,9 +20,9 @@ HRESULT CTerrain::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTerrain::Initialize(void* pArg)
+HRESULT CTerrain::Initialize(CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CGameObject3D::Initialize(pArg)))
+	if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -42,13 +42,13 @@ HRESULT CTerrain::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CTerrain::Tick(_double TimeDelta)
+void CTerrain::Tick(const _double& TimeDelta)
 {
 	if(nullptr != m_pRenderCom)
 		m_pRenderCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 }
 
-void CTerrain::Late_Tick(_double TimeDelta)
+void CTerrain::Late_Tick(const _double& TimeDelta)
 {
 }
 
@@ -124,19 +124,19 @@ HRESULT CTerrain::Set_Rotation(const _float3& rDegrees)
 HRESULT CTerrain::Add_Components()
 {
 	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Terrain",
-		L"Com_Buffer", (CComponent**)&m_pBufferCom)))
+		L"Com_Buffer", (CComponent**)&m_pBufferCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Shader_VtxNorTex",
-		L"Com_Shader", (CComponent**)&m_pShaderCom)))
+		L"Com_Shader", (CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Renderer",
-		L"Com_Renderer", (CComponent**)&m_pRenderCom)))
+		L"Com_Renderer", (CComponent**)&m_pRenderCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Texture_Test",
-		L"Com_Texture_Test", (CComponent**)&m_pTextureCom)))
+		L"Com_Texture_Test", (CComponent**)&m_pTextureCom, this)))
 		return E_FAIL;
 
 	return S_OK;
@@ -150,7 +150,7 @@ HRESULT CTerrain::Set_Shader_Resources()
 	if (FAILED(m_pShaderCom->Bind_Rasterizer("g_Rasterizer", 0, m_pRasterizer)))
 		return E_FAIL;
 
-	if(FAILED(m_pShaderCom->Bind_Float("g_fDetail", m_fDetail)))
+	if(FAILED(m_pShaderCom->Bind_RawValue("g_fDetail", (void*)&m_fDetail, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
@@ -182,11 +182,11 @@ CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CTerrain* CTerrain::Clone(void* pArg)
+CTerrain* CTerrain::Clone(CComponent* pOwner, void* pArg)
 {
 	CTerrain* pInstance = new CTerrain(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		Safe_Release(pInstance);
 		MSG_BOX("Failed to Cloned CTerrain");

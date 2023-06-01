@@ -19,10 +19,14 @@ private:
 	virtual ~CCoordnate_Axis() = default;
 
 public:
+    static void Set_PrototypeTag(wstring PrototypeTag) { m_PrototypeTag = PrototypeTag; }
+    static wstring Get_PrototypeTag() { return m_PrototypeTag; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void Late_Tick(_double TimeDelta) override {}
+	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual void Tick(const _double& TimeDelta) override;
+	virtual void Late_Tick(const _double& TimeDelta) override {}
 	virtual HRESULT Render() override;
 
 public:
@@ -38,12 +42,15 @@ private:
 	_bool m_bIsRender = { true };
 
 private:
+    static wstring m_PrototypeTag;
+
+private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Set_ShaderResources();
 
 public:
 	static CCoordnate_Axis* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CCoordnate_Axis* Clone(void* pArg) override;
+	virtual CCoordnate_Axis* Clone(CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

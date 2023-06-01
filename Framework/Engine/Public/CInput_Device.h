@@ -17,7 +17,7 @@ private:
 	virtual ~CInput_Device() = default;
 
 public:
-	_byte		Get_DIKeyState(_ubyte ubyKeyID)
+	_byte		Get_DIKeyState(const _ubyte& ubyKeyID)
 	{
 		return m_byKeyState[ubyKeyID];
 	}
@@ -35,9 +35,9 @@ public:
 	HRESULT	Ready_DInput(HINSTANCE hInst, HWND hWnd);
 	void	Update_DInput(void);
 
-	_bool	Key_Pressing(_ubyte ubyKey);
-	_bool	Key_Down(_ubyte ubyKey);
-	_bool	Key_Up(_ubyte ubyKey);
+	_bool	Key_Pressing(const _ubyte& ubyKey);
+	_bool	Key_Down(const _ubyte& ubyKey);
+	_bool	Key_Up(const _ubyte& ubyKey);
 
 	_bool	Mouse_Down(MOUSEKEYSTATE eMouseID);
 	_bool	Mouse_Pressing(MOUSEKEYSTATE eMouseID);

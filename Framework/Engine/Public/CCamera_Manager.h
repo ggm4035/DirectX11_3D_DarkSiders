@@ -13,22 +13,22 @@ private:
 	virtual ~CCamera_Manager() = default;
 
 public:
-	HRESULT Reserve_Containers(_uint iNumLevels);
-	HRESULT Add_Camera(_uint iLevelIndex, const _tchar* pCameraTag, class CCamera* pCamera);
-	HRESULT Remove_Camera(_uint iLevelIndex, const _tchar* pCameraTag);
-	void Clear_LevelResources(_uint iLevelIndex);
+	HRESULT Reserve_Containers(const _uint& iNumLevels);
+	HRESULT Add_Camera(const _uint& iLevelIndex, wstring& CameraTag, class CCamera* pCamera);
+	HRESULT Remove_Camera(const _uint& iLevelIndex, wstring& CameraTag);
+	void Clear_LevelResources(const _uint& iLevelIndex);
 
 public:
-	HRESULT On_Camera(_uint iLevelIndex, const _tchar* pCameraTag);
+	HRESULT On_Camera(const _uint& iLevelIndex, wstring& CameraTag);
 	
 private:
-	typedef unordered_map<const _tchar*, class CCamera*> CAMERAS;
+	typedef unordered_map<wstring, class CCamera*> CAMERAS;
 	class CCamera* m_pCurCamera = { nullptr };
 	CAMERAS* m_pCameras = { nullptr };
 	_uint m_iNumLevels = { 0 };
 	
 private:
-	class CCamera* Find_Camera(_uint iLevelIndex, const _tchar* pCameraTag);
+	class CCamera* Find_Camera(const _uint& iLevelIndex, wstring& CameraTag);
 
 public:
 	virtual void Free() override;

@@ -3,6 +3,7 @@
 #include "CComponent_Manager.h"
 #include "CPipeLine.h"
 #include "CInput_Device.h"
+#include "CLight_Manager.h"
 
 /* 0. 클라이언트 엔진의 연결 역활한다. */
 /* 0.0 게임인스턴스라는 객체를 통해서 엔진의다양한기능을 활요앟ㄹ 수 있게 한다. */
@@ -20,41 +21,46 @@ private:
 	virtual ~CGameInstance() = default;
 
 public:
-	HRESULT Initialize_Engine(_uint iNumLevels, const GRAPHICDESC & GraphicDesc, _Inout_ ID3D11Device * *ppDevice, _Inout_ ID3D11DeviceContext * *ppContext);
-	void Tick_Engine(_double TimeDelta);
-	void Clear_LevelResources(_uint iLevelIndex); // 레벨 리소스를 지운다.
+	HRESULT Initialize_Engine(const _uint& iNumLevels, const GRAPHICDESC & GraphicDesc, _Inout_ ID3D11Device * *ppDevice, _Inout_ ID3D11DeviceContext * *ppContext);
+	void Tick_Engine(const _double& TimeDelta);
+	void Clear_LevelResources(const _uint& iLevelIndex); // 레벨 리소스를 지운다.
 
 public: /* For.Graphic_Device */
-	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
+	HRESULT Clear_BackBuffer_View(const _float4& vClearColor);
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Present();
 
 public: /* For.Timer_Manager */
-	_double	Get_Timer(const _tchar * pTimerTag);
-	void	Set_Timer(const _tchar * pTimerTag);
-	HRESULT	Ready_Timer(const _tchar * pTimerTag);
+	_double	Get_Timer(wstring TimerTag);
+	void	Set_Timer(wstring TimerTag);
+	HRESULT	Ready_Timer(wstring TimerTag);
 
 public: /* For.Level_Manager */
-	HRESULT Open_Level(_uint iNumLevels, class CLevel* pNewLevel);
+	HRESULT Open_Level(const _uint& iNumLevels, class CLevel* pNewLevel);
 
 public: /* For.Object_Manager */
-	HRESULT Add_Prototype(const _tchar * pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObject(_uint iNumLayer, const _tchar * pPrototypeTag, const _tchar * pLayerTag, void* pArg = nullptr);
+	HRESULT Add_Prototype(wstring pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_GameObject(const _uint& iNumLayer, wstring PrototypeTag, wstring GameObjectTag, wstring LayerTag, void* pArg = nullptr);
+	
+	list<CGameObject*> Get_All_GameObject();
+
 
 public: /* For.Component_Manager */
-	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void* pArg = nullptr);
-	class CComponent* Clone_Transform(void* pArg = nullptr);
+	HRESULT Add_Prototype(const _uint& iLevelIndex, wstring PrototypeTag, class CComponent* pPrototype);
+	class CComponent* Clone_Component(const _uint& iLevelIndex, wstring PrototypeTag, class CComponent * pOwner, void* pArg = nullptr);
+	class CComponent* Clone_Transform(class CComponent * pOwner, void* pArg = nullptr);
+
+	list<CComponent*> Get_All_Prototypes();
 
 public: /* For.Camera_Manager */
-	HRESULT Add_Camera(_uint iLevelIndex, const _tchar * pCameraTag, class CCamera* pCamera);
-	HRESULT Remove_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
-	HRESULT On_Camera(_uint iLevelIndex, const _tchar * pCameraTag);
+	HRESULT Add_Camera(const _uint& iLevelIndex, wstring CameraTag, class CCamera* pCamera);
+	HRESULT Remove_Camera(const _uint& iLevelIndex, wstring CameraTag);
+	HRESULT On_Camera(const _uint& iLevelIndex, wstring CameraTag);
 
 public: /* For.Input_Manager */
-	_bool	Key_Pressing(_ubyte ubyKey);
-	_bool	Key_Down(_ubyte ubyKey);
-	_bool	Key_Up(_ubyte ubyKey);
+	_bool	Key_Pressing(const _ubyte& ubyKey);
+	_bool	Key_Down(const _ubyte& ubyKey);
+	_bool	Key_Up(const _ubyte& ubyKey);
 	_bool	Mouse_Down(CInput_Device::MOUSEKEYSTATE eMouseID);
 	_bool	Mouse_Pressing(CInput_Device::MOUSEKEYSTATE eMouseID);
 	_bool	Mouse_Up(CInput_Device::MOUSEKEYSTATE eMouseID);
@@ -67,12 +73,20 @@ public: /* For.PipeLine */
 	_float4x4 Get_Trasnform_Inverse_Float4x4(CPipeLine::TRANSFORMSTATE eState);
 	_matrix Get_UI_View_Matrix();
 	_float4x4 Get_UI_View_Float4x4();
-	_matrix Get_UI_Proj_Matrix(const _uint iWinSizeX, const _uint iWinSizeY);
-	_float4x4 Get_UI_Proj_Float4x4(const _uint iWinSizeX, const _uint iWinSizeY);
+	_matrix Get_UI_Proj_Matrix(const _uint& iWinSizeX, const _uint& iWinSizeY);
+	_float4x4 Get_UI_Proj_Float4x4(const _uint& iWinSizeX, const _uint& iWinSizeY);
 	HRESULT Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix _Matrix);
 
+public: /* For.FileInfo */
+	wstring strToWStr(string str);
+	string wstrToStr(wstring wstr);
+
+public: /* For.Light_Manager*/
+	const CLight::LIGHTDESC* Get_LightDesc(const _uint & iIndex);
+	HRESULT Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const CLight::LIGHTDESC & LightDesc);
+
 public: /* For. Imgui */
-	void ResizeBuffers(_uint & g_ResizeWidth, _uint & g_ResizeHeight);
+	void ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight);
 
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
@@ -83,6 +97,8 @@ private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	class CInput_Device* m_pInput_Manager = { nullptr };
 	class CPipeLine* m_pPipeLine = { nullptr };
+	class CFileInfo* m_pFileInfo = { nullptr };
+	class CLight_Manager* m_pLight_Manager = { nullptr };
 	
 public:
 	static void Release_Engine();

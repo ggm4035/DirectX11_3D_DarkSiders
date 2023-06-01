@@ -28,14 +28,14 @@ HRESULT CCamera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCamera::Initialize(void* pArg)
+HRESULT CCamera::Initialize(CComponent* pOwner, void* pArg)
 {
 	if (nullptr != pArg)
 	{
 		CAMERADESC CameraDesc = { };
 		CameraDesc = *static_cast<CAMERADESC*>(pArg);
 
-		if (FAILED(CGameObject3D::Initialize(&CameraDesc.TransformDesc)))
+		if (FAILED(CGameObject3D::Initialize(pOwner, &CameraDesc.TransformDesc)))
 			return E_FAIL;
 
 		m_vEye = CameraDesc.vEye;
@@ -47,6 +47,9 @@ HRESULT CCamera::Initialize(void* pArg)
 		m_fNear = CameraDesc.fNear;
 		m_fFar = CameraDesc.fFar;
 	}
+	else if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vEye));
 	m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));
@@ -54,7 +57,7 @@ HRESULT CCamera::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCamera::Tick(_double TimeDelta)
+void CCamera::Tick(const _double& TimeDelta)
 {
 	//if (false == m_bSwitch)
 	//	return;						// 어캐할 지 생각해야할 듯 매니저로 관리해야되나
@@ -63,7 +66,7 @@ void CCamera::Tick(_double TimeDelta)
 	m_pPipeLine->Set_Transform(CPipeLine::STATE_PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
 }
 
-void CCamera::Late_Tick(_double TimeDelta)
+void CCamera::Late_Tick(const _double& TimeDelta)
 {
 }
 

@@ -18,7 +18,7 @@ HRESULT CCamera_Free::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCamera_Free::Initialize(void* pArg)
+HRESULT CCamera_Free::Initialize(CComponent* pOwner, void* pArg)
 {
 	CCamera::CAMERADESC CameraDesc;
 	CameraDesc.vEye = _float4(0.f, 20.f, -10.f, 1.f);
@@ -33,20 +33,20 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	CameraDesc.TransformDesc.SpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
 
-	if (FAILED(CCamera::Initialize(&CameraDesc)))
+	if (FAILED(CCamera::Initialize(pOwner, &CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CCamera_Free::Tick(_double TimeDelta)
+void CCamera_Free::Tick(const _double& TimeDelta)
 {
 	Key_Input(TimeDelta);
 
 	CCamera::Tick(TimeDelta);
 }
 
-void CCamera_Free::Late_Tick(_double TimeDelta)
+void CCamera_Free::Late_Tick(const _double& TimeDelta)
 {
 }
 
@@ -60,7 +60,7 @@ HRESULT CCamera_Free::Add_Components()
 	return S_OK;
 }
 
-void CCamera_Free::Key_Input(_double TimeDelta)
+void CCamera_Free::Key_Input(const _double& TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -80,6 +80,20 @@ void CCamera_Free::Key_Input(_double TimeDelta)
 	if (pGameInstance->Key_Pressing(DIK_SPACE))
 		m_pTransformCom->Go_Up(TimeDelta);
 
+	if (pGameInstance->Mouse_Pressing(CInput_Device::DIM_RB))
+	{
+		_long dwMouseMove = 0;
+
+		if (dwMouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (dwMouseMove)*TimeDelta / 10.f);
+		}
+
+		if (dwMouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), (dwMouseMove)*TimeDelta / 10.f);
+		}
+	}
 
 	Safe_Release(pGameInstance);
 }
@@ -96,11 +110,11 @@ CCamera_Free* CCamera_Free::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	return pInstance;
 }
 
-CGameObject3D* CCamera_Free::Clone(void* pArg)
+CGameObject3D* CCamera_Free::Clone(CComponent* pOwner, void* pArg)
 {
 	CCamera_Free* pInstance = new CCamera_Free(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CCamera_Free");
 		Safe_Release(pInstance);

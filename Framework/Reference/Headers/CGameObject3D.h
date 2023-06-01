@@ -14,9 +14,9 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	/* Transform 정보 초기화 하고 싶으면 void*에 값 채우기 */
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void Late_Tick(_double TimeDelta) override;
+	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
+	virtual void Tick(const _double& TimeDelta) override;
+	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 
 protected:
@@ -26,7 +26,7 @@ protected:
 	virtual HRESULT Add_Components() = 0;
 
 public:
-	virtual CGameObject3D* Clone(void* pArg) override = 0;
+	virtual CGameObject3D* Clone(CComponent * pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

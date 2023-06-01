@@ -8,7 +8,7 @@ CObject_Manager::CObject_Manager()
 {
 }
 
-HRESULT CObject_Manager::Reserve_Containers(_uint iNumLevels)
+HRESULT CObject_Manager::Reserve_Containers(const _uint& iNumLevels)
 {
 	if (0 == iNumLevels)
 		return E_FAIL;
@@ -23,43 +23,46 @@ HRESULT CObject_Manager::Reserve_Containers(_uint iNumLevels)
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_Prototype(const _tchar* pPrototypeTag, CGameObject* pPrototype)
+HRESULT CObject_Manager::Add_Prototype(wstring& PrototypeTag, CGameObject* pPrototype)
 {
-	if (nullptr != Find_Prototype(pPrototypeTag))
+	if (nullptr != Find_Prototype(PrototypeTag))
 		return E_FAIL;
 
-	m_Prototypes.emplace(pPrototypeTag, pPrototype);
+	m_Prototypes.emplace(PrototypeTag, pPrototype);
+	pPrototype->Set_Tag(PrototypeTag);
 
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_GameObject(_uint iLayerIndex, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg)
+HRESULT CObject_Manager::Add_GameObject(const _uint& iLayerIndex, wstring& PrototypeTag, wstring& GameObjectTag, wstring& LayerTag, void* pArg)
 {
-	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
+	CGameObject* pPrototype = Find_Prototype(PrototypeTag);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
-	CGameObject* pGameObject = pPrototype->Clone(pArg);
+	CGameObject* pGameObject = pPrototype->Clone(nullptr, pArg); // Add_GameObject로 만드는 객체를 최상위 노드로 가정한다.
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	CLayer* pLayer = Find_Layer(iLayerIndex, pLayerTag);
+	CLayer* pLayer = Find_Layer(iLayerIndex, LayerTag);
 
 	if (nullptr == pLayer)
 	{
 		pLayer = CLayer::Create();
 
-		m_pLayers[iLayerIndex].emplace(pLayerTag, pLayer);
+		m_pLayers[iLayerIndex].emplace(LayerTag, pLayer);
 
 		pLayer->Add_GameObject(pGameObject);
 	}
 	else
 		pLayer->Add_GameObject(pGameObject);
 
+	pGameObject->Set_Tag(GameObjectTag);
+
 	return S_OK;
 }
 
-void CObject_Manager::Tick(_double TimeDelta)
+void CObject_Manager::Tick(const _double& TimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)
 	{
@@ -68,7 +71,7 @@ void CObject_Manager::Tick(_double TimeDelta)
 	}
 }
 
-void CObject_Manager::Late_Tick(_double TimeDelta)
+void CObject_Manager::Late_Tick(const _double& TimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)
 	{
@@ -77,7 +80,7 @@ void CObject_Manager::Late_Tick(_double TimeDelta)
 	}
 }
 
-void CObject_Manager::Clear_LevelResources(_uint iLevelIndex)
+void CObject_Manager::Clear_LevelResources(const _uint& iLevelIndex)
 {
 	for (auto& Pair : m_pLayers[iLevelIndex])
 		Safe_Release(Pair.second);
@@ -85,9 +88,27 @@ void CObject_Manager::Clear_LevelResources(_uint iLevelIndex)
 	m_pLayers[iLevelIndex].clear();
 }
 
-CGameObject* CObject_Manager::Find_Prototype(const _tchar* pPrototypeTag)
+list<CGameObject*> CObject_Manager::Get_All_GameObject()
 {
-	auto& iter = find_if(m_Prototypes.begin(), m_Prototypes.end(), CTag_Finder(pPrototypeTag));
+	list<CGameObject*> retList;
+
+	for (_uint i = 0; i < m_iNumLevels; ++i)
+	{
+		for (auto& Pair : m_pLayers[i])
+		{
+			for (auto& GameObject : Pair.second->m_pGameObjects)
+			{
+				retList.push_back(GameObject);
+			}
+		}
+	}
+
+	return retList;
+}
+
+CGameObject* CObject_Manager::Find_Prototype(wstring& PrototypeTag)
+{
+	auto& iter = m_Prototypes.find(PrototypeTag);
 
 	if (iter == m_Prototypes.end())
 		return nullptr;
@@ -95,9 +116,9 @@ CGameObject* CObject_Manager::Find_Prototype(const _tchar* pPrototypeTag)
 	return iter->second;
 }
 
-CLayer* CObject_Manager::Find_Layer(_uint iLayerIndex, const _tchar* pLayerTag)
+CLayer* CObject_Manager::Find_Layer(const _uint& iLayerIndex, wstring& LayerTag)
 {
-	auto& iter = find_if(m_pLayers[iLayerIndex].begin(), m_pLayers[iLayerIndex].end(), CTag_Finder(pLayerTag));
+	auto& iter = m_pLayers[iLayerIndex].find(LayerTag);
 
 	if (iter == m_pLayers[iLayerIndex].end())
 		return nullptr;

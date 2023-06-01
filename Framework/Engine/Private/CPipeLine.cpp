@@ -46,12 +46,12 @@ _float4x4 CPipeLine::Get_UI_View_Float4x4()
 	return RetVal;
 }
 
-_matrix CPipeLine::Get_UI_Proj_Matrix(const _uint iWinSizeX, const _uint iWinSizeY)
+_matrix CPipeLine::Get_UI_Proj_Matrix(const _uint& iWinSizeX, const _uint& iWinSizeY)
 {
 	return XMMatrixOrthographicLH((_float)iWinSizeX, (_float)iWinSizeY, 0.f, 1.f);
 }
 
-_float4x4 CPipeLine::Get_UI_Proj_Float4x4(const _uint iWinSizeX, const _uint iWinSizeY)
+_float4x4 CPipeLine::Get_UI_Proj_Float4x4(const _uint& iWinSizeX, const _uint& iWinSizeY)
 {
 	_float4x4 RetVal;
 	XMStoreFloat4x4(&RetVal, XMMatrixOrthographicLH((_float)iWinSizeX, (_float)iWinSizeY, 0.f, 1.f));

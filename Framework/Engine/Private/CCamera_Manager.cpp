@@ -8,7 +8,7 @@ CCamera_Manager::CCamera_Manager()
 {
 }
 
-HRESULT CCamera_Manager::Reserve_Containers(_uint iNumLevels)
+HRESULT CCamera_Manager::Reserve_Containers(const _uint& iNumLevels)
 {
 	if (0 == iNumLevels)
 		return E_FAIL;
@@ -23,28 +23,28 @@ HRESULT CCamera_Manager::Reserve_Containers(_uint iNumLevels)
 	return S_OK;
 }
 
-HRESULT CCamera_Manager::Add_Camera(_uint iLevelIndex, const _tchar* pCameraTag, CCamera* pCamera)
+HRESULT CCamera_Manager::Add_Camera(const _uint& iLevelIndex, wstring& CameraTag, CCamera* pCamera)
 {
 	if (nullptr == pCamera || iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
 		return E_FAIL;
 
-	if (nullptr != Find_Camera(iLevelIndex, pCameraTag))
+	if (nullptr != Find_Camera(iLevelIndex, CameraTag))
 		return E_FAIL;
 
-	m_pCameras[iLevelIndex].emplace(pCameraTag, pCamera);
+	m_pCameras[iLevelIndex].emplace(CameraTag, pCamera);
 	Safe_AddRef(pCamera);
 
 	return S_OK;
 }
 
-HRESULT CCamera_Manager::Remove_Camera(_uint iLevelIndex, const _tchar* pCameraTag)
+HRESULT CCamera_Manager::Remove_Camera(const _uint& iLevelIndex, wstring& CameraTag)
 {
-	if (nullptr == pCameraTag || iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
+	if (iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
 		return E_FAIL;
 
 	for (auto& iter = m_pCameras[iLevelIndex].begin(); iter != m_pCameras[iLevelIndex].end(); ++iter)
 	{
-		if (0 == lstrcmp(pCameraTag, iter->first))
+		if (CameraTag == iter->first)
 		{
 			Safe_Release(iter->second);
 			m_pCameras[iLevelIndex].erase(iter);
@@ -55,7 +55,7 @@ HRESULT CCamera_Manager::Remove_Camera(_uint iLevelIndex, const _tchar* pCameraT
 	return E_FAIL;
 }
 
-void CCamera_Manager::Clear_LevelResources(_uint iLevelIndex)
+void CCamera_Manager::Clear_LevelResources(const _uint& iLevelIndex)
 {
 	if (iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
 		return;
@@ -65,12 +65,12 @@ void CCamera_Manager::Clear_LevelResources(_uint iLevelIndex)
 	m_pCameras[iLevelIndex].clear();
 }
 
-HRESULT CCamera_Manager::On_Camera(_uint iLevelIndex, const _tchar* pCameraTag)
+HRESULT CCamera_Manager::On_Camera(const _uint& iLevelIndex, wstring& CameraTag)
 {
-	if (nullptr == pCameraTag || iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
+	if (iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
 		return E_FAIL;
 
-	CCamera* pCamera = Find_Camera(iLevelIndex, pCameraTag);
+	CCamera* pCamera = Find_Camera(iLevelIndex, CameraTag);
 
 	if (nullptr == pCamera)
 		return E_FAIL;
@@ -89,9 +89,9 @@ HRESULT CCamera_Manager::On_Camera(_uint iLevelIndex, const _tchar* pCameraTag)
 	return S_OK;
 }
 
-CCamera* CCamera_Manager::Find_Camera(_uint iLevelIndex, const _tchar* pCameraTag)
+CCamera* CCamera_Manager::Find_Camera(const _uint& iLevelIndex, wstring& CameraTag)
 {
-	auto& iter = find_if(m_pCameras[iLevelIndex].begin(), m_pCameras[iLevelIndex].end(), CTag_Finder(pCameraTag));
+	auto& iter = m_pCameras->find(CameraTag);
 
 	if (iter == m_pCameras[iLevelIndex].end())
 		return nullptr;

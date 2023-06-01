@@ -8,7 +8,7 @@ CLevel_Manager::CLevel_Manager()
 {
 }
 
-HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, class CLevel* pNewLevel)
+HRESULT CLevel_Manager::Open_Level(const _uint& iLevelIndex, class CLevel* pNewLevel)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
@@ -29,7 +29,7 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, class CLevel* pNewLevel)
 	return S_OK;
 }
 
-void CLevel_Manager::Tick(_double TimeDelta)
+void CLevel_Manager::Tick(const _double& TimeDelta)
 {
 	if (nullptr == m_pCurrentLevel)
 		return;

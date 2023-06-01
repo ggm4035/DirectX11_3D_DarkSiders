@@ -38,15 +38,18 @@ HRESULT CTransform::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTransform::Initialize(void* pArg)
+HRESULT CTransform::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CComponent::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 		memmove(&m_TransformDesc, pArg, sizeof m_TransformDesc);
 
 	return S_OK;
 }
 
-void CTransform::Go_Straight(_double TimeDelta)
+void CTransform::Go_Straight(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
@@ -56,7 +59,7 @@ void CTransform::Go_Straight(_double TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Backward(_double TimeDelta)
+void CTransform::Go_Backward(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
@@ -66,7 +69,7 @@ void CTransform::Go_Backward(_double TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Right(_double TimeDelta)
+void CTransform::Go_Right(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vRight = Get_State(STATE_RIGHT);
@@ -76,7 +79,7 @@ void CTransform::Go_Right(_double TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Left(_double TimeDelta)
+void CTransform::Go_Left(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vRight = Get_State(STATE_RIGHT);
@@ -86,7 +89,7 @@ void CTransform::Go_Left(_double TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Up(_double TimeDelta)
+void CTransform::Go_Up(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vUp = Get_State(STATE_UP);
@@ -96,7 +99,7 @@ void CTransform::Go_Up(_double TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Down(_double TimeDelta)
+void CTransform::Go_Down(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vUp = Get_State(STATE_RIGHT);
@@ -106,7 +109,7 @@ void CTransform::Go_Down(_double TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Chase(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance)
+void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 
@@ -131,7 +134,7 @@ void CTransform::LookAt(_fvector vTargetPosition)
 	Set_State(STATE_LOOK, vLook);
 }
 
-void CTransform::Rotation(_fvector vAxis, _float fRadian)
+void CTransform::Rotation(_fvector vAxis, const _float& fRadian)
 {
 	_float3 Scales = Get_Scaled();
 
@@ -146,7 +149,7 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
 }
 
-void CTransform::Turn(_fvector vAxis, _double TimeDelta)
+void CTransform::Turn(_fvector vAxis, const _double& TimeDelta)
 {
 	_vector vRight = Get_State(STATE_RIGHT);
 	_vector vUp = Get_State(STATE_UP);
@@ -161,6 +164,9 @@ void CTransform::Turn(_fvector vAxis, _double TimeDelta)
 
 void CTransform::Scaled(const _float3& vScale)
 {
+	if (0 == vScale.x || 0 == vScale.y || 0 == vScale.z)
+		return;
+
 	Set_State(STATE_RIGHT, XMVector3Normalize(Get_State(STATE_RIGHT)) * vScale.x);
 	Set_State(STATE_UP, XMVector3Normalize(Get_State(STATE_UP)) * vScale.y);
 	Set_State(STATE_LOOK, XMVector3Normalize(Get_State(STATE_LOOK)) * vScale.z);
@@ -178,11 +184,11 @@ CTransform* CTransform::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	return pInstance;
 }
 
-CComponent* CTransform::Clone(void* pArg)
+CComponent* CTransform::Clone(CComponent* pOwner, void* pArg)
 {
 	CTransform* pInstance = new CTransform(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CTransform");
 		Safe_Release(pInstance);

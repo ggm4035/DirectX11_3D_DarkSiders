@@ -19,7 +19,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	return S_OK;
 }
 
-void CLevel_GamePlay::Tick(_double TimeDelta)
+void CLevel_GamePlay::Tick(const _double& TimeDelta)
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
 }
@@ -29,16 +29,13 @@ HRESULT CLevel_GamePlay::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
+HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 {
-	if (nullptr == pLayerTag)
-		return E_FAIL;
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Terrain",
-		pLayerTag)))
+		L"Terrain", pLayerTag)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -46,16 +43,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Cameras(const _tchar* pLayerTag)
+HRESULT CLevel_GamePlay::Ready_Layer_Cameras(wstring pLayerTag)
 {
-	if (nullptr == pLayerTag)
-		return E_FAIL;
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Camera_Free",
-		pLayerTag)))
+		L"Camera_Free", pLayerTag)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

@@ -89,8 +89,11 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Rect::Initialize(void* pArg)
+HRESULT CVIBuffer_Rect::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CVIBuffer::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -115,11 +118,11 @@ CVIBuffer_Rect* CVIBuffer_Rect::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CVIBuffer_Rect* CVIBuffer_Rect::Clone(void* pArg)
+CVIBuffer_Rect* CVIBuffer_Rect::Clone(CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Rect* pInstance = new CVIBuffer_Rect(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Rect");
 		Safe_Release(pInstance);

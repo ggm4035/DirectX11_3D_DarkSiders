@@ -15,16 +15,13 @@ CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Tool::Initialize()
 {
-    if (FAILED(Ready_Layer_Environments(L"Layer_Environments")))
-        return E_FAIL;
-
-    if (FAILED(Ready_Layer_Cameras(L"Layer_Cameras")))
+    if (FAILED(Ready_Layer(L"Layer_Tool")))
         return E_FAIL;
 
     return S_OK;
 }
 
-void CLevel_Tool::Tick(_double TimeDelta)
+void CLevel_Tool::Tick(const _double& TimeDelta)
 {
 }
 
@@ -33,26 +30,18 @@ HRESULT CLevel_Tool::Render()
     return S_OK;
 }
 
-HRESULT CLevel_Tool::Ready_Layer_Environments(const _tchar* pLayerTag)
+HRESULT CLevel_Tool::Ready_Layer(wstring LayerTag)
 {
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Terrain", pLayerTag)))
+    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Terrain",
+        L"Terrain", LayerTag)))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Coordnate_Axis", pLayerTag)))
+    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Coordnate_Axis",
+        L"Coordnate_Axis", LayerTag)))
         return E_FAIL;
-
-    Safe_Release(pGameInstance);
-
-    return S_OK;
-}
-
-HRESULT CLevel_Tool::Ready_Layer_Cameras(const _tchar* pLayerTag)
-{
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
 
     CCamera::CAMERADESC CameraDesc;
 
@@ -68,16 +57,12 @@ HRESULT CLevel_Tool::Ready_Layer_Cameras(const _tchar* pLayerTag)
     CameraDesc.TransformDesc.SpeedPerSec = 10.f;
     CameraDesc.TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
 
-    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Camera_Main", pLayerTag, &CameraDesc)))
+    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Camera_Main",
+        L"Camera_Main", LayerTag, &CameraDesc)))
         return E_FAIL;
 
     Safe_Release(pGameInstance);
 
-    return S_OK;
-}
-
-HRESULT CLevel_Tool::Ready_Layer_Mesh(const _tchar* pLayerTag)
-{
     return S_OK;
 }
 

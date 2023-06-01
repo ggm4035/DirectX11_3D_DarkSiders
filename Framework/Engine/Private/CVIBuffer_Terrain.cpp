@@ -13,7 +13,7 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 {
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iXCount, _uint iZCount, _float fInterval)
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uint& iZCount, const _float& fInterval)
 {
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
@@ -113,8 +113,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iXCount, _uint iZCount, _f
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
+HRESULT CVIBuffer_Terrain::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CVIBuffer::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -127,7 +130,7 @@ HRESULT CVIBuffer_Terrain::Render()
 }
 
 CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
-	_uint iXCount, _uint iZCount, _float fInterval)
+	const _uint& iXCount, const _uint& iZCount, const _float& fInterval)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 
@@ -139,11 +142,11 @@ CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11Device
 	return pInstance;
 }
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Clone(void* pArg)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Clone(CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Terrain");
 		Safe_Release(pInstance);

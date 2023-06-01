@@ -13,8 +13,8 @@ private:
 	virtual ~CLevel_Manager() = default;
 
 public:
-	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
-	void Tick(_double TimeDelta);
+	HRESULT Open_Level(const _uint& iLevelIndex, class CLevel* pNewLevel);
+	void Tick(const _double& TimeDelta);
 
 private:
 	_uint m_iLevelIndex = { 0 };

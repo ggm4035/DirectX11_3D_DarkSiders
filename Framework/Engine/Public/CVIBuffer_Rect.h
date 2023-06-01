@@ -13,14 +13,14 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual	HRESULT Initialize(void* pArg) override;
+	virtual	HRESULT Initialize(CComponent * pOwner, void* pArg) override;
 
 public:
 	virtual HRESULT Render() override;
 
 public:
 	static CVIBuffer_Rect* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
-	virtual CVIBuffer_Rect* Clone(void* pArg) override;
+	virtual CVIBuffer_Rect* Clone(CComponent * pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

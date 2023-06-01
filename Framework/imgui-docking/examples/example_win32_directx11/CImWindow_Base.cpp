@@ -1,6 +1,11 @@
 #include "CImWindow_Base.h"
 
+#include "CGameInstance.h"
 #include "CToolInstance.h"
+#include "CImWindow_Manager.h"
+
+#include "CImWindow_Inspector.h"
+
 #include "CTerrain.h"
 #include "CCoordnate_Axis.h"
 #include "CFileInfo.h"
@@ -13,10 +18,13 @@ CImWindow_Base::CImWindow_Base()
 
 HRESULT CImWindow_Base::Initialize(void* pArg)
 {
+    if (FAILED(CImWindow::Initialize(pArg)))
+        return E_FAIL;
+
     return S_OK;
 }
 
-void CImWindow_Base::Tick(_double TimeDelta)
+void CImWindow_Base::Tick(const _double& TimeDelta)
 {
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(350, 760), ImGuiCond_Always);
@@ -45,20 +53,74 @@ void CImWindow_Base::Hierarchy()
 {
     if (ImGui::TreeNode("Scene"))
     {
-        _char* pObjectTag = "";
+        CGameInstance* pGameInstance = CGameInstance::GetInstance();
+        Safe_AddRef(pGameInstance);
 
-        for (_uint i = 0; i < 1/* 이거는 현재 씬의 오브젝트 개수 임시로 1 설정 */; ++i)
+        string pObjectTag = "";
+        _uint iID = 0;
+
+        for (auto& iter : m_GameObjectList)
         {
+            string strTag = pGameInstance->wstrToStr(iter->Get_Tag());
             ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-            ImGui::TreeNodeEx((void*)i, node_flags, "Terrain");
+            ImGui::TreeNodeEx((void*)iID, node_flags, strTag.c_str());
             if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-                pObjectTag = "Terrain";
+            {
+                CImWindow* pInspector = WINDOWMGR->Get_ImWindow(L"ImWindow_Inspector");
+                if (nullptr == pInspector)
+                    return;
+
+                wstring wstrTag = pGameInstance->strToWStr(strTag);
+                static_cast<CImWindow_Inspector*>(pInspector)->Bind_GameObject(wstrTag);
+            }
         }
-        string str;
-        size_t i = str.max_size();
+
+        if (ImGui::BeginPopupContextItem("Create"))
+        {
+            if (ImGui::Selectable("UI"))
+            {
+
+            }
+            if (ImGui::Selectable("3D Object"))
+            {
+                if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
+                    L"Default_3D", L"Layer_Tool")))
+                    return;
+
+                WINDOWMGR->Refresh_All_Window();
+            }
+            if (ImGui::Selectable("Camera"))
+            {
+
+            }
+            ImGui::EndPopup();
+        }
+
+        if (ImGui::Button("Create new Object"))
+            ImGui::OpenPopup("Create");
+
+        Safe_Release(pGameInstance);
         ImGui::TreePop();
     }
 }
+// 파일 여는 코드임
+//if (ImGui::Button("Open File Dialog"))
+//ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", ".");
+//
+//// display
+//if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+//{
+//    // action if OK
+//    if (ImGuiFileDialog::Instance()->IsOk())
+//    {
+//        std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+//        std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+//        // action
+//    }
+//
+//    // close
+//    ImGuiFileDialog::Instance()->Close();
+//}
 
 void CImWindow_Base::Tab_Terrain()
 {
@@ -126,6 +188,11 @@ void CImWindow_Base::Tab_Terrain()
     ImGui::Separator();
     ImGui::Text("Texture");
     ImGui::Separator();
+}
+
+void CImWindow_Base::Refresh()
+{
+    CImWindow::Refresh();
 }
 
 CImWindow_Base* CImWindow_Base::Create(void* pArg)

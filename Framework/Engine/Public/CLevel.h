@@ -12,7 +12,7 @@ protected:
 
 public:
 	virtual HRESULT Initialize() { return S_OK; }
-	virtual void Tick(_double TimeDelta) = 0;
+	virtual void Tick(const _double& TimeDelta) = 0;
 	virtual HRESULT Render() = 0;
 
 protected:

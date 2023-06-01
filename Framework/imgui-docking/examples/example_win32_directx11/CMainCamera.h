@@ -19,9 +19,9 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void Late_Tick(_double TimeDelta) override;
+	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual void Tick(const _double& TimeDelta) override;
+	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 
 private:
@@ -29,11 +29,11 @@ private:
 
 private:
 	virtual HRESULT Add_Components() override;
-	void KeyInput(const _double TimeDelta);
+	void KeyInput(const _double& TimeDelta);
 
 public:
 	static CMainCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CMainCamera* Clone(void* pArg) override;
+	virtual CMainCamera* Clone(CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

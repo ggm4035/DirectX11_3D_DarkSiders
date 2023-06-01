@@ -13,7 +13,7 @@ private:
 
 public:
 	virtual HRESULT Initialize(LEVELID eNextLevelID);
-	virtual void Tick(_double TimeDelta) override;
+	virtual void Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 
 private:

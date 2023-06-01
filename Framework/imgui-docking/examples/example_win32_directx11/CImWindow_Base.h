@@ -2,6 +2,10 @@
 
 #include "CImWindow.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
+
 BEGIN(Imgui)
 
 class CImWindow_Base final : public CImWindow
@@ -12,15 +16,13 @@ private:
 
 public:
     virtual HRESULT Initialize(void* pArg) override;
-    virtual void Tick(_double TimeDelta) override;
+    virtual void Tick(const _double& TimeDelta) override;
+    virtual void Refresh() override;
 
-private: /* For.Terrain_Values */
+private:
     _float3 m_vTerrain_Position;
     _float3 m_vTerrain_Rotation;
     _bool m_bIsSolid = { false };
-
-private: /* For.UI_Values */
-
 
 private:
     void Hierarchy();

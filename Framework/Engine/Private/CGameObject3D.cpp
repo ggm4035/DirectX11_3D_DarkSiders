@@ -17,12 +17,15 @@ HRESULT CGameObject3D::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CGameObject3D::Initialize(void* pArg)
+HRESULT CGameObject3D::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CComposite::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	m_pTransformCom = dynamic_cast<CTransform*>(pGameInstance->Clone_Transform(pArg));
+	m_pTransformCom = dynamic_cast<CTransform*>(pGameInstance->Clone_Transform(this, pArg));
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
@@ -31,11 +34,11 @@ HRESULT CGameObject3D::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CGameObject3D::Tick(_double TimeDelta)
+void CGameObject3D::Tick(const _double& TimeDelta)
 {
 }
 
-void CGameObject3D::Late_Tick(_double TimeDelta)
+void CGameObject3D::Late_Tick(const _double& TimeDelta)
 {
 }
 

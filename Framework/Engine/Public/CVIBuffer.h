@@ -13,7 +13,7 @@ protected:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
+	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
 
 public:
 	virtual HRESULT Render();
@@ -40,7 +40,7 @@ protected:
 	HRESULT Create_Buffer(OUT ID3D11Buffer * *ppOut);
 
 public:
-	virtual CComponent* Clone(void* pArg) = 0;
+	virtual CComponent* Clone(CComponent * pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

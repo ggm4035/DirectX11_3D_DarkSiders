@@ -13,18 +13,18 @@ private:
 	virtual ~CTimer_Manager() = default;
 
 public:
-	_double		Get_Timer(const _tchar* pTimerTag);
-	void		Set_Timer(const _tchar* pTimerTag);
+	_double		Get_Timer(wstring& pTimerTag);
+	void		Set_Timer(wstring& pTimerTag);
 
 public:
-	HRESULT		Ready_Timer(const _tchar* pTimerTag);
+	HRESULT		Ready_Timer(wstring& pTimerTag);
 	
 private:
-	class CTimer*		Find_Timer(const _tchar* pTimerTag);
+	class CTimer*		Find_Timer(wstring& pTimerTag);
 	
 
 private:
-	unordered_map<const _tchar*, class CTimer*>		m_umapTimers;
+	unordered_map<wstring, class CTimer*>		m_umapTimers;
 	
 public:
 	virtual	void Free(void)override;

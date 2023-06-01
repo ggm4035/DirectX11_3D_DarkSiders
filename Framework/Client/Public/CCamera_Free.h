@@ -14,18 +14,18 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void Late_Tick(_double TimeDelta) override;
+	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual void Tick(const _double& TimeDelta) override;
+	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 
 private:
 	virtual HRESULT Add_Components() override;
-	void Key_Input(_double TimeDelta);
+	void Key_Input(const _double& TimeDelta);
 
 public:
 	static CCamera_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject3D* Clone(void* pArg) override;
+	virtual CGameObject3D* Clone(CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

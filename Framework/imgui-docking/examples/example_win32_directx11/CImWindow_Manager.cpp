@@ -6,7 +6,7 @@ CImWindow_Manager::CImWindow_Manager()
 {
 }
 
-CImWindow* CImWindow_Manager::Get_ImWindow(const _tchar* tag)
+CImWindow* CImWindow_Manager::Get_ImWindow(wstring tag)
 {
     return Find_Window(tag);
 }
@@ -45,7 +45,7 @@ HRESULT CImWindow_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext
     return S_OK;
 }
 
-void CImWindow_Manager::Tick(_double TimeDelta)
+void CImWindow_Manager::Tick(const _double& TimeDelta)
 {
     // Start the Dear ImGui frame
     ImGui_ImplDX11_NewFrame();
@@ -69,7 +69,7 @@ void CImWindow_Manager::Render()
     }
 }
 
-HRESULT CImWindow_Manager::Add_Window(const _tchar* tag, CImWindow* pWindow)
+HRESULT CImWindow_Manager::Add_Window(wstring tag, CImWindow* pWindow)
 {
     if (nullptr == pWindow)
         return E_FAIL;
@@ -84,9 +84,15 @@ HRESULT CImWindow_Manager::Add_Window(const _tchar* tag, CImWindow* pWindow)
     return S_OK;
 }
 
-CImWindow* CImWindow_Manager::Find_Window(const _tchar* tag)
+void CImWindow_Manager::Refresh_All_Window()
 {
-    auto iter = find_if(m_ImWindows.begin(), m_ImWindows.end(), CTag_Finder(tag));
+    for (auto& window : m_ImWindows)
+        window.second->Refresh();
+}
+
+CImWindow* CImWindow_Manager::Find_Window(wstring tag)
+{
+    auto iter = m_ImWindows.find(tag);
 
     if(iter == m_ImWindows.end())
         return nullptr;

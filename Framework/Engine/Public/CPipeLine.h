@@ -23,8 +23,8 @@ public:
 
 	_matrix Get_UI_View_Matrix();
 	_float4x4 Get_UI_View_Float4x4();
-	_matrix Get_UI_Proj_Matrix(const _uint iWinSizeX, const _uint iWinSizeY);
-	_float4x4 Get_UI_Proj_Float4x4(const _uint iWinSizeX, const _uint iWinSizeY);
+	_matrix Get_UI_Proj_Matrix(const _uint& iWinSizeX, const _uint& iWinSizeY);
+	_float4x4 Get_UI_Proj_Float4x4(const _uint& iWinSizeX, const _uint& iWinSizeY);
 
 	HRESULT Set_Transform(TRANSFORMSTATE eState, _fmatrix _Matrix);
 

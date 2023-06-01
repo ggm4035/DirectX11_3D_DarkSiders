@@ -35,7 +35,7 @@ HRESULT Client::CMainApp::Initialize()
 	return S_OK;
 }
 
-void CMainApp::Tick(_double TimeDelta)
+void CMainApp::Tick(const _double& TimeDelta)
 {
 	m_pGameInstance->Tick_Engine(TimeDelta);
 }

@@ -14,22 +14,25 @@ private:
     ~CImWindow_Manager() = default;
 
 public:
-    CImWindow* Get_ImWindow(const _tchar* tag);
+    CImWindow* Get_ImWindow(wstring tag);
 
 public:
     HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    void Tick(_double TimeDelta);
+    void Tick(const _double& TimeDelta);
     void Render();
-    HRESULT Add_Window(const _tchar* tag, CImWindow* pWindow);
+    HRESULT Add_Window(wstring tag, CImWindow* pWindow);
+    void Refresh_All_Window();
 
 private:
-    CImWindow* Find_Window(const _tchar* tag);
+    CImWindow* Find_Window(wstring tag);
 
 private:
-    unordered_map<const _tchar*, CImWindow*>    m_ImWindows;
+    unordered_map<wstring, CImWindow*>    m_ImWindows;
 
 public:
     virtual void Free(void) override;
 };
 
 END
+
+#define WINDOWMGR CImWindow_Manager::GetInstance()

@@ -40,19 +40,19 @@ public:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
+	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
 
 public:
-	void Go_Straight(_double TimeDelta);
-	void Go_Backward(_double TimeDelta);
-	void Go_Right(_double TimeDelta);
-	void Go_Left(_double TimeDelta);
-	void Go_Up(_double TimeDelta);
-	void Go_Down(_double TimeDelta);
-	void Chase(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance = 0.1f);
+	void Go_Straight(const _double& TimeDelta);
+	void Go_Backward(const _double& TimeDelta);
+	void Go_Right(const _double& TimeDelta);
+	void Go_Left(const _double& TimeDelta);
+	void Go_Up(const _double& TimeDelta);
+	void Go_Down(const _double& TimeDelta);
+	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
 	void LookAt(_fvector vTargetPosition);
-	void Rotation(_fvector vAxis, _float fRadian);
-	void Turn(_fvector vAxis, _double TimeDelta);
+	void Rotation(_fvector vAxis, const _float& fRadian);
+	void Turn(_fvector vAxis, const _double& TimeDelta);
 
 	void Scaled(const _float3& vScale);
 
@@ -62,7 +62,7 @@ private:
 
 public:
 	static CTransform* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	virtual CComponent* Clone(void* pArg) override;
+	virtual CComponent* Clone(CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

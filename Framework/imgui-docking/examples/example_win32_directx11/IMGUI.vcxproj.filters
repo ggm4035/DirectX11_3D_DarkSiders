@@ -16,20 +16,11 @@
     <Filter Include="02. GameObject">
       <UniqueIdentifier>{c51a81ab-03cf-477a-b390-9b3a55f8522a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\00. Coordnate_Axis">
-      <UniqueIdentifier>{1ac977a0-4d19-4fa9-8e41-3a484656c101}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\01. CMainCamera">
       <UniqueIdentifier>{683011ef-8f44-42c8-9bf4-4a980e559831}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObject\02. Terrain">
       <UniqueIdentifier>{1338dc45-9768-47bf-9946-b84304129d2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. ETC">
-      <UniqueIdentifier>{b8b8e64e-64c2-4062-bdec-5fd868ec7023}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. ETC\00. FileInfo">
-      <UniqueIdentifier>{0dda10c6-f708-4fe1-a8dd-4620e3ad29ba}</UniqueIdentifier>
     </Filter>
     <Filter Include="IMGUIFile">
       <UniqueIdentifier>{57755711-d961-4440-9cd0-05b739dc3cd2}</UniqueIdentifier>
@@ -58,11 +49,20 @@
     <Filter Include="01. ImWindow\Manager">
       <UniqueIdentifier>{5af8eb99-ac1f-4ab6-8591-551e8aca1238}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. ImWindow\02. ImWindow_Top">
-      <UniqueIdentifier>{4a5dc556-27ca-4b42-adb9-1620004ab5de}</UniqueIdentifier>
+    <Filter Include="02. GameObject\03. Coordnate_Axis">
+      <UniqueIdentifier>{1ac977a0-4d19-4fa9-8e41-3a484656c101}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. ImWindow\03. ImWindow_Bottom">
-      <UniqueIdentifier>{60cd6210-5293-41a7-a650-7418d5c90b13}</UniqueIdentifier>
+    <Filter Include="02. GameObject\00. Dummy">
+      <UniqueIdentifier>{bd1d008b-256d-4df2-9307-06651583c831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy\UI">
+      <UniqueIdentifier>{025c4d40-23a1-440a-bb2c-35ac0a4482e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy\3D">
+      <UniqueIdentifier>{6fd08361-30c6-42d9-ae90-e6d7221409bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy\Camera">
+      <UniqueIdentifier>{ec8cb1ec-0a0d-453e-865a-63244f114bf9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,11 +96,8 @@
     <ClInclude Include="CToolInstance.h">
       <Filter>98. ToolInstance</Filter>
     </ClInclude>
-    <ClInclude Include="CFileInfo.h">
-      <Filter>97. ETC\00. FileInfo</Filter>
-    </ClInclude>
     <ClInclude Include="CCoordnate_Axis.h">
-      <Filter>02. GameObject\00. Coordnate_Axis</Filter>
+      <Filter>02. GameObject\03. Coordnate_Axis</Filter>
     </ClInclude>
     <ClInclude Include="CMainCamera.h">
       <Filter>02. GameObject\01. CMainCamera</Filter>
@@ -117,11 +114,14 @@
     <ClInclude Include="CImWindow_Inspector.h">
       <Filter>01. ImWindow\01. ImWindow_Inspector</Filter>
     </ClInclude>
-    <ClInclude Include="CImWindow_Top.h">
-      <Filter>01. ImWindow\02. ImWindow_Top</Filter>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>IMGUIFile</Filter>
     </ClInclude>
-    <ClInclude Include="CImWindow_Bottom.h">
-      <Filter>01. ImWindow\03. ImWindow_Bottom</Filter>
+    <ClInclude Include="ImGuiFileDialogConfig.h">
+      <Filter>IMGUIFile</Filter>
+    </ClInclude>
+    <ClInclude Include="CDummyObject3D.h">
+      <Filter>02. GameObject\00. Dummy\3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,11 +161,8 @@
     <ClCompile Include="CToolInstance.cpp">
       <Filter>98. ToolInstance</Filter>
     </ClCompile>
-    <ClCompile Include="CFileInfo.cpp">
-      <Filter>97. ETC\00. FileInfo</Filter>
-    </ClCompile>
     <ClCompile Include="CCoordnate_Axis.cpp">
-      <Filter>02. GameObject\00. Coordnate_Axis</Filter>
+      <Filter>02. GameObject\03. Coordnate_Axis</Filter>
     </ClCompile>
     <ClCompile Include="CMainCamera.cpp">
       <Filter>02. GameObject\01. CMainCamera</Filter>
@@ -182,11 +179,11 @@
     <ClCompile Include="CImWindow_Inspector.cpp">
       <Filter>01. ImWindow\01. ImWindow_Inspector</Filter>
     </ClCompile>
-    <ClCompile Include="CImWindow_Top.cpp">
-      <Filter>01. ImWindow\02. ImWindow_Top</Filter>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>IMGUIFile</Filter>
     </ClCompile>
-    <ClCompile Include="CImWindow_Bottom.cpp">
-      <Filter>01. ImWindow\03. ImWindow_Bottom</Filter>
+    <ClCompile Include="CDummyObject3D.cpp">
+      <Filter>02. GameObject\00. Dummy\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

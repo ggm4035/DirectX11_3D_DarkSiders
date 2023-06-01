@@ -19,7 +19,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID)
 	return S_OK;
 }
 
-void CLevel_Loading::Tick(_double TimeDelta)
+void CLevel_Loading::Tick(const _double& TimeDelta)
 {
 	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
@@ -52,7 +52,7 @@ void CLevel_Loading::Tick(_double TimeDelta)
 			return;
 	}
 
-	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
+	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText().c_str());
 }
 
 HRESULT CLevel_Loading::Render()

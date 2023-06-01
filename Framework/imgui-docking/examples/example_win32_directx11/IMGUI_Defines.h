@@ -8,6 +8,9 @@
 #include <tchar.h>
 #include <windows.h>
 #include "CBase.h"
+#include "ImGuiFileDialog.h"
+
+#define IMFILE ImGuiFileDialog::Instance()
 
 namespace Imgui
 {

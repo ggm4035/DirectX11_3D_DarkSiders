@@ -1,19 +1,22 @@
 #pragma once
 
 #include "CBase.h"
+#include "CObject_Manager.h"
 
 BEGIN(Engine)
 
 class CLayer final : public CBase
 {
+	friend CObject_Manager;
+
 private:
 	explicit CLayer();
 	virtual ~CLayer() = default;
 
 public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
-	void Tick(_double TimeDelta);
-	void Late_Tick(_double TimeDelta);
+	void Tick(const _double& TimeDelta);
+	void Late_Tick(const _double& TimeDelta);
 
 private:
 	list<class CGameObject*> m_pGameObjects;

@@ -18,7 +18,7 @@ private:
 
 public:
 	HRESULT Initialize();
-	void Tick(_double TimeDelta);
+	void Tick(const _double& TimeDelta);
 	HRESULT Render();
 
 public:

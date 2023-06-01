@@ -16,13 +16,13 @@ HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 	return S_OK;
 }
 
-void CLayer::Tick(_double TimeDelta)
+void CLayer::Tick(const _double& TimeDelta)
 {
 	for (auto& iter : m_pGameObjects)
 		iter->Tick(TimeDelta);
 }
 
-void CLayer::Late_Tick(_double TimeDelta)
+void CLayer::Late_Tick(const _double& TimeDelta)
 {
 	for (auto& iter : m_pGameObjects)
 		iter->Late_Tick(TimeDelta);

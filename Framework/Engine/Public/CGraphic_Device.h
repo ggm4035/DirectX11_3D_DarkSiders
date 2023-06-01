@@ -16,10 +16,10 @@ public:
 
 	/* 그래픽 디바이스의 초기화. */
 	HRESULT Ready_Graphic_Device(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, 
-		_uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut);
+		const _uint& iWinCX, const _uint& iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut);
 
 	/* 백버퍼를 지운다. */
-	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
+	HRESULT Clear_BackBuffer_View(const _float4& vClearColor);
 
 	/* 깊이버퍼 + 스텐실버퍼를 지운다. */
 	HRESULT Clear_DepthStencil_View();
@@ -57,9 +57,9 @@ private:
 
 
 private:
-	HRESULT Ready_SwapChain(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, _uint iWinCX, _uint iWinCY);
+	HRESULT Ready_SwapChain(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, const _uint& iWinCX, const _uint& iWinCY);
 	HRESULT Ready_BackBufferRenderTargetView();
-	HRESULT Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint iWinCY);
+	HRESULT Ready_DepthStencilRenderTargetView(const _uint& iWinCX, const _uint& iWinCY);
 
 public:
 	virtual void Free() override;

@@ -18,9 +18,9 @@ HRESULT CTerrain::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTerrain::Initialize(void* pArg)
+HRESULT CTerrain::Initialize(CComponent* pOwner, void* pArg)
 {
- 	if (FAILED(CGameObject3D::Initialize(pArg)))
+ 	if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -29,11 +29,11 @@ HRESULT CTerrain::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CTerrain::Tick(_double TimeDelta)
+void CTerrain::Tick(const _double& TimeDelta)
 {
 }
 
-void CTerrain::Late_Tick(_double TimeDelta)
+void CTerrain::Late_Tick(const _double& TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
@@ -54,19 +54,19 @@ HRESULT CTerrain::Render()
 HRESULT CTerrain::Add_Components()
 {
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Terrain",
-		L"Com_Buffer_Terrain", (CComponent**)&m_pBufferCom)))
+		L"Com_Buffer_Terrain", (CComponent**)&m_pBufferCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Terrain",
-		L"Com_Texture_Terrain", (CComponent**)&m_pTextureCom)))
+		L"Com_Texture_Terrain", (CComponent**)&m_pTextureCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Shader_VtxNorTex",
-		L"Com_Shader_VtxNorTex", (CComponent**)&m_pShaderCom)))
+		L"Com_Shader_VtxNorTex", (CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Renderer",
-		L"Com_Renderer", (CComponent**)&m_pRendererCom)))
+		L"Com_Renderer", (CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
 	return S_OK;
@@ -118,11 +118,11 @@ CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CGameObject3D* CTerrain::Clone(void* pArg)
+CGameObject3D* CTerrain::Clone(CComponent* pOwner, void* pArg)
 {
 	CTerrain* pInstance = new CTerrain(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CTerrain");
 		Safe_Release(pInstance);

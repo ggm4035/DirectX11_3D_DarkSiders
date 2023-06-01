@@ -13,25 +13,30 @@ private:
 	virtual ~CObject_Manager() = default;
 
 public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
-	HRESULT Reserve_Containers(_uint iNumLevels);
-	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObject(_uint iNumLayer, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg);
-	void Tick(_double TimeDelta);
-	void Late_Tick(_double TimeDelta);
-	void Clear_LevelResources(_uint iLevelIndex);
+	HRESULT Reserve_Containers(const _uint& iNumLevels);
+	HRESULT Add_Prototype(wstring& pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_GameObject(const _uint& iNumLayer, wstring& PrototypeTag, wstring& GameObjectTag, wstring& LayerTag, void* pArg);
+	void Tick(const _double& TimeDelta);
+	void Late_Tick(const _double& TimeDelta);
+	void Clear_LevelResources(const _uint& iLevelIndex);
+
+public:
+	list<CGameObject*> Get_All_GameObject();
 
 private:
+	typedef unordered_map<wstring, class CLayer*> LAYERS;
+	typedef unordered_map<wstring, class CGameObject*> PROTOTYPES;
 	/* 원형객체들을 생성하여 보관하고 있는다. */
-	unordered_map<const _tchar*, class CGameObject*> m_Prototypes;
-	/* 사본객체들을 레이어로 구분하여 보관한다. */
-	unordered_map<const _tchar*, class CLayer*>* m_pLayers = { nullptr };
-	typedef unordered_map<const _tchar*, class CLayer*> LAYERS;
+	PROTOTYPES m_Prototypes;
+	/* 사본객체들을 레이어로 구분하여 보관한다.
+		여기에 저장되는 객체들은 루트컴포넌트들인거임 */
+	LAYERS* m_pLayers = { nullptr };
 	
 	_uint m_iNumLevels = { 0 };
 
 private:
-	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);
-	class CLayer* Find_Layer(_uint iNumLayer, const _tchar* pGameObjectTag);
+	class CGameObject* Find_Prototype(wstring& PrototypeTag);
+	class CLayer* Find_Layer(const _uint& iNumLayer, wstring& GameObjectTag);
 
 public:
 	virtual void Free() override;

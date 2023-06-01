@@ -22,9 +22,9 @@ protected:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void Late_Tick(_double TimeDelta) override;
+	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual void Tick(const _double& TimeDelta) override;
+	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 
 private:
@@ -39,7 +39,7 @@ private:
 
 public:
 	static CBackGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObjectUI* Clone(void* pArg) override;
+	virtual CGameObjectUI* Clone(CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

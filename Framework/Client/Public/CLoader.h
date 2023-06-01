@@ -17,7 +17,7 @@ private:
 
 public:
 	_bool Get_Finished() const { return m_bIsFinished; }
-	const _tchar* Get_LoadingText() const { return m_szLoading; }
+	wstring Get_LoadingText() const { return m_szLoading; }
 
 public:
 	HRESULT Initialize(LEVELID eNextLevelID);
@@ -35,7 +35,7 @@ private:
 private:
 	LEVELID m_eNextLevelID = { LEVEL_END };
 	_bool m_bIsFinished = { false };
-	_tchar m_szLoading[MAX_PATH] = { L"" };
+	wstring m_szLoading = { L"" };
 
 private:
 	HRESULT Load_Level_Logo();

@@ -20,9 +20,9 @@ HRESULT CMainCamera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMainCamera::Initialize(void* pArg)
+HRESULT CMainCamera::Initialize(CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CCamera::Initialize(pArg)))
+	if (FAILED(CCamera::Initialize(pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -31,13 +31,13 @@ HRESULT CMainCamera::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CMainCamera::Tick(_double TimeDelta)
+void CMainCamera::Tick(const _double& TimeDelta)
 {
 	CCamera::Tick(TimeDelta);
 	KeyInput(TimeDelta);
 }
 
-void CMainCamera::Late_Tick(_double TimeDelta)
+void CMainCamera::Late_Tick(const _double& TimeDelta)
 {
 }
 
@@ -48,14 +48,10 @@ HRESULT CMainCamera::Render()
 
 HRESULT CMainCamera::Add_Components()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	Safe_Release(pGameInstance);
 	return S_OK;
 }
 
-void CMainCamera::KeyInput(const _double TimeDelta)
+void CMainCamera::KeyInput(const _double& TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -105,11 +101,11 @@ CMainCamera* CMainCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return pInstance;
 }
 
-CMainCamera* CMainCamera::Clone(void* pArg)
+CMainCamera* CMainCamera::Clone(CComponent* pOwner, void* pArg)
 {
 	CMainCamera* pInstance = new CMainCamera(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		Safe_Release(pInstance);
         MSG_BOX("Failed to Cloned CMainCamera");

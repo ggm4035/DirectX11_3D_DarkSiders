@@ -27,8 +27,11 @@ HRESULT CVIBuffer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer::Initialize(void* pArg)
+HRESULT CVIBuffer::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CComponent::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

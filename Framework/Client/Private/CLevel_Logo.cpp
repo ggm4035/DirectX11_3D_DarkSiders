@@ -20,7 +20,7 @@ HRESULT CLevel_Logo::Initialize()
 	return S_OK;
 }
 
-void CLevel_Logo::Tick(_double TimeDelta)
+void CLevel_Logo::Tick(const _double& TimeDelta)
 {
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
@@ -46,12 +46,13 @@ HRESULT CLevel_Logo::Ready_Prototype_Component_For_Logo()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
+HRESULT CLevel_Logo::Ready_Layer_BackGround(wstring pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, L"Prototype_GameObject_BackGround", pLayerTag)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, L"Prototype_GameObject_BackGround",
+		L"BackGround", pLayerTag)))
 	{
 		Safe_Release(pGameInstance);
 		return E_FAIL;

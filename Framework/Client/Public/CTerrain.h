@@ -21,9 +21,9 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(void* pArg);
-	virtual void Tick(_double TimeDelta);
-	virtual void Late_Tick(_double TimeDelta);
+	virtual HRESULT Initialize(CComponent* pOwner, void* pArg);
+	virtual void Tick(const _double& TimeDelta);
+	virtual void Late_Tick(const _double& TimeDelta);
 	virtual HRESULT Render();
 
 private:
@@ -38,7 +38,7 @@ private:
 
 public:
 	static CTerrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject3D* Clone(void* pArg) override;
+	virtual CGameObject3D* Clone(CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

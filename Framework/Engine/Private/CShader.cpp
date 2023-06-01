@@ -17,9 +17,9 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pEffect);
 }
 
-HRESULT CShader::Initialize_Prototype(const _tchar* pShaderFilePath, 
+HRESULT CShader::Initialize_Prototype(wstring ShaderFilePath, 
 	const D3D11_INPUT_ELEMENT_DESC* pInputElementsDesc, 
-	const _uint iNumElements)
+	const _uint& iNumElements)
 {
 	_uint iHlslFlag = { 0 };
 #ifdef _DEBUG
@@ -27,7 +27,7 @@ HRESULT CShader::Initialize_Prototype(const _tchar* pShaderFilePath,
 #else
 	iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 #endif
-	if (FAILED(D3DX11CompileEffectFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	if (FAILED(D3DX11CompileEffectFromFile(ShaderFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		iHlslFlag, 0, m_pDevice, &m_pEffect, nullptr)))
 		return E_FAIL;
 
@@ -60,34 +60,33 @@ HRESULT CShader::Initialize_Prototype(const _tchar* pShaderFilePath,
 	return S_OK;
 }
 
-HRESULT CShader::Initialize(void* pArg)
+HRESULT CShader::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CComponent::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT CShader::Bind_Float(const _char* pTypename, const _float& rFloat)
+HRESULT CShader::Bind_RawValue(string Typename, void* pValue, _uint iLength)
 {
 	if (nullptr == m_pEffect)
 		return E_FAIL;
 
-	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(Typename.c_str());
 	if (nullptr == pVariable)
 		return E_FAIL;
 
-	ID3DX11EffectScalarVariable* pVariableScalar = pVariable->AsScalar();
-	if (nullptr == pVariableScalar)
-		return E_FAIL;
-
-	return pVariableScalar->SetFloat(rFloat);
+	return pVariable->SetRawValue(pValue, 0, iLength);
 }
 
-HRESULT CShader::Bind_Float4x4(const _char* pTypename, const _float4x4* pMatrix)
+HRESULT CShader::Bind_Float4x4(string Typename, const _float4x4* pMatrix)
 {
 	if (nullptr == m_pEffect)
 		return E_FAIL;
 
 	/* 해당하는 이름의 전역변수에 해당하는 컴객체를 얻어오낟. */
-	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(Typename.c_str());
 	if (nullptr == pVariable)
 		return E_FAIL;
 
@@ -99,12 +98,12 @@ HRESULT CShader::Bind_Float4x4(const _char* pTypename, const _float4x4* pMatrix)
 	return pVariableMatrix->SetMatrix((_float*)pMatrix);
 }
 
-HRESULT CShader::Bind_Rasterizer(const _char* pTypename, _uint _iIndex, ID3D11RasterizerState* _pRasterizer)
+HRESULT CShader::Bind_Rasterizer(string Typename, _uint _iIndex, ID3D11RasterizerState* _pRasterizer)
 {
 	if (nullptr == m_pEffect || nullptr == _pRasterizer)
 		return E_FAIL;
 
-	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(Typename.c_str());
 	if (nullptr == pVariable)
 		return E_FAIL;
 
@@ -115,12 +114,12 @@ HRESULT CShader::Bind_Rasterizer(const _char* pTypename, _uint _iIndex, ID3D11Ra
 	return pRasterizer->SetRasterizerState(_iIndex, _pRasterizer);
 }
 
-HRESULT CShader::Bind_ShaderResource(const _char* pTypename, ID3D11ShaderResourceView* pSRV)
+HRESULT CShader::Bind_ShaderResource(string Typename, ID3D11ShaderResourceView* pSRV)
 {
 	if (nullptr == m_pEffect)
 		return E_FAIL;
 
-	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(Typename.c_str());
 	if (nullptr == pVariable)
 		return E_FAIL;
 
@@ -131,12 +130,12 @@ HRESULT CShader::Bind_ShaderResource(const _char* pTypename, ID3D11ShaderResourc
 	return pVariableShaderResource->SetResource(pSRV);
 }
 
-HRESULT CShader::Bind_ShaderResources(const _char* pTypename, ID3D11ShaderResourceView** ppSRV, _uint iNumTextures)
+HRESULT CShader::Bind_ShaderResources(string Typename, ID3D11ShaderResourceView** ppSRV, const _uint& iNumTextures)
 {
 	if (nullptr == m_pEffect)
 		return E_FAIL;
 
-	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pTypename);
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(Typename.c_str());
 	if (nullptr == pVariable)
 		return E_FAIL;
 
@@ -147,7 +146,7 @@ HRESULT CShader::Bind_ShaderResources(const _char* pTypename, ID3D11ShaderResour
 	return pVariableShaderResource->SetResourceArray(ppSRV, 0, iNumTextures);
 }
 
-HRESULT CShader::Begin(const _uint iPassIndex)
+HRESULT CShader::Begin(const _uint& iPassIndex)
 {
 	if (iPassIndex >= m_iNumPasses)
 		return E_FAIL;
@@ -164,7 +163,7 @@ HRESULT CShader::Begin(const _uint iPassIndex)
 }
 
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
-	const _tchar* pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pInputElementsDesc, const _uint iNumElements)
+	wstring pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pInputElementsDesc, const _uint& iNumElements)
 {
 	CShader* pInstance = new CShader(pDevice, pContext);
 
@@ -177,11 +176,11 @@ CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	return pInstance;
 }
 
-CComponent* CShader::Clone(void* pArg)
+CComponent* CShader::Clone(CComponent* pOwner, void* pArg)
 {
 	CShader* pInstance = new CShader(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CShader");
 		Safe_Release(pInstance);

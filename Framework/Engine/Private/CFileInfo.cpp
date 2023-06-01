@@ -1,4 +1,12 @@
 #include "CFileInfo.h"
+#include <locale>
+#include <codecvt>
+
+IMPLEMENT_SINGLETON(CFileInfo)
+
+CFileInfo::CFileInfo()
+{
+}
 
 wstring CFileInfo::ConvertRelatePath(wstring strFullPath)
 {
@@ -28,17 +36,14 @@ _int CFileInfo::DirFileCnt(const std::wstring& wstrPath)
 	return 0;
 }
 
-_tchar* CFileInfo::strToWStr(const _char* str)
+wstring CFileInfo::strToWStr(string& str)
 {
-    size_t iStrLength = strlen(str);
-    size_t ineed = 0;
-    _tchar* wStr = nullptr;
-    mbstowcs_s(&ineed, wStr, iStrLength, str, _TRUNCATE);
-
-    return wStr;
+	wstring_convert<codecvt_utf8<wchar_t>, wchar_t> converter;
+	return converter.from_bytes(str);
 }
 
-_char* CFileInfo::wstrToStr(const _tchar* wstr)
+string CFileInfo::wstrToStr(wstring& wstr)
 {
-    return nullptr;
+	wstring_convert<codecvt_utf8<wchar_t>, wchar_t> converter;
+	return converter.to_bytes(wstr);
 }

@@ -29,8 +29,6 @@ namespace Engine
 		return dwRefCnt;
 	}
 
-
-
 	template <typename T>			// 원시 자료형, 구조체 포인터 해제
 	void Safe_Delete(T& pointer)
 	{
@@ -50,6 +48,7 @@ namespace Engine
 			pointer = nullptr;
 		}
 	}
+
 	//////////////////////////////////////////////////////////////////
 	/////////////////////////////////Functor 함수객체//////////////////////////
 

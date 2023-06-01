@@ -16,7 +16,7 @@ CTexture::CTexture(const CTexture& rhs)
 		Safe_AddRef(m_Textures[i]);
 }
 
-HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNumTextures)
+HRESULT CTexture::Initialize_Prototype(wstring TextureFilePath, const _uint& iNumTextures)
 {
 	_tchar szTextureFilePath[MAX_PATH] = TEXT("");
 
@@ -28,7 +28,7 @@ HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNu
 	{
 		ID3D11ShaderResourceView* pSRV = { nullptr };
 
-		wsprintf(szTextureFilePath, pTextureFilePath, i);
+		wsprintf(szTextureFilePath, TextureFilePath.c_str(), i);
 
 		_tchar			szExt[MAX_PATH] = TEXT("");
 
@@ -56,33 +56,35 @@ HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNu
 	return S_OK;
 }
 
-HRESULT CTexture::Initialize(void* pArg)
+HRESULT CTexture::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CComponent::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT CTexture::Bind_ShaderResource(CShader* pShader, const _char* pTypename, _uint iTextureIndex)
+HRESULT CTexture::Bind_ShaderResource(CShader* pShader, string Typename, const _uint& iTextureIndex)
 {
-	if (nullptr == pShader || nullptr == pTypename ||
-		iTextureIndex < 0 || iTextureIndex >= m_iNumTextures)
+	if (nullptr == pShader || iTextureIndex < 0 || iTextureIndex >= m_iNumTextures)
 		return E_FAIL;
 
-	return pShader->Bind_ShaderResource(pTypename, m_Textures[iTextureIndex]);
+	return pShader->Bind_ShaderResource(Typename, m_Textures[iTextureIndex]);
 }
 
-HRESULT CTexture::Bind_ShaderResources(CShader* pShader, const _char* pTypename)
+HRESULT CTexture::Bind_ShaderResources(CShader* pShader, string Typename)
 {
-	if (nullptr == pShader || nullptr == pTypename)
+	if (nullptr == pShader)
 		return E_FAIL;
 
-	return pShader->Bind_ShaderResources(pTypename, m_Textures.data(), m_iNumTextures);
+	return pShader->Bind_ShaderResources(Typename, m_Textures.data(), m_iNumTextures);
 }
 
-CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTextureFilePath, _uint iNumTextures)
+CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring TextureFilePath, const _uint& iNumTextures)
 {
 	CTexture* pInstance = new CTexture(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pTextureFilePath, iNumTextures)))
+	if (FAILED(pInstance->Initialize_Prototype(TextureFilePath, iNumTextures)))
 	{
 		MSG_BOX("Failed to Created CTexture");
 		Safe_Release(pInstance);
@@ -91,11 +93,11 @@ CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	return pInstance;
 }
 
-CComponent* CTexture::Clone(void* pArg)
+CComponent* CTexture::Clone(CComponent* pOwner, void* pArg)
 {
 	CTexture* pInstance = new CTexture(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CTexture");
 		Safe_Release(pInstance);

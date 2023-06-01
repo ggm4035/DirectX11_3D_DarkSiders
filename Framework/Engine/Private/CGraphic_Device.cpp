@@ -9,7 +9,7 @@ CGraphic_Device::CGraphic_Device()
 
 }
 
-HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, _uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
+HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, const _uint& iWinCX, const _uint& iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
 {
 
 	_uint		iFlag = 0;
@@ -66,14 +66,10 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHICDESC::WINMODE eW
 	return S_OK;
 }
 
-HRESULT CGraphic_Device::Clear_BackBuffer_View(_float4 vClearColor)
+HRESULT CGraphic_Device::Clear_BackBuffer_View(const _float4& vClearColor)
 {
 	if (nullptr == m_pDeviceContext)
 		return E_FAIL;
-
-	//m_pGraphic_Device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 
-	//	vClearColor, 1.f, 0)
-	//
 
 	/* 백버퍼를 초기화한다.  */
 	m_pDeviceContext->ClearRenderTargetView(m_pBackBufferRTV, (_float*)&vClearColor);
@@ -116,7 +112,7 @@ void CGraphic_Device::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
 }
 
-HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, _uint iWinCX, _uint iWinCY)
+HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHICDESC::WINMODE eWinMode, const _uint& iWinCX, const _uint& iWinCY)
 {
 	IDXGIDevice*			pDevice = nullptr;
 	m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDevice);
@@ -184,7 +180,7 @@ HRESULT CGraphic_Device::Ready_BackBufferRenderTargetView()
 	return S_OK;
 }
 
-HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint iWinCY)
+HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(const _uint& iWinCX, const _uint& iWinCY)
 {
 	if (nullptr == m_pDevice)
 		return E_FAIL;

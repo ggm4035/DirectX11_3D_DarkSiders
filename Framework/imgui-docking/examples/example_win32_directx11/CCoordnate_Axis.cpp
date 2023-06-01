@@ -19,9 +19,9 @@ HRESULT CCoordnate_Axis::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCoordnate_Axis::Initialize(void* pArg)
+HRESULT CCoordnate_Axis::Initialize(CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CGameObject3D::Initialize(pArg)))
+	if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -32,7 +32,7 @@ HRESULT CCoordnate_Axis::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCoordnate_Axis::Tick(_double TimeDelta)
+void CCoordnate_Axis::Tick(const _double& TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -69,15 +69,15 @@ HRESULT CCoordnate_Axis::Render()
 HRESULT CCoordnate_Axis::Add_Components()
 {
 	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Renderer",
-		L"Com_Renderer", (CComponent**)&m_pRenderer)))
+		L"Com_Renderer", (CComponent**)&m_pRenderer, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Shader_VtxCol",
-		L"Com_Shader", (CComponent**)&m_pShaderCom)))
+		L"Com_Shader", (CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Coordnate",
-		L"Com_Buffer", (CComponent**)&m_pBufferCom)))
+		L"Com_Buffer", (CComponent**)&m_pBufferCom, this)))
 		return E_FAIL;
 
 	return S_OK;
@@ -114,11 +114,11 @@ CCoordnate_Axis* CCoordnate_Axis::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 	return pInstance;
 }
 
-CCoordnate_Axis* CCoordnate_Axis::Clone(void* pArg)
+CCoordnate_Axis* CCoordnate_Axis::Clone(CComponent* pOwner, void* pArg)
 {
 	CCoordnate_Axis* pInstance = new CCoordnate_Axis(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
         MSG_BOX("Failed to Cloned CCoordnate_Axis");
 		Safe_Release(pInstance);

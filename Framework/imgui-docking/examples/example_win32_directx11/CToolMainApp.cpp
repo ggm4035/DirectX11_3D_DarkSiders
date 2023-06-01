@@ -8,11 +8,10 @@
 #include "CTerrain.h"
 #include "CCoordnate_Axis.h"
 #include "CMainCamera.h"
+#include "CDummyObject3D.h"
 
 #include "CImWindow_Base.h"
 #include "CImWindow_Inspector.h"
-#include "CImWindow_Top.h"
-#include "CImWindow_Bottom.h"
 
 CToolMainApp::CToolMainApp()
     : m_pGameInstance(CGameInstance::GetInstance())
@@ -39,10 +38,6 @@ HRESULT CToolMainApp::Initialize()
     // Initialize Imgui
     m_pImWindow_Manager->Initialize(m_pDevice, m_pContext);
 
-    // Initialize ImWindow
-    if (FAILED(Ready_ImWindows()))
-        return E_FAIL;
-
     // Intialize Compoent
     if (FAILED(Ready_Prototype_Component_For_Tool()))
         return E_FAIL;
@@ -54,10 +49,14 @@ HRESULT CToolMainApp::Initialize()
     // Initialize Level
     FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_TOOL, CLevel_Tool::Create(m_pDevice, m_pContext)), E_FAIL);
 
+    // Initialize ImWindow
+    if (FAILED(Ready_ImWindows()))
+        return E_FAIL;
+
     return S_OK;
 }
 
-void CToolMainApp::Tick(_double TimeDelta)
+void CToolMainApp::Tick(const _double& TimeDelta)
 {
     m_pImWindow_Manager->Tick(TimeDelta);
     Update_Demo();
@@ -78,11 +77,6 @@ HRESULT CToolMainApp::Render()
     return S_OK;
 }
 
-HRESULT CToolMainApp::Ready_Prototype_Component_For_Static()
-{
-    return S_OK;
-}
-
 HRESULT CToolMainApp::Open_Level(LEVELID eLevelIndex)
 {
     if (nullptr == m_pGameInstance)
@@ -97,12 +91,6 @@ HRESULT CToolMainApp::Ready_ImWindows()
         return E_FAIL;
 
     if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Inspector", CImWindow_Inspector::Create())))
-        return E_FAIL;
-
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Top", CImWindow_Top::Create())))
-        return E_FAIL;
-
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Bottom", CImWindow_Bottom::Create())))
         return E_FAIL;
 
     return S_OK;
@@ -123,6 +111,10 @@ HRESULT CToolMainApp::Ready_Prototype_GameObject_For_Tool()
 
     if (FAILED(pGameInstance->Add_Prototype(L"Prototype_GameObject_Coordnate_Axis",
         CCoordnate_Axis::Create(m_pDevice, m_pContext))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(L"Prototype_GameObject_Dummy3D",
+        CDummyObject3D::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
     Safe_Release(pGameInstance);

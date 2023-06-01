@@ -1,6 +1,6 @@
 #include "CComponent.h"
 
-#include "CGameInstance.h"
+#include "CComponent_Manager.h"
 
 /*=======================================*/
 //				COMPONENT
@@ -27,8 +27,9 @@ HRESULT CComponent::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CComponent::Initialize(void* pArg)
+HRESULT CComponent::Initialize(CComponent* pOwner, void* pArg)
 {
+	m_pOwner = pOwner;
 	return S_OK;
 }
 
@@ -57,12 +58,15 @@ HRESULT CComposite::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CComposite::Initialize(void* pArg)
+HRESULT CComposite::Initialize(CComponent* pOwner, void* pArg)
 {
+	if(FAILED(CComponent::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-void CComposite::Tick(_double TimeDelta)
+void CComposite::Tick(const _double& TimeDelta)
 {
 }
 
@@ -75,24 +79,22 @@ HRESULT CComposite::Render()
 	return S_OK;
 }
 
-HRESULT CComposite::Add_Component(_uint iNumLevel, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
+HRESULT CComposite::Add_Component(_uint iNumLevel, wstring PrototypeTag, wstring ComponentTag, CComponent** ppOut, CComponent* pOwner, void* pArg)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
- 	CComponent* pComponent = pGameInstance->Clone_Component(iNumLevel, pPrototypeTag, pArg);
+ 	CComponent* pComponent = CComponent_Manager::GetInstance()->
+		Clone_Component(iNumLevel, PrototypeTag, pOwner, pArg);
 	if (nullptr == pComponent)
 		return E_FAIL;
 
-	auto& iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(pComponentTag));
+	auto& iter = m_Components.find(ComponentTag);
 	if (iter != m_Components.end())
 		return E_FAIL;
 
-	m_Components.emplace(pComponentTag, pComponent);
+	m_Components.emplace(ComponentTag, pComponent);
 	*ppOut = pComponent;
 	Safe_AddRef(pComponent);
 
-	Safe_Release(pGameInstance);
+	Set_Tag(ComponentTag);
 
 	return S_OK;
 }

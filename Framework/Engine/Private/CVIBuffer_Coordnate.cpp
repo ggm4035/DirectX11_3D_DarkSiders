@@ -90,8 +90,11 @@ HRESULT CVIBuffer_Coordnate::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Coordnate::Initialize(void* pArg)
+HRESULT CVIBuffer_Coordnate::Initialize(CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CVIBuffer::Initialize(pOwner, pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -115,11 +118,11 @@ CVIBuffer_Coordnate* CVIBuffer_Coordnate::Create(ID3D11Device* pDevice, ID3D11De
 	return pInstance;
 }
 
-CVIBuffer_Coordnate* CVIBuffer_Coordnate::Clone(void* pArg)
+CVIBuffer_Coordnate* CVIBuffer_Coordnate::Clone(CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Coordnate* pInstance = new CVIBuffer_Coordnate(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Coordnate");
 		Safe_Release(pInstance);
