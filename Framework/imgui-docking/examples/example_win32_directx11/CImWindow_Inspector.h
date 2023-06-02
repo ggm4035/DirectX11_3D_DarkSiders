@@ -29,6 +29,9 @@ private:
 private:
     void Show_Components();
     void Show_Transform();
+    void Show_Renderer();
+    void Show_Buffer();
+    void Show_Shader();
     void Add_Component();
 
 public:

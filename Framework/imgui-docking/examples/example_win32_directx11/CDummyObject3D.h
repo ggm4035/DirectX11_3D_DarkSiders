@@ -37,6 +37,11 @@ public:
     ID3D11RasterizerState* m_pRasterizer = { nullptr };
     CRenderer::RENDERGROUP m_eRenderGroup = { CRenderer::RENDER_END };
 
+public:
+    HRESULT Add_Texture(const wstring PrototypeTag);
+    HRESULT Add_Shader(const wstring PrototypeTag);
+    HRESULT Add_Buffer(const wstring PrototypeTag);
+
 private:
     CRenderer* m_pRenderer = { nullptr };
     CShader* m_pShaderCom = { nullptr };

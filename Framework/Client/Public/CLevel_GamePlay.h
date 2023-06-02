@@ -17,6 +17,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_BackGround(wstring pLayerTag);
 	HRESULT Ready_Layer_Cameras(wstring pLayerTag);
 

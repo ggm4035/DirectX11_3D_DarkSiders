@@ -4,7 +4,10 @@
 #include "CImWindow_Manager.h"
 
 #include "CGameObject3D.h"
+#include "CDummyObject3D.h"
 #include "CGameObjectUI.h"
+
+#include "CTransform.h"
 
 CImWindow_Inspector::CImWindow_Inspector()
 {
@@ -38,7 +41,7 @@ HRESULT CImWindow_Inspector::Initialize(void* pArg)
 void CImWindow_Inspector::Tick(const _double& TimeDelta)
 {
     ImGui::SetNextWindowPos(ImVec2(1600, 0), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(320, 1035), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(320, 760), ImGuiCond_Always);
     ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize);
 
     Show_Components();
@@ -82,35 +85,57 @@ void CImWindow_Inspector::Show_Transform()
     if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None))
     {
         ImGui::Text("Position");
-        float f = 0.f;
 
-
+        CTransform* pTransform = dynamic_cast<CDummyObject3D*>(m_pCurGameObject)->Get_Transform();
+        _vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
 
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("Pos_X", &f, 0.1f, -10000.f, 10000.f, "%.1f"); ImGui::SameLine();
+        ImGui::DragFloat("Pos_X", &vPos.m128_f32[0], 0.1f, -10000.f, 10000.f, "%.1f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("Pos_Y", &f, 0.1f, -10000.f, 10000.f, "%.1f"); ImGui::SameLine();
+        ImGui::DragFloat("Pos_Y", &vPos.m128_f32[1], 0.1f, -10000.f, 10000.f, "%.1f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("Pos_Z", &f, 0.1f, -10000.f, 10000.f, "%.1f");
-        
+        ImGui::DragFloat("Pos_Z", &vPos.m128_f32[2], 0.1f, -10000.f, 10000.f, "%.1f");
+
+        pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+
+        _float3 vAngle = pTransform->Get_Angle();
+
         ImGui::Text("Rotation");
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("Rot_X", &f, 0.1f, -360.f, 360.f, "%.1f"); ImGui::SameLine();
+        ImGui::DragFloat("Rot_X", &vAngle.x, 0.1f, -360.f, 360.f, "%.1f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("Rot_Y", &f, 0.1f, -360.f, 360.f, "%.1f"); ImGui::SameLine();
+        ImGui::DragFloat("Rot_Y", &vAngle.y, 0.1f, -360.f, 360.f, "%.1f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("Rot_Z", &f, 0.1f, -360.f, 360.f, "%.1f");
+        ImGui::DragFloat("Rot_Z", &vAngle.z, 0.1f, -360.f, 360.f, "%.1f");
         ImGui::Text("Scale");
 
+        pTransform->Rotation(vAngle);
+
+        _float3 vScale = pTransform->Get_Scaled();
+
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("SCL_X", &f, 0.1f, -100.f, 100.f, "%.1f"); ImGui::SameLine();
+        ImGui::DragFloat("SCL_X", &vScale.x, 0.1f, -100.f, 100.f, "%.1f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("SCL_Y", &f, 0.1f, -100.f, 100.f, "%.1f"); ImGui::SameLine();
+        ImGui::DragFloat("SCL_Y", &vScale.y, 0.1f, -100.f, 100.f, "%.1f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat("SCL_Z", &f, 0.1f, -100.f, 100.f, "%.1f");
+        ImGui::DragFloat("SCL_Z", &vScale.z, 0.1f, -100.f, 100.f, "%.1f");
+
+        pTransform->Scaled(vScale);
 
         ImGui::Separator();
     }
+}
+
+void CImWindow_Inspector::Show_Renderer()
+{
+}
+
+void CImWindow_Inspector::Show_Buffer()
+{
+}
+
+void CImWindow_Inspector::Show_Shader()
+{
 }
 
 void CImWindow_Inspector::Add_Component()

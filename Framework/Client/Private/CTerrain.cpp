@@ -77,29 +77,34 @@ HRESULT CTerrain::SetUp_ShaderResources()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
-	{
-		Safe_Release(pGameInstance);
+	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition", (void*)&LightDesc.vPosition, sizeof(_float4))))
 		return E_FAIL;
-	}
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection", (void*)&LightDesc.vDirection, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse", (void*)&LightDesc.vDiffuse, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular", (void*)&LightDesc.vSpecular, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition", (void*)&pGameInstance->Get_Camera_Position(), sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
+		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
-	{
-		Safe_Release(pGameInstance);
 		return E_FAIL;
-	}
 
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
-	{
-		Safe_Release(pGameInstance);
 		return E_FAIL;
-	}
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_Diffuse_Texture")))
-	{
-		Safe_Release(pGameInstance);
+	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
 		return E_FAIL;
-	}
 
 	Safe_Release(pGameInstance);
 

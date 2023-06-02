@@ -213,6 +213,9 @@
     <ClInclude Include="..\Public\CLight.h">
       <Filter>05. Lights</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CVIBuffer_Cube.h">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Cube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -307,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CLight.cpp">
       <Filter>05. Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CVIBuffer_Cube.cpp">
+      <Filter>01.Utility\03. Component\01. VIBuffer\Cube</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -369,6 +369,14 @@ HRESULT CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix 
 	return m_pPipeLine->Set_Transform(eState, _Matrix);
 }
 
+_float4 CGameInstance::Get_Camera_Position() const
+{
+	if (nullptr == m_pPipeLine)
+		return _float4();
+
+	return m_pPipeLine->Get_Camera_Position();
+}
+
 wstring CGameInstance::strToWStr(string str)
 {
 	if (nullptr == m_pFileInfo)

@@ -22,6 +22,9 @@ HRESULT CDummyObject3D::Initialize(CComponent* pOwner, void* pArg)
     if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
         return E_FAIL;
 
+    if (FAILED(Add_Components()))
+        return E_FAIL;
+
     D3D11_RASTERIZER_DESC RasterizerDesc;
     ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
 
@@ -58,8 +61,36 @@ HRESULT CDummyObject3D::Render()
     return S_OK;
 }
 
+HRESULT CDummyObject3D::Add_Texture(const wstring PrototypeTag)
+{
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Texture", (CComponent**)&m_pTextureCom, this)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CDummyObject3D::Add_Shader(const wstring PrototypeTag)
+{
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Shader", (CComponent**)&m_pShaderCom, this)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CDummyObject3D::Add_Buffer(const wstring PrototypeTag)
+{
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Buffer", (CComponent**)&m_pBufferCom, this)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 HRESULT CDummyObject3D::Add_Components()
 {
+    if(FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Renderer",
+        L"Com_Renderer", (CComponent**)&m_pRenderer, this)))
+        return E_FAIL;
+
     return S_OK;
 }
 

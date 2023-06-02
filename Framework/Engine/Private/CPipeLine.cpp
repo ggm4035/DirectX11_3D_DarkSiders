@@ -81,6 +81,8 @@ void CPipeLine::Tick()
 {
 	for (_uint i = 0; i < STATE_END; ++i)
 		XMStoreFloat4x4(&m_Transform_Inverse[i], XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_Transform[i])));
+
+	memcpy(&m_CameraPosition, &m_Transform_Inverse[STATE_VIEW].m[3][0], sizeof(_float4));
 }
 
 void CPipeLine::Free()

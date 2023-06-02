@@ -171,6 +171,7 @@
     <ClInclude Include="CCoordnate_Axis.h" />
     <ClInclude Include="CDummyObject3D.h" />
     <ClInclude Include="CImWindow_Base.h" />
+    <ClInclude Include="CImWindow_Create.h" />
     <ClInclude Include="CImWindow_Inspector.h" />
     <ClInclude Include="CLevel_Tool.h" />
     <ClInclude Include="CMainCamera.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="CCoordnate_Axis.cpp" />
     <ClCompile Include="CDummyObject3D.cpp" />
     <ClCompile Include="CImWindow_Base.cpp" />
+    <ClCompile Include="CImWindow_Create.cpp" />
     <ClCompile Include="CImWindow_Inspector.cpp" />
     <ClCompile Include="CLevel_Tool.cpp" />
     <ClCompile Include="CMainCamera.cpp" />

@@ -64,6 +64,9 @@
     <Filter Include="02. GameObject\00. Dummy\Camera">
       <UniqueIdentifier>{ec8cb1ec-0a0d-453e-865a-63244f114bf9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. ImWindow\02. ImWindow_Create">
+      <UniqueIdentifier>{3aaa34f6-d454-494f-8643-3c9d433b25e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\imconfig.h">
@@ -122,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="CDummyObject3D.h">
       <Filter>02. GameObject\00. Dummy\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Create.h">
+      <Filter>01. ImWindow\02. ImWindow_Create</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="CDummyObject3D.cpp">
       <Filter>02. GameObject\00. Dummy\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Create.cpp">
+      <Filter>01. ImWindow\02. ImWindow_Create</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

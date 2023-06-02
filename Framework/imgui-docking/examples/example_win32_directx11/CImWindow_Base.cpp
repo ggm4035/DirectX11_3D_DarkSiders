@@ -5,6 +5,7 @@
 #include "CImWindow_Manager.h"
 
 #include "CImWindow_Inspector.h"
+#include "CImWindow_Create.h"
 
 #include "CTerrain.h"
 #include "CCoordnate_Axis.h"
@@ -21,11 +22,14 @@ HRESULT CImWindow_Base::Initialize(void* pArg)
     if (FAILED(CImWindow::Initialize(pArg)))
         return E_FAIL;
 
+    m_pCreateWindow = dynamic_cast<CImWindow_Create*>(WINDOWMGR->Get_ImWindow(L"ImWindow_Create"));
+
     return S_OK;
 }
 
 void CImWindow_Base::Tick(const _double& TimeDelta)
 {
+    ImVec2 pos = ImGui::GetWindowPos();
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(350, 760), ImGuiCond_Always);
     ImGui::Begin("Hierarchy ", nullptr, ImGuiWindowFlags_NoResize);
@@ -77,17 +81,13 @@ void CImWindow_Base::Hierarchy()
 
         if (ImGui::BeginPopupContextItem("Create"))
         {
+            if (ImGui::Selectable("3D Object"))
+            {
+                Create_3D_Object();
+            }
             if (ImGui::Selectable("UI"))
             {
 
-            }
-            if (ImGui::Selectable("3D Object"))
-            {
-                if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
-                    L"Default_3D", L"Layer_Tool")))
-                    return;
-
-                WINDOWMGR->Refresh_All_Window();
             }
             if (ImGui::Selectable("Camera"))
             {
@@ -188,6 +188,21 @@ void CImWindow_Base::Tab_Terrain()
     ImGui::Separator();
     ImGui::Text("Texture");
     ImGui::Separator();
+}
+
+void CImWindow_Base::Create_3D_Object()
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    m_pCreateWindow->m_bIsOpen = true;
+    /*if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
+        L"Default_3D", L"Layer_Tool")))
+        return;*/
+
+    //WINDOWMGR->Refresh_All_Window();
+
+    Safe_Release(pGameInstance);
 }
 
 void CImWindow_Base::Refresh()

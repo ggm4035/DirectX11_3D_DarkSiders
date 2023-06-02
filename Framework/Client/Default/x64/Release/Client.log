@@ -5,6 +5,7 @@ FXC : warning X4717: Effects deprecated for D3DCompiler_47
   
   compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxCol.cso
 FXC : warning X4717: Effects deprecated for D3DCompiler_47
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\ShaderFiles\Shader_VtxNorTex.hlsl(69,5-57): warning X3206: implicit truncation of vector type
   
   compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxNorTex.cso
 FXC : warning X4717: Effects deprecated for D3DCompiler_47
@@ -22,6 +23,6 @@ FXC : warning X4717: Effects deprecated for D3DCompiler_47
   Client.cpp
   코드를 생성하고 있습니다.
   Previous IPDB not found, fall back to full compilation.
-  All 359 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 360 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   코드를 생성했습니다.
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

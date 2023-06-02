@@ -115,8 +115,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("모델 로딩 중.");
 
 	/* For. Prototype_Component_VIBuffer_Terrain */
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Terrain",
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Terrain/Height.bmp"))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("셰이더 로딩 중.");

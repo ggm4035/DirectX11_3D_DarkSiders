@@ -35,7 +35,7 @@ HRESULT CLevel_Tool::Ready_Layer(wstring LayerTag)
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Terrain",
+    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
         L"Terrain", LayerTag)))
         return E_FAIL;
 

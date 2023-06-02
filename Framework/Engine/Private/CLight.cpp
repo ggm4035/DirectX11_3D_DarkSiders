@@ -1,4 +1,4 @@
-#include "..\Public\CLight.h"
+#include "CLight.h"
 
 CLight::CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)

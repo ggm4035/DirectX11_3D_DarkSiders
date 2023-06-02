@@ -4,6 +4,7 @@ CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 	, m_TransformDesc()
 {
+	ZeroMemory(&m_vAngle, sizeof(_float3));
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
 }
 
@@ -11,6 +12,7 @@ CTransform::CTransform(const CTransform& rhs)
 	: CComponent(rhs)
 	, m_WorldMatrix(rhs.m_WorldMatrix)
 	, m_TransformDesc(rhs.m_TransformDesc)
+	, m_vAngle(rhs.m_vAngle)
 {
 }
 
@@ -147,6 +149,27 @@ void CTransform::Rotation(_fvector vAxis, const _float& fRadian)
 	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotationMatrix));
 	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotationMatrix));
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
+}
+
+void CTransform::Rotation(const _float3& rDegrees)
+{
+	m_vAngle = rDegrees;
+	_float3 Scales = Get_Scaled();
+	_matrix RotationMatrixX, RotationMatrixY, RotationMatrixZ;
+
+	RotationMatrixX = XMMatrixRotationX(XMConvertToRadians(rDegrees.x));
+	RotationMatrixY = XMMatrixRotationY(XMConvertToRadians(rDegrees.y));
+	RotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(rDegrees.z));
+
+	_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scales.x;
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scales.y;
+	_vector vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scales.z;
+
+	_matrix RotationMatrix = RotationMatrixX * RotationMatrixY * RotationMatrixZ;
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(vRight, RotationMatrix));
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, RotationMatrix));
+	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
 }
 
 void CTransform::Turn(_fvector vAxis, const _double& TimeDelta)

@@ -33,6 +33,9 @@ public:
 	}
 	_matrix Get_WorldMatrix_Inverse();
 	_float3 Get_Scaled();
+	_float3 Get_Angle() {
+		return m_vAngle;
+	}
 	_vector Get_State(STATE _eState) {
 		return XMLoadFloat4x4(&m_WorldMatrix).r[_eState];
 	}
@@ -52,12 +55,14 @@ public:
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
 	void LookAt(_fvector vTargetPosition);
 	void Rotation(_fvector vAxis, const _float& fRadian);
+	void Rotation(const _float3& rDegrees);
 	void Turn(_fvector vAxis, const _double& TimeDelta);
 
 	void Scaled(const _float3& vScale);
 
 private:
 	_float4x4 m_WorldMatrix;
+	_float3 m_vAngle;
 	TRASNFORMDESC m_TransformDesc;
 
 public:

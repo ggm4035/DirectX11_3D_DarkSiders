@@ -178,6 +178,7 @@
     <ClInclude Include="..\Public\CTransform.h" />
     <ClInclude Include="..\Public\CVIBuffer.h" />
     <ClInclude Include="..\Public\CVIBuffer_Coordnate.h" />
+    <ClInclude Include="..\Public\CVIBuffer_Cube.h" />
     <ClInclude Include="..\Public\CVIBuffer_Rect.h" />
     <ClInclude Include="..\Public\CVIBuffer_Terrain.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="..\Private\CTransform.cpp" />
     <ClCompile Include="..\Private\CVIBuffer.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp" />
+    <ClCompile Include="..\Private\CVIBuffer_Cube.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Rect.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Terrain.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />

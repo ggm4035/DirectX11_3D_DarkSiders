@@ -27,6 +27,9 @@ public:
 	_float4x4 Get_UI_Proj_Float4x4(const _uint& iWinSizeX, const _uint& iWinSizeY);
 
 	HRESULT Set_Transform(TRANSFORMSTATE eState, _fmatrix _Matrix);
+	_float4 Get_Camera_Position() const {
+		return m_CameraPosition;
+	}
 
 public:
 	void Tick();
@@ -34,6 +37,7 @@ public:
 private:
 	_float4x4 m_Transform[STATE_END];
 	_float4x4 m_Transform_Inverse[STATE_END];
+	_float4 m_CameraPosition;
 
 public:
 	virtual void Free() override;

@@ -12,6 +12,7 @@
 
 #include "CImWindow_Base.h"
 #include "CImWindow_Inspector.h"
+#include "CImWindow_Create.h"
 
 CToolMainApp::CToolMainApp()
     : m_pGameInstance(CGameInstance::GetInstance())
@@ -87,6 +88,9 @@ HRESULT CToolMainApp::Open_Level(LEVELID eLevelIndex)
 
 HRESULT CToolMainApp::Ready_ImWindows()
 {
+    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Create", CImWindow_Create::Create())))
+        return E_FAIL;
+
     if(FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Base", CImWindow_Base::Create())))
         return E_FAIL;
 
@@ -100,10 +104,6 @@ HRESULT CToolMainApp::Ready_Prototype_GameObject_For_Tool()
 {
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
-
-    if (FAILED(pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain",
-        CTerrain::Create(m_pDevice, m_pContext))))
-        return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Main",
         CMainCamera::Create(m_pDevice, m_pContext))))

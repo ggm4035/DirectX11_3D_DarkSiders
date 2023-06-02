@@ -76,10 +76,11 @@ public: /* For.PipeLine */
 	_matrix Get_UI_Proj_Matrix(const _uint& iWinSizeX, const _uint& iWinSizeY);
 	_float4x4 Get_UI_Proj_Float4x4(const _uint& iWinSizeX, const _uint& iWinSizeY);
 	HRESULT Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix _Matrix);
+	_float4 Get_Camera_Position() const;
 
 public: /* For.FileInfo */
 	wstring strToWStr(string str);
-	string wstrToStr(wstring wstr);
+	string wstrToStr(wstring wstr); 
 
 public: /* For.Light_Manager*/
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint & iIndex);
