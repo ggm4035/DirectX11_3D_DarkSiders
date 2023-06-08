@@ -24,10 +24,13 @@ public:
     void Refresh_All_Window();
 
 private:
-    CImWindow* Find_Window(wstring tag);
+    ID3D11Device* m_pDevice = { nullptr };
+    ID3D11DeviceContext* m_pContext = { nullptr };
+
+    unordered_map<wstring, CImWindow*>    m_ImWindows;
 
 private:
-    unordered_map<wstring, CImWindow*>    m_ImWindows;
+    CImWindow* Find_Window(wstring tag);
 
 public:
     virtual void Free(void) override;

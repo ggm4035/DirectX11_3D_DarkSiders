@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Client.h"
 
-#include "../Public/CMainApp.h"
+#include "CMainApp.h"
 #include "CGameInstance.h"
 
 #define MAX_LOADSTRING 100

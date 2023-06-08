@@ -12,6 +12,9 @@ protected:
 	virtual ~CVIBuffer() = default;
 
 public:
+	const list<TRIANGLE>& Get_TriangleList() const { return m_TriangleList; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
 
@@ -35,6 +38,8 @@ protected:
 
 	DXGI_FORMAT m_eFormat;
 	D3D11_PRIMITIVE_TOPOLOGY m_eTopology;
+
+	list<TRIANGLE> m_TriangleList;
 
 protected:
 	HRESULT Create_Buffer(OUT ID3D11Buffer * *ppOut);

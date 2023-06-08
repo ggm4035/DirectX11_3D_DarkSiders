@@ -88,13 +88,13 @@ HRESULT CToolMainApp::Open_Level(LEVELID eLevelIndex)
 
 HRESULT CToolMainApp::Ready_ImWindows()
 {
+    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Inspector", CImWindow_Inspector::Create())))
+        return E_FAIL;
+
     if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Create", CImWindow_Create::Create())))
         return E_FAIL;
 
     if(FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Base", CImWindow_Base::Create())))
-        return E_FAIL;
-
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Inspector", CImWindow_Inspector::Create())))
         return E_FAIL;
 
     return S_OK;
@@ -137,12 +137,34 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
             VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
         return E_FAIL;
 
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxPos",
+        CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Vtx.hlsl",
+            VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxTex",
+        CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl",
+            VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
+        return E_FAIL;
+
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Texture_Test",
         CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Test/De%d.png", 10))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Terrain",
         CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Terrain_Height",
+        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Terrain/Height.bmp"))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Cube",
+        CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Rect",
+        CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Coordnate",

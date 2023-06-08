@@ -75,7 +75,18 @@ void CImWindow_Inspector::Show_Components()
     if (dynamic_cast<CGameObject3D*>(m_pCurGameObject))
         Show_Transform();
 
-    Add_Component();
+    CDummyObject3D* pObject = { nullptr };
+    if (pObject = dynamic_cast<CDummyObject3D*>(m_pCurGameObject))
+    {
+        if(pObject->Get_Renderer())
+            Show_Renderer();
+        if(pObject->Get_Texture())
+            Show_Texture();
+        if(pObject->Get_Shader())
+            Show_Shader();
+        if (pObject->Get_Buffer())
+            Show_Buffer();
+    }
 
     Safe_Release(pGameInstance);
 }
@@ -128,56 +139,41 @@ void CImWindow_Inspector::Show_Transform()
 
 void CImWindow_Inspector::Show_Renderer()
 {
+    if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_None))
+    {
+        _int iRenderType = { 0 };
+
+        iRenderType = dynamic_cast<CDummyObject3D*>(m_pCurGameObject)->Get_RenderGroup();
+        ImGui::RadioButton("Priority", &iRenderType, 0);
+        ImGui::RadioButton("NonBlend", &iRenderType, 1);
+        ImGui::RadioButton("NonLight", &iRenderType, 2);
+        ImGui::RadioButton("Blend", &iRenderType, 3);
+        ImGui::RadioButton("UI", &iRenderType, 4);
+
+        dynamic_cast<CDummyObject3D*>(m_pCurGameObject)->m_eRenderGroup = (CRenderer::RENDERGROUP)iRenderType;
+    }
+}
+
+void CImWindow_Inspector::Show_Texture()
+{
+    if (ImGui::CollapsingHeader("Texture", ImGuiTreeNodeFlags_None))
+    {
+    }
 }
 
 void CImWindow_Inspector::Show_Buffer()
 {
+    if (ImGui::CollapsingHeader("Buffer", ImGuiTreeNodeFlags_None))
+    {
+    }
 }
 
 void CImWindow_Inspector::Show_Shader()
 {
-}
-
-void CImWindow_Inspector::Add_Component()
-{
-    if (ImGui::BeginPopupContextItem("Create"))
+    if (ImGui::CollapsingHeader("Shader", ImGuiTreeNodeFlags_None))
     {
-        CGameInstance* pGameInstance = CGameInstance::GetInstance();
-        Safe_AddRef(pGameInstance);
-
-        list<CComponent*> PrototypeList = pGameInstance->Get_All_Prototypes();
-        _uint iNumPrototypes = PrototypeList.size();
-        static int i = 3;
-
-        auto iter = PrototypeList.begin();
-
-        string* pstrTags = new string[iNumPrototypes];
-        const _char** ppiTems = new const _char * [iNumPrototypes];
-
-        for (_uint i = 0; i < iNumPrototypes; ++i)
-        {
-            pstrTags[i] = pGameInstance->wstrToStr((*iter)->Get_Tag());
-            ppiTems[i] = pstrTags[i].c_str();
-            ++iter;
-        }
-
-        ImGui::SetNextItemWidth(300.f);
-        ImGui::ListBox("Prototypes", &i, ppiTems, iNumPrototypes);
-        if (ImGui::Button("Create"))
-        {
-
-        }
-
-        Safe_Delete_Array(pstrTags);
-        Safe_Delete_Array(ppiTems);
-
-        Safe_Release(pGameInstance);
-        ImGui::EndPopup();
+        
     }
-
-    if (ImGui::Button("Add Component"))
-        ImGui::OpenPopup("Create");
-
 }
 
 CImWindow_Inspector* CImWindow_Inspector::Create(void* pArg)

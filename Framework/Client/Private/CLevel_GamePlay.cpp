@@ -19,6 +19,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Cameras(L"Layer_Cameras")))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Player(L"Layer_Player")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -75,6 +78,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cameras(wstring pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Camera_Free",
 		L"Camera_Free", pLayerTag)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Prototype_GameObject_Player",
+		L"Player", pLayerTag)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

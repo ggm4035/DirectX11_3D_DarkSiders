@@ -43,6 +43,9 @@
     <Filter Include="02. GameObject\Camera\Camera_Free">
       <UniqueIdentifier>{031c7df3-afbf-4335-a4da-3d32f52b6e35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Player">
+      <UniqueIdentifier>{2517d608-0c9d-4f5d-830e-c4ae48a908e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -87,6 +90,9 @@
     <ClInclude Include="..\Public\CCamera_Free.h">
       <Filter>02. GameObject\Camera\Camera_Free</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CPlayer.h">
+      <Filter>02. GameObject\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -119,6 +125,9 @@
     <ClCompile Include="..\Private\CCamera_Free.cpp">
       <Filter>02. GameObject\Camera\Camera_Free</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CPlayer.cpp">
+      <Filter>02. GameObject\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -144,6 +153,9 @@
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

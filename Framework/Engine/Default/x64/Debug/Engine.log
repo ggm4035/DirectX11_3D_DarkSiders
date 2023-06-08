@@ -1,5 +1,8 @@
 ﻿  CApplication.cpp
   CBase.cpp
+  CCalculator.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CCalculator.cpp(98,35): warning C4244: '인수': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CCalculator.cpp(98,24): warning C4244: '인수': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CCamera.cpp
   CCamera_Manager.cpp
   CComponent.cpp
@@ -16,10 +19,12 @@
   CLevel_Manager.cpp
   CLight.cpp
   CLight_Manager.cpp
-  CObject_Manager.cpp
-  CPipeLine.cpp
+  CMesh.cpp
   코드를 생성하고 있습니다...
   컴파일하고 있습니다...
+  CModel.cpp
+  CObject_Manager.cpp
+  CPipeLine.cpp
   CRenderer.cpp
   CShader.cpp
   CTexture.cpp
@@ -44,8 +49,13 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(181,
   CVIBuffer_Cube.cpp
   CVIBuffer_Rect.cpp
   CVIBuffer_Terrain.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(154,83): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(154,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(42,50): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(42,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(68,12): warning C4101: 'vSour' :참조되지 않은 지역 변수입니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(68,19): warning C4101: 'vDest' :참조되지 않은 지역 변수입니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(68,26): warning C4101: 'vNormal' :참조되지 않은 지역 변수입니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(166,83): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(166,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Timer.cpp
   Timer_Manager.cpp
   Engine_Struct.cpp

@@ -106,6 +106,27 @@ list<CGameObject*> CObject_Manager::Get_All_GameObject()
 	return retList;
 }
 
+HRESULT CObject_Manager::Remove_GameObject(const wstring& GameObjectTag)
+{
+	for (_uint i = 0; i < m_iNumLevels; ++i)
+	{
+		for (auto& Pair : m_pLayers[i])
+		{
+			for (auto& iter = Pair.second->m_pGameObjects.begin(); iter != Pair.second->m_pGameObjects.end(); ++iter)
+			{
+				if (GameObjectTag == (*iter)->Get_Tag())
+				{
+					Safe_Release(*iter);
+					Pair.second->m_pGameObjects.erase(iter);
+					return S_OK;
+				}
+			}
+		}
+	}
+
+	return E_FAIL;
+}
+
 CGameObject* CObject_Manager::Find_Prototype(wstring& PrototypeTag)
 {
 	auto& iter = m_Prototypes.find(PrototypeTag);

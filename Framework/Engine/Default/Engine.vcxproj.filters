@@ -82,9 +82,6 @@
     <Filter Include="01.Utility\02. GameObject\Camera\Manager">
       <UniqueIdentifier>{c58eb43c-9afa-4b67-a8d9-0c8ce7bec03d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. PipeLine">
-      <UniqueIdentifier>{70be8bfc-3fdf-448b-be58-9508e0a23cb9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\02. GameObject\CGameObjectUI">
       <UniqueIdentifier>{d28c0133-d878-4c48-bcb5-19acf0c550c0}</UniqueIdentifier>
     </Filter>
@@ -100,11 +97,23 @@
     <Filter Include="00.System\03. FileInfo">
       <UniqueIdentifier>{583d97da-6d91-44e4-a6ed-bb8a1f2ff815}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Lights">
+    <Filter Include="01.Utility\04. PipeLine">
+      <UniqueIdentifier>{70be8bfc-3fdf-448b-be58-9508e0a23cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\06. Calulator">
+      <UniqueIdentifier>{8efb0371-0329-4313-b0e2-23e9ed55278b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\05. Lights">
       <UniqueIdentifier>{b9740140-9ff4-4a72-bb73-f4906b7941cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Lights\Manager">
+    <Filter Include="01.Utility\05. Lights\Manager">
       <UniqueIdentifier>{23ea1519-1c1e-4b78-841b-5abffb5051c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03. Component\05. Model">
+      <UniqueIdentifier>{26047e79-327d-4d82-b0ad-3611ad398901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03. Component\05. Model\Mesh">
+      <UniqueIdentifier>{d4b2a366-7919-4382-82cb-ab9bf4e83e5a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -184,7 +193,7 @@
       <Filter>01.Utility\03. Component\04. Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CPipeLine.h">
-      <Filter>04. PipeLine</Filter>
+      <Filter>01.Utility\04. PipeLine</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CGameObjectUI.h">
       <Filter>01.Utility\02. GameObject\CGameObjectUI</Filter>
@@ -208,13 +217,22 @@
       <Filter>00.System\03. FileInfo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLight_Manager.h">
-      <Filter>05. Lights\Manager</Filter>
+      <Filter>01.Utility\05. Lights\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLight.h">
-      <Filter>05. Lights</Filter>
+      <Filter>01.Utility\05. Lights</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CVIBuffer_Cube.h">
       <Filter>01.Utility\03. Component\01. VIBuffer\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCalculator.h">
+      <Filter>01.Utility\06. Calulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CModel.h">
+      <Filter>01.Utility\03. Component\05. Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMesh.h">
+      <Filter>01.Utility\03. Component\05. Model\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -282,7 +300,7 @@
       <Filter>01.Utility\03. Component\04. Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CPipeLine.cpp">
-      <Filter>04. PipeLine</Filter>
+      <Filter>01.Utility\04. PipeLine</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CGameObjectUI.cpp">
       <Filter>01.Utility\02. GameObject\CGameObjectUI</Filter>
@@ -299,20 +317,29 @@
     <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp">
       <Filter>01.Utility\03. Component\01. VIBuffer\Coordnate</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CFileInfo.cpp">
-      <Filter>00.System\03. FileInfo</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CInput_Device.cpp">
       <Filter>00.System\00.Device\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLight_Manager.cpp">
-      <Filter>05. Lights\Manager</Filter>
+      <Filter>01.Utility\05. Lights\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLight.cpp">
-      <Filter>05. Lights</Filter>
+      <Filter>01.Utility\05. Lights</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CVIBuffer_Cube.cpp">
       <Filter>01.Utility\03. Component\01. VIBuffer\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCalculator.cpp">
+      <Filter>01.Utility\06. Calulator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CModel.cpp">
+      <Filter>01.Utility\03. Component\05. Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMesh.cpp">
+      <Filter>01.Utility\03. Component\05. Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFileInfo.cpp">
+      <Filter>00.System\03. FileInfo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,0 +1,18 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 09.05.2023 19:47:03
+
+newmtl Dn_HL_Inst_Ruins_Trim_Top_A
+	Ns 10.000000
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588000 0.588000 0.588000
+	Kd 0.588000 0.588000 0.588000
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka Dn_HL_Ruins_Trim_Top_A_d.png
+	map_Kd Dn_HL_Ruins_Trim_Top_A_d.png
+	map_Ke Dn_HL_Ruins_Trim_Top_A_mre_packed.png
+	map_bump C__Users_joo_Desktop_Files_Game_Environment_Hell_Textures__Dn_HL_Ruins_Trim_Top_A_n_png_Normal_Bump.png

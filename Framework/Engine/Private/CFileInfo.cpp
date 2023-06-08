@@ -27,13 +27,14 @@ wstring CFileInfo::ConvertRelatePath(wstring strFullPath)
 	return wstring(szRelativePath);
 }
 
-void CFileInfo::Extraction_Texture(const std::wstring& wstrPath, std::list<IMGPATH*>& rPathInfoList)
+void CFileInfo::Extraction_Texture(const std::wstring& wstrPath, OUT std::list<FILEDESC*>& rPathInfoList)
 {
+
 }
 
-_int CFileInfo::DirFileCnt(const std::wstring& wstrPath)
+void CFileInfo::Extraction_Mesh(const std::wstring& wstrPath, OUT std::list<FILEDESC*>& rPathList)
 {
-	return 0;
+
 }
 
 wstring CFileInfo::strToWStr(string& str)

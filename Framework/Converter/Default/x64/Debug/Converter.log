@@ -1,0 +1,22 @@
+﻿  CConverter.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.inl(101,47): error C2589: '(': '::' 오른쪽에 잘못된 토큰이 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.h(725,14): message : 이 진단은 컴파일러 생성 함수 'aiReturn aiMaterial::Get(const char *,unsigned int,unsigned int,Type *,unsigned int *) const'에서 수행되었습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.inl(101,47): error C2760: 구문 오류: '('을(는) 예기치 않은 토큰입니다. 필요한 토큰은 ')'입니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.h(725,14): message : 이 진단은 컴파일러 생성 함수 'aiReturn aiMaterial::Get(const char *,unsigned int,unsigned int,Type *,unsigned int *) const'에서 수행되었습니다.
+  Converter.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.inl(101,47): error C2589: '(': '::' 오른쪽에 잘못된 토큰이 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.h(725,14): message : 이 진단은 컴파일러 생성 함수 'aiReturn aiMaterial::Get(const char *,unsigned int,unsigned int,Type *,unsigned int *) const'에서 수행되었습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.inl(101,47): error C2760: 구문 오류: '('을(는) 예기치 않은 토큰입니다. 필요한 토큰은 ')'입니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\assimp\material.h(725,14): message : 이 진단은 컴파일러 생성 함수 'aiReturn aiMaterial::Get(const char *,unsigned int,unsigned int,Type *,unsigned int *) const'에서 수행되었습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(84,31): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(84,18): error C2065: 'pGameInstance': 선언되지 않은 식별자입니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(85,28): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(85,5): error C2374: 'Safe_Release': 재정의. 여러 번 초기화했습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(84): message : 'Safe_Release' 선언을 참조하십시오.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(85,18): error C2065: 'pConverter': 선언되지 않은 식별자입니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(87,5): error C2059: 구문 오류: 'return'
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(88,1): error C2059: 구문 오류: '}'
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(88,1): error C2143: 구문 오류: ';'이(가) '}' 앞에 없습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(98,1): error C2143: 구문 오류: ';'이(가) '{' 앞에 없습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\Converter.cpp(98,1): error C2447: '{': 함수 헤더가 없습니다. 이전 스타일의 형식 목록입니까?
+  코드를 생성하고 있습니다...

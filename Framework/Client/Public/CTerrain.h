@@ -20,11 +20,11 @@ private:
 	virtual ~CTerrain() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(CComponent* pOwner, void* pArg);
-	virtual void Tick(const _double& TimeDelta);
-	virtual void Late_Tick(const _double& TimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual void Tick(const _double& TimeDelta) override;
+	virtual void Late_Tick(const _double& TimeDelta) override;
+	virtual HRESULT Render() override;
 
 private:
 	CVIBuffer_Terrain* m_pBufferCom = { nullptr };

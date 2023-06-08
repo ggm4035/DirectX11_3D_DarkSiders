@@ -41,15 +41,17 @@ public: /* For.Level_Manager */
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(wstring pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(const _uint& iNumLayer, wstring PrototypeTag, wstring GameObjectTag, wstring LayerTag, void* pArg = nullptr);
-	
-	list<CGameObject*> Get_All_GameObject();
 
+	/* For. MapEditTool */
+	list<CGameObject*> Get_All_GameObject();
+	HRESULT Remove_GameObject(const wstring GameObjectTag);
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(const _uint& iLevelIndex, wstring PrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(const _uint& iLevelIndex, wstring PrototypeTag, class CComponent * pOwner, void* pArg = nullptr);
 	class CComponent* Clone_Transform(class CComponent * pOwner, void* pArg = nullptr);
 
+	/* For. MapEditTool */
 	list<CComponent*> Get_All_Prototypes();
 
 public: /* For.Camera_Manager */
@@ -86,6 +88,9 @@ public: /* For.Light_Manager*/
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint & iIndex);
 	HRESULT Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const CLight::LIGHTDESC & LightDesc);
 
+public: /* For.Calculator */
+	_vector Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, class CTransform* pTransform);
+
 public: /* For. Imgui */
 	void ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight);
 
@@ -100,6 +105,7 @@ private:
 	class CPipeLine* m_pPipeLine = { nullptr };
 	class CFileInfo* m_pFileInfo = { nullptr };
 	class CLight_Manager* m_pLight_Manager = { nullptr };
+	class CCalculator* m_pCalculator = { nullptr };
 	
 public:
 	static void Release_Engine();

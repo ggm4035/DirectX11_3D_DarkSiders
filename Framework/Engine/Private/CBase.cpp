@@ -1,4 +1,4 @@
-#include "..\Public\CBase.h"
+#include "CBase.h"
 
 CBase::CBase()
 	:m_dwRefCnt{ 1 }
@@ -7,7 +7,7 @@ CBase::CBase()
 
 _ulong CBase::AddRef()
 {
-	return ++m_dwRefCnt;	
+	return ++m_dwRefCnt;
 }
 
 _ulong CBase::Release()

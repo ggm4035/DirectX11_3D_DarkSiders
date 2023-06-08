@@ -24,23 +24,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 
 	m_iVertexBuffers = { 1 };
 	m_iStride = { sizeof(VTXPOSNORTEX) };
-	m_iNumVertices = m_iXCount * m_iZCount;
-	m_iIndexStride = { sizeof(_uint) };
-	m_iNumIndices = (m_iXCount - 1) * (m_iZCount - 1) * 6;
-	m_eFormat = DXGI_FORMAT_R32_UINT;
-	m_eTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-	/*=================*/
-	//  Vertex_Buffer  //
-	/*=================*/
-
-	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
-	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };
-	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
-	m_BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
-	m_BufferDesc.StructureByteStride = m_iStride;
-	m_BufferDesc.CPUAccessFlags = { 0 };
-	m_BufferDesc.MiscFlags = { 0 };
+	m_iNumVertices = { m_iXCount * m_iZCount };
+	m_iIndexStride = { sizeof(_ulong) };
+	m_iNumIndices = { (m_iXCount - 1) * (m_iZCount - 1) * 6 };
+	m_eFormat = { DXGI_FORMAT_R32_UINT };
+	m_eTopology = { D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST };
 
 	VTXPOSNORTEX* pVertices = new VTXPOSNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXPOSNORTEX) * m_iNumVertices);
@@ -51,56 +39,78 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 		{
 			_uint iIndex = i * m_iXCount + j;
 
-			pVertices[iIndex].vPosition = _float3(
-				(_float)j * m_fInterval,
-				0.f,
-				(_float)i * m_fInterval);
-			pVertices[iIndex].vTexCoord = _float2(
-				(_float)j / (_float)(m_iXCount - 1),
-				(_float)i / (_float)(m_iZCount - 1));
+			pVertices[iIndex].vPosition = _float3(j, 0.f, i);
+			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
+			pVertices[iIndex].vTexCoord = _float2(j / (m_iXCount - 1.f), i / (m_iZCount - 1.f));
 		}
 	}
-	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
-	m_SubResourceData.pSysMem = pVertices;
 
-	if (FAILED(CVIBuffer::Create_Buffer(&m_pVB)))
-		return E_FAIL;
+	_ulong* pIndices = new _ulong[m_iNumIndices];
+	ZeroMemory(pIndices, sizeof(_ulong) * m_iNumIndices);
+	TRIANGLE TriangleDesc;
+	ZeroMemory(&TriangleDesc, sizeof TriangleDesc);
 
-	Safe_Delete_Array(pVertices);
-
-	/*================*/
-	//  Index_Buffer  //
-	/*================*/
-
-	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
-	m_BufferDesc.ByteWidth = { m_iIndexStride * m_iNumIndices };
-	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
-	m_BufferDesc.BindFlags = { D3D11_BIND_INDEX_BUFFER };
-	m_BufferDesc.StructureByteStride = { 0 };
-
-	m_BufferDesc.CPUAccessFlags = { 0 };
-	m_BufferDesc.MiscFlags = { 0 };
-
-	_uint* pIndices = new _uint[(m_iNumIndices + 1)];
-	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);
-
-	_uint iCountIndex = 0;
+	_uint iNumIndices = { 0 };
 
 	for (_uint i = 0; i < m_iZCount - 1; ++i)
 	{
 		for (_uint j = 0; j < m_iXCount - 1; ++j)
 		{
 			_uint iIndex = i * m_iXCount + j;
-	
-			pIndices[iCountIndex] = iIndex; iCountIndex++;
-			pIndices[iCountIndex] = iIndex + m_iXCount + 1; iCountIndex++;
-			pIndices[iCountIndex] = iIndex + 1; iCountIndex++;
 
-			pIndices[iCountIndex] = iIndex; iCountIndex++;
-			pIndices[iCountIndex] = iIndex + m_iXCount; iCountIndex++;
-			pIndices[iCountIndex] = iIndex + m_iXCount + 1; iCountIndex++;
+			_uint iIndices[4] = {
+				iIndex + m_iXCount,
+				iIndex + m_iXCount + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			_vector vSour, vDest, vNormal;
+
+			pIndices[iNumIndices++] = iIndices[0];
+			pIndices[iNumIndices++] = iIndices[1];
+			pIndices[iNumIndices++] = iIndices[2];
+
+			TriangleDesc.vDot[0] = pVertices[iIndices[0]].vPosition;
+			TriangleDesc.vDot[1] = pVertices[iIndices[1]].vPosition;
+			TriangleDesc.vDot[2] = pVertices[iIndices[2]].vPosition;
+			m_TriangleList.push_back(TriangleDesc);
+
+			pIndices[iNumIndices++] = iIndices[0];
+			pIndices[iNumIndices++] = iIndices[2];
+			pIndices[iNumIndices++] = iIndices[3];
+
+			TriangleDesc.vDot[0] = pVertices[iIndices[0]].vPosition;
+			TriangleDesc.vDot[1] = pVertices[iIndices[2]].vPosition;
+			TriangleDesc.vDot[2] = pVertices[iIndices[3]].vPosition;
+			m_TriangleList.push_back(TriangleDesc);
 		}
 	}
+
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
+
+	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };
+	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
+	m_BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
+	m_BufferDesc.StructureByteStride = { m_iStride };
+	m_BufferDesc.CPUAccessFlags = { 0 };
+	m_BufferDesc.MiscFlags = { 0 };
+
+	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
+	m_SubResourceData.pSysMem = pVertices;
+
+	if (FAILED(CVIBuffer::Create_Buffer(&m_pVB)))
+		return E_FAIL;
+
+	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
+
+	m_BufferDesc.ByteWidth = { m_iIndexStride * m_iNumIndices };
+	m_BufferDesc.BindFlags = { D3D11_BIND_INDEX_BUFFER };
+	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
+	m_BufferDesc.MiscFlags = { 0 };
+	m_BufferDesc.CPUAccessFlags = { 0 };
+	m_BufferDesc.StructureByteStride = { 0 };
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pIndices;
@@ -108,7 +118,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 	if (FAILED(CVIBuffer::Create_Buffer(&m_pIB)))
 		return E_FAIL;
 
+	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
+
 
 	return S_OK;
 }
@@ -161,6 +173,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 
 	_ulong* pIndices = new _ulong[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ulong) * m_iNumIndices);
+	TRIANGLE TriangleDesc;
+	ZeroMemory(&TriangleDesc, sizeof TriangleDesc);
 
 	_uint iNumIndices = { 0 };
 
@@ -196,6 +210,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 			XMStoreFloat3(&pVertices[iIndices[2]].vNormal,
 				XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
 
+			TriangleDesc.vDot[0] = pVertices[iIndices[0]].vPosition;
+			TriangleDesc.vDot[1] = pVertices[iIndices[1]].vPosition;
+			TriangleDesc.vDot[2] = pVertices[iIndices[2]].vPosition;
+			m_TriangleList.push_back(TriangleDesc);
+
 			pIndices[iNumIndices++] = iIndices[0];
 			pIndices[iNumIndices++] = iIndices[2];
 			pIndices[iNumIndices++] = iIndices[3];
@@ -212,6 +231,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 				XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
 			XMStoreFloat3(&pVertices[iIndices[3]].vNormal,
 				XMLoadFloat3(&pVertices[iIndices[3]].vNormal) + vNormal);
+
+			TriangleDesc.vDot[0] = pVertices[iIndices[0]].vPosition;
+			TriangleDesc.vDot[1] = pVertices[iIndices[2]].vPosition;
+			TriangleDesc.vDot[2] = pVertices[iIndices[3]].vPosition;
+			m_TriangleList.push_back(TriangleDesc);
 		}
 	}
 

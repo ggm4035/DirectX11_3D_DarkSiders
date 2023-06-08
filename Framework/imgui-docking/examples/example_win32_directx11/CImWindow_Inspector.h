@@ -22,7 +22,7 @@ public:
     virtual void Tick(const _double& TimeDelta) override;
     virtual void Refresh() override;
 
-private:
+public:
     CGameObject* m_pCurGameObject = { nullptr };
     _char m_szTag[256];
 
@@ -30,9 +30,9 @@ private:
     void Show_Components();
     void Show_Transform();
     void Show_Renderer();
-    void Show_Buffer();
+    void Show_Texture();
     void Show_Shader();
-    void Add_Component();
+    void Show_Buffer();
 
 public:
     static CImWindow_Inspector* Create(void* pArg = nullptr);

@@ -17,6 +17,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_iVertexBuffers(rhs.m_iVertexBuffers)
 	, m_eFormat(rhs.m_eFormat)
 	, m_eTopology(rhs.m_eTopology)
+	, m_TriangleList(rhs.m_TriangleList)
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);

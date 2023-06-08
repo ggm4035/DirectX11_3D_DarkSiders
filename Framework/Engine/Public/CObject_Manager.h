@@ -20,8 +20,9 @@ public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
 	void Late_Tick(const _double& TimeDelta);
 	void Clear_LevelResources(const _uint& iLevelIndex);
 
-public:
+public: /* For. MapEditMode */
 	list<CGameObject*> Get_All_GameObject();
+	HRESULT Remove_GameObject(const wstring& GameObjectTag);
 
 private:
 	typedef unordered_map<wstring, class CLayer*> LAYERS;

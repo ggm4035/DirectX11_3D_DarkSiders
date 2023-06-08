@@ -23,6 +23,7 @@ public:
 
 public:
 	HRESULT Ready_Prototype_Component_For_Static();
+	HRESULT Ready_Prototype_GameObject_For_Static();
 	HRESULT Open_Level(LEVELID eLevelIndex);
 
 private:
@@ -31,6 +32,8 @@ private:
 
 	CGameInstance* m_pGameInstance = { nullptr };
 	CRenderer* m_pRenderer = { nullptr };
+
+	list<wstring> m_MeshPathList;
 
 public:
 	static CMainApp* Create();

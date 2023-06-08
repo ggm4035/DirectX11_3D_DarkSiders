@@ -1,8 +1,9 @@
 #include "stdafx.h"
-#include "..\Public\CMainApp.h"
+#include "CMainApp.h"
 
 #include "CGameInstance.h"
 #include "CLevel_Loading.h"
+#include "CPlayer.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -26,6 +27,9 @@ HRESULT Client::CMainApp::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component_For_Static()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Prototype_GameObject_For_Static()))
 		return E_FAIL;
 
 	/* 초기 레벨을 생성하고 초기화 한다. */
@@ -66,14 +70,37 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	_matrix PivotMatrix = XMMatrixIdentity();
+	PivotMatrix = XMMatrixRotationX(XMConvertToRadians(90.f));
+	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Model_Player",
+		CModel::Create(m_pDevice, m_pContext, 
+			L"../Bin/Resources/Models/working/Environment/Void/VD_Basalt_Group_A/VD_Basalt_Group_A.fbx", PivotMatrix))))
+		return E_FAIL;
+	/*L"../Bin/Resources/Models/working/Environment/Hell/Structural/Ruins/Update/WallRubble_A/WallRubble_A.fbx"*/
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxTex",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl", 
 			VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxMesh",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxMesh.hlsl",
+			VTXMESH_DECL::Elements, VTXMESH_DECL::iNumElements))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxNorTex",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl", 
 			VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Prototype_GameObject_For_Static()
+{
+	/* For. Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Player",
+		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

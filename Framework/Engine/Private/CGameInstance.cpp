@@ -7,6 +7,7 @@
 #include "CComponent_Manager.h"
 #include "CCamera_Manager.h"
 #include "CFileInfo.h"
+#include "CCalculator.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,7 +22,9 @@ CGameInstance::CGameInstance()
 	, m_pPipeLine{ CPipeLine::GetInstance() }
 	, m_pFileInfo{ CFileInfo::GetInstance() }
 	, m_pLight_Manager{ CLight_Manager::GetInstance() }
+	, m_pCalculator{ CCalculator::GetInstance() }
 {
+	Safe_AddRef(m_pCalculator);
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pFileInfo);
 	Safe_AddRef(m_pPipeLine);
@@ -53,7 +56,10 @@ HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICD
 	CApplication::m_iWinSizeY = GraphicDesc.iViewportSizeY;
 
 	if (FAILED(m_pInput_Manager->Ready_DInput(GraphicDesc.hInst, GraphicDesc.hWnd)))
-		return EFAULT;
+		return E_FAIL;
+
+	if (FAILED(m_pCalculator->Initialize(*ppDevice, *ppContext)))
+		return E_FAIL;
 
 	/* 레벨매니져 오브젝트 매니져, 컴포넌트 매니져들은 Reserve 한다.  */
 	// 게임 오브젝트의 레벨 개수만큼 동적 배열 생성
@@ -179,6 +185,14 @@ list<CGameObject*> CGameInstance::Get_All_GameObject()
 		return list<CGameObject*>();
 
 	return m_pObject_Manager->Get_All_GameObject();
+}
+
+HRESULT CGameInstance::Remove_GameObject(const wstring GameObjectTag)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	return m_pObject_Manager->Remove_GameObject(GameObjectTag);
 }
 
 HRESULT CGameInstance::Add_Prototype(const _uint& iLevelIndex, wstring PrototypeTag, CComponent* pPrototype)
@@ -409,6 +423,14 @@ HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
 }
 
+_vector CGameInstance::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, class CTransform* pTransform)
+{
+	if (nullptr == m_pCalculator)
+		return _vector();
+
+	return m_pCalculator->Picking_On_Triangle(hWnd, pBuffer, pTransform);
+}
+
 void CGameInstance::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
 {
 	if (nullptr == m_pGraphic_Device)
@@ -422,6 +444,8 @@ void CGameInstance::Release_Engine()
 	CGameInstance::GetInstance()->DestroyInstance();
 
 	CLight_Manager::GetInstance()->DestroyInstance();
+
+	CCalculator::GetInstance()->DestroyInstance();
 
 	CFileInfo::GetInstance()->DestroyInstance();
 
@@ -445,6 +469,7 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	Safe_Release(m_pLight_Manager);
+	Safe_Release(m_pCalculator);
 	Safe_Release(m_pFileInfo);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pCamera_Manager);

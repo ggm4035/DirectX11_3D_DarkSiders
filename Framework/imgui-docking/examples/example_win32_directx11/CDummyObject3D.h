@@ -22,6 +22,11 @@ private:
 public:
     unordered_map<wstring, CComponent*>* Get_Components() { return &m_Components; }
     CTransform* Get_Transform() { return m_pTransformCom; }
+    CVIBuffer* Get_Buffer() { return m_pBufferCom; }
+    CShader* Get_Shader() { return m_pShaderCom; }
+    CTexture* Get_Texture() { return m_pTextureCom; }
+    CRenderer* Get_Renderer() { return m_pRenderer; }
+    CRenderer::RENDERGROUP Get_RenderGroup() { return m_eRenderGroup; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -33,9 +38,9 @@ public:
 
 public:
     _uint m_iPassNum = { 0 };
-    _float m_fDetail = { 0.f };
+    _float m_fDetail = { 1.f };
     ID3D11RasterizerState* m_pRasterizer = { nullptr };
-    CRenderer::RENDERGROUP m_eRenderGroup = { CRenderer::RENDER_END };
+    CRenderer::RENDERGROUP m_eRenderGroup = { CRenderer::RENDER_PRIORITY };
 
 public:
     HRESULT Add_Texture(const wstring PrototypeTag);

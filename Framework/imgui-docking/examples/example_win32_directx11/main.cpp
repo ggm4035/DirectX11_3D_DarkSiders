@@ -66,6 +66,7 @@ int main(int, char**)
 
     if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Default"))))
         return FALSE;
+
     if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))
         return FALSE;
 

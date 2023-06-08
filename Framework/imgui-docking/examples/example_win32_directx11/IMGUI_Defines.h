@@ -1,6 +1,7 @@
 #pragma once
 
-#pragma once
+#pragma warning (disable : 4828)
+
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"

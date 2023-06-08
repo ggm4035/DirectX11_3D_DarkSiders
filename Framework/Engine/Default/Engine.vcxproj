@@ -110,7 +110,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;assimp-vc142-mtd.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLib/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -149,13 +149,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;assimp-vc142-mt.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLib/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\CApplication.h" />
     <ClInclude Include="..\public\CBase.h" />
+    <ClInclude Include="..\Public\CCalculator.h" />
     <ClInclude Include="..\Public\CCamera.h" />
     <ClInclude Include="..\Public\CCamera_Manager.h" />
     <ClInclude Include="..\Public\CComponent.h" />
@@ -170,6 +171,8 @@
     <ClInclude Include="..\Public\CLevel_Manager.h" />
     <ClInclude Include="..\Public\CLight.h" />
     <ClInclude Include="..\Public\CLight_Manager.h" />
+    <ClInclude Include="..\Public\CMesh.h" />
+    <ClInclude Include="..\Public\CModel.h" />
     <ClInclude Include="..\Public\CObject_Manager.h" />
     <ClInclude Include="..\Public\CPipeLine.h" />
     <ClInclude Include="..\Public\CRenderer.h" />
@@ -194,6 +197,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\CApplication.cpp" />
     <ClCompile Include="..\private\CBase.cpp" />
+    <ClCompile Include="..\Private\CCalculator.cpp" />
     <ClCompile Include="..\Private\CCamera.cpp" />
     <ClCompile Include="..\Private\CCamera_Manager.cpp" />
     <ClCompile Include="..\Private\CComponent.cpp" />
@@ -210,6 +214,8 @@
     <ClCompile Include="..\Private\CLevel_Manager.cpp" />
     <ClCompile Include="..\Private\CLight.cpp" />
     <ClCompile Include="..\Private\CLight_Manager.cpp" />
+    <ClCompile Include="..\Private\CMesh.cpp" />
+    <ClCompile Include="..\Private\CModel.cpp" />
     <ClCompile Include="..\Private\CObject_Manager.cpp" />
     <ClCompile Include="..\Private\CPipeLine.cpp" />
     <ClCompile Include="..\Private\CRenderer.cpp" />

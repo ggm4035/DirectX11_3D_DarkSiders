@@ -1,0 +1,33 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 15.05.2023 16:57:45
+
+newmtl Dn_Vd_Inst_Stone_Crack_Moss_Blend_A1
+	Ns 10.000000
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588000 0.588000 0.588000
+	Kd 0.588000 0.588000 0.588000
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka MM_Default_Grey.png
+	map_Kd MM_Default_Grey.png
+	map_bump C__Users_joo_Desktop_Files_Game_Environment_Eden_Textures__Dn_En_Solid_Stone_A_n_png_Normal_Bump.png
+
+newmtl Dn_HL_UND_StoneTrims_A_Hub
+	Ns 10.000000
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588000 0.588000 0.588000
+	Kd 0.588000 0.588000 0.588000
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka UND_StoneTrims_B_d.png
+	map_Kd UND_StoneTrims_B_d.png
+	map_Ke UND_StoneTrims_A_mre.png
+	map_bump C__Users_joo_Desktop_Files_Game_Environment_Hell_Textures_Undead__UND_StoneTrims_A_n_png_Normal_Bump.png

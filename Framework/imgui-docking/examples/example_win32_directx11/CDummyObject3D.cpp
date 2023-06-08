@@ -63,7 +63,11 @@ HRESULT CDummyObject3D::Render()
 
 HRESULT CDummyObject3D::Add_Texture(const wstring PrototypeTag)
 {
-    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Texture", (CComponent**)&m_pTextureCom, this)))
+    if (0 == PrototypeTag.size())
+        return S_OK;
+
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Texture",
+        (CComponent**)&m_pTextureCom, this)))
         return E_FAIL;
 
     return S_OK;
@@ -71,7 +75,11 @@ HRESULT CDummyObject3D::Add_Texture(const wstring PrototypeTag)
 
 HRESULT CDummyObject3D::Add_Shader(const wstring PrototypeTag)
 {
-    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Shader", (CComponent**)&m_pShaderCom, this)))
+    if (0 == PrototypeTag.size())
+        return S_OK;
+
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Shader",
+        (CComponent**)&m_pShaderCom, this)))
         return E_FAIL;
 
     return S_OK;
@@ -79,7 +87,11 @@ HRESULT CDummyObject3D::Add_Shader(const wstring PrototypeTag)
 
 HRESULT CDummyObject3D::Add_Buffer(const wstring PrototypeTag)
 {
-    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Buffer", (CComponent**)&m_pBufferCom, this)))
+    if (0 == PrototypeTag.size())
+        return S_OK;
+
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Buffer",
+        (CComponent**)&m_pBufferCom, this)))
         return E_FAIL;
 
     return S_OK;
@@ -112,15 +124,18 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
 
         if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
             return E_FAIL;
-    }
 
-    if (nullptr != m_pTextureCom)
-    {
         if (FAILED(m_pShaderCom->Bind_RawValue("g_fDetail", (void*)&m_fDetail, sizeof(_float))))
             return E_FAIL;
-    }
 
+        if (nullptr != m_pTextureCom)
+        {
+            if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
+                return E_FAIL;
+        }
+    }
     Safe_Release(pGameInstance);
+
     return S_OK;
 }
 

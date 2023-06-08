@@ -20,6 +20,7 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_BackGround(wstring pLayerTag);
 	HRESULT Ready_Layer_Cameras(wstring pLayerTag);
+	HRESULT Ready_Layer_Player(wstring pLayerTag);
 
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

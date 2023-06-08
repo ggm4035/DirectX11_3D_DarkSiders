@@ -35,6 +35,12 @@ HRESULT CImWindow_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext
     ImGui_ImplDX11_Init(pDevice, pContext);
     ImGui::StyleColorsDark();
 
+    m_pDevice = pDevice;
+    m_pContext = pContext;
+
+    Safe_AddRef(m_pDevice);
+    Safe_AddRef(m_pContext);
+
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
@@ -102,7 +108,11 @@ CImWindow* CImWindow_Manager::Find_Window(wstring tag)
 
 void CImWindow_Manager::Free(void)
 {
+    Safe_Release(m_pContext);
+    Safe_Release(m_pDevice);
+
     for (auto& ImWindow : m_ImWindows)
         Safe_Release(ImWindow.second);
+
     m_ImWindows.clear();
 }

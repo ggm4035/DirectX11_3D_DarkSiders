@@ -1,5 +1,11 @@
 
+RasterizerState g_Rasterizer;
+
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+
+float g_fDetail;
+
+texture2D g_DiffuseTexture[10];
 
 sampler LinearSampler = sampler_state
 {
@@ -35,7 +41,7 @@ struct PS_IN
 
 float4 PS_MAIN(PS_IN In) : SV_TARGET0
 {
-    float4 vColor = In.vPosition;
+    float4 vColor = float4(0.f, 0.f, 0.f, 1.f);
 	
 	return vColor;
 }
@@ -48,6 +54,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL/*compile gs_5_0 GS_MAIN()*/;
 		HullShader = NULL/*compile hs_5_0 HS_MAIN()*/;
 		DomainShader = NULL/*compile ds_5_0 DS_MAIN()*/;
-		PixelShader = compile ps_5_0 PS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN();
+        SetRasterizerState(g_Rasterizer);
     }
 };
