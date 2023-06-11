@@ -5,7 +5,6 @@
 #include "Converter.h"
 
 #include "CConverter.h"
-#include "CGameInstance.h"
 
 #define MAX_LOADSTRING 100
 
@@ -45,18 +44,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CONVERTER));
 
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
-
-    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Default"))))
-        return FALSE;
-    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))
-        return FALSE;
-
     MSG msg;
 
     _double TimerAcc = { 0.0 };
-
     // 기본 메시지 루프입니다.
     while (true)
     {
@@ -72,15 +62,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             }
         }
 
-        pGameInstance->Set_Timer(L"Timer_Default");
-        TimerAcc += pGameInstance->Get_Timer(L"Timer_Default");
-
-        /* MainApp 객체의 처리. */
-        if (TimerAcc >= 1.0 / 60.0)
-            pConverter->Tick();
+        pConverter->Tick();
+        
     }
 
-    Safe_Release(pGameInstance);
     Safe_Release(pConverter);
 
     return (int) msg.wParam;
@@ -128,7 +113,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   /*HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
@@ -137,7 +122,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    }
 
    ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);*/
+   UpdateWindow(hWnd);
 
    return TRUE;
 }

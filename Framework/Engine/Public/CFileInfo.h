@@ -8,13 +8,6 @@ class ENGINE_DLL CFileInfo final : public CBase
 {
 	DECLARE_SINGLETON(CFileInfo)
 
-public:
-	typedef struct tagFileInfoDesc
-	{
-		wstring wstrTag;
-		wstring wstrFilePath;
-	}FILEDESC;
-
 private:
 	explicit CFileInfo();
 	virtual ~CFileInfo() = default;
@@ -22,11 +15,13 @@ private:
 public:
 	// 절대경로를 상대경로로 변경하는 함수
 	wstring	ConvertRelatePath(wstring strFullPath);
-	void	Extraction_Texture(const std::wstring& wstrPath, OUT std::list<FILEDESC*>& rPathInfoList);
-	void	Extraction_Mesh(const std::wstring& wstrPath, OUT std::list<FILEDESC*>& rPathList);
+	HRESULT Extraction_Data(const string& strPath, const _char* pExt, OUT list<string>& FilePathList);
 
 public:
-    // char wchar_t 변환 함수
+	void ReadNonAnimModels(const string& strFileName, OUT list<string>& FilePathList, OUT vector<NONANIM_MODEL_BINARYDATA>& vecData);
+
+public:
+    // string < - > wstring 변환 함수
 	wstring strToWStr(string& str);
 	string wstrToStr(wstring& wstr);
 

@@ -12,7 +12,7 @@ BEGIN(Imgui)
 class CImWindow_Create final : public CImWindow
 {
 public:
-    enum TYPE { TEXTURE, SHADER, BUFFER, TYPE_END };
+    enum TYPE { TEXTURE, SHADER, BUFFER, MODEL, TYPE_END };
 
 private:
     explicit CImWindow_Create();

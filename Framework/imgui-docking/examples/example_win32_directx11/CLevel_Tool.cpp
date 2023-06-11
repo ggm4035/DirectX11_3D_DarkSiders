@@ -15,6 +15,9 @@ CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Tool::Initialize()
 {
+    if (FAILED(Ready_Lights()))
+        return E_FAIL;
+
     if (FAILED(Ready_Layer(L"Layer_Tool")))
         return E_FAIL;
 
@@ -59,6 +62,28 @@ HRESULT CLevel_Tool::Ready_Layer(wstring LayerTag)
 
     Safe_Release(pGameInstance);
 
+    return S_OK;
+}
+
+HRESULT CLevel_Tool::Ready_Lights()
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    CLight::LIGHTDESC LightDesc;
+
+    LightDesc.vPosition = _float4(500.f, 500.f, -500.f, 1.f);
+    LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+    LightDesc.fRange = 100.f;
+    LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+    LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+    LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
+    LightDesc.eType = CLight::TYPE_DIRECTIONAL;
+
+    if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+        return E_FAIL;
+
+    Safe_Release(pGameInstance);
     return S_OK;
 }
 

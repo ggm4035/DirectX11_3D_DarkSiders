@@ -82,7 +82,9 @@ public: /* For.PipeLine */
 
 public: /* For.FileInfo */
 	wstring strToWStr(string str);
-	string wstrToStr(wstring wstr); 
+	string wstrToStr(wstring wstr);
+	HRESULT Extraction_Data(const string & strPath, const _char * pExt, OUT list<string>&FilePathList);
+	void ReadNonAnimModels(const string & strFilePath, OUT list<string>&FilePathList, OUT vector<NONANIM_MODEL_BINARYDATA>&vecData);
 
 public: /* For.Light_Manager*/
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint & iIndex);

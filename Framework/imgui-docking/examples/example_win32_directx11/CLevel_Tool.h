@@ -22,6 +22,7 @@ public:
 
 private:
     HRESULT Ready_Layer(wstring LayerTag);
+    HRESULT Ready_Lights();
 
 public:
     static CLevel_Tool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

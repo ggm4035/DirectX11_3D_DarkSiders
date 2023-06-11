@@ -61,6 +61,8 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
+	m_pGameInstance->ReadNonAnimModels("NonAnimModelsFile.dat", m_FilePathList, m_vecNonAnimModelDatas);
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Renderer",
 		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -71,12 +73,15 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		return E_FAIL;
 
 	_matrix PivotMatrix = XMMatrixIdentity();
-	PivotMatrix = XMMatrixRotationX(XMConvertToRadians(90.f));
+	//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+
 	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Model_Player",
-		CModel::Create(m_pDevice, m_pContext, 
-			L"../Bin/Resources/Models/working/Environment/Void/VD_Basalt_Group_A/VD_Basalt_Group_A.fbx", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecNonAnimModelDatas[1], PivotMatrix))))
 		return E_FAIL;
+
 	/*L"../Bin/Resources/Models/working/Environment/Hell/Structural/Ruins/Update/WallRubble_A/WallRubble_A.fbx"*/
+	/*L"../Bin/Resources/Models/working/Heros/Warrior/Warrior.fbx"*/
+	/*L"../Bin/Resources/Models/Fiona/Fiona.fbx"*/
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxTex",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl", 
@@ -86,6 +91,11 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxMesh",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxMesh.hlsl",
 			VTXMESH_DECL::Elements, VTXMESH_DECL::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxAnimMesh",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl",
+			VTXANIMMESH_DECL::Elements, VTXANIMMESH_DECL::iNumElements))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxNorTex",
@@ -128,6 +138,17 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	for (auto& Model : m_vecNonAnimModelDatas)
+	{
+		for (_uint i = 0; i < Model.iNumMeshes; ++i)
+		{
+			Safe_Delete_Array(Model.pMeshData[i].pVertices);
+			Safe_Delete_Array(Model.pMeshData[i].pIndices);
+		}
+		Safe_Delete_Array(Model.pMeshData);
+	}
+	m_vecNonAnimModelDatas.clear();
+
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);

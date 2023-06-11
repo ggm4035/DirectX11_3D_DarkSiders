@@ -52,11 +52,30 @@ HRESULT CDummyObject3D::Render()
     if (FAILED(Set_Shader_Resources()))
         return E_FAIL;
 
-    if (nullptr != m_pShaderCom)
-        m_pShaderCom->Begin(m_iPassNum);
+    if (nullptr != m_pModelCom)
+    {
+        _uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    if (nullptr != m_pBufferCom)
-        m_pBufferCom->Render();
+        for (_uint i = 0; i < iNumMeshes; ++i)
+        {
+            //m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+            m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
+
+            if (nullptr != m_pShaderCom)
+                m_pShaderCom->Begin(m_iPassNum);
+
+            m_pModelCom->Render(i);
+        }
+    }
+    else
+    {
+        if (nullptr != m_pShaderCom)
+            m_pShaderCom->Begin(m_iPassNum);
+
+        if (nullptr != m_pBufferCom)
+            m_pBufferCom->Render();
+    }
 
     return S_OK;
 }
@@ -70,6 +89,8 @@ HRESULT CDummyObject3D::Add_Texture(const wstring PrototypeTag)
         (CComponent**)&m_pTextureCom, this)))
         return E_FAIL;
 
+    m_pTextureCom->Set_Tag(PrototypeTag);
+
     return S_OK;
 }
 
@@ -82,6 +103,8 @@ HRESULT CDummyObject3D::Add_Shader(const wstring PrototypeTag)
         (CComponent**)&m_pShaderCom, this)))
         return E_FAIL;
 
+    m_pShaderCom->Set_Tag(PrototypeTag);
+
     return S_OK;
 }
 
@@ -93,6 +116,22 @@ HRESULT CDummyObject3D::Add_Buffer(const wstring PrototypeTag)
     if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Buffer",
         (CComponent**)&m_pBufferCom, this)))
         return E_FAIL;
+
+    m_pBufferCom->Set_Tag(PrototypeTag);
+
+    return S_OK;
+}
+
+HRESULT CDummyObject3D::Add_Model(const wstring PrototypeTag)
+{
+    if (0 == PrototypeTag.size())
+        return S_OK;
+
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Com_Model",
+        (CComponent**)&m_pModelCom, this)))
+        return E_FAIL;
+
+    m_pModelCom->Set_Tag(PrototypeTag);
 
     return S_OK;
 }
@@ -113,8 +152,8 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
 
     if (nullptr != m_pShaderCom)
     {
-        if (FAILED(m_pShaderCom->Bind_Rasterizer("g_Rasterizer", 0, m_pRasterizer)))
-            return E_FAIL;
+        /*if (FAILED(m_pShaderCom->Bind_Rasterizer("g_Rasterizer", 0, m_pRasterizer)))
+            return E_FAIL;*/
 
         if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
             return E_FAIL;
@@ -125,12 +164,34 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
         if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
             return E_FAIL;
 
-        if (FAILED(m_pShaderCom->Bind_RawValue("g_fDetail", (void*)&m_fDetail, sizeof(_float))))
-            return E_FAIL;
-
         if (nullptr != m_pTextureCom)
         {
-            if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
+            if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture")))
+                return E_FAIL;
+        }
+
+        if (m_pShaderCom->Get_Tag() == L"Prototype_Component_Shader_VtxNorTex" ||
+            m_pShaderCom->Get_Tag() == L"Prototype_Component_Shader_Mesh")
+        {
+            CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",
+                &LightDesc.vDirection, sizeof(_float4))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse",
+                &LightDesc.vDiffuse, sizeof(_float4))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular",
+                &LightDesc.vSpecular, sizeof(_float4))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_LightAmbient",
+                &LightDesc.vAmbient, sizeof(_float4))))
+                return E_FAIL;
+
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
+                &pGameInstance->Get_Trasnform_Inverse_Float4x4(CPipeLine::STATE_VIEW), sizeof(_float4))))
                 return E_FAIL;
         }
     }
@@ -167,6 +228,7 @@ CGameObject3D* CDummyObject3D::Clone(CComponent* pOwner, void* pArg)
 
 void CDummyObject3D::Free()
 {
+    Safe_Release(m_pModelCom);
     Safe_Release(m_pRasterizer);
     Safe_Release(m_pRenderer);
     Safe_Release(m_pShaderCom);

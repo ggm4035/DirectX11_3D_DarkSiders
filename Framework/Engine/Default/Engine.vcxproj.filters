@@ -115,6 +115,9 @@
     <Filter Include="01.Utility\03. Component\05. Model\Mesh">
       <UniqueIdentifier>{d4b2a366-7919-4382-82cb-ab9bf4e83e5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03. Component\05. Model\Bone">
+      <UniqueIdentifier>{27790b61-7e95-402b-b489-ef56b35e2187}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -234,6 +237,12 @@
     <ClInclude Include="..\Public\CMesh.h">
       <Filter>01.Utility\03. Component\05. Model\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CBone.h">
+      <Filter>01.Utility\03. Component\05. Model\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Engine_Enums.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -340,6 +349,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CFileInfo.cpp">
       <Filter>00.System\03. FileInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBone.cpp">
+      <Filter>01.Utility\03. Component\05. Model\Bone</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

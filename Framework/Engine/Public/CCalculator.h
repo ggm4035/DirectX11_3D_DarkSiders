@@ -17,7 +17,6 @@ public:
 
 public:
 	_vector Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, class CTransform* pTransform);
-	_float2 Get_ClientLeftTop(HWND hWnd);
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

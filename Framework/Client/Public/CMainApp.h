@@ -33,7 +33,8 @@ private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CRenderer* m_pRenderer = { nullptr };
 
-	list<wstring> m_MeshPathList;
+	list<string> m_FilePathList;
+	vector<NONANIM_MODEL_BINARYDATA> m_vecNonAnimModelDatas;
 
 public:
 	static CMainApp* Create();

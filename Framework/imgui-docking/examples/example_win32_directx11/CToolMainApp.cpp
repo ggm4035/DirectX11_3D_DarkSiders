@@ -43,6 +43,10 @@ HRESULT CToolMainApp::Initialize()
     if (FAILED(Ready_Prototype_Component_For_Tool()))
         return E_FAIL;
 
+    // Initialze NonAnimModels
+    if (FAILED(Ready_NonAnimModels()))
+        return E_FAIL;
+
     // Intialize GameObject();
     if (FAILED(Ready_Prototype_GameObject_For_Tool()))
         return E_FAIL;
@@ -132,6 +136,11 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
             VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
         return E_FAIL;
 
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_Mesh",
+        CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxMesh.hlsl",
+            VTXMESH_DECL::Elements, VTXMESH_DECL::iNumElements))))
+        return E_FAIL;
+
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxCol",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxCol.hlsl",
             VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
@@ -139,16 +148,16 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxPos",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Vtx.hlsl",
-            VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
+            VTXPOS_DECL::Elements, VTXPOS_DECL::iNumElements))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxTex",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl",
-            VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
+            VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Texture_Test",
-        CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Test/De%d.png", 10))))
+        CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Test/De5.png"))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Terrain",
@@ -175,6 +184,32 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
         m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
         return E_FAIL;
     Safe_AddRef(m_pRenderer);
+
+    Safe_Release(pGameInstance);
+
+    return S_OK;
+}
+
+HRESULT CToolMainApp::Ready_NonAnimModels()
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    pGameInstance->ReadNonAnimModels("NonAnimModelsFile.dat", m_FilePathList, m_vecNonAnimModelDatas);
+
+    _matrix PivotMatrix = XMMatrixIdentity();
+    PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
+    for (_uint i = 0; i < m_vecNonAnimModelDatas.size(); ++i)
+    {
+        _tchar szTag[MAX_PATH] = { L"" };
+
+        _wsplitpath_s(m_vecNonAnimModelDatas[i].szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
+        wstring wstrPrototypeName = { L"" };
+        wstrPrototypeName = wstrPrototypeName + L"Prototype_Component_Model_" + szTag;
+
+        if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrPrototypeName.c_str(),
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecNonAnimModelDatas[i], PivotMatrix))));
+    }
 
     Safe_Release(pGameInstance);
 
@@ -242,6 +277,17 @@ CToolMainApp* CToolMainApp::Create()
 
 void CToolMainApp::Free()
 {
+    for (auto& Model : m_vecNonAnimModelDatas)
+    {
+        for (_uint i = 0; i < Model.iNumMeshes; ++i)
+        {
+            Safe_Delete_Array(Model.pMeshData[i].pVertices);
+            Safe_Delete_Array(Model.pMeshData[i].pIndices);
+        }
+        Safe_Delete_Array(Model.pMeshData);
+    }
+    m_vecNonAnimModelDatas.clear();
+
     Safe_Release(m_pRenderer);
     Safe_Release(m_pContext);
     Safe_Release(m_pDevice);

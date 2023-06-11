@@ -28,16 +28,17 @@ _vector CCalculator::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, cl
 	GetCursorPos(&ptMouse);
 	ScreenToClient(hWnd, &ptMouse);
 
-	// 클라이언트 영역의 크기 얻기
-	RECT rect;
-	GetClientRect(hWnd, &rect);
-	_int clientWidth = rect.right - rect.left;
-	_int clientHeight = rect.bottom - rect.top;
+	D3D11_VIEWPORT ViewPort;
+	ZeroMemory(&ViewPort, sizeof D3D11_VIEWPORT);
+
+	_uint iNumViewPorts = 1;
+
+	m_pContext->RSGetViewports(&iNumViewPorts, &ViewPort);
 
 	// 뷰포트 -> 투영 스페이스
 	_float3 vMousePos;
-	vMousePos.x = (_float)ptMouse.x / (clientWidth * 0.5f) - 1.f;
-	vMousePos.y = (_float)ptMouse.y / -(clientHeight * 0.5f) + 1.f;
+	vMousePos.x = (_float)ptMouse.x / (ViewPort.Width * 0.5f) - 1.f;
+	vMousePos.y = (_float)ptMouse.y / -(ViewPort.Height * 0.5f) + 1.f;
 	vMousePos.z = 0.f;
 
 	// 투영 스페이스 -> 뷰 스페이스
@@ -63,7 +64,7 @@ _vector CCalculator::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, cl
 
 	// 이제 로컬상의 좌표를 버퍼의 각 삼각형 끼리 충돌처리 연산을 진행한다.
 	_float fDistance = { 0.f };
-	_float fNearDistance = { 99999.f };
+	_float fNearDistance = { FLT_MAX };
 	const list<TRIANGLE>& TriangleList = pBuffer->Get_TriangleList();
 
 	_vector vDot[3];
@@ -77,25 +78,13 @@ _vector CCalculator::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, cl
 			fNearDistance = fNearDistance > fDistance ? fDistance : fNearDistance;
 	}
 
-	if (99990.f < fNearDistance)
+	if (FLT_MAX - 10.f < fNearDistance)
 		return XMVectorSet(-1.f, -1.f, -1.f, -1.f);
 
 	_vector vPickPos = vRayOrigin + (vRayDirection * fNearDistance);
 	vPickPos = XMVector3TransformCoord(vPickPos, WorldMatrix);
 
 	return vPickPos;
-}
-
-_float2 CCalculator::Get_ClientLeftTop(HWND hWnd)
-{
-	RECT rcClient = {};
-
-	GetClientRect(hWnd, &rcClient);
-	POINT topLeft = { rcClient.left, rcClient.top };
-
-	ClientToScreen(hWnd, &topLeft);
-
-	return _float2(topLeft.x, topLeft.y);
 }
 
 void CCalculator::Free()

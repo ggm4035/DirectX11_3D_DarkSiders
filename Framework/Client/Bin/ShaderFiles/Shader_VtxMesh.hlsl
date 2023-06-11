@@ -65,6 +65,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	
     float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
     
+    if (vDiffuse.a < 0.1f)
+        discard;
+    
     float4 vAmbient = float4(0.2f, 0.2f, 0.2f, 0.2f);
     float fShade = max(dot(normalize(In.vNoraml), -normalize(g_LightDirection)), 0.f);
     fShade = saturate(fShade + g_LightAmbient * vAmbient);

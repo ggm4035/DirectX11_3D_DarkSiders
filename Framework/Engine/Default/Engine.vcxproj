@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\CApplication.h" />
     <ClInclude Include="..\public\CBase.h" />
+    <ClInclude Include="..\Public\CBone.h" />
     <ClInclude Include="..\Public\CCalculator.h" />
     <ClInclude Include="..\Public\CCamera.h" />
     <ClInclude Include="..\Public\CCamera_Manager.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="..\Public\CVIBuffer_Cube.h" />
     <ClInclude Include="..\Public\CVIBuffer_Rect.h" />
     <ClInclude Include="..\Public\CVIBuffer_Terrain.h" />
+    <ClInclude Include="..\Public\Engine_Enums.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Function.h" />
@@ -197,6 +199,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\CApplication.cpp" />
     <ClCompile Include="..\private\CBase.cpp" />
+    <ClCompile Include="..\Private\CBone.cpp" />
     <ClCompile Include="..\Private\CCalculator.cpp" />
     <ClCompile Include="..\Private\CCamera.cpp" />
     <ClCompile Include="..\Private\CCamera_Manager.cpp" />

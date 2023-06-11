@@ -34,6 +34,8 @@ HRESULT CPlayer::Initialize(CComponent* pOwner, void* pArg)
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
+	m_pModelCom->Play_Animation();
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
@@ -50,7 +52,9 @@ HRESULT CPlayer::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
 
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;

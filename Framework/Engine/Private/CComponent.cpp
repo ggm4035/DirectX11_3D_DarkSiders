@@ -94,7 +94,7 @@ HRESULT CComposite::Add_Component(_uint iNumLevel, wstring PrototypeTag, wstring
 	*ppOut = pComponent;
 	Safe_AddRef(pComponent);
 
-	Set_Tag(ComponentTag);
+	pComponent->Set_Tag(ComponentTag);
 
 	return S_OK;
 }

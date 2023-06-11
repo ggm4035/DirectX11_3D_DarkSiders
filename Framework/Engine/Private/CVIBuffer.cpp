@@ -60,7 +60,7 @@ HRESULT CVIBuffer::Create_Buffer(OUT ID3D11Buffer** ppOut)
 	if (nullptr == m_pDevice)
 		return E_FAIL;
 	
-	return m_pDevice->CreateBuffer(&m_BufferDesc, &m_SubResourceData,ppOut);
+	return m_pDevice->CreateBuffer(&m_BufferDesc, &m_SubResourceData, ppOut);
 }
 
 void CVIBuffer::Free()

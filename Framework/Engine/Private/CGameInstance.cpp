@@ -407,6 +407,22 @@ string CGameInstance::wstrToStr(wstring wstr)
 	return m_pFileInfo->wstrToStr(wstr);
 }
 
+HRESULT CGameInstance::Extraction_Data(const string& strPath, const _char* pExt, OUT list<string>& FilePathList)
+{
+	if (nullptr == m_pFileInfo)
+		return E_FAIL;
+
+	return m_pFileInfo->Extraction_Data(strPath, pExt, FilePathList);
+}
+
+void CGameInstance::ReadNonAnimModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<NONANIM_MODEL_BINARYDATA>& vecData)
+{
+	if (nullptr == m_pFileInfo)
+		return;
+
+	return m_pFileInfo->ReadNonAnimModels(strFilePath, FilePathList, vecData);
+}
+
 const CLight::LIGHTDESC* CGameInstance::Get_LightDesc(const _uint& iIndex)
 {
 	if (nullptr == m_pLight_Manager)

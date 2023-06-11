@@ -31,6 +31,10 @@ public:
     CImWindow_Manager* m_pImWindow_Manager = { nullptr };
 
 private:
+    vector<NONANIM_MODEL_BINARYDATA> m_vecNonAnimModelDatas;
+    list<string> m_FilePathList;
+
+private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
 
@@ -40,6 +44,7 @@ private:
     HRESULT Ready_ImWindows();
     HRESULT Ready_Prototype_GameObject_For_Tool();
     HRESULT Ready_Prototype_Component_For_Tool();
+    HRESULT Ready_NonAnimModels();
     void Update_Demo();
 
 public:

@@ -8,6 +8,7 @@ BEGIN(Engine)
 class CShader;
 class CTexture;
 class CVIBuffer;
+class CModel;
 END
 
 BEGIN(Imgui)
@@ -46,12 +47,14 @@ public:
     HRESULT Add_Texture(const wstring PrototypeTag);
     HRESULT Add_Shader(const wstring PrototypeTag);
     HRESULT Add_Buffer(const wstring PrototypeTag);
+    HRESULT Add_Model(const wstring PrototypeTag);
 
 private:
     CRenderer* m_pRenderer = { nullptr };
     CShader* m_pShaderCom = { nullptr };
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer* m_pBufferCom = { nullptr };
+    CModel* m_pModelCom = { nullptr };
 
 private:
     virtual HRESULT Add_Components() override;

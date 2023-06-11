@@ -36,6 +36,7 @@ using namespace std;
 #include "Engine_TypeDef.h"
 #include "Engine_Macro.h"
 #include "Engine_Struct.h"
+#include "Engine_Enums.h"
 
 #ifdef _DEBUG
 

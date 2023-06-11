@@ -22,7 +22,19 @@ namespace Engine
 		XMFLOAT3 vDot[3];
 	}TRIANGLE;
 
-	typedef struct tagVertex_Color
+	typedef struct tagVertex_Position
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT4 vColor;
+	}VTXPOS;
+
+	typedef struct ENGINE_DLL tagVertex_Position_Declaration
+	{
+		static const _uint iNumElements = { 1 };
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXPOS_DECL;
+
+	typedef struct tagVertex_Position_Color
 	{
 		XMFLOAT3 vPosition;
 		XMFLOAT4 vColor;
@@ -72,4 +84,40 @@ namespace Engine
 		static const _uint iNumElements = { 4 };
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	}VTXMESH_DECL;
+
+	typedef struct tagVertex_AnimMesh
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT3 vNormal;
+		XMFLOAT2 vTexCoord;
+		XMFLOAT3 vTangent;
+		XMUINT4	vBlendIndices; /* 이 정점은 어떤 뼈들(최대4개)의 상태행렬 받아서 처리되야하는가?! : 뼈(모델X, 메시O)의 인덱스 */
+		XMFLOAT4 vBlendWeights; /* 네개뼈를 이용하되 각 뼈의 상태행렬을 몇퍼센트(1을 기준으로 표현한 비율)나 이용하는가?! */
+	}VTXANIMMESH;
+
+	typedef struct ENGINE_DLL tagVertex_AnimMesh_Declaration
+	{
+		static const _uint iNumElements = { 6 };
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXANIMMESH_DECL;
+
+	/* Save Data Structurals */
+	typedef struct tagMeshData
+	{
+		_char szName[MAX_PATH] = { "" };
+		_tchar szMaterialTexturePath[21][MAX_PATH] = { L"" };
+		_uint iMaterialIndex = { 0 };
+		_uint iNumVertices = { 0 };
+		_uint iNumIndices = { 0 };
+		VTXMESH* pVertices = { nullptr };
+		_ulong* pIndices = { nullptr };
+	}MESHDATA;
+
+	typedef struct tagNonAnimModelBinaryData
+	{
+		_tchar szFilePath[MAX_PATH] = { L"" };
+		_uint iNumMeshes = { 0 };
+		_uint iNumMaterials = { 0 };
+		MESHDATA* pMeshData;
+	}NONANIM_MODEL_BINARYDATA;
 }

@@ -1,8 +1,15 @@
 
-RasterizerState g_Rasterizer;
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D g_DiffuseTexture[10];
-float g_fDetail;
+
+RasterizerState g_Rasterizer;
+
+float4 g_LightPosition, g_LightDirection;
+float g_LightRange;
+float4 g_LightDiffuse, g_LightSpecular, g_LightAmbient;
+
+float4 g_CameraPosition;
+
+texture2D g_DiffuseTexture;
 
 sampler LinearSampler = sampler_state
 {
@@ -21,7 +28,9 @@ struct VS_IN
 struct VS_OUT
 {
 	float4 vPosition : SV_POSITION;
-	float2 vTexUV : TEXCOORD0;
+    float4 vNoraml : NORAML;
+    float2 vTexUV : TEXCOORD0;
+    float4 vWorldPosition : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -32,24 +41,39 @@ VS_OUT VS_MAIN(VS_IN In)
     matrix WVPMatrix = mul(g_WorldMatrix, ViewProjMatrix);
 
     Out.vPosition = mul(float4(In.vPosition, 1.f), WVPMatrix);
+    Out.vNoraml = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
     Out.vTexUV = In.vTexUV;
+    Out.vWorldPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
 
 	return Out;
 }
 
 struct PS_IN
 {
-	float4 vPosition : SV_POSITION;
-	float2 vTexUV : TEXCOORD0;
+    float4 vPosition : SV_POSITION;
+    float4 vNoraml : NORAML;
+    float2 vTexUV : TEXCOORD0;
+    float4 vWorldPosition : TEXCOORD1;
 };
 
 float4 PS_MAIN(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
 	
-    vColor = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexUV * g_fDetail);
+    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+    
+    float fShade = max(dot(normalize(In.vNoraml), -normalize(g_LightDirection)), 0.f);
+    fShade = saturate(fShade + g_LightAmbient);
+    
+    float4 vReflect = normalize(reflect(g_LightDirection, In.vNoraml));
+    float4 vLook = normalize(In.vWorldPosition - g_CameraPosition);
+    
+    vDiffuse = vDiffuse * g_LightDiffuse * fShade;
+    float4 vSpecular = pow(max(dot(-vLook, vReflect), 0.f), 40.f) * g_LightSpecular;
+    
+    vColor = vDiffuse + vSpecular;
 	
-	return vColor;
+    return vColor;
 }
 
 technique11 DefaultTechnique

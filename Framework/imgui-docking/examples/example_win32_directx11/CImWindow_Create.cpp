@@ -16,6 +16,7 @@ HRESULT CImWindow_Create::Initialize(void* pArg)
     m_Types[TEXTURE] = "Texture";
     m_Types[SHADER] = "Shader";
     m_Types[BUFFER] = "VIBuffer";
+    m_Types[MODEL] = "Model";
 
     return S_OK;
 }
@@ -59,7 +60,7 @@ void CImWindow_Create::Create_Object()
             ImGui::Text(m_Types[i]);
             ImGui::Separator();
             ImGui::Text("PrototypeTag");
-            ImGui::SetNextItemWidth(300.f);
+            ImGui::SetNextItemWidth(500.f);
             ImGui::InputText("  ", m_szPrototypeTag[i], 256, ImGuiInputTextFlags_ReadOnly);
 
             if (ImGui::BeginPopupContextItem(strcat(szDialogTag, m_Types[i])))
@@ -86,7 +87,7 @@ void CImWindow_Create::Create_Object()
                     ppiTems[j] = pstrTags[j].c_str();
 
                 static int iPick = 0;
-                ImGui::SetNextItemWidth(300.f);
+                ImGui::SetNextItemWidth(500.f);
                 ImGui::ListBox("Prototypes", &iPick, ppiTems, iIndex);
 
                 if (ImGui::Button("Select"))
@@ -137,6 +138,7 @@ void CImWindow_Create::Create_Object()
         pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
         pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
         pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));
+        pObject->Add_Model(pGameInstance->strToWStr(m_szPrototypeTag[MODEL]));
 
         pObject->Set_Tag(pGameInstance->strToWStr(m_szObjectName));
 
@@ -202,6 +204,7 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
         pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
         pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));
+        pObject->Add_Model(pGameInstance->strToWStr(m_szPrototypeTag[MODEL]));
 
         pObject->Set_Tag(pGameInstance->strToWStr(szObjName));
 
