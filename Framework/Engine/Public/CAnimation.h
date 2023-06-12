@@ -11,8 +11,8 @@ private:
 	virtual ~CAnimation() = default;
 
 public:
-	HRESULT Initialize();
-	void Invalidate_TransformationMatrix();
+	HRESULT Initialize(const ANIMATIONDATA& AnimationData);
+	void Invalidate_TransformationMatrix(const _double& TimeDelta);
 
 private:
 	_char m_szName[MAX_PATH] = { "" };
@@ -21,10 +21,14 @@ private:
 	_double m_TimeAcc = { 0.0 };
 
 private:
+	_uint m_iNumChannels = { 0 };
 	vector<class CChannel*> m_vecChannels;
 
+private:
+	HRESULT Ready_Channels(const ANIMATIONDATA& AnimationData);
+
 public:
-	static CAnimation* Create();
+	static CAnimation* Create(const ANIMATIONDATA& AnimationData);
 	virtual void Free() override;
 };
 

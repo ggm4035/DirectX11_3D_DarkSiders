@@ -1,6 +1,5 @@
 #include "CConverter.h"
 
-#include "CBone.h"
 #include "CGameInstance.h"
 
 CConverter::CConverter()
@@ -27,10 +26,10 @@ void CConverter::Tick()
 	ResetData();
 
 	/* AnimModel 바이너리화 */
-	m_pGameInstance->Extraction_Data("../Bin/Resources/Models/ForkLift", ".fbx", m_FilePathList);
+	m_pGameInstance->Extraction_Data("../Bin/Resources/AnimModels/Heros/Fiona", ".fbx", m_FilePathList);
 	ConvertBinary_AnimModel();
 	WriteModels("ForkLift.dat");
-	//ResetData();"../Bin/Resources/AnimModels/Heros/Warrior"
+	//ResetData();
 	//m_pGameInstance->ReadModels("AnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 }
 
@@ -117,46 +116,46 @@ void CConverter::WriteModels(const string& strFileName)
 		for (_uint iMeshIndex = 0; iMeshIndex < m_vecDatas[iDataIndex].iNumMeshes; ++iMeshIndex)
 		{
 			/* Write szName_Mesh */
-			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pMeshData[iMeshIndex].szName) + 1;
+			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].szName) + 1;
 			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 			/* Write iMaterialIndex */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write iNumNonAnimVertices */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write iNumAnimVertices */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write iNumIndices */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write iNumMeshBones */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write pBoneIndices */
-			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * 
-				m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
+			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pBoneIndices, sizeof(_uint) * 
+				m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
 
 			/* Write pNonAnimVertices */
-			if (0 < m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumNonAnimVertices)
+			if (0 < m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices)
 			{
-				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pNonAnimVertices, sizeof(VTXMESH) *
-					m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pNonAnimVertices, sizeof(VTXMESH) *
+					m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
 			}
 
 			/* Write pAnimVertices */
-			if (0 < m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumAnimVertices)
+			if (0 < m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices)
 			{
-				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pAnimVertices, sizeof(VTXANIMMESH) *
-					m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pAnimVertices, sizeof(VTXANIMMESH) *
+					m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
 			}
 
 			/* Write pIndices */
-			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pIndices, sizeof(_ulong) *
-				m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumIndices, &dwByte, nullptr);
+			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pIndices, sizeof(_ulong) *
+				m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, &dwByte, nullptr);
 		}
 	}
 
@@ -198,22 +197,26 @@ void CConverter::ConvertBinary_AnimModel()
 		m_iNumMeshes = m_pAIScene->mNumMeshes;
 		BinDataDesc.iNumMeshes = m_iNumMeshes;
 
-		BinDataDesc.pMeshData = new MESHDATA[m_iNumMeshes];
-		ZeroMemory(BinDataDesc.pMeshData, sizeof(MESHDATA) * m_iNumMeshes);
+		BinDataDesc.pMeshDatas = new MESHDATA[m_iNumMeshes];
+		ZeroMemory(BinDataDesc.pMeshDatas, sizeof(MESHDATA) * m_iNumMeshes);
 
 		/* Mesh Setting */
-		if (FAILED(Ready_Meshes_AnimModel(BinDataDesc.pMeshData)))
+		if (FAILED(Ready_Meshes_AnimModel(BinDataDesc.pMeshDatas)))
 		{
 			MSG_BOX("Failed_Ready_AnimMeshes");
 			return;
 		}
 
-		BinDataDesc.iNumMaterials = m_pAIScene->mNumMaterials;
-
 		/* Material Setting */
 		if (FAILED(Ready_Materials(Path, BinDataDesc)))
 		{
 			MSG_BOX("Failed_Ready_AnimMateriala");
+			return;
+		}
+
+		if (FAILED(Ready_Animation(BinDataDesc)))
+		{
+			MSG_BOX("Failed_Ready_Animation");
 			return;
 		}
 
@@ -250,16 +253,15 @@ void CConverter::ConvertBinary_NonAnimModel()
 
 		_matrix PivotMatrix = XMMatrixIdentity();
 		PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixRotationZ(XMConvertToRadians(-90.f));
-		BinDataDesc.pMeshData = new MESHDATA[m_iNumMeshes];
-		ZeroMemory(BinDataDesc.pMeshData, sizeof(MESHDATA) * m_iNumMeshes);
+		BinDataDesc.pMeshDatas = new MESHDATA[m_iNumMeshes];
+		ZeroMemory(BinDataDesc.pMeshDatas, sizeof(MESHDATA) * m_iNumMeshes);
 
-		if (FAILED(Ready_Meshes_NonAnimModel(PivotMatrix, BinDataDesc.pMeshData)))
+		if (FAILED(Ready_Meshes_NonAnimModel(PivotMatrix, BinDataDesc.pMeshDatas)))
 		{
 			MSG_BOX("Failed_Ready_NonAnimMeshes");
 			return;
 		}
 
-		BinDataDesc.iNumMaterials = m_pAIScene->mNumMaterials;
 		if (FAILED(Ready_Materials(Path, BinDataDesc)))
 		{
 			MSG_BOX("Failed_Ready_NonAnimMateriala");
@@ -446,8 +448,93 @@ HRESULT CConverter::Ready_Meshes_NonAnimModel(_fmatrix PivotMatrix, OUT MESHDATA
 	return S_OK;
 }
 
-HRESULT CConverter::Ready_Materials(const string& strFilePath, OUT MODEL_BINARYDATA& Data)
+HRESULT CConverter::Ready_Animation(MODEL_BINARYDATA& Data)
 {
+	m_iNumAnimations = m_pAIScene->mNumAnimations;
+	Data.iNumAnimations = m_iNumAnimations;
+
+	if (0 < m_iNumAnimations)
+	{
+		Data.pAnimations = new ANIMATIONDATA[m_iNumAnimations];
+		ZeroMemory(Data.pAnimations, sizeof(ANIMATIONDATA) * m_iNumAnimations);
+	}
+
+	for (_uint iAnimIndex = 0; iAnimIndex < m_iNumAnimations; ++iAnimIndex)
+	{
+		const aiAnimation* pAnimation = m_pAIScene->mAnimations[iAnimIndex];
+
+		strcpy_s(Data.pAnimations[iAnimIndex].szName, pAnimation->mName.data);
+		Data.pAnimations[iAnimIndex].Duration = pAnimation->mDuration;
+		Data.pAnimations[iAnimIndex].TickPerSec = pAnimation->mTicksPerSecond;
+		Data.pAnimations[iAnimIndex].iNumChannels = pAnimation->mNumChannels;
+
+		if (0 >= Data.pAnimations[iAnimIndex].iNumChannels)
+			return E_FAIL;
+
+		Data.pAnimations[iAnimIndex].pChannels = new CHANNELDATA[pAnimation->mNumChannels];
+		ZeroMemory(Data.pAnimations[iAnimIndex].pChannels, sizeof(CHANNELDATA) * pAnimation->mNumChannels);
+
+		for (_uint iChannelIndex = 0; iChannelIndex < pAnimation->mNumChannels; ++iChannelIndex)
+		{
+			const aiNodeAnim* pChannel = pAnimation->mChannels[iChannelIndex];
+
+			strcpy_s(Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, pChannel->mNodeName.data);
+			Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames = max(pChannel->mNumScalingKeys, pChannel->mNumRotationKeys);
+			Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames = max(Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, pChannel->mNumPositionKeys);
+
+			if (0 >= Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames)
+				return E_FAIL;
+
+			Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames = new KEYFRAME[Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames];
+			ZeroMemory(Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames, sizeof(KEYFRAME) * Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames);
+
+			_float3 vScale;
+			_float4 vRotation;
+			_float3 vTranslation;
+
+			for (_uint iFrameIndex = 0; iFrameIndex < Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames; ++iFrameIndex)
+			{
+				KEYFRAME KeyFrame;
+				ZeroMemory(&KeyFrame, sizeof(KEYFRAME));
+
+				if (pChannel->mNumScalingKeys > iFrameIndex)
+				{
+					memcpy(&vScale, &pChannel->mScalingKeys[iFrameIndex], sizeof(_float3));
+					KeyFrame.Time = pChannel->mScalingKeys[iFrameIndex].mTime;
+				}
+
+				if (pChannel->mNumRotationKeys > iFrameIndex)
+				{
+					/* Rotation은 쿼터니언으로 되어있어서 직접값 넣어줘야됨.*/
+					/* 왜냐하면 w x y z 로 저장되어있음 ㅋㅋ*/
+					vRotation.x = pChannel->mRotationKeys[iFrameIndex].mValue.x;
+					vRotation.y = pChannel->mRotationKeys[iFrameIndex].mValue.y;
+					vRotation.z = pChannel->mRotationKeys[iFrameIndex].mValue.z;
+					vRotation.w = pChannel->mRotationKeys[iFrameIndex].mValue.w;
+					KeyFrame.Time = pChannel->mRotationKeys[iFrameIndex].mTime;
+				}
+
+				if (pChannel->mNumPositionKeys > iFrameIndex)
+				{
+					memcpy(&vTranslation, &pChannel->mPositionKeys[iFrameIndex], sizeof(_float3));
+					KeyFrame.Time = pChannel->mPositionKeys[iFrameIndex].mTime;
+				}
+
+				KeyFrame.vScale = vScale;
+				KeyFrame.vRotation = vRotation;
+				KeyFrame.vTranslation = vTranslation;
+
+				Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames[iFrameIndex] = KeyFrame;
+			}
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CConverter::Ready_Materials(const string& strFilePath, MODEL_BINARYDATA& Data)
+{
+	Data.iNumMaterials = m_pAIScene->mNumMaterials;
 	m_iNumMaterials = m_pAIScene->mNumMaterials;
 
 	if (0 < m_iNumMaterials)
@@ -505,13 +592,13 @@ void CConverter::ResetData()
 	{
 		for (_uint i = 0; i < Model.iNumMeshes; ++i)
 		{
-			Safe_Delete_Array(Model.pMeshData[i].pBoneIndices);
-			Safe_Delete_Array(Model.pMeshData[i].pNonAnimVertices);
-			Safe_Delete_Array(Model.pMeshData[i].pAnimVertices);
-			Safe_Delete_Array(Model.pMeshData[i].pIndices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
 		}
 		Safe_Delete_Array(Model.pMaterialPaths);
-		Safe_Delete_Array(Model.pMeshData);
+		Safe_Delete_Array(Model.pMeshDatas);
 		Safe_Delete_Array(Model.pBoneDatas);
 	}
 	m_vecDatas.clear();

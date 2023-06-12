@@ -130,9 +130,28 @@ namespace Engine
 		_ulong* pIndices = { nullptr };
 	}MESHDATA;
 
+	typedef struct tagKeyFrame
+	{
+		_float3 vScale;
+		_float4 vRotation;
+		_float3 vTranslation;
+		_double Time;
+	}KEYFRAME;
+
+	typedef struct tagChannelData
+	{
+		_char szName[MAX_PATH] = { "" };
+		_uint iNumKeyFrames = { 0 };
+		KEYFRAME* pKeyFrames = { nullptr };
+	}CHANNELDATA;
+
 	typedef struct tagAnimationData
 	{
+		_char szName[MAX_PATH] = { "" };
 		_double Duration = { 0.0 };
+		_double TickPerSec = { 0.0 };
+		_uint iNumChannels = { 0 };
+		CHANNELDATA* pChannels = { nullptr };
 	}ANIMATIONDATA;
 
 	typedef struct tagModelBinaryData
@@ -144,6 +163,8 @@ namespace Engine
 		MATERIALPATH* pMaterialPaths = { nullptr };
 		_uint iNumBones = { 0 }; // 모델이 가지고 있는 전체 뼈의 개수
 		BONEDATA* pBoneDatas = { nullptr }; // 전체 모델의 뼈 정보
-		MESHDATA* pMeshData = { nullptr };
+		_uint iNumAnimations = { 0 };
+		ANIMATIONDATA* pAnimations = { nullptr };
+		MESHDATA* pMeshDatas = { nullptr };
 	}MODEL_BINARYDATA;
 }

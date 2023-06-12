@@ -161,6 +161,7 @@
     <ClInclude Include="..\Public\CCalculator.h" />
     <ClInclude Include="..\Public\CCamera.h" />
     <ClInclude Include="..\Public\CCamera_Manager.h" />
+    <ClInclude Include="..\Public\CChannel.h" />
     <ClInclude Include="..\Public\CComponent.h" />
     <ClInclude Include="..\Public\CComponent_Manager.h" />
     <ClInclude Include="..\Public\CFileInfo.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="..\Private\CCalculator.cpp" />
     <ClCompile Include="..\Private\CCamera.cpp" />
     <ClCompile Include="..\Private\CCamera_Manager.cpp" />
+    <ClCompile Include="..\Private\CChannel.cpp" />
     <ClCompile Include="..\Private\CComponent.cpp" />
     <ClCompile Include="..\Private\CComponent_Manager.cpp" />
     <ClCompile Include="..\Private\CFileInfo.cpp" />

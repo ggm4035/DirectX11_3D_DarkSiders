@@ -53,7 +53,7 @@ private:
 	HRESULT Ready_Meshes(const MODEL_BINARYDATA& ModelData, TYPE eModelType);
 	HRESULT Ready_Materials(const MODEL_BINARYDATA& ModelData);
 	HRESULT Ready_Bones(const MODEL_BINARYDATA& ModelData, class CBone* pParent);
-	HRESULT Ready_Animations();
+	HRESULT Ready_Animations(const MODEL_BINARYDATA& ModelData);
 
 public:
 	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 

@@ -231,7 +231,7 @@ void CFileInfo::ReadModels(const string& strFileName, OUT list<string>& FilePath
 
 		Data.pMaterialPaths = pMaterialPath;
 		Data.pBoneDatas = pBoneData;
-		Data.pMeshData = pMeshData;
+		Data.pMeshDatas = pMeshData;
 
 		vecData.push_back(Data);
 	}

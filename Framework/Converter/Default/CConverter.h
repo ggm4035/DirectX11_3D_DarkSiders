@@ -35,6 +35,7 @@ private:
 	_uint m_iNumVertices = { 0 };
 	_uint m_iNumIndices = { 0 };
 	_uint m_iNumMeshes = { 0 };
+	_uint m_iNumAnimations = { 0 };
 
 private:
 	vector<BONEDATA> m_vecBones;
@@ -48,8 +49,9 @@ private:
 	void ConvertBinary_NonAnimModel();
 	HRESULT Ready_Bones(aiNode* pAINode, const _uint& iParentIdx);
 	HRESULT Ready_Meshes_AnimModel(OUT MESHDATA* pData);
-	HRESULT Ready_Materials(const string& strFilePath, OUT MODEL_BINARYDATA& Data);
+	HRESULT Ready_Materials(const string& strFilePath, MODEL_BINARYDATA& Data);
 	HRESULT Ready_Meshes_NonAnimModel(_fmatrix PivotMatrix, OUT MESHDATA* pData);
+	HRESULT Ready_Animation(MODEL_BINARYDATA& Data);
 
 public:
 	static CConverter* Create();

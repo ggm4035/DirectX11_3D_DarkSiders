@@ -1,6 +1,7 @@
 #include "CModel.h"
 #include "CMesh.h"
 #include "CBone.h"
+#include "CAnimation.h"
 
 #include "CGameInstance.h"
 
@@ -104,7 +105,7 @@ HRESULT CModel::Ready_Meshes(const MODEL_BINARYDATA& ModelData, TYPE eModelType)
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, eModelType, ModelData.pMeshData[i]);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, eModelType, ModelData.pMeshDatas[i]);
 		if (nullptr == pMesh)
 			return E_FAIL;
 
@@ -162,8 +163,18 @@ HRESULT CModel::Ready_Bones(const MODEL_BINARYDATA& ModelData, class CBone* pPar
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Animations()
+HRESULT CModel::Ready_Animations(const MODEL_BINARYDATA& ModelData)
 {
+	m_iNumAnimations = ModelData.iNumAnimations;
+
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+	{
+		CAnimation* pAnimation = CAnimation::Create(ModelData.pAnimations[i]);
+		if (nullptr == pAnimation)
+			return E_FAIL;
+
+		m_vecAnimations.push_back(pAnimation);
+	}
 
 	return S_OK;
 }

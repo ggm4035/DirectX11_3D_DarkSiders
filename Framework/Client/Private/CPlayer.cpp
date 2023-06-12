@@ -34,7 +34,7 @@ HRESULT CPlayer::Initialize(CComponent* pOwner, void* pArg)
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
-	m_pModelCom->Play_Animation();
+	//m_pModelCom->Play_Animation();
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
@@ -69,7 +69,7 @@ HRESULT CPlayer::Render()
 
 HRESULT CPlayer::Add_Components()
 {
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Shader_VtxMesh",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Shader_VtxAnimMesh",
 		L"Com_Shader", (CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 

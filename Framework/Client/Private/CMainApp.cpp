@@ -61,7 +61,7 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecModelDatas);
+	m_pGameInstance->ReadModels("Warrior.dat", m_FilePathList, m_vecModelDatas);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Renderer",
 		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
@@ -73,7 +73,7 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		return E_FAIL;
 
 	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Model_Player",
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecModelDatas[0]))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecModelDatas[0]))))
 		return E_FAIL;
 
 	/*L"../Bin/Resources/Models/working/Environment/Hell/Structural/Ruins/Update/WallRubble_A/WallRubble_A.fbx"*/
@@ -139,13 +139,13 @@ void CMainApp::Free()
 	{
 		for (_uint i = 0; i < Model.iNumMeshes; ++i)
 		{
-			Safe_Delete_Array(Model.pMeshData[i].pBoneIndices);
-			Safe_Delete_Array(Model.pMeshData[i].pNonAnimVertices);
-			Safe_Delete_Array(Model.pMeshData[i].pAnimVertices);
-			Safe_Delete_Array(Model.pMeshData[i].pIndices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
+			Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
 		}
 		Safe_Delete_Array(Model.pMaterialPaths);
-		Safe_Delete_Array(Model.pMeshData);
+		Safe_Delete_Array(Model.pMeshDatas);
 		Safe_Delete_Array(Model.pBoneDatas);
 	}
 
