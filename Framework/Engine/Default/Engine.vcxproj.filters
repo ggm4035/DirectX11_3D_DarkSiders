@@ -118,6 +118,12 @@
     <Filter Include="01.Utility\03. Component\05. Model\Bone">
       <UniqueIdentifier>{27790b61-7e95-402b-b489-ef56b35e2187}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03. Component\05. Model\Animation">
+      <UniqueIdentifier>{c979b28f-b786-419e-8988-a0b25dc21acb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03. Component\05. Model\Animation\Channel">
+      <UniqueIdentifier>{853d7b0c-b6c1-4eee-b8a0-77c295d325e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -243,6 +249,9 @@
     <ClInclude Include="..\Public\Engine_Enums.h">
       <Filter>99.Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CAnimation.h">
+      <Filter>01.Utility\03. Component\05. Model\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -352,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CBone.cpp">
       <Filter>01.Utility\03. Component\05. Model\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAnimation.cpp">
+      <Filter>01.Utility\03. Component\05. Model\Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

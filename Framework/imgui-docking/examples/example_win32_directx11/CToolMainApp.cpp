@@ -195,20 +195,15 @@ HRESULT CToolMainApp::Ready_NonAnimModels()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    pGameInstance->ReadNonAnimModels("NonAnimModelsFile.dat", m_FilePathList, m_vecNonAnimModelDatas);
+    pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecModelDatas);
 
-    _matrix PivotMatrix = XMMatrixIdentity();
-    PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
-    for (_uint i = 0; i < m_vecNonAnimModelDatas.size(); ++i)
+    for (_uint i = 0; i < m_vecModelDatas.size(); ++i)
     {
-        _tchar szTag[MAX_PATH] = { L"" };
-
-        _wsplitpath_s(m_vecNonAnimModelDatas[i].szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
         wstring wstrPrototypeName = { L"" };
-        wstrPrototypeName = wstrPrototypeName + L"Prototype_Component_Model_" + szTag;
+        wstrPrototypeName = wstrPrototypeName + L"Prototype_Component_Model_" + m_vecModelDatas[i].szTag;
 
         if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrPrototypeName.c_str(),
-            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecNonAnimModelDatas[i], PivotMatrix))));
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecModelDatas[i]))));
     }
 
     Safe_Release(pGameInstance);
@@ -277,16 +272,19 @@ CToolMainApp* CToolMainApp::Create()
 
 void CToolMainApp::Free()
 {
-    for (auto& Model : m_vecNonAnimModelDatas)
+    for (auto& Model : m_vecModelDatas)
     {
         for (_uint i = 0; i < Model.iNumMeshes; ++i)
         {
-            Safe_Delete_Array(Model.pMeshData[i].pVertices);
+            Safe_Delete_Array(Model.pMeshData[i].pBoneIndices);
+            Safe_Delete_Array(Model.pMeshData[i].pNonAnimVertices);
+            Safe_Delete_Array(Model.pMeshData[i].pAnimVertices);
             Safe_Delete_Array(Model.pMeshData[i].pIndices);
         }
+        Safe_Delete_Array(Model.pMaterialPaths);
         Safe_Delete_Array(Model.pMeshData);
+        Safe_Delete_Array(Model.pBoneDatas);
     }
-    m_vecNonAnimModelDatas.clear();
 
     Safe_Release(m_pRenderer);
     Safe_Release(m_pContext);

@@ -14,7 +14,7 @@ namespace Engine
 
 	typedef struct tagMeshMaterial
 	{
-		class CTexture* pMtrlTexture[AI_TEXTURE_TYPE_MAX];
+		class CTexture* pMtrlTexture[TEXTURE_TYPE_MAX];
 	}MESHMATERIAL;
 
 	typedef struct tagTriangleList
@@ -102,22 +102,48 @@ namespace Engine
 	}VTXANIMMESH_DECL;
 
 	/* Save Data Structurals */
+	typedef struct tagBoneData
+	{
+		_char szName[MAX_PATH] = { "" };
+		_uint iParentIdx = { 0 };
+		_uint iNumChildren = { 0 };
+		_float4x4 TransformationMatrix;
+		_float4x4 OffsetMatrix;
+	}BONEDATA;
+
+	typedef struct tagMaterialPath
+	{
+		_tchar szMaterialTexturePath[21][MAX_PATH] = { L"" };
+	}MATERIALPATH;
+
 	typedef struct tagMeshData
 	{
 		_char szName[MAX_PATH] = { "" };
-		_tchar szMaterialTexturePath[21][MAX_PATH] = { L"" };
 		_uint iMaterialIndex = { 0 };
-		_uint iNumVertices = { 0 };
+		_uint iNumNonAnimVertices = { 0 };
+		_uint iNumAnimVertices = { 0 };
 		_uint iNumIndices = { 0 };
-		VTXMESH* pVertices = { nullptr };
+		_uint iNumMeshBones = { 0 };	// 메쉬가 가지고 있는 뼈의 개수
+		_uint* pBoneIndices = { nullptr };
+		VTXMESH* pNonAnimVertices = { nullptr };
+		VTXANIMMESH* pAnimVertices = { nullptr };
 		_ulong* pIndices = { nullptr };
 	}MESHDATA;
 
-	typedef struct tagNonAnimModelBinaryData
+	typedef struct tagAnimationData
+	{
+		_double Duration = { 0.0 };
+	}ANIMATIONDATA;
+
+	typedef struct tagModelBinaryData
 	{
 		_tchar szFilePath[MAX_PATH] = { L"" };
+		_tchar szTag[MAX_PATH] = { L"" };
 		_uint iNumMeshes = { 0 };
 		_uint iNumMaterials = { 0 };
-		MESHDATA* pMeshData;
-	}NONANIM_MODEL_BINARYDATA;
+		MATERIALPATH* pMaterialPaths = { nullptr };
+		_uint iNumBones = { 0 }; // 모델이 가지고 있는 전체 뼈의 개수
+		BONEDATA* pBoneDatas = { nullptr }; // 전체 모델의 뼈 정보
+		MESHDATA* pMeshData = { nullptr };
+	}MODEL_BINARYDATA;
 }

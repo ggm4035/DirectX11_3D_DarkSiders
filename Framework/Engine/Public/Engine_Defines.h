@@ -9,10 +9,6 @@
 #include <d3dcompiler.h>
 #include "DirectXCollision.h"
 
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
-
 #define DIRECTINPUT_VERSION		0x0800
 #include <dinput.h>
 
@@ -32,11 +28,11 @@ using namespace DirectX;
 #include <fstream>
 using namespace std;
 
+#include "Engine_Enums.h"
 #include "Engine_Function.h"
 #include "Engine_TypeDef.h"
 #include "Engine_Macro.h"
 #include "Engine_Struct.h"
-#include "Engine_Enums.h"
 
 #ifdef _DEBUG
 

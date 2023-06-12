@@ -12,8 +12,6 @@ texture2D g_DiffuseTexture, g_NormalTexture;
 sampler LinearSampler = sampler_state
 {
     Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = WRAP;
-    AddressV = WRAP;
 };
 
 struct VS_IN
@@ -29,18 +27,20 @@ struct VS_IN
 struct VS_OUT
 {
 	float4 vPosition : SV_POSITION;
-    float4 vNoraml : NORAML;
+    float4 vNormal : NORAML;
     float2 vTexUV : TEXCOORD0;
-    float4 vWorldPosition : TEXCOORD1;
+    float4 vWorldPos : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
 {
-	VS_OUT Out = (VS_OUT)0;
-	
-    matrix ViewProjMatrix = mul(g_ViewMatrix, g_ProjMatrix);
-    matrix WVPMatrix = mul(g_WorldMatrix, ViewProjMatrix);
-    
+    VS_OUT Out = (VS_OUT) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
     float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
 
     matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
@@ -48,14 +48,14 @@ VS_OUT VS_MAIN(VS_IN In)
 		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
 		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
 
-    float4 vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
-    
-    Out.vPosition = mul(vPosition, WVPMatrix);
-    Out.vNoraml = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+	
+    Out.vPosition = mul(vPosition, matWVP);
+    Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
     Out.vTexUV = In.vTexUV;
-    Out.vWorldPosition = mul(In.vPosition, g_WorldMatrix);
+    Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 
-	return Out;
+    return Out;
 }
 
 struct PS_IN

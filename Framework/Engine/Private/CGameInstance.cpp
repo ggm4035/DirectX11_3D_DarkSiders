@@ -415,12 +415,12 @@ HRESULT CGameInstance::Extraction_Data(const string& strPath, const _char* pExt,
 	return m_pFileInfo->Extraction_Data(strPath, pExt, FilePathList);
 }
 
-void CGameInstance::ReadNonAnimModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<NONANIM_MODEL_BINARYDATA>& vecData)
+void CGameInstance::ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData)
 {
 	if (nullptr == m_pFileInfo)
 		return;
 
-	return m_pFileInfo->ReadNonAnimModels(strFilePath, FilePathList, vecData);
+	return m_pFileInfo->ReadModels(strFilePath, FilePathList, vecData);
 }
 
 const CLight::LIGHTDESC* CGameInstance::Get_LightDesc(const _uint& iIndex)

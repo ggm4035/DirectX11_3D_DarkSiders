@@ -34,7 +34,7 @@ private:
 	CRenderer* m_pRenderer = { nullptr };
 
 	list<string> m_FilePathList;
-	vector<NONANIM_MODEL_BINARYDATA> m_vecNonAnimModelDatas;
+	vector<MODEL_BINARYDATA> m_vecModelDatas;
 
 public:
 	static CMainApp* Create();

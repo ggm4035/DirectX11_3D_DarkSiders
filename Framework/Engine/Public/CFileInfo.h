@@ -18,7 +18,7 @@ public:
 	HRESULT Extraction_Data(const string& strPath, const _char* pExt, OUT list<string>& FilePathList);
 
 public:
-	void ReadNonAnimModels(const string& strFileName, OUT list<string>& FilePathList, OUT vector<NONANIM_MODEL_BINARYDATA>& vecData);
+	void ReadModels(const string& strFileName, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData);
 
 public:
     // string < - > wstring 변환 함수

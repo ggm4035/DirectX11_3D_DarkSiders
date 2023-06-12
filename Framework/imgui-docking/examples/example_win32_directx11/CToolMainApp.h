@@ -31,7 +31,7 @@ public:
     CImWindow_Manager* m_pImWindow_Manager = { nullptr };
 
 private:
-    vector<NONANIM_MODEL_BINARYDATA> m_vecNonAnimModelDatas;
+    vector<MODEL_BINARYDATA> m_vecModelDatas;
     list<string> m_FilePathList;
 
 private:

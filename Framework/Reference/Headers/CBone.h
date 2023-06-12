@@ -23,12 +23,8 @@ public:
 		return XMLoadFloat4x4(&m_CombinedTransformationMatrix);
 	}
 
-	void Set_OffsetMatrix(const _float4x4& OffsetMatrix) {
-		m_OffsetMatrix = OffsetMatrix;
-	}
-
 public:
-	HRESULT Initialize(aiNode* pAINode, CBone* pParent);
+	HRESULT Initialize(const BONEDATA& BoneData, CBone* pParent);
 	void Invalidate_CombinedTransformationMatrix();
 
 private:
@@ -39,7 +35,7 @@ private:
 	CBone* m_pParent = { nullptr };
 
 public:
-	static CBone* Create(aiNode* pAINode, CBone* pParent);
+	static CBone* Create(const BONEDATA& BoneData, CBone* pParent);
 	virtual void Free() override;
 };
 

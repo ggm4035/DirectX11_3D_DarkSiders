@@ -41,6 +41,7 @@ void CPlayer::Tick(const _double& TimeDelta)
 
 void CPlayer::Late_Tick(const _double& TimeDelta)
 {
+
 }
 
 HRESULT CPlayer::Render()

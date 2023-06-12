@@ -61,7 +61,7 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	m_pGameInstance->ReadNonAnimModels("NonAnimModelsFile.dat", m_FilePathList, m_vecNonAnimModelDatas);
+	m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecModelDatas);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Renderer",
 		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
@@ -72,11 +72,8 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	_matrix PivotMatrix = XMMatrixIdentity();
-	//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
-
 	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Model_Player",
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecNonAnimModelDatas[1], PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecModelDatas[0]))))
 		return E_FAIL;
 
 	/*L"../Bin/Resources/Models/working/Environment/Hell/Structural/Ruins/Update/WallRubble_A/WallRubble_A.fbx"*/
@@ -138,16 +135,19 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
-	for (auto& Model : m_vecNonAnimModelDatas)
+	for (auto& Model : m_vecModelDatas)
 	{
 		for (_uint i = 0; i < Model.iNumMeshes; ++i)
 		{
-			Safe_Delete_Array(Model.pMeshData[i].pVertices);
+			Safe_Delete_Array(Model.pMeshData[i].pBoneIndices);
+			Safe_Delete_Array(Model.pMeshData[i].pNonAnimVertices);
+			Safe_Delete_Array(Model.pMeshData[i].pAnimVertices);
 			Safe_Delete_Array(Model.pMeshData[i].pIndices);
 		}
+		Safe_Delete_Array(Model.pMaterialPaths);
 		Safe_Delete_Array(Model.pMeshData);
+		Safe_Delete_Array(Model.pBoneDatas);
 	}
-	m_vecNonAnimModelDatas.clear();
 
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);

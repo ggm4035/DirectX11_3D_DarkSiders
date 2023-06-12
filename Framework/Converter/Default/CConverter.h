@@ -25,9 +25,9 @@ private:
 	Assimp::Importer m_Importer;
 	const aiScene* m_pAIScene = { nullptr };
 
-private: /* For.Store Data_NonAnimModels */
+private: 
 	list<string> m_FilePathList;
-	vector<NONANIM_MODEL_BINARYDATA> m_vecDatas;
+	vector<MODEL_BINARYDATA> m_vecDatas;
 
 	string m_strName = { "" };
 	_uint m_iMaterialIndex = { 0 };
@@ -36,20 +36,23 @@ private: /* For.Store Data_NonAnimModels */
 	_uint m_iNumIndices = { 0 };
 	_uint m_iNumMeshes = { 0 };
 
-private: /* FilePathFinder */
-	void WriteNonAnimModels(const string& strFileName);
-	void WriteAnimModels(const string& strFileName);
+private:
+	vector<BONEDATA> m_vecBones;
+	vector<_uint> m_vecBoneIndices;
 
-	void ReadNonAnimModels(const string& strFileName);
-	void ReadAnimModels(const string& strFileName);
+private: /* FilePathFinder */
+	void WriteModels(const string& strFileName);
 
 private:
+	void ConvertBinary_AnimModel();
 	void ConvertBinary_NonAnimModel();
+	HRESULT Ready_Bones(aiNode* pAINode, const _uint& iParentIdx);
+	HRESULT Ready_Meshes_AnimModel(OUT MESHDATA* pData);
+	HRESULT Ready_Materials(const string& strFilePath, OUT MODEL_BINARYDATA& Data);
 	HRESULT Ready_Meshes_NonAnimModel(_fmatrix PivotMatrix, OUT MESHDATA* pData);
-	HRESULT Ready_Materials_NonAnimModel(const string& strFilePath, OUT MESHDATA* pData);
 
 public:
 	static CConverter* Create();
+	void ResetData();
 	virtual void Free() override;
 };
-

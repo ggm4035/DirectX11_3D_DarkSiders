@@ -1,5 +1,6 @@
 #include "CConverter.h"
 
+#include "CBone.h"
 #include "CGameInstance.h"
 
 CConverter::CConverter()
@@ -19,20 +20,21 @@ void CConverter::Tick()
 	/* NonAnimModel 바이너리화 */
 	m_pGameInstance->Extraction_Data("../Bin/Resources/NonAnimModels/Environment/BreakAble", ".fbx", m_FilePathList);
 	ConvertBinary_NonAnimModel();
-	WriteNonAnimModels("NonAnimModelsFile.dat");
-	m_FilePathList.clear();
-	
-	m_vecDatas.clear();
+	WriteModels("NonAnimModelsFile.dat");
+	//ResetData();
+	//m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 
-	ReadNonAnimModels("NonAnimModelsFile.dat");
-	/*m_pGameInstance->Extraction_Data("../Bin/Resources/AnimModels", ".fbx", m_FilePathList);
-	ConvertBinary();
-	WriteAnimModels("Bin/AnimModelsFile.txt");*/
+	ResetData();
 
-	PostQuitMessage(0);
+	/* AnimModel 바이너리화 */
+	m_pGameInstance->Extraction_Data("../Bin/Resources/Models/ForkLift", ".fbx", m_FilePathList);
+	ConvertBinary_AnimModel();
+	WriteModels("ForkLift.dat");
+	//ResetData();"../Bin/Resources/AnimModels/Heros/Warrior"
+	//m_pGameInstance->ReadModels("AnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 }
 
-void CConverter::WriteNonAnimModels(const string& strFileName)
+void CConverter::WriteModels(const string& strFileName)
 {
 	_char szFullPath[MAX_PATH] = { "" };
 	GetCurrentDirectoryA(MAX_PATH, szFullPath);
@@ -57,10 +59,16 @@ void CConverter::WriteNonAnimModels(const string& strFileName)
 		WriteFile(hFile, strPath->c_str(), sizeof(_char) * iPathLength, &dwByte, nullptr);
 		++strPath;
 
+		/*========== BINARY DATAS ===========*/
 		/* Write szFilePath*/
 		iPathLength = lstrlen(m_vecDatas[iDataIndex].szFilePath) + 1;
 		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
 		WriteFile(hFile, m_vecDatas[iDataIndex].szFilePath, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
+
+		/* Write szTag */
+		iPathLength = lstrlen(m_vecDatas[iDataIndex].szTag) + 1;
+		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+		WriteFile(hFile, m_vecDatas[iDataIndex].szTag, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
 
 		/* Write iNumMeshes */
 		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumMeshes, sizeof(_uint), &dwByte, nullptr);
@@ -68,35 +76,84 @@ void CConverter::WriteNonAnimModels(const string& strFileName)
 		/* Write iNumMaterials */
 		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumMaterials, sizeof(_uint), &dwByte, nullptr);
 
+		/* Write szMaterialTexturePath */
+		_uint iTexturePathlength = { 0 };
+		for (_uint iMaterialIndex = 0; iMaterialIndex < m_vecDatas[iDataIndex].iNumMaterials; ++iMaterialIndex)
+		{
+			for (_uint iTextureIndex = 0; iTextureIndex < 21; ++iTextureIndex)
+			{
+				iTexturePathlength = lstrlen(m_vecDatas[iDataIndex].pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex]) + 1;
+				WriteFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex],
+					sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
+			}
+		}
+
+		/* Write iNumBones */
+		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumBones, sizeof(_uint), &dwByte, nullptr);
+
+		/*========== BONE DATAS ===========*/
+		for (const auto& Bone : m_vecBones)
+		{
+			/* Write szName_Bone */
+			_uint iNameLength = strlen(Bone.szName) + 1;
+			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, Bone.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Write iParentIdx */
+			WriteFile(hFile, &Bone.iParentIdx, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumChildren */
+			WriteFile(hFile, &Bone.iNumChildren, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write TransformationMatrix */
+			WriteFile(hFile, &Bone.TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+			/* Write OffsetMatrix */
+			WriteFile(hFile, &Bone.OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		}
+
+		/*========== MESH DATAS ===========*/
 		for (_uint iMeshIndex = 0; iMeshIndex < m_vecDatas[iDataIndex].iNumMeshes; ++iMeshIndex)
 		{
-			/* Write szMesh Name*/
+			/* Write szName_Mesh */
 			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pMeshData[iMeshIndex].szName) + 1;
 			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
 			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
-			/* Write szMaterialTexturePath */
-			_uint iTexturePathlength = { 0 };
-			for (_uint iMtrlTexIndex = 0; iMtrlTexIndex < 21; ++iMtrlTexIndex)
-			{
-				iTexturePathlength = lstrlen(m_vecDatas[iDataIndex].pMeshData[iMeshIndex].szMaterialTexturePath[iMtrlTexIndex]);
-				WriteFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
-				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].szMaterialTexturePath[iMtrlTexIndex], sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
-			}
-
 			/* Write iMaterialIndex */
 			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
 
-			/* Write iNumVertices */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumVertices, sizeof(_uint), &dwByte, nullptr);
+			/* Write iNumNonAnimVertices */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumAnimVertices */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write iNumIndices */
 			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
 
-			/* Write pVertices */
-			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pVertices, sizeof(VTXMESH) * 
-				m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumVertices, &dwByte, nullptr);
-			
+			/* Write iNumMeshBones */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write pBoneIndices */
+			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * 
+				m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
+
+			/* Write pNonAnimVertices */
+			if (0 < m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumNonAnimVertices)
+			{
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pNonAnimVertices, sizeof(VTXMESH) *
+					m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
+			}
+
+			/* Write pAnimVertices */
+			if (0 < m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumAnimVertices)
+			{
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pAnimVertices, sizeof(VTXANIMMESH) *
+					m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
+			}
+
 			/* Write pIndices */
 			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshData[iMeshIndex].pIndices, sizeof(_ulong) *
 				m_vecDatas[iDataIndex].pMeshData[iMeshIndex].iNumIndices, &dwByte, nullptr);
@@ -106,109 +163,63 @@ void CConverter::WriteNonAnimModels(const string& strFileName)
 	CloseHandle(hFile);
 }
 
-void CConverter::WriteAnimModels(const string& strFileName)
+void CConverter::ConvertBinary_AnimModel()
 {
-}
+	m_vecDatas.reserve(m_FilePathList.size());
 
-void CConverter::ReadNonAnimModels(const string& strFileName)
-{
-	m_FilePathList.clear();
-
-	_char szFullPath[MAX_PATH] = { "" };
-	GetCurrentDirectoryA(MAX_PATH, szFullPath);
-	string strFullPath = szFullPath;
-
-	_uint iPosLength = strFullPath.rfind("Default");
-
-	strFullPath += "/" + strFileName;
-
-	HANDLE hFile = CreateFileA(strFullPath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-		return;
-
-	_ulong dwByte = { 0 };
-
-	while (true)
+	_uint iIndex = 0;
+	for (auto& Path : m_FilePathList)
 	{
-		NONANIM_MODEL_BINARYDATA Data;
-		ZeroMemory(&Data, sizeof Data);
+		MODEL_BINARYDATA BinDataDesc;
+		ZeroMemory(&BinDataDesc, sizeof BinDataDesc);
+		
+		m_pAIScene = m_Importer.ReadFile(Path, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
 
-		_uint iPathLength = { 0 };
-		_char szFilePath[MAX_PATH] = { "" };
-		/* Write strFilePath */
-		ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, szFilePath, sizeof(_char) * iPathLength, &dwByte, nullptr);
+		if (nullptr == m_pAIScene)
+			return;
 
-		if (0 != dwByte)
-			m_FilePathList.push_back(szFilePath);
+		lstrcpy(BinDataDesc.szFilePath, CGameInstance::GetInstance()->strToWStr(Path).c_str());
 
-		/* Read szFilePath*/
-		ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, Data.szFilePath, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
+		_tchar szTag[MAX_PATH] = { L"" };
 
-		/* Read iNumMeshes */
-		ReadFile(hFile, &Data.iNumMeshes, sizeof(_uint), &dwByte, nullptr);
+		_wsplitpath_s(BinDataDesc.szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
 
-		/* Read iNumMaterials */
-		ReadFile(hFile, &Data.iNumMaterials, sizeof(_uint), &dwByte, nullptr);
+		lstrcpy(BinDataDesc.szTag, szTag);
 
-		MESHDATA* pMeshData = new MESHDATA[Data.iNumMeshes];
-		for (_uint iMeshIndex = 0; iMeshIndex < Data.iNumMeshes; ++iMeshIndex)
+		/* Bone Setting */
+		if (FAILED(Ready_Bones(m_pAIScene->mRootNode, 0)))
 		{
-			/* Read szMesh Name*/
-			_uint iNameLength = { 0 };
-			ReadFile(hFile, &iNameLength, sizeof(_uint), & dwByte, nullptr);
-			ReadFile(hFile, pMeshData[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
-
-			/* Read szMaterialTexturePath */
-			_uint iTexturePathlength = { 0 };
-			for (_uint iMtrlTexIndex = 0; iMtrlTexIndex < 21; ++iMtrlTexIndex)
-			{
-				iTexturePathlength = lstrlen(pMeshData[iMeshIndex].szMaterialTexturePath[iMtrlTexIndex]);
-				ReadFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
-				ReadFile(hFile, pMeshData[iMeshIndex].szMaterialTexturePath[iMtrlTexIndex], sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
-			}
-
-			/* Read iMaterialIndex */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iNumVertices */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iNumVertices, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iNumIndices */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
-
-			VTXMESH* pVertices = new VTXMESH[pMeshData[iMeshIndex].iNumVertices];
-			ZeroMemory(pVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumVertices);
-
-			/* Read pVertices */
-			ReadFile(hFile, pVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumVertices, &dwByte, nullptr);
-
-			_ulong* pIndices = new _ulong[pMeshData[iMeshIndex].iNumIndices];
-			ZeroMemory(pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices);
-
-			/* Read pIndices */
-			ReadFile(hFile, pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices, &dwByte, nullptr);
-
-			pMeshData[iMeshIndex].pVertices = pVertices;
-			pMeshData[iMeshIndex].pIndices = pIndices;
+			MSG_BOX("Failed_Ready_AnimBones");
+			return;
 		}
 
-		if (0 == dwByte)
+		BinDataDesc.iNumBones = m_vecBones.size();
+
+		m_iNumMeshes = m_pAIScene->mNumMeshes;
+		BinDataDesc.iNumMeshes = m_iNumMeshes;
+
+		BinDataDesc.pMeshData = new MESHDATA[m_iNumMeshes];
+		ZeroMemory(BinDataDesc.pMeshData, sizeof(MESHDATA) * m_iNumMeshes);
+
+		/* Mesh Setting */
+		if (FAILED(Ready_Meshes_AnimModel(BinDataDesc.pMeshData)))
 		{
-			Safe_Delete_Array(pMeshData);
-			break;
+			MSG_BOX("Failed_Ready_AnimMeshes");
+			return;
 		}
 
-		Data.pMeshData = pMeshData;
+		BinDataDesc.iNumMaterials = m_pAIScene->mNumMaterials;
 
-		m_vecDatas.push_back(Data);
+		/* Material Setting */
+		if (FAILED(Ready_Materials(Path, BinDataDesc)))
+		{
+			MSG_BOX("Failed_Ready_AnimMateriala");
+			return;
+		}
+
+		m_vecDatas.push_back(BinDataDesc);
+		++iIndex;
 	}
-}
-	
-void CConverter::ReadAnimModels(const string& strFileName)
-{
 }
 
 void CConverter::ConvertBinary_NonAnimModel()
@@ -218,40 +229,174 @@ void CConverter::ConvertBinary_NonAnimModel()
 	_uint iIndex = 0;
 	for (auto& Path : m_FilePathList)
 	{
-		NONANIM_MODEL_BINARYDATA BinDataDesc;
+		MODEL_BINARYDATA BinDataDesc;
 		ZeroMemory(&BinDataDesc, sizeof BinDataDesc);
 
-		m_pAIScene = m_Importer.ReadFile(Path, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
+		m_pAIScene = m_Importer.ReadFile(Path, aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
 		
 		if (nullptr == m_pAIScene)
 			return;
 
 		lstrcpy(BinDataDesc.szFilePath, CGameInstance::GetInstance()->strToWStr(Path).c_str());
-		
+
+		_tchar szTag[MAX_PATH] = { L"" };
+
+		_wsplitpath_s(BinDataDesc.szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
+
+		lstrcpy(BinDataDesc.szTag, szTag);
+
 		m_iNumMeshes = m_pAIScene->mNumMeshes;
 		BinDataDesc.iNumMeshes = m_iNumMeshes;
 
 		_matrix PivotMatrix = XMMatrixIdentity();
-		PivotMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-
+		PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixRotationZ(XMConvertToRadians(-90.f));
 		BinDataDesc.pMeshData = new MESHDATA[m_iNumMeshes];
 		ZeroMemory(BinDataDesc.pMeshData, sizeof(MESHDATA) * m_iNumMeshes);
 
 		if (FAILED(Ready_Meshes_NonAnimModel(PivotMatrix, BinDataDesc.pMeshData)))
 		{
-			MSG_BOX("Failed_Ready_Meshes");
+			MSG_BOX("Failed_Ready_NonAnimMeshes");
 			return;
 		}
 
 		BinDataDesc.iNumMaterials = m_pAIScene->mNumMaterials;
-		if (FAILED(Ready_Materials_NonAnimModel(Path, BinDataDesc.pMeshData)))
+		if (FAILED(Ready_Materials(Path, BinDataDesc)))
 		{
-			MSG_BOX("Failed_Ready_Materiala");
+			MSG_BOX("Failed_Ready_NonAnimMateriala");
 			return;
 		}
 		m_vecDatas.push_back(BinDataDesc);
 		++iIndex;
 	}
+}
+
+HRESULT CConverter::Ready_Bones(aiNode* pAINode, const _uint& iParentIdx)
+{
+	static _uint iIndex = { 0 };
+	BONEDATA BoneData;
+	ZeroMemory(&BoneData, sizeof BoneData);
+
+	strcpy_s(BoneData.szName, pAINode->mName.data);
+	memcpy(&BoneData.TransformationMatrix, &pAINode->mTransformation, sizeof(_float4x4));
+	XMStoreFloat4x4(&BoneData.TransformationMatrix, XMMatrixTranspose(XMLoadFloat4x4(&BoneData.TransformationMatrix)));
+	BoneData.iNumChildren = pAINode->mNumChildren;
+	BoneData.iParentIdx = iParentIdx;
+
+	_uint data = iIndex;
+	m_vecBones.push_back(BoneData);
+	++iIndex;
+
+	for (_uint i = 0; i < pAINode->mNumChildren; ++i)
+		Ready_Bones(pAINode->mChildren[i], data);
+
+	return S_OK;
+}
+
+HRESULT CConverter::Ready_Meshes_AnimModel(OUT MESHDATA* pData)
+{
+	for (_uint iMeshIndex = 0; iMeshIndex < m_iNumMeshes; ++iMeshIndex)
+	{
+		const aiMesh* pAIMesh = m_pAIScene->mMeshes[iMeshIndex];
+
+		m_strName = pAIMesh->mName.data;
+		strcpy_s(pData[iMeshIndex].szName, m_strName.c_str());
+
+		m_iMaterialIndex = pAIMesh->mMaterialIndex;
+		pData[iMeshIndex].iMaterialIndex = m_iMaterialIndex;
+
+		m_iNumVertices = { pAIMesh->mNumVertices };
+		pData[iMeshIndex].iNumAnimVertices = m_iNumVertices;
+
+		m_iNumIndices = { pAIMesh->mNumFaces * 3 };
+		pData[iMeshIndex].iNumIndices = m_iNumIndices;
+
+		pData[iMeshIndex].pAnimVertices = new VTXANIMMESH[m_iNumVertices];
+		ZeroMemory(pData[iMeshIndex].pAnimVertices, sizeof(VTXANIMMESH) * m_iNumVertices);
+
+		for (_uint iVtxIndex = 0; iVtxIndex < m_iNumVertices; ++iVtxIndex)
+		{
+			memcpy(&pData[iMeshIndex].pAnimVertices[iVtxIndex].vPosition, &pAIMesh->mVertices[iVtxIndex], sizeof(_float3));
+			memcpy(&pData[iMeshIndex].pAnimVertices[iVtxIndex].vNormal, &pAIMesh->mNormals[iVtxIndex], sizeof(_float3));
+			memcpy(&pData[iMeshIndex].pAnimVertices[iVtxIndex].vTexCoord, &pAIMesh->mTextureCoords[0][iVtxIndex], sizeof(_float2));
+			memcpy(&pData[iMeshIndex].pAnimVertices[iVtxIndex].vTangent, &pAIMesh->mTangents[iVtxIndex], sizeof(_float3));
+		}
+
+		pData[iMeshIndex].iNumMeshBones = pAIMesh->mNumBones;
+
+		if (0 < pData[iMeshIndex].iNumMeshBones)
+		{
+			pData[iMeshIndex].pBoneIndices = new _uint[pData[iMeshIndex].iNumMeshBones];
+			ZeroMemory(pData[iMeshIndex].pBoneIndices, sizeof(_uint) * pData[iMeshIndex].iNumMeshBones);
+		}
+
+		/* pAIMesh->mNumBones : 이 메시는 몇개의 뼈의 정보를 사용하는가. */
+		for (_uint i = 0; i < pAIMesh->mNumBones; ++i)
+		{
+			aiBone* pAIBone = pAIMesh->mBones[i];
+
+			_uint iBoneIndex = { 0 };
+
+			for (auto& BoneData : m_vecBones)
+			{
+				if (0 != strcmp(pAIBone->mName.data, BoneData.szName))
+					++iBoneIndex;
+				else
+					break;
+			}
+
+			_float4x4 OffsetMatrix;
+			ZeroMemory(&OffsetMatrix, sizeof OffsetMatrix);
+			memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
+
+			XMStoreFloat4x4(&OffsetMatrix, XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
+			m_vecBones[iBoneIndex].OffsetMatrix = OffsetMatrix;
+
+			pData[iMeshIndex].pBoneIndices[i] = iBoneIndex;
+
+			/* pAIBone->mNumWeights : 이뼈는 몇개 정점에게 영향을 주니. */
+			for (_uint iWeightIndex = 0; iWeightIndex < pAIBone->mNumWeights; iWeightIndex++)
+			{
+				/* AIVertexWeight : iBoneIndex번째 정점에게 영향을 주는정보. */
+				aiVertexWeight	AIVertexWeight = pAIBone->mWeights[iWeightIndex];
+
+				if (0.0f == pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.x)
+				{
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendIndices.x = i;
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.x = AIVertexWeight.mWeight;
+				}
+
+				else if (0.0f == pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.y)
+				{
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendIndices.y = i;
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.y = AIVertexWeight.mWeight;
+				}
+
+				else if (0.0f == pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.z)
+				{
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendIndices.z = i;
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.z = AIVertexWeight.mWeight;
+				}
+
+				else if (0.0f == pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.w)
+				{
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendIndices.w = i;
+					pData[iMeshIndex].pAnimVertices[AIVertexWeight.mVertexId].vBlendWeights.w = AIVertexWeight.mWeight;
+				}
+			}
+		}
+
+		_uint iNumIndices = { 0 };
+		pData[iMeshIndex].pIndices = new _ulong[m_iNumIndices];
+
+		for (_uint j = 0; j < pAIMesh->mNumFaces; ++j)
+		{
+			pData[iMeshIndex].pIndices[iNumIndices++] = pAIMesh->mFaces[j].mIndices[0];
+			pData[iMeshIndex].pIndices[iNumIndices++] = pAIMesh->mFaces[j].mIndices[1];
+			pData[iMeshIndex].pIndices[iNumIndices++] = pAIMesh->mFaces[j].mIndices[2];
+		}
+	}
+
+	return S_OK;
 }
 
 HRESULT CConverter::Ready_Meshes_NonAnimModel(_fmatrix PivotMatrix, OUT MESHDATA* pData)
@@ -267,25 +412,25 @@ HRESULT CConverter::Ready_Meshes_NonAnimModel(_fmatrix PivotMatrix, OUT MESHDATA
 		pData[i].iMaterialIndex = m_iMaterialIndex;
 
 		m_iNumVertices = { pAIMesh->mNumVertices };
-		pData[i].iNumVertices = m_iNumVertices;
+		pData[i].iNumNonAnimVertices = m_iNumVertices;
 
 		m_iNumIndices = { pAIMesh->mNumFaces * 3 };
 		pData[i].iNumIndices = m_iNumIndices;
 
-		pData[i].pVertices = new VTXMESH[m_iNumVertices];
+		pData[i].pNonAnimVertices = new VTXMESH[m_iNumVertices];
 
 		for (_uint j = 0; j < m_iNumVertices; ++j)
 		{
-			memcpy(&pData[i].pVertices[j].vPosition, &pAIMesh->mVertices[j], sizeof(_float3));
-			XMStoreFloat3(&pData[i].pVertices[j].vPosition,
-				XMVector3TransformCoord(XMLoadFloat3(&pData[i].pVertices[j].vPosition), PivotMatrix));
+			memcpy(&pData[i].pNonAnimVertices[j].vPosition, &pAIMesh->mVertices[j], sizeof(_float3));
+			XMStoreFloat3(&pData[i].pNonAnimVertices[j].vPosition,
+				XMVector3TransformCoord(XMLoadFloat3(&pData[i].pNonAnimVertices[j].vPosition), PivotMatrix));
 
-			memcpy(&pData[i].pVertices[j].vNormal, &pAIMesh->mNormals[j], sizeof(_float3));
-			XMStoreFloat3(&pData[i].pVertices[j].vNormal,
-				XMVector3TransformCoord(XMLoadFloat3(&pData[i].pVertices[j].vNormal), PivotMatrix));
+			memcpy(&pData[i].pNonAnimVertices[j].vNormal, &pAIMesh->mNormals[j], sizeof(_float3));
+			XMStoreFloat3(&pData[i].pNonAnimVertices[j].vNormal,
+				XMVector3TransformCoord(XMLoadFloat3(&pData[i].pNonAnimVertices[j].vNormal), PivotMatrix));
 
-			memcpy(&pData[i].pVertices[j].vTexCoord, &pAIMesh->mTextureCoords[0][j], sizeof(_float2));
-			memcpy(&pData[i].pVertices[j].vTangent, &pAIMesh->mTangents[j], sizeof(_float3));
+			memcpy(&pData[i].pNonAnimVertices[j].vTexCoord, &pAIMesh->mTextureCoords[0][j], sizeof(_float2));
+			memcpy(&pData[i].pNonAnimVertices[j].vTangent, &pAIMesh->mTangents[j], sizeof(_float3));
 		}
 
 		_uint iNumIndices = { 0 };
@@ -301,9 +446,15 @@ HRESULT CConverter::Ready_Meshes_NonAnimModel(_fmatrix PivotMatrix, OUT MESHDATA
 	return S_OK;
 }
 
-HRESULT CConverter::Ready_Materials_NonAnimModel(const string& strFilePath, OUT MESHDATA* pData)
+HRESULT CConverter::Ready_Materials(const string& strFilePath, OUT MODEL_BINARYDATA& Data)
 {
 	m_iNumMaterials = m_pAIScene->mNumMaterials;
+
+	if (0 < m_iNumMaterials)
+	{
+		Data.pMaterialPaths = new MATERIALPATH[m_iNumMaterials];
+		ZeroMemory(Data.pMaterialPaths, sizeof(MATERIALPATH) * m_iNumMaterials);
+	}
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
 	{
@@ -327,7 +478,7 @@ HRESULT CConverter::Ready_Materials_NonAnimModel(const string& strFilePath, OUT 
 			string strFullPath;
 			strFullPath = strFullPath + szDrive + szDirectory + szName + szExt;
 
-			lstrcpy(pData->szMaterialTexturePath[j], m_pGameInstance->strToWStr(strFullPath).c_str());
+			lstrcpy(Data.pMaterialPaths[i].szMaterialTexturePath[j], m_pGameInstance->strToWStr(strFullPath).c_str());
 		}
 	}
 
@@ -346,7 +497,29 @@ CConverter* CConverter::Create()
 	return pInstance;
 }
 
+void CConverter::ResetData()
+{
+	m_FilePathList.clear();
+
+	for (auto& Model : m_vecDatas)
+	{
+		for (_uint i = 0; i < Model.iNumMeshes; ++i)
+		{
+			Safe_Delete_Array(Model.pMeshData[i].pBoneIndices);
+			Safe_Delete_Array(Model.pMeshData[i].pNonAnimVertices);
+			Safe_Delete_Array(Model.pMeshData[i].pAnimVertices);
+			Safe_Delete_Array(Model.pMeshData[i].pIndices);
+		}
+		Safe_Delete_Array(Model.pMaterialPaths);
+		Safe_Delete_Array(Model.pMeshData);
+		Safe_Delete_Array(Model.pBoneDatas);
+	}
+	m_vecDatas.clear();
+	m_vecBones.clear();
+}
+
 void CConverter::Free()
 {
+	ResetData();
 	Safe_Release(m_pGameInstance);
 }

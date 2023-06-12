@@ -46,25 +46,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    _double TimerAcc = { 0.0 };
     // 기본 메시지 루프입니다.
-    while (true)
+    pConverter->Tick();
+
+    PostQuitMessage(0);
+
+    if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
-            if (WM_QUIT == msg.message)
-                break;
-
-            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
         }
-
-        pConverter->Tick();
-        
-    }
+    }         
 
     Safe_Release(pConverter);
 
