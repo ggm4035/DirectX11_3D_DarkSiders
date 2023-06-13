@@ -165,6 +165,65 @@ void CFileInfo::ReadModels(const string& strFileName, OUT list<string>& FilePath
  			ReadFile(hFile, &pBoneData[iBoneIndex].OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
 		}
 
+		/* Read iNumAnimations */
+		ReadFile(hFile, &Data.iNumAnimations, sizeof(_uint), &dwByte, nullptr);
+
+		/*========== ANIMATION DATAS ===========*/
+		ANIMATIONDATA* pAnimation = { nullptr };
+		if (0 < Data.iNumAnimations)
+		{
+			pAnimation = new ANIMATIONDATA[Data.iNumAnimations];
+			ZeroMemory(pAnimation, sizeof(ANIMATIONDATA) * Data.iNumAnimations);
+		}
+
+		for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
+		{
+			/* Read szName */
+			_uint iNameLength = strlen(pAnimation[iAnimIndex].szName) + 1;
+			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, pAnimation[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Read Duration */
+			ReadFile(hFile, &pAnimation[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+
+			/* Read TickPerSec */
+			ReadFile(hFile, &pAnimation[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+
+			/* Read iNumChannels */
+			ReadFile(hFile, &pAnimation[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+
+			/*========== CHANNEL DATAS ===========*/
+			CHANNELDATA* pChannel = { nullptr };
+			if (0 < pAnimation[iAnimIndex].iNumChannels)
+			{
+				pChannel = new CHANNELDATA[pAnimation[iAnimIndex].iNumChannels];
+				ZeroMemory(pChannel, sizeof(CHANNELDATA) * pAnimation[iAnimIndex].iNumChannels);
+			}
+
+			for (_uint iChannelIndex = 0; iChannelIndex < pAnimation[iAnimIndex].iNumChannels; ++iChannelIndex)
+			{
+				/* Read szName */
+				iNameLength = strlen(pChannel[iChannelIndex].szName) + 1;
+				ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+				ReadFile(hFile, pChannel[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+				/* Read iNumKeyFrames */
+				ReadFile(hFile, &pChannel[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+
+				/* Read KeyFrame */
+				KEYFRAME* pKeyFrame = { nullptr };
+				if (0 < pChannel[iChannelIndex].iNumKeyFrames)
+				{
+					pKeyFrame = new KEYFRAME[pChannel[iChannelIndex].iNumKeyFrames];
+					ZeroMemory(pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames);
+				}
+
+				ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+				pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
+			}
+			pAnimation[iAnimIndex].pChannels = pChannel;
+		}
+
 		/*========== MESH DATAS ===========*/
 		MESHDATA* pMeshData = new MESHDATA[Data.iNumMeshes];
 		ZeroMemory(pMeshData, sizeof(MESHDATA) * Data.iNumMeshes);
@@ -229,6 +288,7 @@ void CFileInfo::ReadModels(const string& strFileName, OUT list<string>& FilePath
 			break;
 		}
 
+		Data.pAnimations = pAnimation;
 		Data.pMaterialPaths = pMaterialPath;
 		Data.pBoneDatas = pBoneData;
 		Data.pMeshDatas = pMeshData;

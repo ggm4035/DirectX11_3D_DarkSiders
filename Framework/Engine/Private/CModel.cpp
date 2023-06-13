@@ -17,6 +17,7 @@ CModel::CModel(const CModel& rhs)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_vecMaterials(rhs.m_vecMaterials)
 	, m_vecBones(rhs.m_vecBones)
+	, m_vecAnimations(rhs.m_vecAnimations)
 {
 	/* 지금 얕은복사 한거고 나중에 없앨 수도 있음(릴리즈도 마찬가지) */
 	for (auto& pBone : m_vecBones)
@@ -30,6 +31,9 @@ CModel::CModel(const CModel& rhs)
 		for (auto& Texture : Meterial.pMtrlTexture)
 			Safe_AddRef(Texture);
 	}
+
+	for (auto& Animation : m_vecAnimations)
+		Safe_AddRef(Animation);
 }
 
 HRESULT CModel::Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData)
@@ -41,6 +45,9 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& Mo
 		return E_FAIL;
 
 	if (FAILED(Ready_Materials(ModelData)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Animations(ModelData)))
 		return E_FAIL;
 
 	return S_OK;
@@ -59,12 +66,11 @@ HRESULT CModel::Render(const _uint& iMeshIndex)
 	return m_vecMeshes[iMeshIndex]->Render();
 }
 
-void CModel::Play_Animation()
+void CModel::Play_Animation(const _double& TimeDelta)
 {
 	/* 여기서 플레이 할 애니메이션의 인덱스 전달해주면 해당 애니메이션이 가지고 있는
 	뼈(Channel)들의 TransformationMatrix를 변환시킨다. 이 후 CombinedTransformation 들을 변환 */
-
-	
+	//m_vecAnimations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrix(TimeDelta);
 
 	for (auto& pBone : m_vecBones)
 		pBone->Invalidate_CombinedTransformationMatrix();
@@ -78,9 +84,6 @@ HRESULT CModel::Bind_Material(CShader* pShader, const string& strTypename, const
 		return E_FAIL;
 
 	_uint iMaterialIndex = m_vecMeshes[iMeshIndex]->Get_MaterialIndex();
-
-	/*if (nullptr == m_vecMaterials[iMaterialIndex].pMtrlTexture[eTextureType])
-		return S_OK;*/
 
 	return m_vecMaterials[iMaterialIndex].pMtrlTexture[eTextureType]->Bind_ShaderResource(pShader, strTypename);
 }
@@ -221,8 +224,11 @@ void CModel::Free()
 
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);
-
 	m_vecBones.clear();
+
+	for (auto& Animation : m_vecAnimations)
+		Safe_Release(Animation);
+	m_vecAnimations.clear();
 
 	CComponent::Free();
 }

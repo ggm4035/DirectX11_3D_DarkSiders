@@ -27,7 +27,7 @@ public:
 	virtual HRESULT Render(const _uint& iMeshIndex);
 
 public:
-	void Play_Animation();
+	void Play_Animation(const _double& TimeDelta);
 
 public:
 	HRESULT Bind_Material(class CShader* pShader, const string& strTypename, const _uint & iMeshIndex, TEXTURETYPE eTextureType);

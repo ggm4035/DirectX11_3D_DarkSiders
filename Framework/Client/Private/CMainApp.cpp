@@ -137,6 +137,16 @@ void CMainApp::Free()
 {
 	for (auto& Model : m_vecModelDatas)
 	{
+		for (_uint i = 0; i < Model.iNumAnimations; ++i)
+		{
+			for (_uint j = 0; j < Model.pAnimations[i].iNumChannels; ++j)
+			{
+				Safe_Delete_Array(Model.pAnimations[i].pChannels[j].pKeyFrames);
+			}
+			Safe_Delete_Array(Model.pAnimations[i].pChannels);
+		}
+		Safe_Delete_Array(Model.pAnimations);
+
 		for (_uint i = 0; i < Model.iNumMeshes; ++i)
 		{
 			Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);

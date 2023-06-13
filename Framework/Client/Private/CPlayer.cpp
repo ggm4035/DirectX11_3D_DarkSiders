@@ -34,7 +34,7 @@ HRESULT CPlayer::Initialize(CComponent* pOwner, void* pArg)
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
-	//m_pModelCom->Play_Animation();
+	m_pModelCom->Play_Animation(TimeDelta);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }

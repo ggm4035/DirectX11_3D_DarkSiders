@@ -23,6 +23,13 @@ void CAnimation::Invalidate_TransformationMatrix(const _double& TimeDelta)
 	/* 시간 값에 따른 프레임의 위치를 파악해서 현재프레임과 다음프레임 사이를
 	선형보간하는 형태로 진행한다. */
 
+	m_TimeAcc += m_TickPerSec * TimeDelta;
+
+	for (auto& pChannel : m_vecChannels)
+	{
+		pChannel->Invalidate_TransformationMatrix(m_TimeAcc);
+	}
+
 	_matrix TransformationMatrix;
 }
 
@@ -57,4 +64,6 @@ CAnimation* CAnimation::Create(const ANIMATIONDATA& AnimationData)
 
 void CAnimation::Free()
 {
+	for (auto& Channel : m_vecChannels)
+		Safe_Release(Channel);
 }

@@ -23,7 +23,7 @@ HRESULT CImWindow_Inspector::Bind_GameObject(const wstring& wstrGameObjectTag)
     Safe_AddRef(pGameInstance);
 
     string strTag = pGameInstance->wstrToStr(m_pCurGameObject->Get_Tag());
-    strcpy(m_szTag, strTag.c_str());
+    strcpy_s(m_szTag, strTag.c_str());
 
     Safe_Release(pGameInstance);
 

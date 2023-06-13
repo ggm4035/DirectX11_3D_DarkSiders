@@ -19,16 +19,16 @@ void CConverter::Tick()
 	/* NonAnimModel 바이너리화 */
 	m_pGameInstance->Extraction_Data("../Bin/Resources/NonAnimModels/Environment/BreakAble", ".fbx", m_FilePathList);
 	ConvertBinary_NonAnimModel();
-	WriteModels("NonAnimModelsFile.dat");
+	WriteModels("Out/NonAnimModels/BreakAble.dat");
 	//ResetData();
 	//m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 
 	ResetData();
 
 	/* AnimModel 바이너리화 */
-	m_pGameInstance->Extraction_Data("../Bin/Resources/AnimModels/Heros/Fiona", ".fbx", m_FilePathList);
+	m_pGameInstance->Extraction_Data("../Bin/Resources/AnimModels/Heros/Warrior", ".fbx", m_FilePathList);
 	ConvertBinary_AnimModel();
-	WriteModels("ForkLift.dat");
+	WriteModels("Out/AnimModels/Warrior.dat");
 	//ResetData();
 	//m_pGameInstance->ReadModels("AnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 }
@@ -110,6 +110,43 @@ void CConverter::WriteModels(const string& strFileName)
 
 			/* Write OffsetMatrix */
 			WriteFile(hFile, &Bone.OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		}
+
+		/* Write iNumAnimations */
+		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumAnimations, sizeof(_uint), &dwByte, nullptr);
+
+		/*========== ANIMATION DATAS ===========*/
+		for (_uint iAnimIndex = 0; iAnimIndex < m_vecDatas[iDataIndex].iNumAnimations; ++iAnimIndex)
+		{
+			/* Write szName */
+			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName) + 1;
+			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Write Duration */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+
+			/* Write TickPerSec */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+
+			/* Write iNumChannels */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+
+			/*========== CHANNEL DATAS ===========*/
+			for (_uint iChannelIndex = 0; iChannelIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
+			{
+				/* Write szName */
+				iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName) + 1;
+				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+				/* Write iNumKeyFrames */
+				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write KeyFrame */
+				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames, 
+					sizeof(KEYFRAME) * m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+			}
 		}
 
 		/*========== MESH DATAS ===========*/

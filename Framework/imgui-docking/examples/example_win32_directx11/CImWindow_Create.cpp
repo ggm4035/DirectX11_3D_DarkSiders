@@ -92,7 +92,7 @@ void CImWindow_Create::Create_Object()
 
                 if (ImGui::Button("Select"))
                 {
-                    strcpy(m_szPrototypeTag[i], ppiTems[iPick]);
+                    strcpy_s(m_szPrototypeTag[i], ppiTems[iPick]);
                     ImGui::CloseCurrentPopup();
                 }
 

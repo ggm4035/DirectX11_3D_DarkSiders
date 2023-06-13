@@ -1,5 +1,8 @@
 ﻿  CConverter.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\assimp\Importer.hpp(60,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'assimp/types.h': No such file or directory
-  Converter.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\assimp\Importer.hpp(60,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'assimp/types.h': No such file or directory
-  코드를 생성하고 있습니다...
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\CConverter.cpp(56,51): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\CConverter.cpp(98,47): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\CConverter.cpp(122,89): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\CConverter.cpp(139,109): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\CConverter.cpp(156,88): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Default\CConverter.cpp(232,44): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Converter.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Converter\Bin\Converter.exe

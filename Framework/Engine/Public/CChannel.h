@@ -12,6 +12,7 @@ private:
 
 public:
 	HRESULT Initialize(const CHANNELDATA& ChannelData);
+	void Invalidate_TransformationMatrix(const _double& TimeAcc);
 
 private:
 	_char m_szName[MAX_PATH] = { "" };

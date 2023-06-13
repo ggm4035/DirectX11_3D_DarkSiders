@@ -276,13 +276,13 @@ void CToolMainApp::Free()
     {
         for (_uint i = 0; i < Model.iNumMeshes; ++i)
         {
-            Safe_Delete_Array(Model.pMeshData[i].pBoneIndices);
-            Safe_Delete_Array(Model.pMeshData[i].pNonAnimVertices);
-            Safe_Delete_Array(Model.pMeshData[i].pAnimVertices);
-            Safe_Delete_Array(Model.pMeshData[i].pIndices);
+            Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
+            Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
+            Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
+            Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
         }
         Safe_Delete_Array(Model.pMaterialPaths);
-        Safe_Delete_Array(Model.pMeshData);
+        Safe_Delete_Array(Model.pMeshDatas);
         Safe_Delete_Array(Model.pBoneDatas);
     }
 
