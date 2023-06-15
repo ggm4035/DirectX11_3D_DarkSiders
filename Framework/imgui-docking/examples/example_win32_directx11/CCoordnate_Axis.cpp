@@ -27,8 +27,6 @@ HRESULT CCoordnate_Axis::Initialize(CComponent* pOwner, void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-    TOOL->m_pCoordnate = this;
-
 	return S_OK;
 }
 
@@ -68,15 +66,15 @@ HRESULT CCoordnate_Axis::Render()
 
 HRESULT CCoordnate_Axis::Add_Components()
 {
-	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Renderer",
+	if (FAILED(Add_Component(LEVEL_TOOL, L"Renderer",
 		L"Com_Renderer", (CComponent**)&m_pRenderer, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Shader_VtxCol",
+	if (FAILED(Add_Component(LEVEL_TOOL, L"Shader_VtxCol",
 		L"Com_Shader", (CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Coordnate",
+	if (FAILED(Add_Component(LEVEL_TOOL, L"VIBuffer_Coordnate",
 		L"Com_Buffer", (CComponent**)&m_pBufferCom, this)))
 		return E_FAIL;
 

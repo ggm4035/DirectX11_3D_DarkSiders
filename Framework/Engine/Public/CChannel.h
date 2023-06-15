@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CBase.h"
+#include "CModel.h"
 
 BEGIN(Engine)
 
@@ -11,22 +11,19 @@ private:
 	virtual ~CChannel() = default;
 
 public:
-	HRESULT Initialize(const CHANNELDATA& ChannelData);
-	void Invalidate_TransformationMatrix(const _double& TimeAcc);
+	HRESULT Initialize(const CHANNELDATA& ChannelData, const CModel::BONES& Bones);
+	void Invalidate_TransformationMatrix(const CModel::BONES& Bones, const _double& TimeAcc, _uint* pCurrentKeyFrame);
 
 private:
 	_char m_szName[MAX_PATH] = { "" };
-	_uint m_iCurrentKeyFrame = { 0 };
+	_uint m_iBoneIndex = { 0 };
 
 private:
 	_uint m_iNumKeyFrames = { 0 };
 	vector<KEYFRAME> m_vecKeyFrames;
 
-private:
-	HRESULT Ready_KeyFrames(const CHANNELDATA& ChannelData);
-
 public:
-	static CChannel* Create(const CHANNELDATA& ChannelData);
+	static CChannel* Create(const CHANNELDATA& ChannelData, const CModel::BONES& Bones);
 	virtual void Free() override;
 };
 

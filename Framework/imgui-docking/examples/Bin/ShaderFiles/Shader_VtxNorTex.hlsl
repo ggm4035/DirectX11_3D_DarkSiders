@@ -69,7 +69,7 @@ float4 PS_MAIN(PS_IN In) : SV_TARGET0
     float4 vLook = normalize(In.vWorldPosition - g_CameraPosition);
     
     vDiffuse = vDiffuse * g_LightDiffuse * fShade;
-    float4 vSpecular = pow(max(dot(-vLook, vReflect), 0.f), 40.f) * g_LightSpecular;
+    float4 vSpecular = pow(max(dot(-vLook, vReflect), 0.f), 30.f) * g_LightSpecular;
     
     vColor = vDiffuse + vSpecular;
 	

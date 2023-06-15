@@ -17,7 +17,7 @@ public:
 		return m_iMaterialsIndex;
 	}
 
-	void Get_Matrices(const CModel::BONES& vecBones, OUT _float4x4* pMatrices);
+	void Get_Matrices(const CModel::BONES& vecBones, OUT _float4x4* pMatrices, _fmatrix PivotMatrix);
 
 public:
 	virtual HRESULT Initialize_Prototype(CModel::TYPE eModelType, const MESHDATA& MeshData);
@@ -29,7 +29,7 @@ private:
 
 private:
 	_uint m_iNumBones = { 0 };
-	vector<_uint> m_BoneIndices; /* 모델에 로드해놓은 전체뼈의 인덱스. */
+	vector<_uint> m_vecBoneIndices; /* 모델에 로드해놓은 전체뼈의 인덱스. */
 
 private:
 	HRESULT Ready_VertexBuffer_NonAnim(const MESHDATA& MeshData);

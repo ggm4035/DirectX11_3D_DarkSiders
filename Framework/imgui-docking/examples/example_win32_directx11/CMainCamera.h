@@ -18,13 +18,23 @@ private:
 	virtual ~CMainCamera() = default;
 
 public:
+    CTransform* Get_Transform() {
+        return m_pTransformCom;
+    }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+    void Set_AnimationView();
+    void Set_OriginView();
+
 private:
+    _float4x4 m_OriginMatrix;
 	_bool m_bFix = { false };
 
 private:

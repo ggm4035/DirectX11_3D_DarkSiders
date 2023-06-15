@@ -19,9 +19,6 @@
     <Filter Include="02. GameObject\01. CMainCamera">
       <UniqueIdentifier>{683011ef-8f44-42c8-9bf4-4a980e559831}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\02. Terrain">
-      <UniqueIdentifier>{1338dc45-9768-47bf-9946-b84304129d2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="IMGUIFile">
       <UniqueIdentifier>{57755711-d961-4440-9cd0-05b739dc3cd2}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="03. Levels">
       <UniqueIdentifier>{a0cb6d9b-aec5-4bcf-8ff2-a22a37a9a199}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Levels\00. Level_Tool">
-      <UniqueIdentifier>{6c4f10a0-3724-4179-ba0e-7ba6a7e279d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="96. ShaderFiles">
       <UniqueIdentifier>{8fbedaf9-29fb-4fa7-9e42-38e00e15de38}</UniqueIdentifier>
@@ -66,6 +60,9 @@
     </Filter>
     <Filter Include="01. ImWindow\02. ImWindow_Create">
       <UniqueIdentifier>{3aaa34f6-d454-494f-8643-3c9d433b25e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\03. ImWindow_Top">
+      <UniqueIdentifier>{92c8a30b-87e0-4e10-9a4e-bbfdafa8867e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -105,12 +102,6 @@
     <ClInclude Include="CMainCamera.h">
       <Filter>02. GameObject\01. CMainCamera</Filter>
     </ClInclude>
-    <ClInclude Include="CTerrain.h">
-      <Filter>02. GameObject\02. Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="CLevel_Tool.h">
-      <Filter>03. Levels\00. Level_Tool</Filter>
-    </ClInclude>
     <ClInclude Include="CImWindow_Base.h">
       <Filter>01. ImWindow\00. ImWindow_Base</Filter>
     </ClInclude>
@@ -128,6 +119,12 @@
     </ClInclude>
     <ClInclude Include="CImWindow_Create.h">
       <Filter>01. ImWindow\02. ImWindow_Create</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Top.h">
+      <Filter>01. ImWindow\03. ImWindow_Top</Filter>
+    </ClInclude>
+    <ClInclude Include="CLevel_Tool.h">
+      <Filter>03. Levels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -173,12 +170,6 @@
     <ClCompile Include="CMainCamera.cpp">
       <Filter>02. GameObject\01. CMainCamera</Filter>
     </ClCompile>
-    <ClCompile Include="CTerrain.cpp">
-      <Filter>02. GameObject\02. Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="CLevel_Tool.cpp">
-      <Filter>03. Levels\00. Level_Tool</Filter>
-    </ClCompile>
     <ClCompile Include="CImWindow_Base.cpp">
       <Filter>01. ImWindow\00. ImWindow_Base</Filter>
     </ClCompile>
@@ -194,9 +185,14 @@
     <ClCompile Include="CImWindow_Create.cpp">
       <Filter>01. ImWindow\02. ImWindow_Create</Filter>
     </ClCompile>
+    <ClCompile Include="CImWindow_Top.cpp">
+      <Filter>01. ImWindow\03. ImWindow_Top</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Tool.cpp">
+      <Filter>03. Levels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.txt" />
     <None Include="..\..\misc\debuggers\imgui.natvis">
       <Filter>IMGUIFile\imgui</Filter>
     </None>

@@ -22,8 +22,8 @@ private:
 
 public:
 	HRESULT Reserve_Containers(const _uint& iNumLevels, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	HRESULT Add_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(const _uint& iLevelIndex, wstring& PrototypeTag, class CComponent* pOwner, void* pArg);
+	HRESULT Add_Prototype(const _uint& iLevelIndex, const wstring& PrototypeTag, class CComponent* pPrototype);
+	class CComponent* Clone_Component(const _uint& iLevelIndex, const wstring& PrototypeTag, class CComponent* pOwner, void* pArg);
 	class CComponent* Clone_Transform(class CComponent* pOwner, void* pArg);
 	void Clear_LevelResources(const _uint& iLevelIndex);
 
@@ -39,7 +39,7 @@ private:
 	class CTransform* m_pPrototype_Transform = { nullptr };
 
 private:
-	class CComponent* Find_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag);
+	class CComponent* Find_Prototype(const _uint& iLevelIndex, const wstring& PrototypeTag);
 
 public:
 	virtual void Free() override;

@@ -28,6 +28,8 @@ HRESULT CMainCamera::Initialize(CComponent* pOwner, void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+    TOOL->m_pCamera = this;
+
 	return S_OK;
 }
 
@@ -44,6 +46,23 @@ void CMainCamera::Late_Tick(const _double& TimeDelta)
 HRESULT CMainCamera::Render()
 {
 	return S_OK;
+}
+
+void CMainCamera::Set_AnimationView()
+{
+    m_OriginMatrix = m_pTransformCom->Get_WorldMatrix();
+
+    _float4x4 matrix;
+    XMStoreFloat4x4(&matrix, XMMatrixIdentity());
+
+    m_pTransformCom->Set_Matrix(matrix);
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 2.f, 5.f, 1.f));
+    m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+}
+
+void CMainCamera::Set_OriginView()
+{
+    m_pTransformCom->Set_Matrix(m_OriginMatrix);
 }
 
 HRESULT CMainCamera::Add_Components()

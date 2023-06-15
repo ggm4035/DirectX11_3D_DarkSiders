@@ -2,7 +2,6 @@
 
 #include "CGameInstance.h"
 
-#include "CTerrain.h"
 #include "CCoordnate_Axis.h"
 #include "CMainCamera.h"
 
@@ -73,7 +72,7 @@ HRESULT CLevel_Tool::Ready_Lights()
     CLight::LIGHTDESC LightDesc;
 
     LightDesc.vPosition = _float4(500.f, 500.f, -500.f, 1.f);
-    LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+    LightDesc.vDirection = _float4(-1.f, -1.f, -1.f, 0.f);
     LightDesc.fRange = 100.f;
     LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
     LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);

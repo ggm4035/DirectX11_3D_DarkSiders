@@ -27,7 +27,10 @@ public:
     CShader* Get_Shader() { return m_pShaderCom; }
     CTexture* Get_Texture() { return m_pTextureCom; }
     CRenderer* Get_Renderer() { return m_pRenderer; }
+    CModel* Get_Model() { return m_pModelCom; }
     CRenderer::RENDERGROUP Get_RenderGroup() { return m_eRenderGroup; }
+    void Updata_On() { m_isUpdate = true; }
+    void Updata_Off() { m_isUpdate = false; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -49,12 +52,18 @@ public:
     HRESULT Add_Buffer(const wstring PrototypeTag);
     HRESULT Add_Model(const wstring PrototypeTag);
 
+public:
+    void Set_RasterizerState(const D3D11_RASTERIZER_DESC& RasterizerDesc);
+
 private:
     CRenderer* m_pRenderer = { nullptr };
     CShader* m_pShaderCom = { nullptr };
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer* m_pBufferCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
+
+private:
+    _bool m_isUpdate = { true };
 
 private:
     virtual HRESULT Add_Components() override;

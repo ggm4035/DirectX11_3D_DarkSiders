@@ -14,12 +14,12 @@ private:
 
 public:
 	HRESULT Reserve_Containers(const _uint& iNumLevels);
-	HRESULT Add_Camera(const _uint& iLevelIndex, wstring& CameraTag, class CCamera* pCamera);
-	HRESULT Remove_Camera(const _uint& iLevelIndex, wstring& CameraTag);
+	HRESULT Add_Camera(const _uint& iLevelIndex, const wstring& CameraTag, class CCamera* pCamera);
+	HRESULT Remove_Camera(const _uint& iLevelIndex, const wstring& CameraTag);
 	void Clear_LevelResources(const _uint& iLevelIndex);
 
 public:
-	HRESULT On_Camera(const _uint& iLevelIndex, wstring& CameraTag);
+	HRESULT On_Camera(const _uint& iLevelIndex, const wstring& CameraTag);
 	
 private:
 	typedef unordered_map<wstring, class CCamera*> CAMERAS;
@@ -28,7 +28,7 @@ private:
 	_uint m_iNumLevels = { 0 };
 	
 private:
-	class CCamera* Find_Camera(const _uint& iLevelIndex, wstring& CameraTag);
+	class CCamera* Find_Camera(const _uint& iLevelIndex, const wstring& CameraTag);
 
 public:
 	virtual void Free() override;

@@ -34,6 +34,9 @@ private:
     vector<MODEL_BINARYDATA> m_vecModelDatas;
     list<string> m_FilePathList;
 
+    vector<MODEL_BINARYDATA> m_AnimModelData;
+    list<string> m_FilePaths;
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
@@ -45,6 +48,8 @@ private:
     HRESULT Ready_Prototype_GameObject_For_Tool();
     HRESULT Ready_Prototype_Component_For_Tool();
     HRESULT Ready_NonAnimModels();
+    HRESULT Ready_AnimModels();
+
     void Update_Demo();
 
 public:

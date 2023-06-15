@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ModelLoader_Defines.h">
+      <Filter>99. Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="CModelLoader.cpp">
+      <Filter>00. Loader</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="99. Headers">
+      <UniqueIdentifier>{79f09bc4-6ccb-4451-95a4-43f39ae05f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Loader">
+      <UniqueIdentifier>{7259efec-6e6c-46f9-b092-65554aaf3a95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Default">
+      <UniqueIdentifier>{911e3f0d-e43c-459d-95ee-8577a5068030}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CModelLoader.h">
+      <Filter>00. Loader</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

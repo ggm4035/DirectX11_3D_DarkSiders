@@ -4,6 +4,7 @@
 #include "CGameInstance.h"
 #include "CBackGround.h"
 #include "CTerrain.h"
+#include "CMonster.h"
 #include "CCamera_Free.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -115,7 +116,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("¸ðµ¨ ·Îµù Áß.");
 
 	/* For. Prototype_Component_VIBuffer_Terrain */
-
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Terrain",
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Terrain/Height.bmp"))))
 		return E_FAIL;
@@ -123,6 +123,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("¼ÎÀÌ´õ ·Îµù Áß.");
 
 	m_szLoading = TEXT("°´Ã¼ ·Îµù Áß.");
+
+	/* For. Prototype_GameObject_Monster */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Monster",
+		CMonster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For. Prototype_GameObject_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain",

@@ -26,7 +26,7 @@ HRESULT CComponent_Manager::Reserve_Containers(const _uint& iNumLevels, ID3D11De
 	return S_OK;
 }
 
-HRESULT CComponent_Manager::Add_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag, CComponent* pPrototype)
+HRESULT CComponent_Manager::Add_Prototype(const _uint& iLevelIndex, const wstring& PrototypeTag, CComponent* pPrototype)
 {
 	if (nullptr != dynamic_cast<CTransform*>(pPrototype))
 	{
@@ -46,7 +46,7 @@ HRESULT CComponent_Manager::Add_Prototype(const _uint& iLevelIndex, wstring& Pro
 	return S_OK;
 }
 
-CComponent* CComponent_Manager::Clone_Component(const _uint& iLevelIndex, wstring& PrototypeTag, CComponent* pOwner, void* pArg)
+CComponent* CComponent_Manager::Clone_Component(const _uint& iLevelIndex, const wstring& PrototypeTag, CComponent* pOwner, void* pArg)
 {
 	CComponent* pPrototype = Find_Prototype(iLevelIndex, PrototypeTag);
 
@@ -95,7 +95,7 @@ list<class CComponent*> CComponent_Manager::Get_All_Prototypes()
 	return retList;
 }
 
-CComponent* CComponent_Manager::Find_Prototype(const _uint& iLevelIndex, wstring& PrototypeTag)
+CComponent* CComponent_Manager::Find_Prototype(const _uint& iLevelIndex, const wstring& PrototypeTag)
 {
 	auto& iter = m_pPrototypes[iLevelIndex].find(PrototypeTag);
 

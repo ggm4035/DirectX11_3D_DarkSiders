@@ -13,14 +13,14 @@ private:
 	virtual ~CTimer_Manager() = default;
 
 public:
-	_double		Get_Timer(wstring& pTimerTag);
-	void		Set_Timer(wstring& pTimerTag);
+	_double		Get_Timer(const wstring& pTimerTag);
+	void		Set_Timer(const wstring& pTimerTag);
 
 public:
-	HRESULT		Ready_Timer(wstring& pTimerTag);
+	HRESULT		Ready_Timer(const wstring& pTimerTag);
 	
 private:
-	class CTimer*		Find_Timer(wstring& pTimerTag);
+	class CTimer*		Find_Timer(const wstring& pTimerTag);
 	
 
 private:

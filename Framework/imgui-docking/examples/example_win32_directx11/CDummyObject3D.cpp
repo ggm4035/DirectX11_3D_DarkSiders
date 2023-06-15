@@ -1,6 +1,7 @@
 #include "CDummyObject3D.h"
 
 #include "CGameInstance.h"
+#include "CToolInstance.h"
 
 CDummyObject3D::CDummyObject3D(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject3D(pDevice, pContext)
@@ -25,20 +26,19 @@ HRESULT CDummyObject3D::Initialize(CComponent* pOwner, void* pArg)
     if (FAILED(Add_Components()))
         return E_FAIL;
 
-    D3D11_RASTERIZER_DESC RasterizerDesc;
-    ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
-
-    RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-    RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
-    RasterizerDesc.FrontCounterClockwise = { false };
-
-    m_pDevice->CreateRasterizerState(&RasterizerDesc, &m_pRasterizer);
-
     return S_OK;
+
 }
 
 void CDummyObject3D::Tick(const _double& TimeDelta)
 {
+    if (false == m_isUpdate)
+        return;
+
+    if (nullptr != m_pModelCom &&
+        CModel::TYPE_ANIM == m_pModelCom->Get_Type())
+        m_pModelCom->Play_Animation(TimeDelta);
+
     if (nullptr != m_pRenderer)
         m_pRenderer->Add_RenderGroup(m_eRenderGroup, this);
 }
@@ -49,6 +49,9 @@ void CDummyObject3D::Late_Tick(const _double& TimeDelta)
 
 HRESULT CDummyObject3D::Render()
 {
+    if (false == m_isUpdate)
+        return S_OK;
+
     if (FAILED(Set_Shader_Resources()))
         return E_FAIL;
 
@@ -58,7 +61,8 @@ HRESULT CDummyObject3D::Render()
 
         for (_uint i = 0; i < iNumMeshes; ++i)
         {
-            //m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+            if(m_pModelCom->Get_Type() == CModel::TYPE_ANIM)
+                m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
             m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
 
@@ -136,9 +140,16 @@ HRESULT CDummyObject3D::Add_Model(const wstring PrototypeTag)
     return S_OK;
 }
 
+void CDummyObject3D::Set_RasterizerState(const D3D11_RASTERIZER_DESC& RasterizerDesc)
+{
+    Safe_Release(m_pRasterizer);
+
+    m_pDevice->CreateRasterizerState(&RasterizerDesc, &m_pRasterizer);
+}
+
 HRESULT CDummyObject3D::Add_Components()
 {
-    if(FAILED(Add_Component(LEVEL_TOOL, L"Prototype_Component_Renderer",
+    if(FAILED(Add_Component(LEVEL_TOOL, L"Renderer",
         L"Com_Renderer", (CComponent**)&m_pRenderer, this)))
         return E_FAIL;
 
@@ -152,8 +163,8 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
 
     if (nullptr != m_pShaderCom)
     {
-        /*if (FAILED(m_pShaderCom->Bind_Rasterizer("g_Rasterizer", 0, m_pRasterizer)))
-            return E_FAIL;*/
+        if (FAILED(m_pShaderCom->Bind_Rasterizer("g_Rasterizer", 0, m_pRasterizer)))
+            return E_FAIL;
 
         if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
             return E_FAIL;
@@ -170,8 +181,9 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
                 return E_FAIL;
         }
 
-        if (m_pShaderCom->Get_Tag() == L"Prototype_Component_Shader_VtxNorTex" ||
-            m_pShaderCom->Get_Tag() == L"Prototype_Component_Shader_Mesh")
+        if (m_pShaderCom->Get_Tag() == L"Shader_VtxNorTex" ||
+            m_pShaderCom->Get_Tag() == L"Shader_AnimMesh" ||
+            m_pShaderCom->Get_Tag() == L"Shader_Mesh")
         {
             CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
             if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",

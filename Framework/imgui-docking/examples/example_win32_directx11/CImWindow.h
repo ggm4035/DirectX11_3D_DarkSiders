@@ -20,12 +20,17 @@ public:
     virtual void Tick(const _double& TimeDelta) = 0;
     virtual void Refresh();
 
-protected:
-    list<CGameObject*> m_GameObjectList;
+protected: /* For.CDummyObject3D */
+    list<class CDummyObject3D*> m_GameObjectList;
     _uint m_iNumGameObjects = { 0 };
 
+protected: /* For.CDummyUI */
+
+protected: /* For.CDummyCamera */
+
 protected:
-    CGameObject* Find_GameObject(const wstring& GameObjectTag);
+    class CDummyObject3D* Find_GameObject(const wstring& GameObjectTag);
+    class CDummyUI* Find_UI(const wstring& UITag);
 
 public:
     virtual void Free(void) override;

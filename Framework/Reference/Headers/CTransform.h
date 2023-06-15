@@ -41,6 +41,11 @@ public:
 	}
 	void Set_State(STATE _eState, _fvector _vState);
 
+	/* Imgui Tool Only*/
+	void Set_Matrix(const _float4x4& fMatrix) {
+		m_WorldMatrix = fMatrix;
+	}
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;

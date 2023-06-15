@@ -16,12 +16,12 @@ CModel::CModel(const CModel& rhs)
 	, m_vecMeshes(rhs.m_vecMeshes)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_vecMaterials(rhs.m_vecMaterials)
-	, m_vecBones(rhs.m_vecBones)
-	, m_vecAnimations(rhs.m_vecAnimations)
+	, m_iNumAnimations(rhs.m_iNumAnimations)
+	, m_PivotMatrix(rhs.m_PivotMatrix)
+	, m_eType(rhs.m_eType)
 {
-	/* 지금 얕은복사 한거고 나중에 없앨 수도 있음(릴리즈도 마찬가지) */
-	for (auto& pBone : m_vecBones)
-		Safe_AddRef(pBone);
+	for (auto& pOriginBone : rhs.m_vecBones)
+		m_vecBones.push_back(pOriginBone->Clone());
 
 	for (auto& pMesh : m_vecMeshes)
 		Safe_AddRef(pMesh);
@@ -32,12 +32,16 @@ CModel::CModel(const CModel& rhs)
 			Safe_AddRef(Texture);
 	}
 
-	for (auto& Animation : m_vecAnimations)
-		Safe_AddRef(Animation);
+	for (auto& pOriginAnimation : rhs.m_vecAnimations)
+		m_vecAnimations.push_back(pOriginAnimation->Clone());
 }
 
-HRESULT CModel::Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData)
+HRESULT CModel::Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix)
 {
+	m_eType = eModelType;
+
+	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+
 	if (FAILED(Ready_Bones(ModelData, nullptr)))
 		return E_FAIL;
 
@@ -68,12 +72,15 @@ HRESULT CModel::Render(const _uint& iMeshIndex)
 
 void CModel::Play_Animation(const _double& TimeDelta)
 {
-	/* 여기서 플레이 할 애니메이션의 인덱스 전달해주면 해당 애니메이션이 가지고 있는
-	뼈(Channel)들의 TransformationMatrix를 변환시킨다. 이 후 CombinedTransformation 들을 변환 */
-	//m_vecAnimations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrix(TimeDelta);
+	/* 어떤 애니메이션을 재생하려고하는지?! */
+	/* 이 애니메이션은 어떤 뼈를 사용하는지?! */
+	/* 뼈들은 각각 어떤 상태(TransformationMatrix)를 취하고 있어야하는가?! */
+
+	/* 현재 애니메이션에서 사용하는 뼈들을 찾아서 해당 뼈들의 TransformationMatrix를 갱신한다. */
+	m_vecAnimations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrix(m_vecBones, TimeDelta); // 
 
 	for (auto& pBone : m_vecBones)
-		pBone->Invalidate_CombinedTransformationMatrix();
+		pBone->Invalidate_CombinedTransformationMatrix(m_vecBones);
 }
 
 HRESULT CModel::Bind_Material(CShader* pShader, const string& strTypename, const _uint& iMeshIndex, TEXTURETYPE eTextureType)
@@ -97,7 +104,7 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const string& strTypename, c
 	_float4x4 BoneMatrices[256];
 	ZeroMemory(BoneMatrices, sizeof(_float4x4) * 256);
 
-	m_vecMeshes[iMeshIndex]->Get_Matrices(m_vecBones, BoneMatrices);
+	m_vecMeshes[iMeshIndex]->Get_Matrices(m_vecBones, BoneMatrices, XMLoadFloat4x4(&m_PivotMatrix));
 
 	return pShader->Bind_Float4x4_Array(strTypename, BoneMatrices, 256);
 }
@@ -172,7 +179,7 @@ HRESULT CModel::Ready_Animations(const MODEL_BINARYDATA& ModelData)
 
 	for (_uint i = 0; i < m_iNumAnimations; ++i)
 	{
-		CAnimation* pAnimation = CAnimation::Create(ModelData.pAnimations[i]);
+		CAnimation* pAnimation = CAnimation::Create(ModelData.pAnimations[i], m_vecBones);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
@@ -183,11 +190,11 @@ HRESULT CModel::Ready_Animations(const MODEL_BINARYDATA& ModelData)
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
-	TYPE eModelType, const MODEL_BINARYDATA& ModelData)
+	TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix)
 {
 	CModel* pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eModelType, ModelData)))
+	if (FAILED(pInstance->Initialize_Prototype(eModelType, ModelData, PivotMatrix)))
 	{
 		MSG_BOX("Failed to Created CModel");
 		Safe_Release(pInstance);
@@ -211,6 +218,10 @@ CModel* CModel::Clone(CComponent * pOwner, void* pArg)
 
 void CModel::Free()
 {
+	for (auto& Animation : m_vecAnimations)
+		Safe_Release(Animation);
+	m_vecAnimations.clear();
+
 	for (auto& pMesh : m_vecMeshes)
 		Safe_Release(pMesh);
 	m_vecMeshes.clear();
@@ -225,10 +236,6 @@ void CModel::Free()
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);
 	m_vecBones.clear();
-
-	for (auto& Animation : m_vecAnimations)
-		Safe_Release(Animation);
-	m_vecAnimations.clear();
 
 	CComponent::Free();
 }

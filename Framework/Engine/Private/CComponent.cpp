@@ -70,7 +70,7 @@ void CComposite::Tick(const _double& TimeDelta)
 {
 }
 
-void CComposite::Late_Tick(_double TimeDelta)
+void CComposite::Late_Tick(const _double& TimeDelta)
 {
 }
 
@@ -79,7 +79,8 @@ HRESULT CComposite::Render()
 	return S_OK;
 }
 
-HRESULT CComposite::Add_Component(_uint iNumLevel, wstring PrototypeTag, wstring ComponentTag, CComponent** ppOut, CComponent* pOwner, void* pArg)
+HRESULT CComposite::Add_Component(const _uint& iNumLevel, const wstring& PrototypeTag, const wstring& ComponentTag, 
+	CComponent** ppOut, CComponent* pOwner, void* pArg)
 {
  	CComponent* pComponent = CComponent_Manager::GetInstance()->
 		Clone_Component(iNumLevel, PrototypeTag, pOwner, pArg);

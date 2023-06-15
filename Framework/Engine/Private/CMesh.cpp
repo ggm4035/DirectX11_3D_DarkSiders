@@ -11,18 +11,18 @@ CMesh::CMesh(const CMesh& rhs)
 	: CVIBuffer(rhs)
 	, m_iMaterialsIndex(rhs.m_iMaterialsIndex)
 	, m_iNumBones(rhs.m_iNumBones)
-	, m_BoneIndices(rhs.m_BoneIndices)
+	, m_vecBoneIndices(rhs.m_vecBoneIndices)
 {
 	strcpy_s(m_szName, rhs.m_szName);
 }
 
-void CMesh::Get_Matrices(const CModel::BONES& vecBones, OUT _float4x4* pMatrix)
+void CMesh::Get_Matrices(const CModel::BONES& vecBones, OUT _float4x4* pMatrix, _fmatrix PivotMatrix)
 {
 	_uint iIndex = { 0 };
 
-	for (auto iBoneIndex : m_BoneIndices)
+	for (auto iBoneIndex : m_vecBoneIndices)
 	{
-		XMStoreFloat4x4(&pMatrix[iIndex++], vecBones[iBoneIndex]->Get_OffsetMatrix() * vecBones[iBoneIndex]->Get_CombinedTransformationMatrix());
+		XMStoreFloat4x4(&pMatrix[iIndex++], vecBones[iBoneIndex]->Get_OffsetMatrix() * vecBones[iBoneIndex]->Get_CombinedTransformationMatrix() * PivotMatrix);
 	}
 }
 
@@ -32,10 +32,10 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eModelType, const MESHDATA& Mes
 	m_iMaterialsIndex = MeshData.iMaterialIndex;
 
 	m_iNumBones = MeshData.iNumMeshBones;
-	m_BoneIndices.reserve(m_iNumBones);
+	m_vecBoneIndices.reserve(m_iNumBones);
 
 	for (_uint i = 0; i < m_iNumBones; ++i)
-		m_BoneIndices.push_back(MeshData.pBoneIndices[i]);
+		m_vecBoneIndices.push_back(MeshData.pBoneIndices[i]);
 
 	m_iVertexBuffers = { 1 };
 	m_iIndexStride = { sizeof(_ulong) };
@@ -88,10 +88,25 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnim(const MESHDATA& MeshData)
 	m_BufferDesc.MiscFlags = { 0 };
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
-	m_SubResourceData.pSysMem = MeshData.pNonAnimVertices;
+	VTXMESH* pVertices = MeshData.pNonAnimVertices;
+	m_SubResourceData.pSysMem = pVertices;
 
 	if (FAILED(Create_Buffer(&m_pVB)))
 		return E_FAIL;
+
+	_ulong* pIndices = MeshData.pIndices;
+
+	for (_uint i = 0; i < m_iNumIndices;)
+	{
+		TRIANGLE TriangleDesc;
+		ZeroMemory(&TriangleDesc, sizeof TriangleDesc);
+
+		TriangleDesc.vDot[0] = pVertices[pIndices[i++]].vPosition;
+		TriangleDesc.vDot[1] = pVertices[pIndices[i++]].vPosition;
+		TriangleDesc.vDot[2] = pVertices[pIndices[i++]].vPosition;
+
+		m_TriangleList.push_back(TriangleDesc);
+	}
 
 	return S_OK;
 }
@@ -110,10 +125,25 @@ HRESULT CMesh::Ready_VertexBuffer_Anim(const MESHDATA& MeshData)
 	m_BufferDesc.MiscFlags = { 0 };
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
-	m_SubResourceData.pSysMem = MeshData.pAnimVertices;
+	VTXANIMMESH* pVertices = MeshData.pAnimVertices;
+	m_SubResourceData.pSysMem = pVertices;
 
 	if (FAILED(Create_Buffer(&m_pVB)))
 		return E_FAIL;
+
+	_ulong* pIndices = MeshData.pIndices;
+
+	for (_uint i = 0; i < m_iNumIndices;)
+	{
+		TRIANGLE TriangleDesc;
+		ZeroMemory(&TriangleDesc, sizeof TriangleDesc);
+
+		TriangleDesc.vDot[0] = pVertices[pIndices[i++]].vPosition;
+		TriangleDesc.vDot[1] = pVertices[pIndices[i++]].vPosition;
+		TriangleDesc.vDot[2] = pVertices[pIndices[i++]].vPosition;
+
+		m_TriangleList.push_back(TriangleDesc);
+	}
 
 	return S_OK;
 }

@@ -15,16 +15,12 @@ private:
     virtual ~CImWindow_Inspector() = default;
 
 public:
-    HRESULT Bind_GameObject(const wstring& wstrGameObjectTag);
-
-public:
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Tick(const _double& TimeDelta) override;
     virtual void Refresh() override;
 
-public:
-    CGameObject* m_pCurGameObject = { nullptr };
-    _char m_szTag[256];
+private:
+    _char m_szTag[MAX_PATH] = { "" };
 
 private:
     void Show_Components();

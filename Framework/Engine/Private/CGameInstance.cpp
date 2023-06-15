@@ -131,7 +131,7 @@ HRESULT CGameInstance::Present()
 	return m_pGraphic_Device->Present();
 }
 
-_double CGameInstance::Get_Timer(wstring TimerTag)
+_double CGameInstance::Get_Timer(const wstring TimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return 0.0;
@@ -139,7 +139,7 @@ _double CGameInstance::Get_Timer(wstring TimerTag)
 	return m_pTimer_Manager->Get_Timer(TimerTag);
 }
 
-void CGameInstance::Set_Timer(wstring TimerTag)
+void CGameInstance::Set_Timer(const wstring TimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return;
@@ -147,7 +147,7 @@ void CGameInstance::Set_Timer(wstring TimerTag)
 	m_pTimer_Manager->Set_Timer(TimerTag);
 }
 
-HRESULT CGameInstance::Ready_Timer(wstring TimerTag)
+HRESULT CGameInstance::Ready_Timer(const wstring TimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return E_FAIL;
@@ -163,7 +163,7 @@ HRESULT CGameInstance::Open_Level(const _uint& iNumLevels, CLevel* pNewLevel)
 	return m_pLevel_Manager->Open_Level(iNumLevels, pNewLevel);
 }
 
-HRESULT CGameInstance::Add_Prototype(wstring PrototypeTag, CGameObject* pPrototype)
+HRESULT CGameInstance::Add_Prototype(const wstring PrototypeTag, CGameObject* pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
@@ -171,7 +171,7 @@ HRESULT CGameInstance::Add_Prototype(wstring PrototypeTag, CGameObject* pPrototy
 	return m_pObject_Manager->Add_Prototype(PrototypeTag, pPrototype);
 }
 
-HRESULT CGameInstance::Add_GameObject(const _uint& iNumLayer, wstring PrototypeTag, wstring GameObjectTag, wstring LayerTag, void* pArg)
+HRESULT CGameInstance::Add_GameObject(const _uint& iNumLayer, const wstring PrototypeTag, const wstring GameObjectTag, const wstring LayerTag, void* pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
@@ -195,7 +195,7 @@ HRESULT CGameInstance::Remove_GameObject(const wstring GameObjectTag)
 	return m_pObject_Manager->Remove_GameObject(GameObjectTag);
 }
 
-HRESULT CGameInstance::Add_Prototype(const _uint& iLevelIndex, wstring PrototypeTag, CComponent* pPrototype)
+HRESULT CGameInstance::Add_Prototype(const _uint& iLevelIndex, const wstring& PrototypeTag, CComponent* pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
 		return E_FAIL;
@@ -203,7 +203,7 @@ HRESULT CGameInstance::Add_Prototype(const _uint& iLevelIndex, wstring Prototype
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, PrototypeTag, pPrototype);
 }
 
-CComponent* CGameInstance::Clone_Component(const _uint& iLevelIndex, wstring PrototypeTag, CComponent* pOwner, void* pArg)
+CComponent* CGameInstance::Clone_Component(const _uint& iLevelIndex, const wstring& PrototypeTag, CComponent* pOwner, void* pArg)
 {
 	if (nullptr == m_pComponent_Manager)
 		return nullptr;
@@ -227,7 +227,7 @@ list<CComponent*> CGameInstance::Get_All_Prototypes()
 	return m_pComponent_Manager->Get_All_Prototypes();
 }
 
-HRESULT CGameInstance::Add_Camera(const _uint& iLevelIndex, wstring CameraTag, CCamera* pCamera)
+HRESULT CGameInstance::Add_Camera(const _uint& iLevelIndex, const wstring CameraTag, CCamera* pCamera)
 {
 	if (nullptr == m_pCamera_Manager)
 		return E_FAIL;
@@ -235,7 +235,7 @@ HRESULT CGameInstance::Add_Camera(const _uint& iLevelIndex, wstring CameraTag, C
 	return m_pCamera_Manager->Add_Camera(iLevelIndex, CameraTag, pCamera);
 }
 
-HRESULT CGameInstance::Remove_Camera(const _uint& iLevelIndex, wstring CameraTag)
+HRESULT CGameInstance::Remove_Camera(const _uint& iLevelIndex, const wstring CameraTag)
 {
 	if (nullptr == m_pCamera_Manager)
 		return E_FAIL;
@@ -243,7 +243,7 @@ HRESULT CGameInstance::Remove_Camera(const _uint& iLevelIndex, wstring CameraTag
 	return m_pCamera_Manager->Remove_Camera(iLevelIndex, CameraTag);
 }
 
-HRESULT CGameInstance::On_Camera(const _uint& iLevelIndex, wstring CameraTag)
+HRESULT CGameInstance::On_Camera(const _uint& iLevelIndex, const wstring CameraTag)
 {
 	if (nullptr == m_pCamera_Manager)
 		return E_FAIL;
@@ -391,7 +391,7 @@ _float4 CGameInstance::Get_Camera_Position() const
 	return m_pPipeLine->Get_Camera_Position();
 }
 
-wstring CGameInstance::strToWStr(string str)
+wstring CGameInstance::strToWStr(const string str)
 {
 	if (nullptr == m_pFileInfo)
 		return L"";
@@ -399,7 +399,7 @@ wstring CGameInstance::strToWStr(string str)
 	return m_pFileInfo->strToWStr(str);
 }
 
-string CGameInstance::wstrToStr(wstring wstr)
+string CGameInstance::wstrToStr(const wstring wstr)
 {
 	if (nullptr == m_pFileInfo)
 		return "";
@@ -423,6 +423,14 @@ void CGameInstance::ReadModels(const string& strFilePath, OUT list<string>& File
 	return m_pFileInfo->ReadModels(strFilePath, FilePathList, vecData);
 }
 
+HRESULT CGameInstance::Load(const string& strFilePath, OUT list<FILEDATA>& OutData)
+{
+	if (nullptr == m_pFileInfo)
+		return E_FAIL;
+
+	return m_pFileInfo->Load(strFilePath, OutData);
+}
+
 const CLight::LIGHTDESC* CGameInstance::Get_LightDesc(const _uint& iIndex)
 {
 	if (nullptr == m_pLight_Manager)
@@ -439,12 +447,20 @@ HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
 }
 
-_vector CGameInstance::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, class CTransform* pTransform)
+_vector CGameInstance::Picking_On_Triangle(const POINT& ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform)
 {
 	if (nullptr == m_pCalculator)
 		return _vector();
 
-	return m_pCalculator->Picking_On_Triangle(hWnd, pBuffer, pTransform);
+	return m_pCalculator->Picking_On_Triangle(ptMouse, pBuffer, pTransform);
+}
+
+_vector CGameInstance::Picking_On_Triangle(const POINT& ptMouse, CModel* pModel, CTransform* pTransform)
+{
+	if (nullptr == m_pCalculator)
+		return _vector();
+
+	return m_pCalculator->Picking_On_Triangle(ptMouse, pModel, pTransform);
 }
 
 void CGameInstance::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)

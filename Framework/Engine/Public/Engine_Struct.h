@@ -101,11 +101,12 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	}VTXANIMMESH_DECL;
 
-	/* Save Data Structurals */
+	/* Save Data Model */
 	typedef struct tagBoneData
 	{
 		_char szName[MAX_PATH] = { "" };
-		_uint iParentIdx = { 0 };
+		_int iParentIdx = { 0 };
+		_uint iIndex = { 0 };
 		_uint iNumChildren = { 0 };
 		_float4x4 TransformationMatrix;
 		_float4x4 OffsetMatrix;
@@ -167,4 +168,11 @@ namespace Engine
 		ANIMATIONDATA* pAnimations = { nullptr };
 		MESHDATA* pMeshDatas = { nullptr };
 	}MODEL_BINARYDATA;
+
+	/* Save Data Object */
+	typedef struct tagFileData
+	{
+		_tchar szModelTag[MAX_PATH] = { L"" };
+		_float4x4 TransformMatrix;
+	}FILEDATA;
 }

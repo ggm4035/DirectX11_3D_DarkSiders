@@ -5,11 +5,11 @@
 #include "CImWindow_Manager.h"
 #include "CLevel_Tool.h"
 
-#include "CTerrain.h"
 #include "CCoordnate_Axis.h"
 #include "CMainCamera.h"
 #include "CDummyObject3D.h"
 
+#include "CImWindow_Top.h"
 #include "CImWindow_Base.h"
 #include "CImWindow_Inspector.h"
 #include "CImWindow_Create.h"
@@ -39,15 +39,19 @@ HRESULT CToolMainApp::Initialize()
     // Initialize Imgui
     m_pImWindow_Manager->Initialize(m_pDevice, m_pContext);
 
-    // Intialize Compoent
+    // Initialize Compoent
     if (FAILED(Ready_Prototype_Component_For_Tool()))
         return E_FAIL;
 
-    // Initialze NonAnimModels
+    // Initialize AnimModels
+    if (FAILED(Ready_AnimModels()))
+        return E_FAIL;
+
+    // Initialize NonAnimModels
     if (FAILED(Ready_NonAnimModels()))
         return E_FAIL;
 
-    // Intialize GameObject();
+    // Initialize GameObject();
     if (FAILED(Ready_Prototype_GameObject_For_Tool()))
         return E_FAIL;
 
@@ -64,7 +68,7 @@ HRESULT CToolMainApp::Initialize()
 void CToolMainApp::Tick(const _double& TimeDelta)
 {
     m_pImWindow_Manager->Tick(TimeDelta);
-    Update_Demo();
+    //Update_Demo();
     m_pGameInstance->Tick_Engine(TimeDelta);
 }
 
@@ -92,13 +96,20 @@ HRESULT CToolMainApp::Open_Level(LEVELID eLevelIndex)
 
 HRESULT CToolMainApp::Ready_ImWindows()
 {
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Inspector", CImWindow_Inspector::Create())))
+    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Inspector",
+        TOOL->m_pInspectorWindow = CImWindow_Inspector::Create())))
         return E_FAIL;
 
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Create", CImWindow_Create::Create())))
+    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Create",
+        TOOL->m_pCreateWindow = CImWindow_Create::Create())))
         return E_FAIL;
 
-    if(FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Base", CImWindow_Base::Create())))
+    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Top",
+        TOOL->m_pTopWindow = CImWindow_Top::Create())))
+        return E_FAIL;
+
+    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Base",
+        TOOL->m_pBaseWindow = CImWindow_Base::Create())))
         return E_FAIL;
 
     return S_OK;
@@ -131,56 +142,61 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxNorTex",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_VtxNorTex",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl",
             VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_Mesh",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_Mesh",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxMesh.hlsl",
             VTXMESH_DECL::Elements, VTXMESH_DECL::iNumElements))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxCol",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_AnimMesh",
+        CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl",
+            VTXANIMMESH_DECL::Elements, VTXANIMMESH_DECL::iNumElements))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_VtxCol",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxCol.hlsl",
             VTXPOSCOL_DECL::Elements, VTXPOSCOL_DECL::iNumElements))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxPos",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_VtxPos",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Vtx.hlsl",
             VTXPOS_DECL::Elements, VTXPOS_DECL::iNumElements))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Shader_VtxTex",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_VtxTex",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl",
             VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Texture_Test",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Texture_Test",
         CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Test/De5.png"))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Terrain",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain",
         CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Terrain_Height",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain_Height",
         CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Terrain/Height.bmp"))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Cube",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Cube",
         CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Rect",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Rect",
         CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_VIBuffer_Coordnate",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Coordnate",
         CVIBuffer_Coordnate::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Prototype_Component_Renderer",
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Renderer",
         m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
         return E_FAIL;
     Safe_AddRef(m_pRenderer);
@@ -195,16 +211,50 @@ HRESULT CToolMainApp::Ready_NonAnimModels()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecModelDatas);
+    _char szFullPath[MAX_PATH] = { "" };
+    GetCurrentDirectoryA(MAX_PATH, szFullPath);
+    string strFullPath = szFullPath;
+
+    strFullPath = strFullPath + "\\Models\\BreakAble.dat";
+
+    pGameInstance->ReadModels(strFullPath, m_FilePathList, m_vecModelDatas);
 
     for (_uint i = 0; i < m_vecModelDatas.size(); ++i)
     {
-        wstring wstrPrototypeName = { L"" };
-        wstrPrototypeName = wstrPrototypeName + L"Prototype_Component_Model_" + m_vecModelDatas[i].szTag;
-
-        if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrPrototypeName.c_str(),
-            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecModelDatas[i]))));
+        wstring wstrTag = L"Model_";
+        wstrTag += m_vecModelDatas[i].szTag;
+        if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrTag.c_str(),
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecModelDatas[i], XMMatrixIdentity()))))
+            return E_FAIL;
     }
+
+    Safe_Release(pGameInstance);
+
+    return S_OK;
+}
+
+HRESULT CToolMainApp::Ready_AnimModels()
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    _char szFullPath[MAX_PATH] = { "" };
+    GetCurrentDirectoryA(MAX_PATH, szFullPath);
+    string strFullPath = "";
+
+    strFullPath = strFullPath + szFullPath + "\\Models\\Warrior\\Warrior.dat";
+
+    _matrix PivotMatrix = XMMatrixIdentity();
+    PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
+
+    pGameInstance->ReadModels(strFullPath, m_FilePaths, m_AnimModelData);
+
+    if(FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Model_Warrior",
+        CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_AnimModelData[0], PivotMatrix))))
+        return E_FAIL;
+
+    TOOL->m_pAnimModelDatas = &m_AnimModelData;
+    TOOL->m_pFilePaths = &m_FilePaths;
 
     Safe_Release(pGameInstance);
 
@@ -274,6 +324,29 @@ void CToolMainApp::Free()
 {
     for (auto& Model : m_vecModelDatas)
     {
+        for (_uint i = 0; i < Model.iNumMeshes; ++i)
+        {
+            Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
+            Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
+            Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
+            Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
+        }
+        Safe_Delete_Array(Model.pMaterialPaths);
+        Safe_Delete_Array(Model.pMeshDatas);
+        Safe_Delete_Array(Model.pBoneDatas);
+    }
+
+    for (auto& Model : m_AnimModelData)
+    {
+        for (_uint i = 0; i < Model.iNumAnimations; ++i)
+        {
+            for (_uint j = 0; j < Model.pAnimations[i].iNumChannels; ++j)
+            {
+                Safe_Delete_Array(Model.pAnimations[i].pChannels[j].pKeyFrames);
+            }
+            Safe_Delete_Array(Model.pAnimations[i].pChannels);
+        }
+        Safe_Delete_Array(Model.pAnimations);
         for (_uint i = 0; i < Model.iNumMeshes; ++i)
         {
             Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);

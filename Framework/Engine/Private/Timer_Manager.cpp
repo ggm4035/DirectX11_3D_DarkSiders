@@ -7,7 +7,7 @@ CTimer_Manager::CTimer_Manager()
 {
 }
 
-_double Engine::CTimer_Manager::Get_Timer(wstring& TimerTag)
+_double Engine::CTimer_Manager::Get_Timer(const wstring& TimerTag)
 {
 	CTimer*		pTimer = Find_Timer(TimerTag);
 	if (nullptr == pTimer)
@@ -16,7 +16,7 @@ _double Engine::CTimer_Manager::Get_Timer(wstring& TimerTag)
 	return pTimer->Get_TimeDelta();
 }
 
-void CTimer_Manager::Set_Timer(wstring& TimerTag)
+void CTimer_Manager::Set_Timer(const wstring& TimerTag)
 {
 	CTimer*		pTimer = Find_Timer(TimerTag);
 	if (nullptr == pTimer)
@@ -25,7 +25,7 @@ void CTimer_Manager::Set_Timer(wstring& TimerTag)
 	pTimer->Update_Timer();
 }
 
-CTimer* Engine::CTimer_Manager::Find_Timer(wstring& TimerTag)
+CTimer* Engine::CTimer_Manager::Find_Timer(const wstring& TimerTag)
 {
 	auto iter = m_umapTimers.find(TimerTag);
 
@@ -35,7 +35,7 @@ CTimer* Engine::CTimer_Manager::Find_Timer(wstring& TimerTag)
 	return iter->second;
 }
 
-HRESULT Engine::CTimer_Manager::Ready_Timer(wstring& TimerTag)
+HRESULT Engine::CTimer_Manager::Ready_Timer(const wstring& TimerTag)
 {
 	CTimer*	pTimer = Find_Timer(TimerTag);
 	

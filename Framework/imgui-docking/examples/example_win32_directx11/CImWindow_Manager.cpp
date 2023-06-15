@@ -6,11 +6,6 @@ CImWindow_Manager::CImWindow_Manager()
 {
 }
 
-CImWindow* CImWindow_Manager::Get_ImWindow(wstring tag)
-{
-    return Find_Window(tag);
-}
-
 HRESULT CImWindow_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     // Show the window

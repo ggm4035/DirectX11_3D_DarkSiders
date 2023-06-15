@@ -14,8 +14,8 @@ private:
 
 public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
 	HRESULT Reserve_Containers(const _uint& iNumLevels);
-	HRESULT Add_Prototype(wstring& pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObject(const _uint& iNumLayer, wstring& PrototypeTag, wstring& GameObjectTag, wstring& LayerTag, void* pArg);
+	HRESULT Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_GameObject(const _uint& iNumLayer, const wstring& PrototypeTag, const wstring& GameObjectTag, const wstring& LayerTag, void* pArg);
 	void Tick(const _double& TimeDelta);
 	void Late_Tick(const _double& TimeDelta);
 	void Clear_LevelResources(const _uint& iLevelIndex);
@@ -36,8 +36,8 @@ private:
 	_uint m_iNumLevels = { 0 };
 
 private:
-	class CGameObject* Find_Prototype(wstring& PrototypeTag);
-	class CLayer* Find_Layer(const _uint& iNumLayer, wstring& GameObjectTag);
+	class CGameObject* Find_Prototype(const wstring& PrototypeTag);
+	class CLayer* Find_Layer(const _uint& iNumLayer, const wstring& GameObjectTag);
 
 public:
 	virtual void Free() override;

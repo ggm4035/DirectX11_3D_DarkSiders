@@ -173,6 +173,7 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CLoader.h" />
     <ClInclude Include="..\public\CMainApp.h" />
+    <ClInclude Include="..\Public\CMonster.h" />
     <ClInclude Include="..\Public\CPlayer.h" />
     <ClInclude Include="..\Public\CTerrain.h" />
     <ClInclude Include="Client.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="..\Private\CLevel_Logo.cpp" />
     <ClCompile Include="..\Private\CLoader.cpp" />
     <ClCompile Include="..\private\CMainApp.cpp" />
+    <ClCompile Include="..\Private\CMonster.cpp" />
     <ClCompile Include="..\Private\CPlayer.cpp" />
     <ClCompile Include="..\Private\CTerrain.cpp" />
     <ClCompile Include="Client.cpp" />

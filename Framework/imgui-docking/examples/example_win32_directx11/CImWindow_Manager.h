@@ -14,9 +14,6 @@ private:
     ~CImWindow_Manager() = default;
 
 public:
-    CImWindow* Get_ImWindow(wstring tag);
-
-public:
     HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     void Tick(const _double& TimeDelta);
     void Render();
@@ -27,6 +24,7 @@ private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
 
+private:
     unordered_map<wstring, CImWindow*>    m_ImWindows;
 
 private:

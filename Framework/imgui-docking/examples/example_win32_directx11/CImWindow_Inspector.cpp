@@ -1,6 +1,7 @@
 #include "CImWindow_Inspector.h"
 
 #include "CGameInstance.h"
+#include "CToolInstance.h"
 #include "CImWindow_Manager.h"
 
 #include "CGameObject3D.h"
@@ -11,23 +12,6 @@
 
 CImWindow_Inspector::CImWindow_Inspector()
 {
-}
-
-HRESULT CImWindow_Inspector::Bind_GameObject(const wstring& wstrGameObjectTag)
-{
-    m_pCurGameObject = Find_GameObject(wstrGameObjectTag);
-    if (nullptr == m_pCurGameObject)
-        return E_FAIL;
-
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
-
-    string strTag = pGameInstance->wstrToStr(m_pCurGameObject->Get_Tag());
-    strcpy_s(m_szTag, strTag.c_str());
-
-    Safe_Release(pGameInstance);
-
-    return S_OK;
 }
 
 HRESULT CImWindow_Inspector::Initialize(void* pArg)
@@ -56,37 +40,32 @@ void CImWindow_Inspector::Refresh()
 
 void CImWindow_Inspector::Show_Components()
 {
-    if (nullptr == m_pCurGameObject)
+    if (nullptr == TOOL->m_pCurrentObject)
         return;
 
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
+
     ImGui::Text("Tag"); ImGui::SameLine();
+    strcpy_s(m_szTag, pGameInstance->wstrToStr(TOOL->m_pCurrentObject->Get_Tag()).c_str());
+
     if (ImGui::InputText(" ", m_szTag, 256))
     {
         string strTag = m_szTag;
-        m_pCurGameObject->Set_Tag(pGameInstance->strToWStr(strTag));
+        TOOL->m_pCurrentObject->Set_Tag(pGameInstance->strToWStr(strTag));
     }
-    ImGui::SameLine();
-    ImGui::Button("Apply");
-    ImGui::Separator();
 
-    if (dynamic_cast<CGameObject3D*>(m_pCurGameObject))
-        Show_Transform();
+    Show_Transform();
 
-    CDummyObject3D* pObject = { nullptr };
-    if (pObject = dynamic_cast<CDummyObject3D*>(m_pCurGameObject))
-    {
-        if(pObject->Get_Renderer())
-            Show_Renderer();
-        if(pObject->Get_Texture())
-            Show_Texture();
-        if(pObject->Get_Shader())
-            Show_Shader();
-        if (pObject->Get_Buffer())
-            Show_Buffer();
-    }
+   if(TOOL->m_pCurrentObject->Get_Renderer())
+       Show_Renderer();
+   if(TOOL->m_pCurrentObject->Get_Texture())
+       Show_Texture();
+   if(TOOL->m_pCurrentObject->Get_Shader())
+       Show_Shader();
+   if (TOOL->m_pCurrentObject->Get_Buffer())
+       Show_Buffer();
 
     Safe_Release(pGameInstance);
 }
@@ -97,7 +76,7 @@ void CImWindow_Inspector::Show_Transform()
     {
         ImGui::Text("Position");
 
-        CTransform* pTransform = dynamic_cast<CDummyObject3D*>(m_pCurGameObject)->Get_Transform();
+        CTransform* pTransform = TOOL->m_pCurrentObject->Get_Transform();
         _vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
 
         ImGui::SetNextItemWidth(50.f);
@@ -122,6 +101,7 @@ void CImWindow_Inspector::Show_Transform()
 
         pTransform->Rotation(vAngle);
 
+        _float fScale = 0.f;
         _float3 vScale = pTransform->Get_Scaled();
 
         ImGui::SetNextItemWidth(50.f);
@@ -130,8 +110,11 @@ void CImWindow_Inspector::Show_Transform()
         ImGui::DragFloat("SCL_Y", &vScale.y, 0.1f, -100.f, 100.f, "%.1f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
         ImGui::DragFloat("SCL_Z", &vScale.z, 0.1f, -100.f, 100.f, "%.1f");
+        ImGui::DragFloat("SCL_XYZ",&fScale, 0.1f, -100.f, 100.f, "%.1f");
 
-        pTransform->Scaled(vScale);
+        _float3 vTemp = _float3(vScale.x + fScale, vScale.y + fScale, vScale.z + fScale);
+
+        pTransform->Scaled(vTemp);
 
         ImGui::Separator();
     }
@@ -143,14 +126,14 @@ void CImWindow_Inspector::Show_Renderer()
     {
         _int iRenderType = { 0 };
 
-        iRenderType = dynamic_cast<CDummyObject3D*>(m_pCurGameObject)->Get_RenderGroup();
+        iRenderType = TOOL->m_pCurrentObject->Get_RenderGroup();
         ImGui::RadioButton("Priority", &iRenderType, 0);
         ImGui::RadioButton("NonBlend", &iRenderType, 1);
         ImGui::RadioButton("NonLight", &iRenderType, 2);
         ImGui::RadioButton("Blend", &iRenderType, 3);
         ImGui::RadioButton("UI", &iRenderType, 4);
 
-        dynamic_cast<CDummyObject3D*>(m_pCurGameObject)->m_eRenderGroup = (CRenderer::RENDERGROUP)iRenderType;
+        TOOL->m_pCurrentObject->m_eRenderGroup = (CRenderer::RENDERGROUP)iRenderType;
     }
 }
 

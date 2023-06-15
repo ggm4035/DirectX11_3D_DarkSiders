@@ -43,14 +43,14 @@ public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta);
-	virtual void Late_Tick(_double TimeDelta);
+	virtual void Late_Tick(const _double& TimeDelta);
 	virtual HRESULT Render();
 
 protected:
 	unordered_map<wstring, CComponent*> m_Components;
 
 protected:
-	HRESULT Add_Component(_uint iNumLevel, wstring PrototypeTag, wstring ComponentTag, 
+	HRESULT Add_Component(const _uint& iNumLevel, const wstring& PrototypeTag, const wstring& ComponentTag, 
 		CComponent **ppOut, CComponent * pOwner, void* pArg = nullptr);
 
 public:

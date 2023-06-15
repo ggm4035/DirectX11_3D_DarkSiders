@@ -23,7 +23,7 @@ HRESULT CCamera_Manager::Reserve_Containers(const _uint& iNumLevels)
 	return S_OK;
 }
 
-HRESULT CCamera_Manager::Add_Camera(const _uint& iLevelIndex, wstring& CameraTag, CCamera* pCamera)
+HRESULT CCamera_Manager::Add_Camera(const _uint& iLevelIndex, const wstring& CameraTag, CCamera* pCamera)
 {
 	if (nullptr == pCamera || iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
 		return E_FAIL;
@@ -37,7 +37,7 @@ HRESULT CCamera_Manager::Add_Camera(const _uint& iLevelIndex, wstring& CameraTag
 	return S_OK;
 }
 
-HRESULT CCamera_Manager::Remove_Camera(const _uint& iLevelIndex, wstring& CameraTag)
+HRESULT CCamera_Manager::Remove_Camera(const _uint& iLevelIndex, const wstring& CameraTag)
 {
 	if (iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
 		return E_FAIL;
@@ -65,7 +65,7 @@ void CCamera_Manager::Clear_LevelResources(const _uint& iLevelIndex)
 	m_pCameras[iLevelIndex].clear();
 }
 
-HRESULT CCamera_Manager::On_Camera(const _uint& iLevelIndex, wstring& CameraTag)
+HRESULT CCamera_Manager::On_Camera(const _uint& iLevelIndex, const wstring& CameraTag)
 {
 	if (iLevelIndex >= m_iNumLevels || iLevelIndex < 0)
 		return E_FAIL;
@@ -89,7 +89,7 @@ HRESULT CCamera_Manager::On_Camera(const _uint& iLevelIndex, wstring& CameraTag)
 	return S_OK;
 }
 
-CCamera* CCamera_Manager::Find_Camera(const _uint& iLevelIndex, wstring& CameraTag)
+CCamera* CCamera_Manager::Find_Camera(const _uint& iLevelIndex, const wstring& CameraTag)
 {
 	auto& iter = m_pCameras->find(CameraTag);
 

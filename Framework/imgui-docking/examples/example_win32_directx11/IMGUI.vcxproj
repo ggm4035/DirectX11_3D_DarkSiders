@@ -173,9 +173,9 @@
     <ClInclude Include="CImWindow_Base.h" />
     <ClInclude Include="CImWindow_Create.h" />
     <ClInclude Include="CImWindow_Inspector.h" />
+    <ClInclude Include="CImWindow_Top.h" />
     <ClInclude Include="CLevel_Tool.h" />
     <ClInclude Include="CMainCamera.h" />
-    <ClInclude Include="CTerrain.h" />
     <ClInclude Include="CToolInstance.h" />
     <ClInclude Include="CToolMainApp.h" />
     <ClInclude Include="ImGuiFileDialog.h" />
@@ -197,9 +197,9 @@
     <ClCompile Include="CImWindow_Base.cpp" />
     <ClCompile Include="CImWindow_Create.cpp" />
     <ClCompile Include="CImWindow_Inspector.cpp" />
+    <ClCompile Include="CImWindow_Top.cpp" />
     <ClCompile Include="CLevel_Tool.cpp" />
     <ClCompile Include="CMainCamera.cpp" />
-    <ClCompile Include="CTerrain.cpp" />
     <ClCompile Include="CToolInstance.cpp" />
     <ClCompile Include="CToolMainApp.cpp" />
     <ClCompile Include="CImWindow.cpp" />
@@ -210,7 +210,6 @@
   <ItemGroup>
     <None Include="..\..\misc\debuggers\imgui.natstepfilter" />
     <None Include="..\..\misc\debuggers\imgui.natvis" />
-    <None Include="..\README.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtx.hlsl" />

@@ -23,7 +23,7 @@ HRESULT CObject_Manager::Reserve_Containers(const _uint& iNumLevels)
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_Prototype(wstring& PrototypeTag, CGameObject* pPrototype)
+HRESULT CObject_Manager::Add_Prototype(const wstring& PrototypeTag, CGameObject* pPrototype)
 {
 	if (nullptr != Find_Prototype(PrototypeTag))
 		return E_FAIL;
@@ -34,7 +34,7 @@ HRESULT CObject_Manager::Add_Prototype(wstring& PrototypeTag, CGameObject* pProt
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_GameObject(const _uint& iLayerIndex, wstring& PrototypeTag, wstring& GameObjectTag, wstring& LayerTag, void* pArg)
+HRESULT CObject_Manager::Add_GameObject(const _uint& iLayerIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, const wstring& LayerTag, void* pArg)
 {
 	CGameObject* pPrototype = Find_Prototype(PrototypeTag);
 	if (nullptr == pPrototype)
@@ -127,7 +127,7 @@ HRESULT CObject_Manager::Remove_GameObject(const wstring& GameObjectTag)
 	return E_FAIL;
 }
 
-CGameObject* CObject_Manager::Find_Prototype(wstring& PrototypeTag)
+CGameObject* CObject_Manager::Find_Prototype(const wstring& PrototypeTag)
 {
 	auto& iter = m_Prototypes.find(PrototypeTag);
 
@@ -137,7 +137,7 @@ CGameObject* CObject_Manager::Find_Prototype(wstring& PrototypeTag)
 	return iter->second;
 }
 
-CLayer* CObject_Manager::Find_Layer(const _uint& iLayerIndex, wstring& LayerTag)
+CLayer* CObject_Manager::Find_Layer(const _uint& iLayerIndex, const wstring& LayerTag)
 {
 	auto& iter = m_pLayers[iLayerIndex].find(LayerTag);
 

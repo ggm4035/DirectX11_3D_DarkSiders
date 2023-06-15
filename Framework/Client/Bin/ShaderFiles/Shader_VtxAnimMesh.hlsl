@@ -48,10 +48,11 @@ VS_OUT VS_MAIN(VS_IN In)
 		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
 		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
 
-    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+    float4 vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
+    float4 vNoraml = mul(float4(In.vNormal, 0.f), BoneMatrix);
 	
     Out.vPosition = mul(vPosition, matWVP);
-    Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+    Out.vNormal = normalize(mul(vNoraml, g_WorldMatrix));
     Out.vTexUV = In.vTexUV;
     Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 
@@ -80,15 +81,17 @@ PS_OUT PS_MAIN(PS_IN In)
     if (vDiffuse.a < 0.1f)
         discard;
 
-    float4 vAmbient = float4(0.2f, 0.2f, 0.2f, 1.f);
+    float4 vAmbient = float4(0.3f, 0.3f, 0.3f, 1.f);
     float fShade = max(dot(normalize(g_LightDirection) * -1.f, In.vNormal), 0.f);
+    fShade = fShade + vAmbient;
 
     vector vReflect = reflect(normalize(g_LightDirection), normalize(In.vNormal));
+    
     vector vLook = In.vWorldPos - g_CameraPosition;
 
     float fSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f);
 
-    Out.vColor = (g_LightDiffuse * vDiffuse) * saturate(fShade + g_LightAmbient * vAmbient)
+    Out.vColor = (g_LightDiffuse * vDiffuse) * fShade
 		+ g_LightSpecular * fSpecular;
 	
     return Out;

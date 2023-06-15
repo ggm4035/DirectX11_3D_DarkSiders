@@ -9,7 +9,7 @@ class CShader;
 class CModel;
 END
 
-BEGIN(Engine)
+BEGIN(Client)
 
 class CPlayer final : public CGameObject3D
 {

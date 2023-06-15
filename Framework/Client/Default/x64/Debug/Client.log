@@ -1,4 +1,2 @@
-﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxAnimMesh.cso
+﻿  CLevel_GamePlay.cpp
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

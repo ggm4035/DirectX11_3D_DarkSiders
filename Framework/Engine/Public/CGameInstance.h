@@ -31,33 +31,33 @@ public: /* For.Graphic_Device */
 	HRESULT Present();
 
 public: /* For.Timer_Manager */
-	_double	Get_Timer(wstring TimerTag);
-	void	Set_Timer(wstring TimerTag);
-	HRESULT	Ready_Timer(wstring TimerTag);
+	_double	Get_Timer(const wstring TimerTag);
+	void	Set_Timer(const wstring TimerTag);
+	HRESULT	Ready_Timer(const wstring TimerTag);
 
 public: /* For.Level_Manager */
 	HRESULT Open_Level(const _uint& iNumLevels, class CLevel* pNewLevel);
 
 public: /* For.Object_Manager */
-	HRESULT Add_Prototype(wstring pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObject(const _uint& iNumLayer, wstring PrototypeTag, wstring GameObjectTag, wstring LayerTag, void* pArg = nullptr);
+	HRESULT Add_Prototype(const wstring pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_GameObject(const _uint& iNumLayer, const wstring PrototypeTag, const wstring GameObjectTag, const wstring LayerTag, void* pArg = nullptr);
 
 	/* For. MapEditTool */
 	list<CGameObject*> Get_All_GameObject();
 	HRESULT Remove_GameObject(const wstring GameObjectTag);
 
 public: /* For.Component_Manager */
-	HRESULT Add_Prototype(const _uint& iLevelIndex, wstring PrototypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(const _uint& iLevelIndex, wstring PrototypeTag, class CComponent * pOwner, void* pArg = nullptr);
+	HRESULT Add_Prototype(const _uint& iLevelIndex, const wstring& PrototypeTag, class CComponent* pPrototype);
+	class CComponent* Clone_Component(const _uint& iLevelIndex, const wstring& PrototypeTag, class CComponent * pOwner, void* pArg = nullptr);
 	class CComponent* Clone_Transform(class CComponent * pOwner, void* pArg = nullptr);
 
 	/* For. MapEditTool */
 	list<CComponent*> Get_All_Prototypes();
 
 public: /* For.Camera_Manager */
-	HRESULT Add_Camera(const _uint& iLevelIndex, wstring CameraTag, class CCamera* pCamera);
-	HRESULT Remove_Camera(const _uint& iLevelIndex, wstring CameraTag);
-	HRESULT On_Camera(const _uint& iLevelIndex, wstring CameraTag);
+	HRESULT Add_Camera(const _uint& iLevelIndex, const wstring CameraTag, class CCamera* pCamera);
+	HRESULT Remove_Camera(const _uint& iLevelIndex, const wstring CameraTag);
+	HRESULT On_Camera(const _uint& iLevelIndex, const wstring CameraTag);
 
 public: /* For.Input_Manager */
 	_bool	Key_Pressing(const _ubyte& ubyKey);
@@ -81,17 +81,19 @@ public: /* For.PipeLine */
 	_float4 Get_Camera_Position() const;
 
 public: /* For.FileInfo */
-	wstring strToWStr(string str);
-	string wstrToStr(wstring wstr);
+	wstring strToWStr(const string str);
+	string wstrToStr(const wstring wstr);
 	HRESULT Extraction_Data(const string & strPath, const _char * pExt, OUT list<string>&FilePathList);
 	void ReadModels(const string & strFilePath, OUT list<string>&FilePathList, OUT vector<MODEL_BINARYDATA>&vecData);
+	HRESULT Load(const string & strFilePath, OUT list<FILEDATA>&OutData);
 
 public: /* For.Light_Manager*/
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint & iIndex);
 	HRESULT Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const CLight::LIGHTDESC & LightDesc);
 
 public: /* For.Calculator */
-	_vector Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, class CTransform* pTransform);
+	_vector Picking_On_Triangle(const POINT & ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform);
+	_vector Picking_On_Triangle(const POINT & ptMouse, class CModel* pModel, class CTransform* pTransform);
 
 public: /* For. Imgui */
 	void ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight);

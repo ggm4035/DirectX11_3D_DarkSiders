@@ -1,4 +1,3 @@
-
 RasterizerState g_Rasterizer;
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_BoneMatrices[256]; /* 이 메쉬를 그리기위해 사용되는 뼈들의 행렬 VTF */
@@ -13,8 +12,6 @@ texture2D g_DiffuseTexture, g_NormalTexture;
 sampler LinearSampler = sampler_state
 {
     Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = WRAP;
-    AddressV = WRAP;
 };
 
 struct VS_IN
@@ -29,19 +26,21 @@ struct VS_IN
 
 struct VS_OUT
 {
-	float4 vPosition : SV_POSITION;
-    float4 vNoraml : NORAML;
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORAML;
     float2 vTexUV : TEXCOORD0;
-    float4 vWorldPosition : TEXCOORD1;
+    float4 vWorldPos : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
 {
-	VS_OUT Out = (VS_OUT)0;
-	
-    matrix ViewProjMatrix = mul(g_ViewMatrix, g_ProjMatrix);
-    matrix WVPMatrix = mul(g_WorldMatrix, ViewProjMatrix);
-    
+    VS_OUT Out = (VS_OUT) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
     float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
 
     matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
@@ -49,14 +48,15 @@ VS_OUT VS_MAIN(VS_IN In)
 		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
 		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
 
-    float4 vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
-    
-    Out.vPosition = mul(vPosition, WVPMatrix);
-    Out.vNoraml = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+    float4 vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
+    float4 vNoraml = mul(float4(In.vNormal, 0.f), BoneMatrix);
+	
+    Out.vPosition = mul(vPosition, matWVP);
+    Out.vNormal = normalize(mul(vNoraml, g_WorldMatrix));
     Out.vTexUV = In.vTexUV;
-    Out.vWorldPosition = mul(In.vPosition, g_WorldMatrix);
+    Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 
-	return Out;
+    return Out;
 }
 
 struct PS_IN
@@ -64,7 +64,7 @@ struct PS_IN
     float4 vPosition : SV_POSITION;
     float4 vNormal : NORAML;
     float2 vTexUV : TEXCOORD0;
-    float4 vWorldPosition : TEXCOORD1;
+    float4 vWorldPos : TEXCOORD1;
 };
 
 struct PS_OUT
@@ -76,34 +76,35 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 	
-    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-    
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
     if (vDiffuse.a < 0.1f)
         discard;
+
+    float4 vAmbient = float4(0.3f, 0.3f, 0.3f, 1.f);
+    float fShade = max(dot(normalize(g_LightDirection) * -1.f, In.vNormal), 0.f);
+    fShade = fShade + vAmbient;
+
+    vector vReflect = reflect(normalize(g_LightDirection), normalize(In.vNormal));
     
-    float4 vAmbient = float4(0.2f, 0.2f, 0.2f, 0.2f);
-    float fShade = max(dot(normalize(In.vNormal), -normalize(g_LightDirection)), 0.f);
-    fShade = saturate(fShade + g_LightAmbient * vAmbient);
-    
-    float4 vReflect = normalize(reflect(g_LightDirection, In.vNormal));
-    float4 vLook = normalize(In.vWorldPosition - g_CameraPosition);
-    
-    vDiffuse = vDiffuse * g_LightDiffuse * fShade;
-    float4 vSpecular = pow(max(dot(-vLook, vReflect), 0.f), 40.f) * g_LightSpecular;
-    
-    Out.vColor = vDiffuse + vSpecular;
+    vector vLook = In.vWorldPos - g_CameraPosition;
+
+    float fSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f);
+
+    Out.vColor = (g_LightDiffuse * vDiffuse) * fShade
+		+ g_LightSpecular * fSpecular;
 	
     return Out;
 }
 
 technique11 DefaultTechnique
 {
-	pass Terrain
-	{
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL/*compile gs_5_0 GS_MAIN()*/;
-		HullShader = NULL/*compile hs_5_0 HS_MAIN()*/;
-		DomainShader = NULL/*compile ds_5_0 DS_MAIN()*/;
+    pass Terrain
+    {
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN();
         SetRasterizerState(g_Rasterizer);
     }

@@ -1,0 +1,26 @@
+Materials[1] =
+{
+    Materials[0] = MaterialInstanceConstant'/Game/VFX/Particles/Interactives/POI/M_POI_Interact_Dark_VA.M_POI_Interact_Dark_VA'
+}
+SourceModels[0] = {}
+StaticMaterials[1] =
+{
+    StaticMaterials[0] =
+    {
+        MaterialInterface = MaterialInstanceConstant'/Game/VFX/Particles/Interactives/POI/M_POI_Interact_Dark_VA.M_POI_Interact_Dark_VA'
+        MaterialSlotName = default
+        UVChannelData =
+        {
+            bInitialized = true
+            bOverrideDensities = false
+            LocalUVDensities[4] = { 426.762, 0, 0, 0 }
+        }
+    }
+}
+Sockets[0] = {}
+ExtendedBounds =
+{
+    Origin = { X=-34.2215, Y=-14.272, Z=98.8813 }
+    BoxExtent = { X=95.0922, Y=84.2256, Z=99.0096 }
+    SphereRadius = 132.836
+}

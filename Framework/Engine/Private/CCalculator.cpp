@@ -3,6 +3,7 @@
 #include "CPipeLine.h"
 #include "CVIBuffer.h"
 #include "CTransform.h"
+#include "CMesh.h"
 
 IMPLEMENT_SINGLETON(CCalculator)
 
@@ -22,12 +23,8 @@ HRESULT CCalculator::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 	return S_OK;
 }
 
-_vector CCalculator::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, class CTransform* pTransform)
+_vector CCalculator::Picking_On_Triangle(const POINT& ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform)
 {
-	POINT ptMouse;
-	GetCursorPos(&ptMouse);
-	ScreenToClient(hWnd, &ptMouse);
-
 	D3D11_VIEWPORT ViewPort;
 	ZeroMemory(&ViewPort, sizeof D3D11_VIEWPORT);
 
@@ -40,6 +37,9 @@ _vector CCalculator::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, cl
 	vMousePos.x = (_float)ptMouse.x / (ViewPort.Width * 0.5f) - 1.f;
 	vMousePos.y = (_float)ptMouse.y / -(ViewPort.Height * 0.5f) + 1.f;
 	vMousePos.z = 0.f;
+
+	if (fabs(vMousePos.x) > 1.f || fabs(vMousePos.y) > 1.f)
+		return XMVectorSet(-1.f, -1.f, -1.f, -1.f);
 
 	// 투영 스페이스 -> 뷰 스페이스
 	_matrix ProjMatrix = CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_PROJ); 
@@ -78,13 +78,27 @@ _vector CCalculator::Picking_On_Triangle(HWND hWnd, class CVIBuffer* pBuffer, cl
 			fNearDistance = fNearDistance > fDistance ? fDistance : fNearDistance;
 	}
 
-	if (FLT_MAX - 10.f < fNearDistance)
+	if (999999.f < fNearDistance)
 		return XMVectorSet(-1.f, -1.f, -1.f, -1.f);
 
 	_vector vPickPos = vRayOrigin + (vRayDirection * fNearDistance);
 	vPickPos = XMVector3TransformCoord(vPickPos, WorldMatrix);
 
 	return vPickPos;
+}
+
+_vector CCalculator::Picking_On_Triangle(const POINT& ptMouse, CModel* pModel, CTransform* pTransform)
+{
+	_vector OutData = XMVectorSet(-1.f, -1.f, -1.f, -1.f);
+	for (_uint i = 0; i < pModel->Get_NumMeshes(); ++i)
+	{
+		OutData = Picking_On_Triangle(ptMouse, pModel->Get_Meshes()[i], pTransform);
+
+		if (0 < OutData.m128_f32[3])
+			return OutData;
+	}
+
+	return OutData;
 }
 
 void CCalculator::Free()

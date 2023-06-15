@@ -8,7 +8,7 @@ CFileInfo::CFileInfo()
 {
 }
 
-wstring CFileInfo::ConvertRelatePath(wstring strFullPath)
+wstring CFileInfo::ConvertRelatePath(const wstring& strFullPath)
 {
 	_tchar szRelativePath[MAX_PATH] = L"";
 	_tchar szCurDirPath[MAX_PATH] = L"";
@@ -70,17 +70,11 @@ HRESULT CFileInfo::Extraction_Data(const string& strPath, const _char* pExt, OUT
 	return S_OK;
 }
 
-void CFileInfo::ReadModels(const string& strFileName, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData)
+void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData)
 {
 	FilePathList.clear();
 
-	_char szFullPath[MAX_PATH] = { "" };
-	GetCurrentDirectoryA(MAX_PATH, szFullPath);
-	string strFullPath = szFullPath;
-
-	strFullPath += "\\" + strFileName;
-
-	HANDLE hFile = CreateFileA(strFullPath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	HANDLE hFile = CreateFileA(strFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 	if (INVALID_HANDLE_VALUE == hFile)
 		return;
@@ -154,6 +148,9 @@ void CFileInfo::ReadModels(const string& strFileName, OUT list<string>& FilePath
 
 			/* Read iParentIdx */
 			ReadFile(hFile, &pBoneData[iBoneIndex].iParentIdx, sizeof(_uint), &dwByte, nullptr);
+
+			/* Read iIndex */
+			ReadFile(hFile, &pBoneData[iBoneIndex].iIndex, sizeof(_uint), &dwByte, nullptr);
 
 			/* Read iNumChildren */
 			ReadFile(hFile, &pBoneData[iBoneIndex].iNumChildren, sizeof(_uint), &dwByte, nullptr);
@@ -297,13 +294,53 @@ void CFileInfo::ReadModels(const string& strFileName, OUT list<string>& FilePath
 	}
 }
 
-wstring CFileInfo::strToWStr(string& str)
+HRESULT CFileInfo::Load(const string& strFilePath, OUT list<FILEDATA>& OutData)
+{
+	HANDLE hFile = CreateFileA(strFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	_ulong dwByte = { 0 };
+
+	/* 1. 전체 3D 게임오브젝트들을 저장한다. */
+
+	_uint iNumObjects = { 0 };
+	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
+
+	for (_uint i = 0; i < iNumObjects; ++i)
+	{
+		FILEDATA Data;
+		ZeroMemory(&Data, sizeof(FILEDATA));
+
+		/* Read szTag */
+		_uint iTagLength = { 0 };
+		ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, Data.szModelTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+
+		/* Read TransformMatrix */
+		ReadFile(hFile, &Data.TransformMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		OutData.push_back(Data);
+	}
+
+	/* 2. 카메라를 저장한다. */
+
+	/* 3. Terrain을 저장한다. */
+
+	/* 4. UI를 저장한다. */
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+wstring CFileInfo::strToWStr(const string& str)
 {
 	wstring_convert<codecvt_utf8<wchar_t>, wchar_t> converter;
 	return converter.from_bytes(str);
 }
 
-string CFileInfo::wstrToStr(wstring& wstr)
+string CFileInfo::wstrToStr(const wstring& wstr)
 {
 	wstring_convert<codecvt_utf8<wchar_t>, wchar_t> converter;
 	return converter.to_bytes(wstr);

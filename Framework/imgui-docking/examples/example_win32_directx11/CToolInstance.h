@@ -13,11 +13,18 @@ private:
 	virtual ~CToolInstance() = default;
 
 public:
-    class CTerrain* m_pTerrain = { nullptr };
-    class CCoordnate_Axis* m_pCoordnate = { nullptr };
+    class CImWindow_Base* m_pBaseWindow = { nullptr };
+    class CImWindow_Inspector* m_pInspectorWindow = { nullptr };
+    class CImWindow_Create* m_pCreateWindow = { nullptr };
+    class CImWindow_Top* m_pTopWindow = { nullptr };
 
 public:
-    D3D11_RASTERIZER_DESC m_RasterizerDesc;
+    class CDummyObject3D* m_pCurrentObject = { nullptr };
+    vector<MODEL_BINARYDATA>* m_pAnimModelDatas;
+    list<string>* m_pFilePaths;
+
+public:
+    class CMainCamera* m_pCamera = { nullptr };
 
 private:
 	virtual void Free() override {}

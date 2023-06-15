@@ -61,7 +61,13 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	m_pGameInstance->ReadModels("Warrior.dat", m_FilePathList, m_vecModelDatas);
+	_char szFullPath[MAX_PATH] = { "" };
+	GetCurrentDirectoryA(MAX_PATH, szFullPath);
+	string strFullPath = szFullPath;
+
+	strFullPath = strFullPath + "\\" + "Warrior.dat";
+
+	m_pGameInstance->ReadModels(strFullPath, m_FilePathList, m_vecModelDatas);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Renderer",
 		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
@@ -72,8 +78,10 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	_matrix PivotMatrix = XMMatrixIdentity();
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
 	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Model_Player",
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecModelDatas[0]))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecModelDatas[0], PivotMatrix))))
 		return E_FAIL;
 
 	/*L"../Bin/Resources/Models/working/Environment/Hell/Structural/Ruins/Update/WallRubble_A/WallRubble_A.fbx"*/

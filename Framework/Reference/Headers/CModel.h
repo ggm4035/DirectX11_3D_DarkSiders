@@ -16,12 +16,32 @@ private:
 	virtual ~CModel() = default;
 
 public:
+	const TYPE Get_Type() const {
+		return m_eType;
+	}
+
 	const _uint& Get_NumMeshes() const {
 		return m_iNumMeshes;
 	}
+	/* Only Tool */
+	const vector<class CMesh*>& Get_Meshes() const{
+		return m_vecMeshes;
+	}
 
 public:
-	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData);
+	void Set_AnimIndex(const _uint& iAnimIndex) {
+		if (iAnimIndex >= m_iNumAnimations)
+			return;
+		m_iCurrentAnimIndex = iAnimIndex;
+	}
+
+	/* Only Tool */
+	const vector<class CAnimation*>& Get_Animations() const {
+		return m_vecAnimations;
+	}
+
+public:
+	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
 	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
 
 	virtual HRESULT Render(const _uint& iMeshIndex);
@@ -50,6 +70,10 @@ private: /* For.Animation */
 	vector<class CAnimation*> m_vecAnimations;
 
 private:
+	TYPE m_eType = { TYPE_END };
+	_float4x4 m_PivotMatrix;
+
+private:
 	HRESULT Ready_Meshes(const MODEL_BINARYDATA& ModelData, TYPE eModelType);
 	HRESULT Ready_Materials(const MODEL_BINARYDATA& ModelData);
 	HRESULT Ready_Bones(const MODEL_BINARYDATA& ModelData, class CBone* pParent);
@@ -57,7 +81,7 @@ private:
 
 public:
 	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
-		TYPE eModelType, const MODEL_BINARYDATA& ModelData);
+		TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
 	virtual CModel* Clone(CComponent * pOwner, void* pArg) override;
 	virtual void Free() override;
 };

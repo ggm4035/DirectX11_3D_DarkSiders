@@ -63,7 +63,8 @@ void CImWindow_Create::Create_Object()
             ImGui::SetNextItemWidth(500.f);
             ImGui::InputText("  ", m_szPrototypeTag[i], 256, ImGuiInputTextFlags_ReadOnly);
 
-            if (ImGui::BeginPopupContextItem(strcat(szDialogTag, m_Types[i])))
+            strcat_s(szDialogTag, m_Types[i]);
+            if (ImGui::BeginPopupContextItem(szDialogTag))
             {
                 list<CComponent*> PrototypeList = pGameInstance->Get_All_Prototypes();
                 _uint iNumPrototypes = PrototypeList.size();
@@ -101,7 +102,8 @@ void CImWindow_Create::Create_Object()
 
                 ImGui::EndPopup();
             }
-            if (ImGui::Button(strcat(szButtonName, m_Types[i])))
+            strcat_s(szButtonName, m_Types[i]);
+            if (ImGui::Button(szButtonName))
                 ImGui::OpenPopup(szDialogTag);
 
             ImGui::Separator();
@@ -131,10 +133,21 @@ void CImWindow_Create::Create_Object()
 
         WINDOWMGR->Refresh_All_Window();
 
-        CDummyObject3D* pObject = dynamic_cast<CDummyObject3D*>(Find_GameObject(pGameInstance->strToWStr(m_szObjectName)));
+        CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(m_szObjectName));
         if (nullptr == pObject)
             return;
 
+        /* Rasterizer */
+        D3D11_RASTERIZER_DESC RasterizerDesc;
+        ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+
+        RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+        RasterizerDesc.FrontCounterClockwise = { false };
+
+        pObject->Set_RasterizerState(RasterizerDesc);
+
+        /* Components */
         pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
         pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
         pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));
@@ -181,14 +194,14 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         _char szObjName[256] = { "" };
         strcpy_s(szObjName, m_szObjectName);
         _itoa_s(m_iCloneNum, szNum, 10);
-        strcat(szObjName, szNum);
+        strcat_s(szObjName, szNum);
 
         while (nullptr != Find_GameObject(pGameInstance->strToWStr(szObjName)))
         {
             ++m_iCloneNum;
             strcpy_s(szObjName, m_szObjectName);
             _itoa_s(m_iCloneNum, szNum, 10);
-            strcat(szObjName, szNum);
+            strcat_s(szObjName, szNum);
         }
 
         if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
@@ -197,10 +210,21 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
 
         WINDOWMGR->Refresh_All_Window();
 
-        CDummyObject3D* pObject = dynamic_cast<CDummyObject3D*>(Find_GameObject(pGameInstance->strToWStr(szObjName)));
+        CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(szObjName));
         if (nullptr == pObject)
             return;
 
+        /* Rasterizer */
+        D3D11_RASTERIZER_DESC RasterizerDesc;
+        ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+
+        RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+        RasterizerDesc.FrontCounterClockwise = { false };
+
+        pObject->Set_RasterizerState(RasterizerDesc);
+
+        /* Components */
         pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
         pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
         pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));
@@ -208,15 +232,28 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
 
         pObject->Set_Tag(pGameInstance->strToWStr(szObjName));
 
-        /* 임시 코드임 원래 오브젝트 전체의 버택스를 검사해야됨.. */
-        CDummyObject3D* pTerrain = dynamic_cast<CDummyObject3D*>(Find_GameObject(L"Terrain"));
-        if (nullptr == pTerrain)
-            return;
-        /*========================================================*/
-        _vector vPickPos = pGameInstance->Picking_On_Triangle(g_hWnd, pTerrain->Get_Buffer(), pTerrain->Get_Transform());
+        POINT ptMouse;
+        GetCursorPos(&ptMouse);
+        ScreenToClient(g_hWnd, &ptMouse);
 
-        if (0 > vPickPos.m128_f32[0])
+        /* 임시 코드임 원래 오브젝트 전체의 버택스를 검사해야됨.. */
+        CDummyObject3D* pTerrain = Find_GameObject(L"Terrain");
+        if (nullptr == pTerrain)
+        {
+            pGameInstance->Remove_GameObject(pObject->Get_Tag());
+            WINDOWMGR->Refresh_All_Window();
             return;
+        }
+
+        _vector vPickPos = pGameInstance->Picking_On_Triangle(ptMouse, pTerrain->Get_Buffer(), pTerrain->Get_Transform());
+        /*========================================================*/
+
+        if (0 > vPickPos.m128_f32[3])
+        {
+            pGameInstance->Remove_GameObject(pObject->Get_Tag());
+            WINDOWMGR->Refresh_All_Window();
+            return;
+        }
 
         pObject->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPickPos);
         ++m_iCloneNum;

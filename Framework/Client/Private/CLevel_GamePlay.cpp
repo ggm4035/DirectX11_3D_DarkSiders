@@ -22,6 +22,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(L"Layer_Player")))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Monster(L"Layer_Monster")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -42,8 +45,8 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 
 	CLight::LIGHTDESC LightDesc;
 
-	LightDesc.vPosition = _float4(50.f, 50.f, -50.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vPosition = _float4(500.f, 50.f, 500.f, 1.f);
+	LightDesc.vDirection = _float4(-1.f, -1.f, -1.f, 0.f);
 	LightDesc.fRange = 100.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -93,6 +96,24 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Prototype_GameObject_Player",
 		L"Player", pLayerTag)))
 		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
+{
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	/*for (size_t i = 0; i < 20; i++)
+	{
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Monster",
+			L"Monster", pLayerTag)))
+			return E_FAIL;
+	}*/
 
 	Safe_Release(pGameInstance);
 
