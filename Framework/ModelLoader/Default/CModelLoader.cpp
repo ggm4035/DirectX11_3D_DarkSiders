@@ -21,24 +21,30 @@ HRESULT CModelLoader::Initialize()
 
 void CModelLoader::Tick()
 {
+	_char szFullPath[MAX_PATH] = { "" };
+	GetCurrentDirectoryA(MAX_PATH, szFullPath);
+	string strFullPath = { "" };
+	strFullPath = strFullPath + szFullPath + "\\Out\\NonAnimModels\\";
 	/* NonAnimModel 바이너리화 */
-	m_pGameInstance->Extraction_Data("../Bin/Resources/NonAnimModels/Environment", ".fbx", m_FilePathList);
+	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Environment", ".fbx", m_FilePathList);
 	ConvertBinary_NonAnimModel();
-	WriteModels("\\Out\\NonAnimModels\\");
+	WriteModels(strFullPath);
 	//ResetData();
 	//m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 
 	ResetData();
 
+	strFullPath = szFullPath;
+	strFullPath = strFullPath + "\\Out\\AnimModels\\";
 	/* AnimModel 바이너리화 */
-	m_pGameInstance->Extraction_Data("../Bin/Resources/AnimModels", ".fbx", m_FilePathList);
+	m_pGameInstance->Extraction_Data("../../Resources/AnimModels", ".fbx", m_FilePathList);
 	ConvertBinary_AnimModel();
-	WriteModels("\\Out\\AnimModels\\");
+	WriteModels(strFullPath);
 	//ResetData();
 	//m_pGameInstance->ReadModels("AnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 }
 
-void CModelLoader::WriteModels(const string& strFileName)
+void CModelLoader::WriteModels(const string& strFilePath)
 {
 	auto strPath = m_FilePathList.begin();
 
@@ -46,14 +52,11 @@ void CModelLoader::WriteModels(const string& strFileName)
 
 	for (_uint iDataIndex = 0; iDataIndex < m_FilePathList.size(); ++iDataIndex)
 	{
-		_char szFullPath[MAX_PATH] = { "" };
-		GetCurrentDirectoryA(MAX_PATH, szFullPath);
-		string strFullPath = szFullPath;
-
+		string strFullPath = strFilePath;
 		_char szFileName[MAX_PATH] = { "" };
 		_splitpath_s(strPath->c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
 
-		strFullPath += strFileName + szFileName + ".dat";
+		strFullPath = strFullPath + szFileName + ".dat";
 
 		hFile = CreateFileA(strFullPath.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -71,11 +74,6 @@ void CModelLoader::WriteModels(const string& strFileName)
 
 		/*===== BINARY DATAS ======*/
 		std::cout << "WriteFile Binary Datas..." << endl;
-		/* Write szFilePath*/
-		iPathLength = lstrlen(m_vecDatas[iDataIndex].szFilePath) + 1;
-		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
-		WriteFile(hFile, m_vecDatas[iDataIndex].szFilePath, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
-
 		/* Write szTag */
 		iPathLength = lstrlen(m_vecDatas[iDataIndex].szTag) + 1;
 		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
@@ -119,9 +117,6 @@ void CModelLoader::WriteModels(const string& strFileName)
 
 				/* Write iIndex */
 				WriteFile(hFile, &Bones.iIndex, sizeof(_uint), &dwByte, nullptr);
-
-				/* Write iNumChildren */
-				WriteFile(hFile, &Bones.iNumChildren, sizeof(_uint), &dwByte, nullptr);
 
 				/* Write TransformationMatrix */
 				WriteFile(hFile, &Bones.TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);
@@ -242,11 +237,12 @@ HRESULT CModelLoader::ConvertBinary_AnimModel()
 		if (nullptr == m_pAIScene)
 			return E_FAIL;
 
-		lstrcpy(BinDataDesc.szFilePath, CGameInstance::GetInstance()->strToWStr(Path).c_str());
+		_tchar szFilePath[MAX_PATH] = { L"" };
+		lstrcpy(szFilePath, CGameInstance::GetInstance()->strToWStr(Path).c_str());
 
 		_tchar szTag[MAX_PATH] = { L"" };
 
-		_wsplitpath_s(BinDataDesc.szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
+		_wsplitpath_s(szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
 
 		lstrcpy(BinDataDesc.szTag, szTag);
 
@@ -317,11 +313,12 @@ HRESULT CModelLoader::ConvertBinary_NonAnimModel()
 		if (nullptr == m_pAIScene)
 			return E_FAIL;
 
-		lstrcpy(BinDataDesc.szFilePath, CGameInstance::GetInstance()->strToWStr(Path).c_str());
+		_tchar szFilePath[MAX_PATH] = { L"" };
+		lstrcpy(szFilePath, CGameInstance::GetInstance()->strToWStr(Path).c_str());
 
 		_tchar szTag[MAX_PATH] = { L"" };
 
-		_wsplitpath_s(BinDataDesc.szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
+		_wsplitpath_s(szFilePath, nullptr, 0, nullptr, 0, szTag, MAX_PATH, nullptr, 0);
 
 		lstrcpy(BinDataDesc.szTag, szTag);
 
@@ -360,7 +357,6 @@ HRESULT CModelLoader::Ready_Bones(aiNode* pAINode, vector<BONEDATA>& Bones, cons
 	strcpy_s(BoneData.szName, pAINode->mName.data);
 	std::memcpy(&BoneData.TransformationMatrix, &pAINode->mTransformation, sizeof(_float4x4));
 	XMStoreFloat4x4(&BoneData.TransformationMatrix, XMMatrixTranspose(XMLoadFloat4x4(&BoneData.TransformationMatrix)));
-	BoneData.iNumChildren = pAINode->mNumChildren;
 	BoneData.iParentIdx = iParentIdx;
 	BoneData.iIndex = Bones.size();
 

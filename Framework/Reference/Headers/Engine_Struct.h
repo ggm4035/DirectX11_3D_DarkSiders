@@ -107,7 +107,6 @@ namespace Engine
 		_char szName[MAX_PATH] = { "" };
 		_int iParentIdx = { 0 };
 		_uint iIndex = { 0 };
-		_uint iNumChildren = { 0 };
 		_float4x4 TransformationMatrix;
 		_float4x4 OffsetMatrix;
 	}BONEDATA;
@@ -152,12 +151,12 @@ namespace Engine
 		_double Duration = { 0.0 };
 		_double TickPerSec = { 0.0 };
 		_uint iNumChannels = { 0 };
+		_bool bIsLoop = { true };
 		CHANNELDATA* pChannels = { nullptr };
 	}ANIMATIONDATA;
 
 	typedef struct tagModelBinaryData
 	{
-		_tchar szFilePath[MAX_PATH] = { L"" };
 		_tchar szTag[MAX_PATH] = { L"" };
 		_uint iNumMeshes = { 0 };
 		_uint iNumMaterials = { 0 };

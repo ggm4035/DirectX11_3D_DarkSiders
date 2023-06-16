@@ -2,6 +2,7 @@
 #include "CMesh.h"
 #include "CBone.h"
 #include "CAnimation.h"
+#include "CChannel.h"
 
 #include "CGameInstance.h"
 
@@ -34,6 +35,80 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& pOriginAnimation : rhs.m_vecAnimations)
 		m_vecAnimations.push_back(pOriginAnimation->Clone());
+}
+
+vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
+{
+	vector<ANIMATIONDATA> vecRet;
+
+	for (auto& Animation : m_vecAnimations)
+	{
+		ANIMATIONDATA Data;
+		strcpy_s(Data.szName, Animation->m_szName);
+		Data.Duration = Animation->m_Duration;
+		Data.TickPerSec = Animation->m_TickPerSec;
+		Data.iNumChannels = Animation->m_iNumChannels;
+
+		CHANNELDATA* pChannels = new CHANNELDATA[Data.iNumChannels];
+		for (_uint i = 0; i < Data.iNumChannels; ++i)
+		{
+			strcpy_s(pChannels[i].szName, Animation->m_vecChannels[i]->m_szName);
+			pChannels[i].iNumKeyFrames = Animation->m_vecChannels[i]->m_iNumKeyFrames;
+
+			KEYFRAME* pKeyFrame = new KEYFRAME[pChannels[i].iNumKeyFrames];
+			for (_uint j = 0; j < pChannels[i].iNumKeyFrames; ++j)
+			{
+				pKeyFrame[j].vScale = Animation->m_vecChannels[i]->m_vecKeyFrames[j].vScale;
+				pKeyFrame[j].vRotation = Animation->m_vecChannels[i]->m_vecKeyFrames[j].vRotation;
+				pKeyFrame[j].vTranslation = Animation->m_vecChannels[i]->m_vecKeyFrames[j].vTranslation;
+				pKeyFrame[j].Time = Animation->m_vecChannels[i]->m_vecKeyFrames[j].Time;
+			}
+			pChannels[i].pKeyFrames = pKeyFrame;
+		}
+		Data.pChannels = pChannels;
+		vecRet.push_back(Data);
+	}
+
+	return vecRet;
+}
+
+HRESULT CModel::Set_Animation(_uint iAnimIndex, const ANIMATIONDATA& AnimData)
+{
+	m_vecAnimations[iAnimIndex]->m_Duration = AnimData.Duration;
+	m_vecAnimations[iAnimIndex]->m_TickPerSec = AnimData.TickPerSec;
+	m_vecAnimations[iAnimIndex]->m_isLoop = AnimData.bIsLoop;
+
+	for (_uint i = 0; i < m_vecAnimations[iAnimIndex]->m_iNumChannels; ++i)
+	{
+		for (_uint j = 0; j < m_vecAnimations[iAnimIndex]->m_vecChannels[i]->m_iNumKeyFrames; ++j)
+		{
+			m_vecAnimations[iAnimIndex]->m_vecChannels[i]->m_vecKeyFrames[j].Time = AnimData.pChannels[i].pKeyFrames[j].Time;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Add_Animation(const ANIMATIONDATA& AnimData)
+{
+	CAnimation* pAnimation = CAnimation::Create(AnimData, m_vecBones);
+	if (nullptr == pAnimation)
+		return E_FAIL;
+
+	m_vecAnimations.push_back(pAnimation);
+	++m_iNumAnimations;
+
+	return S_OK;
+}
+
+HRESULT CModel::Delete_Animation(_uint iIndex)
+{
+	vector<CAnimation*>::iterator iter = m_vecAnimations.begin();
+
+	Safe_Release(m_vecAnimations[iIndex]);
+	m_vecAnimations.erase(iter + iIndex);
+
+	return S_OK;
 }
 
 HRESULT CModel::Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix)

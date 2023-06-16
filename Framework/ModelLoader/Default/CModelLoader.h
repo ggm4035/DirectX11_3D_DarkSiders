@@ -44,8 +44,8 @@ private:
 private:
 	vector<vector<BONEDATA>> m_vecBones;
 
-private: /* FilePathFinder */
-	void WriteModels(const string& strFileName);
+private:
+	void WriteModels(const string& strFilePath);
 
 private:
 	HRESULT ConvertBinary_AnimModel();

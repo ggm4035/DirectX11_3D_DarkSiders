@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="99. IMGUIHeaders">
+      <UniqueIdentifier>{bf78b4e1-d8e0-451e-9a75-2c49bfe9347d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. MainApp">
+      <UniqueIdentifier>{d7d51010-eb7b-4cf3-9439-2ffe17c782de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow">
+      <UniqueIdentifier>{49ba92b1-576a-49a1-9f7d-6840b82707e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. ToolInstance">
+      <UniqueIdentifier>{ea4dcd66-61a9-4baa-8144-75ee3dd0d6c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject">
+      <UniqueIdentifier>{c51a81ab-03cf-477a-b390-9b3a55f8522a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. CMainCamera">
+      <UniqueIdentifier>{683011ef-8f44-42c8-9bf4-4a980e559831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUIFile">
+      <UniqueIdentifier>{57755711-d961-4440-9cd0-05b739dc3cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUIFile\imgui">
+      <UniqueIdentifier>{0587d7a3-f2ce-4d56-b84f-a0005d3bfce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUIFile\sources">
+      <UniqueIdentifier>{08e36723-ce4f-4cff-9662-c40801cf1acf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Levels">
+      <UniqueIdentifier>{a0cb6d9b-aec5-4bcf-8ff2-a22a37a9a199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. ShaderFiles">
+      <UniqueIdentifier>{8fbedaf9-29fb-4fa7-9e42-38e00e15de38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\00. ImWindow_Base">
+      <UniqueIdentifier>{1079f7a0-4aca-41db-bac6-78c761fe2670}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\01. ImWindow_Inspector">
+      <UniqueIdentifier>{747fb155-5e85-4657-a057-38281cbaebce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\Manager">
+      <UniqueIdentifier>{5af8eb99-ac1f-4ab6-8591-551e8aca1238}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\03. Coordnate_Axis">
+      <UniqueIdentifier>{1ac977a0-4d19-4fa9-8e41-3a484656c101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy">
+      <UniqueIdentifier>{bd1d008b-256d-4df2-9307-06651583c831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy\UI">
+      <UniqueIdentifier>{025c4d40-23a1-440a-bb2c-35ac0a4482e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy\3D">
+      <UniqueIdentifier>{6fd08361-30c6-42d9-ae90-e6d7221409bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy\Camera">
+      <UniqueIdentifier>{ec8cb1ec-0a0d-453e-865a-63244f114bf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\02. ImWindow_Create">
+      <UniqueIdentifier>{3aaa34f6-d454-494f-8643-3c9d433b25e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\03. ImWindow_Top">
+      <UniqueIdentifier>{92c8a30b-87e0-4e10-9a4e-bbfdafa8867e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\imconfig.h">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imgui.h">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imgui_internal.h">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="IMGUI_Defines.h">
+      <Filter>99. IMGUIHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="CToolMainApp.h">
+      <Filter>00. MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Manager.h">
+      <Filter>01. ImWindow\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow.h">
+      <Filter>01. ImWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="CToolInstance.h">
+      <Filter>98. ToolInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="CCoordnate_Axis.h">
+      <Filter>02. GameObject\03. Coordnate_Axis</Filter>
+    </ClInclude>
+    <ClInclude Include="CMainCamera.h">
+      <Filter>02. GameObject\01. CMainCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Base.h">
+      <Filter>01. ImWindow\00. ImWindow_Base</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Inspector.h">
+      <Filter>01. ImWindow\01. ImWindow_Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="CDummyObject3D.h">
+      <Filter>02. GameObject\00. Dummy\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Create.h">
+      <Filter>01. ImWindow\02. ImWindow_Create</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Top.h">
+      <Filter>01. ImWindow\03. ImWindow_Top</Filter>
+    </ClInclude>
+    <ClInclude Include="CLevel_Tool.h">
+      <Filter>03. Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\backends\imgui_impl_win32.h">
+      <Filter>IMGUIFile\sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\backends\imgui_impl_dx11.h">
+      <Filter>IMGUIFile\sources</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog.h">
+      <Filter>IMGUIFile</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>IMGUIFile\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CToolMainApp.cpp">
+      <Filter>00. MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Manager.cpp">
+      <Filter>01. ImWindow\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow.cpp">
+      <Filter>01. ImWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="CToolInstance.cpp">
+      <Filter>98. ToolInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="CCoordnate_Axis.cpp">
+      <Filter>02. GameObject\03. Coordnate_Axis</Filter>
+    </ClCompile>
+    <ClCompile Include="CMainCamera.cpp">
+      <Filter>02. GameObject\01. CMainCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Base.cpp">
+      <Filter>01. ImWindow\00. ImWindow_Base</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Inspector.cpp">
+      <Filter>01. ImWindow\01. ImWindow_Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="CDummyObject3D.cpp">
+      <Filter>02. GameObject\00. Dummy\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Create.cpp">
+      <Filter>01. ImWindow\02. ImWindow_Create</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Top.cpp">
+      <Filter>01. ImWindow\03. ImWindow_Top</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Tool.cpp">
+      <Filter>03. Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui_demo.cpp">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui_draw.cpp">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui_tables.cpp">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui_widgets.cpp">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui.cpp">
+      <Filter>IMGUIFile\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\backends\imgui_impl_win32.cpp">
+      <Filter>IMGUIFile\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\backends\imgui_impl_dx11.cpp">
+      <Filter>IMGUIFile\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog.cpp">
+      <Filter>IMGUIFile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\misc\debuggers\imgui.natvis">
+      <Filter>IMGUIFile\imgui</Filter>
+    </None>
+    <None Include="..\..\misc\debuggers\imgui.natstepfilter">
+      <Filter>IMGUIFile\imgui</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtx.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCol.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

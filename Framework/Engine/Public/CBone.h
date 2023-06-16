@@ -6,6 +6,8 @@ BEGIN(Engine)
 
 class CBone final : public CBase
 {
+	friend class CModel;
+
 private:
 	explicit CBone();
 	explicit CBone(const CBone& rhs);

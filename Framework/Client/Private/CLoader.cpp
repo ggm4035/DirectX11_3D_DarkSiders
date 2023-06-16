@@ -79,7 +79,7 @@ HRESULT CLoader::Load_Level_Logo()
 
 	/* For. Prototype_Component_Texture_Test */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo",
-		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Default%d.dds", 2))))
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Default%d.dds", 2))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
@@ -110,14 +110,14 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	/* For. Prototype_Component_Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Terrain",
-		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Terrain/Tile%d.dds", 2))))
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Tile%d.dds", 2))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
 
 	/* For. Prototype_Component_VIBuffer_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Terrain",
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Terrain/Height.bmp"))))
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Height.bmp"))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("셰이더 로딩 중.");

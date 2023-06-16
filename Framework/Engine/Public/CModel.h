@@ -23,10 +23,6 @@ public:
 	const _uint& Get_NumMeshes() const {
 		return m_iNumMeshes;
 	}
-	/* Only Tool */
-	const vector<class CMesh*>& Get_Meshes() const{
-		return m_vecMeshes;
-	}
 
 public:
 	void Set_AnimIndex(const _uint& iAnimIndex) {
@@ -35,10 +31,14 @@ public:
 		m_iCurrentAnimIndex = iAnimIndex;
 	}
 
-	/* Only Tool */
-	const vector<class CAnimation*>& Get_Animations() const {
-		return m_vecAnimations;
+public:/* !!! Warrning Only Tool !!! */
+	const vector<class CMesh*>& Get_Meshes() const {
+		return m_vecMeshes;
 	}
+	vector<ANIMATIONDATA> Get_AnimationDatas();
+	HRESULT Set_Animation(_uint iIndex, const ANIMATIONDATA& AnimData);
+	HRESULT Add_Animation(const ANIMATIONDATA& AnimData);
+	HRESULT Delete_Animation(_uint iIndex);
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);

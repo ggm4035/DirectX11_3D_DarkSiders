@@ -65,7 +65,7 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	GetCurrentDirectoryA(MAX_PATH, szFullPath);
 	string strFullPath = szFullPath;
 
-	strFullPath = strFullPath + "\\" + "Warrior.dat";
+	strFullPath = strFullPath + "\\Models\\AnimModels\\Warrior.dat";
 
 	m_pGameInstance->ReadModels(strFullPath, m_FilePathList, m_vecModelDatas);
 

@@ -6,6 +6,8 @@ BEGIN(Engine)
 
 class CAnimation final : public CBase
 {
+	friend class CModel;
+
 private:
 	explicit CAnimation();
 	explicit CAnimation(const CAnimation& rhs);

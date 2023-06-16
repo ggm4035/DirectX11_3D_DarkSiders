@@ -18,6 +18,7 @@ public:
 	HRESULT Extraction_Data(const string& strPath, const _char* pExt, OUT list<string>& FilePathList);
 
 public:
+	void WriteModels(const string & strFilePath, const list<string>& FilePathList, const vector<MODEL_BINARYDATA>& vecData);
 	void ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData);
 	HRESULT Load(const string& strFilePath, OUT list<FILEDATA>& OutData);
 

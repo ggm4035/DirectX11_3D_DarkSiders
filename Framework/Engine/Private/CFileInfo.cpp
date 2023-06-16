@@ -70,6 +70,172 @@ HRESULT CFileInfo::Extraction_Data(const string& strPath, const _char* pExt, OUT
 	return S_OK;
 }
 
+void CFileInfo::WriteModels(const string& strFilePath, const list<string>& FilePathList, const vector<MODEL_BINARYDATA>& vecData)
+{
+	auto strPath = FilePathList.begin();
+
+	HANDLE hFile = 0;
+
+	for (_uint iDataIndex = 0; iDataIndex < FilePathList.size(); ++iDataIndex)
+	{
+		string strFullPath = strFilePath;
+		_char szFileName[MAX_PATH] = { "" };
+		_splitpath_s(strPath->c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
+
+		strFullPath = strFullPath + szFileName + ".dat";
+
+		hFile = CreateFileA(strFullPath.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+		_ulong dwByte = { 0 };
+
+		/* Write strFilePath */
+		_uint iPathLength = strlen(strPath->c_str()) + 1;
+		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+		WriteFile(hFile, strPath->c_str(), sizeof(_char) * iPathLength, &dwByte, nullptr);
+		++strPath;
+
+		/*===== BINARY DATAS ======*/
+		/* Write szTag */
+		iPathLength = lstrlen(vecData[iDataIndex].szTag) + 1;
+		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+		WriteFile(hFile, vecData[iDataIndex].szTag, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
+
+		/* Write iNumMeshes */
+		WriteFile(hFile, &vecData[iDataIndex].iNumMeshes, sizeof(_uint), &dwByte, nullptr);
+
+		/* Write iNumMaterials */
+		WriteFile(hFile, &vecData[iDataIndex].iNumMaterials, sizeof(_uint), &dwByte, nullptr);
+
+		/* Write szMaterialTexturePath */
+		_uint iTexturePathlength = { 0 };
+		for (_uint iMaterialIndex = 0; iMaterialIndex < vecData[iDataIndex].iNumMaterials; ++iMaterialIndex)
+		{
+			for (_uint iTextureIndex = 0; iTextureIndex < 21; ++iTextureIndex)
+			{
+				iTexturePathlength = lstrlen(vecData[iDataIndex].pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex]) + 1;
+				WriteFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, vecData[iDataIndex].pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex],
+					sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
+			}
+		}
+
+		/* Write iNumBones */
+		WriteFile(hFile, &vecData[iDataIndex].iNumBones, sizeof(_uint), &dwByte, nullptr);
+
+		/*===== BONE DATAS ======*/
+		if (0 < vecData[iDataIndex].iNumBones)
+		{
+			for (_uint iBoneIndex = 0; iBoneIndex < vecData[iDataIndex].iNumBones; ++iBoneIndex)
+			{
+				/* Write szName_Bone */
+				_uint iNameLength = strlen(vecData[iDataIndex].pBoneDatas[iBoneIndex].szName) + 1;
+				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, vecData[iDataIndex].pBoneDatas[iBoneIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+				/* Write iParentIdx */
+				WriteFile(hFile, &vecData[iDataIndex].pBoneDatas[iBoneIndex].iParentIdx, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write iIndex */
+				WriteFile(hFile, &vecData[iDataIndex].pBoneDatas[iBoneIndex].iIndex, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write TransformationMatrix */
+				WriteFile(hFile, &vecData[iDataIndex].pBoneDatas[iBoneIndex].TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+				/* Write OffsetMatrix */
+				WriteFile(hFile, &vecData[iDataIndex].pBoneDatas[iBoneIndex].OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			}
+		}
+
+		/* Write iNumAnimations */
+		WriteFile(hFile, &vecData[iDataIndex].iNumAnimations, sizeof(_uint), &dwByte, nullptr);
+
+		/*===== ANIMATION DATAS ======*/
+		for (_uint iAnimIndex = 0; iAnimIndex < vecData[iDataIndex].iNumAnimations; ++iAnimIndex)
+		{
+			/* Write szName */
+			_uint iNameLength = strlen(vecData[iDataIndex].pAnimations[iAnimIndex].szName) + 1;
+			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Write Duration */
+			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+
+			/* Write TickPerSec */
+			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+
+			/* Write iNumChannels */
+			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+
+			/*===== CHANNEL DATAS ======*/
+			for (_uint iChannelIndex = 0; iChannelIndex < vecData[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
+			{
+				/* Write szName */
+				iNameLength = strlen(vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName) + 1;
+				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+				/* Write iNumKeyFrames */
+				WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write KeyFrame */
+				WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames,
+					sizeof(KEYFRAME) * vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+			}
+		}
+
+		/*===== MESH DATAS ======*/
+		for (_uint iMeshIndex = 0; iMeshIndex < vecData[iDataIndex].iNumMeshes; ++iMeshIndex)
+		{
+			/* Write szName_Mesh */
+			_uint iNameLength = strlen(vecData[iDataIndex].pMeshDatas[iMeshIndex].szName) + 1;
+			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, vecData[iDataIndex].pMeshDatas[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Write iMaterialIndex */
+			WriteFile(hFile, &vecData[iDataIndex].pMeshDatas[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumNonAnimVertices */
+			WriteFile(hFile, &vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumAnimVertices */
+			WriteFile(hFile, &vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumIndices */
+			WriteFile(hFile, &vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumMeshBones */
+			WriteFile(hFile, &vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write pBoneIndices */
+			WriteFile(hFile, vecData[iDataIndex].pMeshDatas[iMeshIndex].pBoneIndices, sizeof(_uint) *
+				vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
+
+			/* Write pNonAnimVertices */
+			if (0 < vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices)
+			{
+				WriteFile(hFile, vecData[iDataIndex].pMeshDatas[iMeshIndex].pNonAnimVertices, sizeof(VTXMESH) *
+					vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
+			}
+
+			/* Write pAnimVertices */
+			if (0 < vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices)
+			{
+				WriteFile(hFile, vecData[iDataIndex].pMeshDatas[iMeshIndex].pAnimVertices, sizeof(VTXANIMMESH) *
+					vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
+			}
+
+			/* Write pIndices */
+			WriteFile(hFile, vecData[iDataIndex].pMeshDatas[iMeshIndex].pIndices, sizeof(_ulong) *
+				vecData[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, &dwByte, nullptr);
+		}
+
+		CloseHandle(hFile);
+	}
+}
+
 void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData)
 {
 	FilePathList.clear();
@@ -96,10 +262,6 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 			FilePathList.push_back(szFilePath);
 
 		/*========== BINARY DATAS ===========*/
-		/* Read szFilePath*/
-		ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, Data.szFilePath, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
-
 		/* Read szTag */
 		ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, Data.szTag, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
@@ -151,9 +313,6 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 
 			/* Read iIndex */
 			ReadFile(hFile, &pBoneData[iBoneIndex].iIndex, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iNumChildren */
-			ReadFile(hFile, &pBoneData[iBoneIndex].iNumChildren, sizeof(_uint), &dwByte, nullptr);
 
 			/* Read TransformationMatrix */
 			ReadFile(hFile, &pBoneData[iBoneIndex].TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);

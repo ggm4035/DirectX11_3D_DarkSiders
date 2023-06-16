@@ -7,6 +7,8 @@ BEGIN(Engine)
 
 class CMesh final : public CVIBuffer
 {
+	friend class CModel;
+
 private:
 	explicit CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CMesh(const CMesh& rhs);

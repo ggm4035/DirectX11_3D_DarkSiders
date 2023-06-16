@@ -6,6 +6,8 @@ BEGIN(Engine)
 
 class CChannel final : public CBase
 {
+	friend class CModel;
+
 private:
 	explicit CChannel();
 	virtual ~CChannel() = default;
