@@ -27,7 +27,7 @@ public:
     class CMainCamera* m_pCamera = { nullptr };
 
 private:
-	virtual void Free() override {}
+    virtual void Free() override;
 };
 
 END

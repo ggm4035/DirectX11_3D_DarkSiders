@@ -7,7 +7,7 @@ CImWindow::CImWindow()
 {
 }
 
-HRESULT CImWindow::Initialize(void* pArg)
+HRESULT CImWindow::Initialize()
 {
     Refresh();
     return S_OK;

@@ -20,7 +20,7 @@ public:
 public:
 	void WriteModels(const string & strFilePath, const list<string>& FilePathList, const vector<MODEL_BINARYDATA>& vecData);
 	void ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData);
-	HRESULT Load(const string& strFilePath, OUT list<FILEDATA>& OutData);
+	HRESULT Load(const string& strFilePath, OUT FILEDATA& OutData);
 
 public:
     // string < - > wstring 변환 함수

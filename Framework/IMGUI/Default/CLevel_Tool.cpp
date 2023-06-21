@@ -71,12 +71,12 @@ HRESULT CLevel_Tool::Ready_Lights()
 
     CLight::LIGHTDESC LightDesc;
 
-    LightDesc.vPosition = _float4(500.f, 500.f, -500.f, 1.f);
-    LightDesc.vDirection = _float4(-1.f, -1.f, -1.f, 0.f);
+    LightDesc.vPosition = _float4(50.f, 50.f, 50.f, 1.f);
+    LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
     LightDesc.fRange = 100.f;
     LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
     LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-    LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
+    LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
     LightDesc.eType = CLight::TYPE_DIRECTIONAL;
 
     if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
@@ -88,7 +88,7 @@ HRESULT CLevel_Tool::Ready_Lights()
 
 CLevel_Tool* CLevel_Tool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CLevel_Tool* pInstance = new CLevel_Tool(pDevice, pContext);
+    CLevel_Tool* pInstance = New CLevel_Tool(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize()))
     {

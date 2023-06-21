@@ -1,7 +1,4 @@
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\vc142.pdb
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cpipeline.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cobject_manager.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clight_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clight.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel.obj
@@ -17,8 +14,11 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccompon
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccomponent.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccamera_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccamera.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccalculator.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbone.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbase.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\capplication.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\canimation.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine_struct.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\timer_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\timer.obj
@@ -31,9 +31,11 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctransf
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctexture.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cshader.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\crenderer.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cmesh.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccalculator.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cpipeline.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cobject_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cmodel.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cmesh.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clight_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.dll
@@ -45,6 +47,5 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\cl.write.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\engine.write.1u.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.command.1.tlog
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.delete.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.write.1.tlog

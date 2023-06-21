@@ -11,6 +11,8 @@ BEGIN(Imgui)
 
 class CImWindow_Create final : public CImWindow
 {
+    DECLARE_SINGLETON(CImWindow_Create)
+
 public:
     enum TYPE { TEXTURE, SHADER, BUFFER, MODEL, TYPE_END };
 
@@ -24,7 +26,7 @@ public:
     _bool m_bIsOpen = { false };
 
 public:
-    virtual HRESULT Initialize(void* pArg) override;
+    virtual HRESULT Initialize() override;
     virtual void Tick(const _double& TimeDelta) override;
     virtual void Refresh() override;
 
@@ -39,7 +41,6 @@ private:
     _bool m_bTypes[TYPE_END] = { false };
 
 public:
-    static CImWindow_Create* Create(void* pArg = nullptr);
     virtual void Free() override;
 };
 

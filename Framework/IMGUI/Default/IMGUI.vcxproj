@@ -142,7 +142,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..;..\..\backends;../../../Reference/Headers/;../Public/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\backends;../../Reference/Headers/;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -152,7 +152,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;Engine.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)/Lib/x64;../../../Reference/Librarys/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)/Lib/x64;../../Reference/Librarys/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
     <FxCompile>
@@ -178,6 +178,8 @@
     <ClInclude Include="CMainCamera.h" />
     <ClInclude Include="CToolInstance.h" />
     <ClInclude Include="CToolMainApp.h" />
+    <ClInclude Include="CTool_Animation.h" />
+    <ClInclude Include="CTool_HeightMap.h" />
     <ClInclude Include="ImGuiFileDialog.h" />
     <ClInclude Include="IMGUI_Defines.h" />
     <ClInclude Include="CImWindow.h" />
@@ -203,6 +205,8 @@
     <ClCompile Include="CToolMainApp.cpp" />
     <ClCompile Include="CImWindow.cpp" />
     <ClCompile Include="CImWindow_Manager.cpp" />
+    <ClCompile Include="CTool_Animation.cpp" />
+    <ClCompile Include="CTool_HeightMap.cpp" />
     <ClCompile Include="ImGuiFileDialog.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

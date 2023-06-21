@@ -59,7 +59,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[1].vPosition;
 	TriangleDesc.vDot[1] = pVertices[5].vPosition;
 	TriangleDesc.vDot[2] = pVertices[6].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[3] = 1;
 	pIndices[4] = 6;
@@ -68,7 +68,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[1].vPosition;
 	TriangleDesc.vDot[1] = pVertices[6].vPosition;
 	TriangleDesc.vDot[2] = pVertices[2].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[6] = 4;
 	pIndices[7] = 0;
@@ -77,7 +77,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[4].vPosition;
 	TriangleDesc.vDot[1] = pVertices[0].vPosition;
 	TriangleDesc.vDot[2] = pVertices[3].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[9] = 4;
 	pIndices[10] = 3;
@@ -86,7 +86,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[4].vPosition;
 	TriangleDesc.vDot[1] = pVertices[3].vPosition;
 	TriangleDesc.vDot[2] = pVertices[7].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[12] = 4;
 	pIndices[13] = 5;
@@ -95,7 +95,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[4].vPosition;
 	TriangleDesc.vDot[1] = pVertices[5].vPosition;
 	TriangleDesc.vDot[2] = pVertices[1].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[15] = 4;
 	pIndices[16] = 1;
@@ -104,7 +104,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[4].vPosition;
 	TriangleDesc.vDot[1] = pVertices[1].vPosition;
 	TriangleDesc.vDot[2] = pVertices[0].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[18] = 3;
 	pIndices[19] = 2;
@@ -113,7 +113,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[3].vPosition;
 	TriangleDesc.vDot[1] = pVertices[2].vPosition;
 	TriangleDesc.vDot[2] = pVertices[6].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[21] = 3;
 	pIndices[22] = 6;
@@ -122,7 +122,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[3].vPosition;
 	TriangleDesc.vDot[1] = pVertices[6].vPosition;
 	TriangleDesc.vDot[2] = pVertices[7].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[24] = 7;
 	pIndices[25] = 6;
@@ -131,7 +131,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[7].vPosition;
 	TriangleDesc.vDot[1] = pVertices[6].vPosition;
 	TriangleDesc.vDot[2] = pVertices[5].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[27] = 7;
 	pIndices[28] = 5;
@@ -140,7 +140,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[7].vPosition;
 	TriangleDesc.vDot[1] = pVertices[5].vPosition;
 	TriangleDesc.vDot[2] = pVertices[4].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[30] = 0;
 	pIndices[31] = 1;
@@ -149,7 +149,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[0].vPosition;
 	TriangleDesc.vDot[1] = pVertices[1].vPosition;
 	TriangleDesc.vDot[2] = pVertices[2].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	pIndices[33] = 0;
 	pIndices[34] = 2;
@@ -158,7 +158,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[0] = pVertices[0].vPosition;
 	TriangleDesc.vDot[1] = pVertices[2].vPosition;
 	TriangleDesc.vDot[2] = pVertices[3].vPosition;
-	m_TriangleList.push_back(TriangleDesc);
+	m_vecTriangle.push_back(TriangleDesc);
 
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };

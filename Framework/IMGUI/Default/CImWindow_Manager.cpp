@@ -21,9 +21,6 @@ HRESULT CImWindow_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 
-    //io.ConfigViewportsNoDefaultParent = true;
-    //io.ConfigDockingAlwaysTabBar = true;
-
     ImGui::GetIO().ConfigWindowsResizeFromEdges = true;
 
     ImGui_ImplWin32_Init(g_hWnd);
@@ -53,8 +50,8 @@ void CImWindow_Manager::Tick(const _double& TimeDelta)
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    for (auto ImWindow : m_ImWindows)
-        ImWindow.second->Tick(TimeDelta);
+    for (auto ImWindow : m_ImWindowList)
+        ImWindow->Tick(TimeDelta);
 }
 
 void CImWindow_Manager::Render()
@@ -70,35 +67,22 @@ void CImWindow_Manager::Render()
     }
 }
 
-HRESULT CImWindow_Manager::Add_Window(wstring tag, CImWindow* pWindow)
+HRESULT CImWindow_Manager::Add_Window(CImWindow* pWindow)
 {
     if (nullptr == pWindow)
         return E_FAIL;
 
-    CImWindow* pImWindow = Find_Window(tag);
-
-    if (nullptr != pImWindow)
-        return E_FAIL;
-
-    m_ImWindows.emplace(tag, pWindow);
+    pWindow->Initialize();
+    m_ImWindowList.push_back(pWindow);
+    Safe_AddRef(pWindow);
 
     return S_OK;
 }
 
 void CImWindow_Manager::Refresh_All_Window()
 {
-    for (auto& window : m_ImWindows)
-        window.second->Refresh();
-}
-
-CImWindow* CImWindow_Manager::Find_Window(wstring tag)
-{
-    auto iter = m_ImWindows.find(tag);
-
-    if(iter == m_ImWindows.end())
-        return nullptr;
-
-    return iter->second;
+    for (auto& window : m_ImWindowList)
+        window->Refresh();
 }
 
 void CImWindow_Manager::Free(void)
@@ -106,8 +90,8 @@ void CImWindow_Manager::Free(void)
     Safe_Release(m_pContext);
     Safe_Release(m_pDevice);
 
-    for (auto& ImWindow : m_ImWindows)
-        Safe_Release(ImWindow.second);
+    for (auto& ImWindow : m_ImWindowList)
+        Safe_Release(ImWindow);
 
-    m_ImWindows.clear();
+    m_ImWindowList.clear();
 }

@@ -348,6 +348,9 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 			/* Read iNumChannels */
 			ReadFile(hFile, &pAnimation[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
 
+			/* Read bIsLoop */
+			ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
 			/*========== CHANNEL DATAS ===========*/
 			CHANNELDATA* pChannel = { nullptr };
 			if (0 < pAnimation[iAnimIndex].iNumChannels)
@@ -453,7 +456,7 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 	}
 }
 
-HRESULT CFileInfo::Load(const string& strFilePath, OUT list<FILEDATA>& OutData)
+HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 {
 	HANDLE hFile = CreateFileA(strFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -462,14 +465,30 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT list<FILEDATA>& OutData)
 
 	_ulong dwByte = { 0 };
 
-	/* 1. 전체 3D 게임오브젝트들을 저장한다. */
+	/* 1. Terrain을 저장한다. */
+	_uint iXCount = { 0 }, iZCount = { 0 };
 
+	/* Read iXCount */
+	ReadFile(hFile, &iXCount, sizeof(_uint), &dwByte, nullptr);
+	OutData.iXCount = iXCount;
+
+	/* Read iZCount */
+	ReadFile(hFile, &iZCount, sizeof(_uint), &dwByte, nullptr);
+	OutData.iZCount = iZCount;
+
+	/* Read pPositions */
+	OutData.pPositions = new _float3[iXCount * iZCount];
+	ZeroMemory(OutData.pPositions, sizeof(_float3) * iXCount * iZCount);
+
+	for(_uint i = 0; i < iXCount * iZCount; ++i)
+		ReadFile(hFile, &OutData.pPositions[i], sizeof(_float3), &dwByte, nullptr);
+
+	/* 2. 전체 3D 게임오브젝트들을 저장한다. */
 	_uint iNumObjects = { 0 };
 	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
-
 	for (_uint i = 0; i < iNumObjects; ++i)
 	{
-		FILEDATA Data;
+		MODELDATA Data;
 		ZeroMemory(&Data, sizeof(FILEDATA));
 
 		/* Read szTag */
@@ -479,12 +498,10 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT list<FILEDATA>& OutData)
 
 		/* Read TransformMatrix */
 		ReadFile(hFile, &Data.TransformMatrix, sizeof(_float4x4), &dwByte, nullptr);
-		OutData.push_back(Data);
+		OutData.vecModelData.push_back(Data);
 	}
 
-	/* 2. 카메라를 저장한다. */
-
-	/* 3. Terrain을 저장한다. */
+	/* 3. 카메라를 저장한다. */
 
 	/* 4. UI를 저장한다. */
 

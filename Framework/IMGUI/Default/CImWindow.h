@@ -16,7 +16,7 @@ protected:
     virtual ~CImWindow() = default;
 
 public:
-    virtual HRESULT Initialize(void* pArg);
+    virtual HRESULT Initialize();
     virtual void Tick(const _double& TimeDelta) = 0;
     virtual void Refresh();
 

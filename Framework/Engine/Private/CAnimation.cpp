@@ -45,7 +45,7 @@ void CAnimation::Invalidate_TransformationMatrix(CModel::BONES& Bones, const _do
 	if (m_TimeAcc >= m_Duration)
 	{
 		if (true == m_isLoop)
-			m_TimeAcc = 0.0; 
+			m_TimeAcc = 0.0;
 		else
 			m_isFinished = true;
 	}

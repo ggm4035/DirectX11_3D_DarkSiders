@@ -55,12 +55,12 @@ HRESULT CToolMainApp::Initialize()
     if (FAILED(Ready_Prototype_GameObject_For_Tool()))
         return E_FAIL;
 
-    // Initialize Level
-    FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_TOOL, CLevel_Tool::Create(m_pDevice, m_pContext)), E_FAIL);
-
-    // Initialize ImWindow
+    // Initialize ImWindows
     if (FAILED(Ready_ImWindows()))
         return E_FAIL;
+
+    // Initialize Level
+    FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_TOOL, CLevel_Tool::Create(m_pDevice, m_pContext)), E_FAIL);
 
     return S_OK;
 }
@@ -96,20 +96,16 @@ HRESULT CToolMainApp::Open_Level(LEVELID eLevelIndex)
 
 HRESULT CToolMainApp::Ready_ImWindows()
 {
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Inspector",
-        TOOL->m_pInspectorWindow = CImWindow_Inspector::Create())))
+    if (FAILED(m_pImWindow_Manager->Add_Window(CImWindow_Base::GetInstance())))
         return E_FAIL;
 
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Create",
-        TOOL->m_pCreateWindow = CImWindow_Create::Create())))
+    if (FAILED(m_pImWindow_Manager->Add_Window(CImWindow_Create::GetInstance())))
         return E_FAIL;
 
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Top",
-        TOOL->m_pTopWindow = CImWindow_Top::Create())))
+    if (FAILED(m_pImWindow_Manager->Add_Window(CImWindow_Inspector::GetInstance())))
         return E_FAIL;
 
-    if (FAILED(m_pImWindow_Manager->Add_Window(L"ImWindow_Base",
-        TOOL->m_pBaseWindow = CImWindow_Base::Create())))
+    if (FAILED(m_pImWindow_Manager->Add_Window(CImWindow_Top::GetInstance())))
         return E_FAIL;
 
     return S_OK;
@@ -142,6 +138,7 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
+    /* Shader Component */
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_VtxNorTex",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl",
             VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
@@ -172,12 +169,13 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
             VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
         return E_FAIL;
 
+    /* VIBuffer Component */
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain",
-        CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
+        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 129, 129, 1.f))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain_Height",
-        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Height.bmp"))))
+        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/ExportHeightMap.bmp"))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Cube",
@@ -192,10 +190,24 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
         CVIBuffer_Coordnate::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
+    /* Renderer Component */
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Renderer",
         m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
         return E_FAIL;
     Safe_AddRef(m_pRenderer);
+
+    /* Texture Component */
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Texture_White",
+        CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/White.png"))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Texture_Terrain",
+        CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain5.png"))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Texture_Brush",
+        CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Brush.png"))))
+        return E_FAIL;
 
     Safe_Release(pGameInstance);
 
@@ -212,38 +224,25 @@ HRESULT CToolMainApp::Ready_NonAnimModels()
     GetCurrentDirectoryA(MAX_PATH, szFullPath);
     string strFullPath = "";
 
-    strFullPath = strFullPath + szFullPath + "\\Models\\NonAnimModels";
-
-    list<string> ModelPaths;
-    pGameInstance->Extraction_Data(strFullPath, ".dat", ModelPaths);
+    strFullPath = strFullPath + szFullPath + "\\Models\\NonAnimModels\\Hell.dat";
 
     /* PivotMatrix 설정*/
     _matrix PivotMatrix = XMMatrixIdentity();
     PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
 
     /* Model Read 작업 실행*/
-    _uint iIndex = 0;
-    for (auto& Path : ModelPaths)
+    _char szName[MAX_PATH];
+    pGameInstance->ReadModels(strFullPath, m_FilePaths, m_vecModelDatas);
+
+    for (auto& Data : m_vecModelDatas)
     {
-        _char szName[MAX_PATH];
-        string strTag = "";
-        pGameInstance->ReadModels(Path, m_FilePaths, m_AnimModelData);
+        wstring wstrTag = L"Model_";
+        wstrTag = wstrTag + Data.szTag;
 
-        _splitpath_s(Path.c_str(), nullptr, 0, nullptr, 0, szName, MAX_PATH, nullptr, 0);
-
-        string strName = szName;
-        if (string::npos != strName.find("_"))
-            strTag = "Anim_";
-        else
-            strTag = "Model_";
-
-        strTag += strName;
-
-        if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, pGameInstance->strToWStr(strTag).c_str(),
-            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_AnimModelData[iIndex++], PivotMatrix))))
+        if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrTag.c_str(),
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, Data, PivotMatrix))))
             return E_FAIL;
     }
-
     Safe_Release(pGameInstance);
 
     return S_OK;
@@ -348,7 +347,7 @@ void CToolMainApp::Update_Demo()
 CToolMainApp* CToolMainApp::Create()
 {
     CToolMainApp* pInstance = New CToolMainApp;
-    
+
     if (FAILED(pInstance->Initialize()))
     {
         MSG_BOX("Failed to Created CMainTool");
@@ -402,9 +401,10 @@ void CToolMainApp::Free()
     Safe_Release(m_pDevice);
     Safe_Release(m_pImWindow_Manager);
 
-    TOOL->DestroyInstance();
     Safe_Release(m_pGameInstance);
 
+    CToolInstance::DestroyInstance();
     CImWindow_Manager::DestroyInstance();
+
     m_pGameInstance->Release_Engine();
 }

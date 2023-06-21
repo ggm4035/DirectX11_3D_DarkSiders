@@ -17,10 +17,26 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_iVertexBuffers(rhs.m_iVertexBuffers)
 	, m_eFormat(rhs.m_eFormat)
 	, m_eTopology(rhs.m_eTopology)
-	, m_TriangleList(rhs.m_TriangleList)
+	, m_vecTriangle(rhs.m_vecTriangle)
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
+}
+
+void CVIBuffer::Set_Triangle(const _uint& iIndex, const TRIANGLE& Triangle)
+{
+	if (0 > iIndex || m_vecTriangle.size() <= iIndex)
+		return;
+
+	memcpy(&m_vecTriangle[iIndex], &Triangle, sizeof(TRIANGLE));
+}
+
+void CVIBuffer::Set_Triangle_Dot(const _uint& iIndex, const _uint& iDot, const _float3& vValue)
+{
+	if (0 > iIndex || m_vecTriangle.size() <= iIndex)
+		return;
+
+	m_vecTriangle[iIndex].vDot[iDot] = vValue;
 }
 
 HRESULT CVIBuffer::Initialize_Prototype()

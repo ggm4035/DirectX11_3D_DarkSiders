@@ -29,8 +29,7 @@ public:
     CRenderer* Get_Renderer() { return m_pRenderer; }
     CModel* Get_Model() { return m_pModelCom; }
     CRenderer::RENDERGROUP Get_RenderGroup() { return m_eRenderGroup; }
-    void Updata_On() { m_isUpdate = true; }
-    void Updata_Off() { m_isUpdate = false; }
+    void Updata_Toggle() { m_isUpdate = m_isUpdate ? false : true; }
     MODEL_BINARYDATA Get_Model_BinaryData();
 
 public:

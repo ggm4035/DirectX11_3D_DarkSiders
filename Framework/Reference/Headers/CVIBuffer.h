@@ -12,7 +12,9 @@ protected:
 	virtual ~CVIBuffer() = default;
 
 public:
-	const list<TRIANGLE>& Get_TriangleList() const { return m_TriangleList; }
+	const vector<TRIANGLE>& Get_vecTriangle() const { return m_vecTriangle; }
+	void Set_Triangle(const _uint& iIndex, const TRIANGLE& Triangle);
+	void Set_Triangle_Dot(const _uint& iIndex, const _uint& iDot, const _float3& vValue);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -39,7 +41,7 @@ protected:
 	DXGI_FORMAT m_eFormat;
 	D3D11_PRIMITIVE_TOPOLOGY m_eTopology;
 
-	list<TRIANGLE> m_TriangleList;
+	vector<TRIANGLE> m_vecTriangle;
 
 protected:
 	HRESULT Create_Buffer(OUT ID3D11Buffer * *ppOut);

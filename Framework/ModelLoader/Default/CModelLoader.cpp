@@ -26,9 +26,9 @@ void CModelLoader::Tick()
 	string strFullPath = { "" };
 	strFullPath = strFullPath + szFullPath + "\\Out\\NonAnimModels\\";
 	/* NonAnimModel 바이너리화 */
-	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Environment", ".fbx", m_FilePathList);
+	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Environment/Hell", ".fbx", m_FilePathList);
 	ConvertBinary_NonAnimModel();
-	WriteModels(strFullPath);
+	WriteNonAnimModels(strFullPath);
 	//ResetData();
 	//m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 
@@ -39,12 +39,12 @@ void CModelLoader::Tick()
 	/* AnimModel 바이너리화 */
 	m_pGameInstance->Extraction_Data("../../Resources/AnimModels", ".fbx", m_FilePathList);
 	ConvertBinary_AnimModel();
-	WriteModels(strFullPath);
+	WriteAnimModels(strFullPath);
 	//ResetData();
 	//m_pGameInstance->ReadModels("AnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 }
 
-void CModelLoader::WriteModels(const string& strFilePath)
+void CModelLoader::WriteAnimModels(const string& strFilePath)
 {
 	auto strPath = m_FilePathList.begin();
 
@@ -63,6 +63,180 @@ void CModelLoader::WriteModels(const string& strFilePath)
 		if (INVALID_HANDLE_VALUE == hFile)
 			return;
 
+		std::cout << "==== Write Binary Datas " << szFileName << " ====" << endl;
+		_ulong dwByte = { 0 };
+
+		/* Write strFilePath */
+		_uint iPathLength = strlen(strPath->c_str()) + 1;
+		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+		WriteFile(hFile, strPath->c_str(), sizeof(_char) * iPathLength, &dwByte, nullptr);
+		++strPath;
+
+		/*===== BINARY DATAS ======*/
+		std::cout << "WriteFile Binary Datas..." << endl;
+		/* Write szTag */
+		iPathLength = lstrlen(m_vecDatas[iDataIndex].szTag) + 1;
+		WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+		WriteFile(hFile, m_vecDatas[iDataIndex].szTag, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
+
+		/* Write iNumMeshes */
+		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumMeshes, sizeof(_uint), &dwByte, nullptr);
+
+		/* Write iNumMaterials */
+		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumMaterials, sizeof(_uint), &dwByte, nullptr);
+
+		/* Write szMaterialTexturePath */
+		_uint iTexturePathlength = { 0 };
+		for (_uint iMaterialIndex = 0; iMaterialIndex < m_vecDatas[iDataIndex].iNumMaterials; ++iMaterialIndex)
+		{
+			for (_uint iTextureIndex = 0; iTextureIndex < 21; ++iTextureIndex)
+			{
+				iTexturePathlength = lstrlen(m_vecDatas[iDataIndex].pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex]) + 1;
+				WriteFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex],
+					sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
+			}
+		}
+
+		/* Write iNumBones */
+		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumBones, sizeof(_uint), &dwByte, nullptr);
+
+		/*===== BONE DATAS ======*/
+		std::cout << "WriteFile Bone Datas..." << endl;
+		if (0 < m_vecBones.size())
+		{
+			for (auto& Bones : m_vecBones[iDataIndex])
+			{
+				/* Write szName_Bone */
+				_uint iNameLength = strlen(Bones.szName) + 1;
+				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, Bones.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+				/* Write iParentIdx */
+				WriteFile(hFile, &Bones.iParentIdx, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write iIndex */
+				WriteFile(hFile, &Bones.iIndex, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write TransformationMatrix */
+				WriteFile(hFile, &Bones.TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+				/* Write OffsetMatrix */
+				WriteFile(hFile, &Bones.OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			}
+		}
+
+		/* Write iNumAnimations */
+		WriteFile(hFile, &m_vecDatas[iDataIndex].iNumAnimations, sizeof(_uint), &dwByte, nullptr);
+
+		/*===== ANIMATION DATAS ======*/
+		std::cout << "WriteFile Animation Datas..." << endl;
+		for (_uint iAnimIndex = 0; iAnimIndex < m_vecDatas[iDataIndex].iNumAnimations; ++iAnimIndex)
+		{
+			/* Write szName */
+			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName) + 1;
+			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Write Duration */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+
+			/* Write TickPerSec */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+
+			/* Write iNumChannels */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write bIsLoop */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
+			/*===== CHANNEL DATAS ======*/
+			std::cout << "WriteFile Channel Datas..." << endl;
+			for (_uint iChannelIndex = 0; iChannelIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
+			{
+				/* Write szName */
+				iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName) + 1;
+				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+				/* Write iNumKeyFrames */
+				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write KeyFrame */
+				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames,
+					sizeof(KEYFRAME) * m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+			}
+		}
+
+		/*===== MESH DATAS ======*/
+		std::cout << "WriteFile Mesh Datas..." << endl;
+		for (_uint iMeshIndex = 0; iMeshIndex < m_vecDatas[iDataIndex].iNumMeshes; ++iMeshIndex)
+		{
+			/* Write szName_Mesh */
+			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].szName) + 1;
+			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Write iMaterialIndex */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumNonAnimVertices */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumAnimVertices */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumIndices */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write iNumMeshBones */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
+
+			/* Write pBoneIndices */
+			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pBoneIndices, sizeof(_uint) *
+				m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
+
+			/* Write pNonAnimVertices */
+			if (0 < m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices)
+			{
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pNonAnimVertices, sizeof(VTXMESH) *
+					m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
+			}
+
+			/* Write pAnimVertices */
+			if (0 < m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices)
+			{
+				WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pAnimVertices, sizeof(VTXANIMMESH) *
+					m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
+			}
+
+			/* Write pIndices */
+			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pIndices, sizeof(_ulong) *
+				m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, &dwByte, nullptr);
+		}
+
+		CloseHandle(hFile);
+		std::cout << "==== Success Write Binary Datas ====" << endl;
+	}
+}
+
+void CModelLoader::WriteNonAnimModels(const string& strFilePath)
+{
+	auto strPath = m_FilePathList.begin();
+
+	string strFullPath = strFilePath;
+	_char szFileName[MAX_PATH] = { "" };
+	_splitpath_s(strPath->c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
+
+	strFullPath = strFullPath + szFileName + ".dat";
+
+	HANDLE hFile = CreateFileA(strFullPath.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+		return;
+
+	for (_uint iDataIndex = 0; iDataIndex < m_FilePathList.size(); ++iDataIndex)
+	{
 		std::cout << "==== Write Binary Datas " << szFileName << " ====" << endl;
 		_ulong dwByte = { 0 };
 
@@ -211,10 +385,10 @@ void CModelLoader::WriteModels(const string& strFilePath)
 			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pIndices, sizeof(_ulong) *
 				m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, &dwByte, nullptr);
 		}
-
-		CloseHandle(hFile);
-		std::cout << "==== Success Write Binary Datas ====" << endl;
 	}
+
+	CloseHandle(hFile);
+	std::cout << "==== Success Write Binary Datas ====" << endl;
 }
 
 HRESULT CModelLoader::ConvertBinary_AnimModel()

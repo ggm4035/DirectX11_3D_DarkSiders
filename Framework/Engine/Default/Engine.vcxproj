@@ -113,6 +113,12 @@
       <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLib/</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -152,6 +158,12 @@
       <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLib/</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\CAnimation.h" />
@@ -161,6 +173,7 @@
     <ClInclude Include="..\Public\CCalculator.h" />
     <ClInclude Include="..\Public\CCamera.h" />
     <ClInclude Include="..\Public\CCamera_Manager.h" />
+    <ClInclude Include="..\Public\CCell.h" />
     <ClInclude Include="..\Public\CChannel.h" />
     <ClInclude Include="..\Public\CComponent.h" />
     <ClInclude Include="..\Public\CComponent_Manager.h" />
@@ -176,6 +189,7 @@
     <ClInclude Include="..\Public\CLight_Manager.h" />
     <ClInclude Include="..\Public\CMesh.h" />
     <ClInclude Include="..\Public\CModel.h" />
+    <ClInclude Include="..\Public\CNavigation.h" />
     <ClInclude Include="..\Public\CObject_Manager.h" />
     <ClInclude Include="..\Public\CPipeLine.h" />
     <ClInclude Include="..\Public\CRenderer.h" />
@@ -185,6 +199,7 @@
     <ClInclude Include="..\Public\CVIBuffer.h" />
     <ClInclude Include="..\Public\CVIBuffer_Coordnate.h" />
     <ClInclude Include="..\Public\CVIBuffer_Cube.h" />
+    <ClInclude Include="..\Public\CVIBuffer_Cell.h" />
     <ClInclude Include="..\Public\CVIBuffer_Rect.h" />
     <ClInclude Include="..\Public\CVIBuffer_Terrain.h" />
     <ClInclude Include="..\Public\Engine_Enums.h" />
@@ -206,6 +221,7 @@
     <ClCompile Include="..\Private\CCalculator.cpp" />
     <ClCompile Include="..\Private\CCamera.cpp" />
     <ClCompile Include="..\Private\CCamera_Manager.cpp" />
+    <ClCompile Include="..\Private\CCell.cpp" />
     <ClCompile Include="..\Private\CChannel.cpp" />
     <ClCompile Include="..\Private\CComponent.cpp" />
     <ClCompile Include="..\Private\CComponent_Manager.cpp" />
@@ -223,6 +239,7 @@
     <ClCompile Include="..\Private\CLight_Manager.cpp" />
     <ClCompile Include="..\Private\CMesh.cpp" />
     <ClCompile Include="..\Private\CModel.cpp" />
+    <ClCompile Include="..\Private\CNavigation.cpp" />
     <ClCompile Include="..\Private\CObject_Manager.cpp" />
     <ClCompile Include="..\Private\CPipeLine.cpp" />
     <ClCompile Include="..\Private\CRenderer.cpp" />
@@ -232,11 +249,15 @@
     <ClCompile Include="..\Private\CVIBuffer.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Cube.cpp" />
+    <ClCompile Include="..\Private\CVIBuffer_Cell.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Rect.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Terrain.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Public\Engine_Struct.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

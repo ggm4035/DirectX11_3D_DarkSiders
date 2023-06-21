@@ -102,7 +102,7 @@ HRESULT CCoordnate_Axis::Set_ShaderResources()
 
 CCoordnate_Axis* CCoordnate_Axis::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CCoordnate_Axis* pInstance = new CCoordnate_Axis(pDevice, pContext);
+	CCoordnate_Axis* pInstance = New CCoordnate_Axis(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -114,7 +114,7 @@ CCoordnate_Axis* CCoordnate_Axis::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 CCoordnate_Axis* CCoordnate_Axis::Clone(CComponent* pOwner, void* pArg)
 {
-	CCoordnate_Axis* pInstance = new CCoordnate_Axis(*this);
+	CCoordnate_Axis* pInstance = New CCoordnate_Axis(*this);
 
 	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{

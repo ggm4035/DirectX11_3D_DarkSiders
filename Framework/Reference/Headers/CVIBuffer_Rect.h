@@ -14,8 +14,6 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual	HRESULT Initialize(CComponent * pOwner, void* pArg) override;
-
-public:
 	virtual HRESULT Render() override;
 
 public:

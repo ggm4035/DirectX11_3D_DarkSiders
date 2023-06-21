@@ -16,7 +16,7 @@ public:
 	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
 
 public:
-	HRESULT Bind_RawValue(const string& Typename, void* pValue, const _uint& iLength);
+	HRESULT Bind_RawValue(const string& Typename, const void* pValue, const _uint& iLength);
 	HRESULT Bind_Float4x4(const string& Typename, const _float4x4 * pMatrix);
 	HRESULT Bind_Float4x4_Array(const string& Typename, const _float4x4 * pMatrix, const _uint& iNumMatrices);
 	HRESULT Bind_Rasterizer(const string& Typename, const _uint& iIndex, ID3D11RasterizerState * _pRasterizer);

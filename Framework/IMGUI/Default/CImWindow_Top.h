@@ -11,6 +11,8 @@ BEGIN(Imgui)
 
 class CImWindow_Top final : public CImWindow
 {
+    DECLARE_SINGLETON(CImWindow_Top)
+
 private:
     explicit CImWindow_Top();
     virtual ~CImWindow_Top() = default;
@@ -22,9 +24,12 @@ public:
     _bool isPickSolidMode() {
         return m_isPickSolidMode;
     }
+    _bool isSolidMode() {
+        return m_isSolidMode;
+    }
 
 public:
-    virtual HRESULT Initialize(void* pArg) override;
+    virtual HRESULT Initialize() override;
     virtual void Tick(const _double& TimeDelta) override;
     virtual void Refresh() override;
 
@@ -33,6 +38,7 @@ private:
     _bool m_isPicking = { false };
 
     _bool m_isPickSolidMode = { false };
+    _bool m_isSolidMode = { false };
 
 private:
     void RenderMode(CGameInstance* pGameInstance);
@@ -41,7 +47,6 @@ private:
     void Load(CGameInstance* pGameInstance);
 
 public:
-    static CImWindow_Top* Create(void* pArg = nullptr);
     virtual void Free() override;
 };
 

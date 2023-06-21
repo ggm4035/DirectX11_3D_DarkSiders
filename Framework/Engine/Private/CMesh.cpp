@@ -95,6 +95,7 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnim(const MESHDATA& MeshData)
 		return E_FAIL;
 
 	_ulong* pIndices = MeshData.pIndices;
+	m_vecTriangle.reserve(m_iNumIndices);
 
 	for (_uint i = 0; i < m_iNumIndices;)
 	{
@@ -105,7 +106,7 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnim(const MESHDATA& MeshData)
 		TriangleDesc.vDot[1] = pVertices[pIndices[i++]].vPosition;
 		TriangleDesc.vDot[2] = pVertices[pIndices[i++]].vPosition;
 
-		m_TriangleList.push_back(TriangleDesc);
+		m_vecTriangle.push_back(TriangleDesc);
 	}
 
 	return S_OK;
@@ -132,6 +133,7 @@ HRESULT CMesh::Ready_VertexBuffer_Anim(const MESHDATA& MeshData)
 		return E_FAIL;
 
 	_ulong* pIndices = MeshData.pIndices;
+	m_vecTriangle.reserve(m_iNumIndices);
 
 	for (_uint i = 0; i < m_iNumIndices;)
 	{
@@ -142,7 +144,7 @@ HRESULT CMesh::Ready_VertexBuffer_Anim(const MESHDATA& MeshData)
 		TriangleDesc.vDot[1] = pVertices[pIndices[i++]].vPosition;
 		TriangleDesc.vDot[2] = pVertices[pIndices[i++]].vPosition;
 
-		m_TriangleList.push_back(TriangleDesc);
+		m_vecTriangle.push_back(TriangleDesc);
 	}
 
 	return S_OK;

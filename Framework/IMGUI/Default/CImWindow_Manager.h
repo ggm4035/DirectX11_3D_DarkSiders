@@ -17,7 +17,8 @@ public:
     HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     void Tick(const _double& TimeDelta);
     void Render();
-    HRESULT Add_Window(wstring tag, CImWindow* pWindow);
+
+    HRESULT Add_Window(CImWindow* pWindow);
     void Refresh_All_Window();
 
 private:
@@ -25,10 +26,7 @@ private:
     ID3D11DeviceContext* m_pContext = { nullptr };
 
 private:
-    unordered_map<wstring, CImWindow*>    m_ImWindows;
-
-private:
-    CImWindow* Find_Window(wstring tag);
+    list<CImWindow*>    m_ImWindowList;
 
 public:
     virtual void Free(void) override;

@@ -25,7 +25,6 @@ namespace Engine
 	typedef struct tagVertex_Position
 	{
 		XMFLOAT3 vPosition;
-		XMFLOAT4 vColor;
 	}VTXPOS;
 
 	typedef struct ENGINE_DLL tagVertex_Position_Declaration
@@ -169,9 +168,20 @@ namespace Engine
 	}MODEL_BINARYDATA;
 
 	/* Save Data Object */
-	typedef struct tagFileData
+	typedef struct tagModelData
 	{
 		_tchar szModelTag[MAX_PATH] = { L"" };
 		_float4x4 TransformMatrix;
+	}MODELDATA;
+
+	typedef struct tagFileData
+	{
+		/* Terrain */
+		_uint iXCount = { 0 };
+		_uint iZCount = { 0 };
+		_float3* pPositions = { nullptr };
+
+		/* Models */
+		vector<MODELDATA> vecModelData;
 	}FILEDATA;
 }

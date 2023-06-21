@@ -1,16 +1,21 @@
 #include "CImWindow_Create.h"
 
 #include "CGameInstance.h"
+#include "CToolInstance.h"
 #include "CImWindow_Manager.h"
 #include "CDummyObject3D.h"
+
+#include "CImWindow_Top.h"
+
+IMPLEMENT_SINGLETON(CImWindow_Create)
 
 CImWindow_Create::CImWindow_Create()
 {
 }
 
-HRESULT CImWindow_Create::Initialize(void* pArg)
+HRESULT CImWindow_Create::Initialize()
 {
-    if (FAILED(CImWindow::Initialize(pArg)))
+    if (FAILED(CImWindow::Initialize()))
         return E_FAIL;
 
     m_Types[TEXTURE] = "Texture";
@@ -71,7 +76,7 @@ void CImWindow_Create::Create_Object()
 
                 auto iter = PrototypeList.begin();
 
-                string* pstrTags = new string[iNumPrototypes];
+                string* pstrTags = New string[iNumPrototypes];
 
                 _uint iIndex = 0;
                 for (auto iter = PrototypeList.begin(); iter != PrototypeList.end(); ++iter)
@@ -82,7 +87,7 @@ void CImWindow_Create::Create_Object()
                         ++iIndex;
                 }
 
-                const _char** ppiTems = new const _char * [iIndex];
+                const _char** ppiTems = New const _char * [iIndex];
 
                 for (_uint j = 0; j < iIndex; ++j)
                     ppiTems[j] = pstrTags[j].c_str();
@@ -112,20 +117,7 @@ void CImWindow_Create::Create_Object()
 
     static _int clicked = 0;
 
-    if (pGameInstance->Key_Down(DIK_Q))
-    {
-        m_bIsOpen = false;
-        ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * 3);
-        ZeroMemory(m_szObjectName, sizeof(_char) * TYPE_END);
-        for (_uint i = 0; i < TYPE_END; ++i)
-            m_bTypes[i] = false;
-        clicked = { 0 };
-        m_iCloneNum = { 0 };
-
-        m_bIsPicking = false;
-    }
-
-    if (ImGui::Button("Create"))
+    if (ImGui::Button("Create Object"))
     {
         if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
             pGameInstance->strToWStr(m_szObjectName), L"Layer_Tool")))
@@ -142,8 +134,14 @@ void CImWindow_Create::Create_Object()
         ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
 
         RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
         RasterizerDesc.FrontCounterClockwise = { false };
+        RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+
+        if (nullptr != TOOL->m_pCurrentObject &&
+            false == TOOL->m_pTopWindow->isSolidMode())
+            TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+
+        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
 
         pObject->Set_RasterizerState(RasterizerDesc);
 
@@ -154,6 +152,8 @@ void CImWindow_Create::Create_Object()
         pObject->Add_Model(pGameInstance->strToWStr(m_szPrototypeTag[MODEL]));
 
         pObject->Set_Tag(pGameInstance->strToWStr(m_szObjectName));
+
+        TOOL->m_pCurrentObject = pObject;
 
         ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * TYPE_END);
         ZeroMemory(m_szObjectName, sizeof(_char) * 256);
@@ -183,12 +183,25 @@ void CImWindow_Create::Create_Object()
         m_iCloneNum = { 0 };
     }
 
+    if (ImGui::Button("Exit"))
+    {
+        m_bIsOpen = false;
+        ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * 3);
+        ZeroMemory(m_szObjectName, sizeof(_char) * TYPE_END);
+        for (_uint i = 0; i < TYPE_END; ++i)
+            m_bTypes[i] = false;
+        clicked = { 0 };
+        m_iCloneNum = { 0 };
+
+        m_bIsPicking = false;
+    }
+
     Safe_Release(pGameInstance);
 }
 
 void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
 {
-    if (true == m_bIsPicking && pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+    if (g_hWnd == ::GetFocus() && pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
     {
         _char szNum[8] = { "" };
         _char szObjName[256] = { "" };
@@ -219,9 +232,14 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
 
         RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
         RasterizerDesc.FrontCounterClockwise = { false };
+        RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
 
+        if (nullptr != TOOL->m_pCurrentObject &&
+            false == TOOL->m_pTopWindow->isSolidMode())
+            TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+
+        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
         pObject->Set_RasterizerState(RasterizerDesc);
 
         /* Components */
@@ -256,21 +274,11 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         }
 
         pObject->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPickPos);
+
+        TOOL->m_pCurrentObject = pObject;
+
         ++m_iCloneNum;
     }
-}
-
-CImWindow_Create* CImWindow_Create::Create(void* pArg)
-{
-    CImWindow_Create* pInstance = new CImWindow_Create();
-
-    if (FAILED(pInstance->Initialize(pArg)))
-    {
-        Safe_Release(pInstance);
-        MSG_BOX("Failed to Create CImWindow_Create");
-    }
-
-    return pInstance;
 }
 
 void CImWindow_Create::Free()

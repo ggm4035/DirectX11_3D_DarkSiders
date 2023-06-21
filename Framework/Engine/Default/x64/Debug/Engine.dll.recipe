@@ -5,7 +5,11 @@
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine.dll</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
-  <ContentFiles />
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Navigation.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />
 </Project>

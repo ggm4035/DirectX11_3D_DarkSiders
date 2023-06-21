@@ -431,7 +431,7 @@ void CGameInstance::ReadModels(const string& strFilePath, OUT list<string>& File
 	return m_pFileInfo->ReadModels(strFilePath, FilePathList, vecData);
 }
 
-HRESULT CGameInstance::Load(const string& strFilePath, OUT list<FILEDATA>& OutData)
+HRESULT CGameInstance::Load(const string& strFilePath, OUT FILEDATA& OutData)
 {
 	if (nullptr == m_pFileInfo)
 		return E_FAIL;

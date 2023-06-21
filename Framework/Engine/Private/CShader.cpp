@@ -71,7 +71,7 @@ HRESULT CShader::Initialize(CComponent* pOwner, void* pArg)
 	return S_OK;
 }
 
-HRESULT CShader::Bind_RawValue(const string& Typename, void* pValue, const _uint& iLength)
+HRESULT CShader::Bind_RawValue(const string& Typename, const void* pValue, const _uint& iLength)
 {
 	if (nullptr == m_pEffect)
 		return E_FAIL;

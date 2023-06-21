@@ -28,7 +28,7 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
 
     vector<ANIMATIONDATA> vecAnimDatas = m_pModelCom->Get_AnimationDatas();
 
-    ANIMATIONDATA* pAnimations = new ANIMATIONDATA[vecAnimDatas.size()];
+    ANIMATIONDATA* pAnimations = New ANIMATIONDATA[vecAnimDatas.size()];
 
     _uint i = 0;
     for (auto& AnimData : vecAnimDatas)
@@ -232,7 +232,7 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
                 return E_FAIL;
 
             if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-                &pGameInstance->Get_Trasnform_Inverse_Float4x4(CPipeLine::STATE_VIEW), sizeof(_float4))))
+                &pGameInstance->Get_Camera_Position(), sizeof(_float4))))
                 return E_FAIL;
         }
     }
@@ -243,7 +243,7 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
 
 CDummyObject3D* CDummyObject3D::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CDummyObject3D* pInstance = new CDummyObject3D(pDevice, pContext);
+    CDummyObject3D* pInstance = New CDummyObject3D(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
@@ -256,7 +256,7 @@ CDummyObject3D* CDummyObject3D::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 
 CGameObject3D* CDummyObject3D::Clone(CComponent* pOwner, void* pArg)
 {
-    CDummyObject3D* pInstance = new CDummyObject3D(*this);
+    CDummyObject3D* pInstance = New CDummyObject3D(*this);
 
     if (FAILED(pInstance->Initialize(pOwner, pArg)))
     {

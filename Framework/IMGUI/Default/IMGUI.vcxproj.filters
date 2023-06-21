@@ -64,6 +64,12 @@
     <Filter Include="01. ImWindow\03. ImWindow_Top">
       <UniqueIdentifier>{92c8a30b-87e0-4e10-9a4e-bbfdafa8867e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. ImWindow\00. ImWindow_Base\Tool_Animation">
+      <UniqueIdentifier>{b99913e1-b775-4eb2-a867-2a561db141d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\00. ImWindow_Base\Tool_HeightMap">
+      <UniqueIdentifier>{1b6f1aef-4030-428f-bcea-5bb721132fa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\imconfig.h">
@@ -122,6 +128,12 @@
     </ClInclude>
     <ClInclude Include="ImGuiFileDialog.h">
       <Filter>IMGUIFile</Filter>
+    </ClInclude>
+    <ClInclude Include="CTool_Animation.h">
+      <Filter>01. ImWindow\00. ImWindow_Base\Tool_Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="CTool_HeightMap.h">
+      <Filter>01. ImWindow\00. ImWindow_Base\Tool_HeightMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +199,12 @@
     </ClCompile>
     <ClCompile Include="ImGuiFileDialog.cpp">
       <Filter>IMGUIFile</Filter>
+    </ClCompile>
+    <ClCompile Include="CTool_Animation.cpp">
+      <Filter>01. ImWindow\00. ImWindow_Base\Tool_Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CTool_HeightMap.cpp">
+      <Filter>01. ImWindow\00. ImWindow_Base\Tool_HeightMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

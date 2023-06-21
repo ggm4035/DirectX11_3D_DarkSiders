@@ -110,7 +110,7 @@ void CMainCamera::KeyInput(const _double& TimeDelta)
 
 CMainCamera* CMainCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CMainCamera* pInstance = new CMainCamera(pDevice, pContext);
+	CMainCamera* pInstance = New CMainCamera(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -122,7 +122,7 @@ CMainCamera* CMainCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 CMainCamera* CMainCamera::Clone(CComponent* pOwner, void* pArg)
 {
-	CMainCamera* pInstance = new CMainCamera(*this);
+	CMainCamera* pInstance = New CMainCamera(*this);
 
 	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{

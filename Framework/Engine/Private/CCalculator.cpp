@@ -65,10 +65,10 @@ _vector CCalculator::Picking_On_Triangle(const POINT& ptMouse, class CVIBuffer* 
 	// 이제 로컬상의 좌표를 버퍼의 각 삼각형 끼리 충돌처리 연산을 진행한다.
 	_float fDistance = { 0.f };
 	_float fNearDistance = { FLT_MAX };
-	const list<TRIANGLE>& TriangleList = pBuffer->Get_TriangleList();
+	const vector<TRIANGLE>& vecTriangle = pBuffer->Get_vecTriangle();
 
 	_vector vDot[3];
-	for (auto& iter : TriangleList)
+	for (auto& iter : vecTriangle)
 	{
 		vDot[0] = XMLoadFloat3(&iter.vDot[0]);
 		vDot[1] = XMLoadFloat3(&iter.vDot[1]);

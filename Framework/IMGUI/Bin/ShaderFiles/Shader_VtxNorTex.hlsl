@@ -11,6 +11,10 @@ float4 g_CameraPosition;
 
 texture2D g_DiffuseTexture;
 
+texture2D g_BrushTexture;
+float4 g_vBrushPos;
+float g_fBrushRadius;
+
 sampler LinearSampler = sampler_state
 {
     Filter = MIN_MAG_MIP_LINEAR;
@@ -51,28 +55,42 @@ VS_OUT VS_MAIN(VS_IN In)
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
-    float4 vNoraml : NORAML;
+    float4 vNormal : NORAML;
     float2 vTexUV : TEXCOORD0;
-    float4 vWorldPosition : TEXCOORD1;
+    float4 vWorldPos : TEXCOORD1;
 };
 
 float4 PS_MAIN(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
-	
-    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+    float4 vBrush = (float4) 0;
     
-    float fShade = max(dot(normalize(In.vNoraml), -normalize(g_LightDirection)), 0.f);
-    fShade = saturate(fShade + g_LightAmbient);
+    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f);
     
-    float4 vReflect = normalize(reflect(g_LightDirection, In.vNoraml));
-    float4 vLook = normalize(In.vWorldPosition - g_CameraPosition);
+    if (g_vBrushPos.x - g_fBrushRadius < In.vWorldPos.x && In.vWorldPos.x <= g_vBrushPos.x + g_fBrushRadius &&
+		g_vBrushPos.z - g_fBrushRadius < In.vWorldPos.z && In.vWorldPos.z <= g_vBrushPos.z + g_fBrushRadius)
+    {
+        float2 vTexUV;
+        
+        vTexUV.x = (In.vWorldPos.x - (g_vBrushPos.x - g_fBrushRadius)) / (2.f * g_fBrushRadius);
+        vTexUV.y = ((g_vBrushPos.z - g_fBrushRadius) - In.vWorldPos.z) / (2.f * g_fBrushRadius);
+
+        vBrush = g_BrushTexture.Sample(LinearSampler, vTexUV);
+        vDiffuse += vBrush * 0.2f;
+    }
+
+    float4 vAmbient = float4(0.4f, 0.4f, 0.4f, 1.f);
+    float fShade = max(dot(-normalize(g_LightDirection), In.vNormal), 0.f);
+    fShade = saturate(fShade + vAmbient * g_LightAmbient);
+    
+    float4 vReflect = normalize(reflect(normalize(g_LightDirection), normalize(In.vNormal)));
+    float4 vLook = normalize(In.vWorldPos - g_CameraPosition);
     
     vDiffuse = vDiffuse * g_LightDiffuse * fShade;
-    float4 vSpecular = pow(max(dot(-vLook, vReflect), 0.f), 30.f) * g_LightSpecular;
+    float4 vSpecular = pow(max(dot(-vReflect, vLook), 0.f), 30.f) * g_LightSpecular;
     
     vColor = vDiffuse + vSpecular;
-	
+    
     return vColor;
 }
 

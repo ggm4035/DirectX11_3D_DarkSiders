@@ -10,12 +10,14 @@ BEGIN(Imgui)
 
 class CImWindow_Inspector final : public CImWindow
 {
+    DECLARE_SINGLETON(CImWindow_Inspector)
+
 private:
     explicit CImWindow_Inspector();
     virtual ~CImWindow_Inspector() = default;
 
 public:
-    virtual HRESULT Initialize(void* pArg) override;
+    virtual HRESULT Initialize() override;
     virtual void Tick(const _double& TimeDelta) override;
     virtual void Refresh() override;
 
@@ -25,13 +27,11 @@ private:
 private:
     void Show_Components();
     void Show_Transform();
-    void Show_Renderer();
     void Show_Texture();
     void Show_Shader();
     void Show_Buffer();
 
 public:
-    static CImWindow_Inspector* Create(void* pArg = nullptr);
     virtual void Free() override;
 };
 
