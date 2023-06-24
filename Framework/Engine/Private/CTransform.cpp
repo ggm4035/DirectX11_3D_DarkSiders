@@ -40,9 +40,9 @@ HRESULT CTransform::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTransform::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CTransform::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CComponent::Initialize(pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
@@ -154,22 +154,23 @@ void CTransform::Rotation(_fvector vAxis, const _float& fRadian)
 void CTransform::Rotation(const _float3& rDegrees)
 {
 	m_vAngle = rDegrees;
-	_float3 Scales = Get_Scaled();
+
+	_float3 vScale = Get_Scaled();
 	_matrix RotationMatrixX, RotationMatrixY, RotationMatrixZ;
 
 	RotationMatrixX = XMMatrixRotationX(XMConvertToRadians(rDegrees.x));
 	RotationMatrixY = XMMatrixRotationY(XMConvertToRadians(rDegrees.y));
 	RotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(rDegrees.z));
 
-	_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scales.x;
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scales.y;
-	_vector vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scales.z;
+	_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScale.x;
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScale.y;
+	_vector vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScale.z;
 
 	_matrix RotationMatrix = RotationMatrixX * RotationMatrixY * RotationMatrixZ;
 
-	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(vRight, RotationMatrix));
-	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, RotationMatrix));
-	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
+	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotationMatrix));
+	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotationMatrix));
+	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
 }
 
 void CTransform::Turn(_fvector vAxis, const _double& TimeDelta)
@@ -207,11 +208,11 @@ CTransform* CTransform::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	return pInstance;
 }
 
-CComponent* CTransform::Clone(CComponent* pOwner, void* pArg)
+CComponent* CTransform::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CTransform* pInstance = new CTransform(*this);
 
-	if (FAILED(pInstance->Initialize(pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CTransform");
 		Safe_Release(pInstance);

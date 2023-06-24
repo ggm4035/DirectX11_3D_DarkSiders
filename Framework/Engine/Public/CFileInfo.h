@@ -22,6 +22,9 @@ public:
 	void ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData);
 	HRESULT Load(const string& strFilePath, OUT FILEDATA& OutData);
 
+private:
+	void Read_BinData(HANDLE hFile, MODEL_BINARYDATA & Data, _ulong dwByte);
+
 public:
     // string < - > wstring 변환 함수
 	wstring strToWStr(const string& str);

@@ -1,7 +1,8 @@
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
-float4 g_LightDirection;
+float4 g_LightPosition, g_LightDirection;
+float g_LightRange;
 float4 g_LightDiffuse, g_LightSpecular, g_LightAmbient;
 
 float4 g_CameraPosition;
@@ -68,7 +69,7 @@ PS_OUT PS_MAIN(PS_IN In)
     if (vDiffuse.a < 0.1f)
         discard;
     
-    float4 vAmbient = float4(0.2f, 0.2f, 0.2f, 0.2f);
+    float4 vAmbient = float4(0.3f, 0.3f, 0.3f, 1.f);
     float fShade = max(dot(normalize(In.vNoraml), -normalize(g_LightDirection)), 0.f);
     fShade = saturate(fShade + g_LightAmbient * vAmbient);
     

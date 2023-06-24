@@ -20,9 +20,9 @@ HRESULT CMainCamera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMainCamera::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CMainCamera::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CCamera::Initialize(pOwner, pArg)))
+	if (FAILED(CCamera::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -120,11 +120,11 @@ CMainCamera* CMainCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return pInstance;
 }
 
-CMainCamera* CMainCamera::Clone(CComponent* pOwner, void* pArg)
+CMainCamera* CMainCamera::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CMainCamera* pInstance = New CMainCamera(*this);
 
-	if (FAILED(pInstance->Initialize(pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
 	{
 		Safe_Release(pInstance);
         MSG_BOX("Failed to Cloned CMainCamera");

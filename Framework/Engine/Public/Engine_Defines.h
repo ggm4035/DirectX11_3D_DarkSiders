@@ -16,6 +16,11 @@
 #include "DirectXTK/DDSTextureLoader.h"
 #include "DirectXTK/WICTextureLoader.h"
 #include "DirectxTK/ScreenGrab.h"
+#include "DirectXTK\PrimitiveBatch.h"
+#include "DirectXTK\VertexTypes.h"
+#include "DirectXTK\Effects.h"
+#include "DirectXTK\SpriteBatch.h"
+#include "DirectXTK\SpriteFont.h"
 using namespace DirectX;
 
 #include <vector>
@@ -28,11 +33,11 @@ using namespace DirectX;
 #include <fstream>
 using namespace std;
 
-#include "Engine_Enums.h"
-#include "Engine_Function.h"
-#include "Engine_TypeDef.h"
 #include "Engine_Macro.h"
+#include "Engine_Enums.h"
+#include "Engine_TypeDef.h"
 #include "Engine_Struct.h"
+#include "Engine_Function.h"
 
 #ifdef _DEBUG
 

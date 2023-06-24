@@ -18,7 +18,7 @@ HRESULT CCamera_Free::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCamera_Free::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CCamera_Free::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CCamera::CAMERADESC CameraDesc;
 	CameraDesc.vEye = _float4(0.f, 20.f, -10.f, 1.f);
@@ -33,7 +33,7 @@ HRESULT CCamera_Free::Initialize(CComponent* pOwner, void* pArg)
 	CameraDesc.TransformDesc.SpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
 
-	if (FAILED(CCamera::Initialize(pOwner, &CameraDesc)))
+	if (FAILED(CCamera::Initialize(iLayerIndex, pOwner, &CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -110,11 +110,11 @@ CCamera_Free* CCamera_Free::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	return pInstance;
 }
 
-CGameObject3D* CCamera_Free::Clone(CComponent* pOwner, void* pArg)
+CGameObject3D* CCamera_Free::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CCamera_Free* pInstance = new CCamera_Free(*this);
 
-	if (FAILED(pInstance->Initialize(pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CCamera_Free");
 		Safe_Release(pInstance);

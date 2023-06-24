@@ -23,6 +23,7 @@ private:
 public:
     _char m_szObjectName[256] = { "" };
     _char m_szPrototypeTag[TYPE_END][256] = { "" };
+    _char m_szSearchTag[256] = { "" };
     _bool m_bIsOpen = { false };
 
 public:

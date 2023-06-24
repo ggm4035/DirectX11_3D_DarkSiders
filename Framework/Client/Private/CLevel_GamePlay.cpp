@@ -3,6 +3,10 @@
 
 #include "CGameInstance.h"
 
+#include "CPlayer.h"
+#include "CTerrain.h"
+#include "CStatic_Object.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice, pContext)
 {
@@ -50,7 +54,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LightDesc.fRange = 100.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.eType = CLight::TYPE_DIRECTIONAL;
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
@@ -65,11 +69,42 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Terrain",
-		L"Terrain", pLayerTag)))
+	FILEDATA FileData;
+	if (FAILED(pGameInstance->Load("../../ModelDatas/testmap.dat", FileData)))
 		return E_FAIL;
 
+	CTerrain::TERRAINDESC TerrainDesc;
+
+	TerrainDesc.wstrTextureTag = L"Texture_Terrain";
+	TerrainDesc.iXCount = FileData.iXCount;
+	TerrainDesc.iZCount = FileData.iZCount;
+	TerrainDesc.pPositions = FileData.pPositions;
+
+	/* Load Terrain */
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Terrain",
+		L"Terrain", pLayerTag, &TerrainDesc)))
+		return E_FAIL;
+
+	/* Load Static Models */
+	for (auto& Data : FileData.vecModelData)
+	{
+		CStatic_Object::STATICOBJECTDESC StaticObjectDesc;
+
+		StaticObjectDesc.wstrModelTag = Data.BinaryData.szTag;
+		StaticObjectDesc.WorldMatrix = Data.TransformMatrix;
+		StaticObjectDesc.vAngle = Data.vAngle;
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Static_Object",
+			Data.szObjectTag, pLayerTag, &StaticObjectDesc)))
+			return E_FAIL;
+	}
+
 	Safe_Release(pGameInstance);
+
+	for (auto& Data : FileData.vecModelData)
+		Safe_Delete_BinaryData(Data.BinaryData);
+
+	Safe_Delete_Array(FileData.pPositions);
 
 	return S_OK;
 }
@@ -79,7 +114,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cameras(wstring pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Camera_Free",
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Camera_Free",
 		L"Camera_Free", pLayerTag)))
 		return E_FAIL;
 
@@ -93,7 +128,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Prototype_GameObject_Player",
+	CPlayer::PLAYERDESC PlayerDesc;
+	PlayerDesc.WorldMatrix;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Player",
 		L"Player", pLayerTag)))
 		return E_FAIL;
 

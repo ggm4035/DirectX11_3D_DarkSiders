@@ -28,6 +28,7 @@ HRESULT CAnimation::Initialize(const ANIMATIONDATA& AnimationData, const CModel:
 	strcpy_s(m_szName, AnimationData.szName);
 	m_Duration = AnimationData.Duration;
 	m_TickPerSec = AnimationData.TickPerSec;
+	m_isLoop = AnimationData.bIsLoop;
 
 	if (FAILED(Ready_Channels(AnimationData, Bones)))
 		return E_FAIL;

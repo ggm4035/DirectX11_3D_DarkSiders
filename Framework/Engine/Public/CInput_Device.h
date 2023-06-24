@@ -21,6 +21,7 @@ public:
 	{
 		return m_byKeyState[ubyKeyID];
 	}
+
 	_byte		Get_DIMouseState(MOUSEKEYSTATE eMouseID)
 	{
 		return m_tMouseState.rgbButtons[eMouseID];

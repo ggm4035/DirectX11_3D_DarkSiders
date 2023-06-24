@@ -31,7 +31,7 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& wstrCellFilePath);
-	virtual HRESULT Initialize(CComponent* pOwner, void* pArg);
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg);
 
 private:
 	NAVIGATIONDESC m_NavigationDesc;
@@ -42,7 +42,7 @@ private:
 
 public:
 	static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& wstrCellFilePath);
-	virtual CNavigation* Clone(CComponent* pOwner, void* pArg) override;
+	virtual CNavigation* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

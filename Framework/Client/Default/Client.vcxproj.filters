@@ -28,14 +28,8 @@
     <Filter Include="02. GameObject">
       <UniqueIdentifier>{4421319e-a267-4e72-82e9-352a5166944f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\BackGround">
-      <UniqueIdentifier>{e1d3b298-7249-4a1d-8b9a-2cb769a60e9b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. ShaderFiles">
       <UniqueIdentifier>{e00542d5-bcff-4309-9d4a-11f315bae038}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Terrain">
-      <UniqueIdentifier>{33d642fa-3091-46e2-a765-b922d6528579}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObject\Camera">
       <UniqueIdentifier>{4a1653ab-30f2-4b57-90f9-c4af8aa416f0}</UniqueIdentifier>
@@ -48,6 +42,21 @@
     </Filter>
     <Filter Include="02. GameObject\Monster">
       <UniqueIdentifier>{d9062a12-1a44-4d4b-a54d-3bde862fb965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Environment">
+      <UniqueIdentifier>{e1d3b298-7249-4a1d-8b9a-2cb769a60e9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Environment\Terrain">
+      <UniqueIdentifier>{33d642fa-3091-46e2-a765-b922d6528579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\UI">
+      <UniqueIdentifier>{3fdcf253-5904-4a3a-919b-67c3b9f3af14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Environment\Static_Object">
+      <UniqueIdentifier>{b11112c8-0428-44cc-954f-e7980f77c1e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Environment\Anim_Object">
+      <UniqueIdentifier>{5614ebb0-f27e-412c-ac1d-9e6be6247812}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,11 +93,8 @@
     <ClInclude Include="..\Public\CLoader.h">
       <Filter>01. Levels\99. Level_Loading\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CBackGround.h">
-      <Filter>02. GameObject\BackGround</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CTerrain.h">
-      <Filter>02. GameObject\Terrain</Filter>
+      <Filter>02. GameObject\Environment\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CCamera_Free.h">
       <Filter>02. GameObject\Camera\Camera_Free</Filter>
@@ -98,6 +104,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\CMonster.h">
       <Filter>02. GameObject\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CUI_Rect.h">
+      <Filter>02. GameObject\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CStatic_Object.h">
+      <Filter>02. GameObject\Environment\Static_Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +125,6 @@
     <ClCompile Include="..\Private\CLoader.cpp">
       <Filter>01. Levels\99. Level_Loading\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CBackGround.cpp">
-      <Filter>02. GameObject\BackGround</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CLevel_GamePlay.cpp">
       <Filter>01. Levels\01. Level_GamePlay</Filter>
     </ClCompile>
@@ -126,7 +135,7 @@
       <Filter>01. Levels\99. Level_Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CTerrain.cpp">
-      <Filter>02. GameObject\Terrain</Filter>
+      <Filter>02. GameObject\Environment\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CCamera_Free.cpp">
       <Filter>02. GameObject\Camera\Camera_Free</Filter>
@@ -136,6 +145,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CMonster.cpp">
       <Filter>02. GameObject\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CUI_Rect.cpp">
+      <Filter>02. GameObject\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CStatic_Object.cpp">
+      <Filter>02. GameObject\Environment\Static_Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -438,7 +438,8 @@ void ImGui::ShowDemoWindow(bool* p_open)
     {
         ImGuiIO& io = ImGui::GetIO();
 
-        if (ImGui::TreeNode("Configuration##2"))
+        if (
+            ("Configuration##2"))
         {
             ImGui::SeparatorText("General");
             ImGui::CheckboxFlags("io.ConfigFlags: NavEnableKeyboard",    &io.ConfigFlags, ImGuiConfigFlags_NavEnableKeyboard);

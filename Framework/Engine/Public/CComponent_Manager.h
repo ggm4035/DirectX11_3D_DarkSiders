@@ -5,6 +5,7 @@
 #include "CVIBuffer_Cube.h"
 #include "CVIBuffer_Terrain.h"
 #include "CVIBuffer_Coordnate.h"
+#include "CCollider.h"
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CShader.h"

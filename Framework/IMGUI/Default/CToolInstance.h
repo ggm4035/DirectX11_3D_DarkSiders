@@ -20,6 +20,7 @@ public:
 
 public:
     class CDummyObject3D* m_pCurrentObject = { nullptr };
+    vector<MODEL_BINARYDATA>* m_pModelDatas;
     vector<MODEL_BINARYDATA>* m_pAnimModelDatas;
     list<string>* m_pFilePaths;
 

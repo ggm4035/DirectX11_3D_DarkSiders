@@ -29,7 +29,7 @@ HRESULT Client::CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_Component_For_Static()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Prototype_GameObject_For_Static()))
+	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
 	/* 초기 레벨을 생성하고 초기화 한다. */
@@ -56,77 +56,88 @@ HRESULT CMainApp::Render()
 	return S_OK;
 }
 
-HRESULT CMainApp::Ready_Prototype_Component_For_Static()
-{
-	if (nullptr == m_pGameInstance)
-		return E_FAIL;
-
-	_char szFullPath[MAX_PATH] = { "" };
-	GetCurrentDirectoryA(MAX_PATH, szFullPath);
-	string strFullPath = szFullPath;
-
-	strFullPath = strFullPath + "\\Models\\AnimModels\\Warrior.dat";
-
-	m_pGameInstance->ReadModels(strFullPath, m_FilePathList, m_vecModelDatas);
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Renderer",
-		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	Safe_AddRef(m_pRenderer);
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_VIBuffer_Rect",
-		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	_matrix PivotMatrix = XMMatrixIdentity();
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
-	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Model_Player",
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecModelDatas[0], PivotMatrix))))
-		return E_FAIL;
-
-	/*L"../Bin/Resources/Models/working/Environment/Hell/Structural/Ruins/Update/WallRubble_A/WallRubble_A.fbx"*/
-	/*L"../Bin/Resources/Models/working/Heros/Warrior/Warrior.fbx"*/
-	/*L"../Bin/Resources/Models/Fiona/Fiona.fbx"*/
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxTex",
-		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl", 
-			VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxMesh",
-		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxMesh.hlsl",
-			VTXMESH_DECL::Elements, VTXMESH_DECL::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxAnimMesh",
-		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl",
-			VTXANIMMESH_DECL::Elements, VTXANIMMESH_DECL::iNumElements))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Prototype_Component_Shader_VtxNorTex",
-		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl", 
-			VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CMainApp::Ready_Prototype_GameObject_For_Static()
-{
-	/* For. Prototype_GameObject_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Player",
-		CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CMainApp::Open_Level(LEVELID eLevelIndex)
 {
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
 	return m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelIndex));
+}
+
+HRESULT CMainApp::Ready_Prototype_Component_For_Static()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	/* Renderer */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Renderer",
+		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	Safe_AddRef(m_pRenderer);
+
+	/* VIBuffer_Rect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Rect",
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Shader_VtxTex */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_VtxTex",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl",
+			VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
+		return E_FAIL;
+
+	/* Shader_VtxMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_Mesh",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxMesh.hlsl",
+			VTXMESH_DECL::Elements, VTXMESH_DECL::iNumElements))))
+		return E_FAIL;
+
+	/* Shader_VtxAnimMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_AnimMesh",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl",
+			VTXANIMMESH_DECL::Elements, VTXANIMMESH_DECL::iNumElements))))
+		return E_FAIL;
+
+	/* Shader_VtxNorTex */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_VtxNorTex",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl",
+			VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
+		return E_FAIL;
+
+	/* For. Collider_Sphere */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Collider_Sphere",
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))
+		return E_FAIL;
+
+	/* For. Collider_AABB */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Collider_AABB",
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_AABB))))
+		return E_FAIL;
+
+	/* For. Collider_OBB */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Collider_OBB",
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_OBB))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Player()
+{
+	m_pGameInstance->ReadModels("../../ModelDatas/AnimModels/Warrior.dat", m_FilePathList, m_vecModelDatas);
+
+	/* Player Model */
+	_matrix PivotMatrix = XMMatrixIdentity();
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Model_Player",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecModelDatas[0], PivotMatrix))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Player", CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CMainApp * CMainApp::Create()
@@ -144,28 +155,7 @@ CMainApp * CMainApp::Create()
 void CMainApp::Free()
 {
 	for (auto& Model : m_vecModelDatas)
-	{
-		for (_uint i = 0; i < Model.iNumAnimations; ++i)
-		{
-			for (_uint j = 0; j < Model.pAnimations[i].iNumChannels; ++j)
-			{
-				Safe_Delete_Array(Model.pAnimations[i].pChannels[j].pKeyFrames);
-			}
-			Safe_Delete_Array(Model.pAnimations[i].pChannels);
-		}
-		Safe_Delete_Array(Model.pAnimations);
-
-		for (_uint i = 0; i < Model.iNumMeshes; ++i)
-		{
-			Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
-			Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
-			Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
-			Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
-		}
-		Safe_Delete_Array(Model.pMaterialPaths);
-		Safe_Delete_Array(Model.pMeshDatas);
-		Safe_Delete_Array(Model.pBoneDatas);
-	}
+		Safe_Delete_BinaryData(Model);
 
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);

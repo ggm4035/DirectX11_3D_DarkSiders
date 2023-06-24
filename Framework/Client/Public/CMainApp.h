@@ -22,8 +22,6 @@ public:
 	HRESULT Render();
 
 public:
-	HRESULT Ready_Prototype_Component_For_Static();
-	HRESULT Ready_Prototype_GameObject_For_Static();
 	HRESULT Open_Level(LEVELID eLevelIndex);
 
 private:
@@ -35,6 +33,10 @@ private:
 
 	list<string> m_FilePathList;
 	vector<MODEL_BINARYDATA> m_vecModelDatas;
+
+private:
+	HRESULT Ready_Prototype_Component_For_Static();
+	HRESULT Ready_Player();
 
 public:
 	static CMainApp* Create();

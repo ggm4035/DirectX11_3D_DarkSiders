@@ -28,14 +28,14 @@ HRESULT CCamera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCamera::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CCamera::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	if (nullptr != pArg)
 	{
 		CAMERADESC CameraDesc = { };
 		CameraDesc = *static_cast<CAMERADESC*>(pArg);
 
-		if (FAILED(CGameObject3D::Initialize(pOwner, &CameraDesc.TransformDesc)))
+		if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, &CameraDesc.TransformDesc)))
 			return E_FAIL;
 
 		m_vEye = CameraDesc.vEye;
@@ -47,7 +47,7 @@ HRESULT CCamera::Initialize(CComponent* pOwner, void* pArg)
 		m_fNear = CameraDesc.fNear;
 		m_fFar = CameraDesc.fFar;
 	}
-	else if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
+	else if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 

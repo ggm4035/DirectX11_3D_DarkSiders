@@ -6,6 +6,8 @@
 CTool_HeightMap::CTool_HeightMap()
 {
     ZeroMemory(&m_vBrushPos, sizeof(_float4));
+
+    m_vecPoints.resize(10);
 }
 
 void CTool_HeightMap::Initialize()
@@ -30,29 +32,36 @@ void CTool_HeightMap::Tick(CGameInstance* pGameInstance)
 
     /* Interface */
     static _int iSelected = { 0 };
-
     ImGui::SeparatorText("Mode");
     ImGui::RadioButton("Height", &iSelected, 0); ImGui::SameLine();
-    ImGui::RadioButton("Filter", &iSelected, 1);
+    ImGui::RadioButton("Filter", &iSelected, 1); ImGui::SameLine();
+    ImGui::RadioButton("Navigation", &iSelected, 2);
+    ImGui::Separator();
 
-    ImGui::SetNextItemWidth(50.f);
-    ImGui::DragFloat("Brush Radius", &m_fRadius, 0.1f, 0.f, 50.f, "%.1f");
+    if (2 == iSelected)
+        Make_Navigation(pGameInstance);
 
-    /* Brush */
-    POINT ptMouse;
-    GetCursorPos(&ptMouse);
-    ScreenToClient(g_hWnd, &ptMouse);
-
-    XMStoreFloat4(&m_vBrushPos, pGameInstance->Picking_On_Triangle(ptMouse, m_pTerrain->Get_Buffer(), m_pTerrain->Get_Transform()));
-
-    if (0 == iSelected)
-        Control_Height(pGameInstance);
     else
-        Draw_Filter(pGameInstance);
+    {
+        ImGui::SetNextItemWidth(50.f);
+        ImGui::DragFloat("Brush Radius", &m_fRadius, 0.1f, 0.f, 50.f, "%.1f");
 
-    /* Bind Shader Resources */
-    if (FAILED(Bind_Shader_Resources()))
-        return;
+        /* Brush */
+        POINT ptMouse;
+        GetCursorPos(&ptMouse);
+        ScreenToClient(g_hWnd, &ptMouse);
+
+        XMStoreFloat4(&m_vBrushPos, pGameInstance->Picking_On_Triangle(ptMouse, m_pTerrain->Get_Buffer(), m_pTerrain->Get_Transform()));
+
+        if (0 == iSelected)
+            Control_Height(pGameInstance);
+        else
+            Draw_Filter(pGameInstance);
+
+        /* Bind Shader Resources */
+        if (FAILED(Bind_Shader_Resources()))
+            return;
+    }
 }
 
 HRESULT CTool_HeightMap::Bind_Shader_Resources()
@@ -174,6 +183,64 @@ void CTool_HeightMap::Draw_Filter(CGameInstance* pGameInstance)
 
     /* Function */
 
+}
+
+//ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, pGameInstance->wstrToStr(pObjectTag).c_str());
+//if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+//{
+//    if (true == TOOL->m_pTopWindow->isPickSolidMode())
+//    {
+//        D3D11_RASTERIZER_DESC RasterizerDesc;
+//        ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+//
+//        RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+//        RasterizerDesc.FrontCounterClockwise = { false };
+//        RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+//
+//        if (nullptr != TOOL->m_pCurrentObject)
+//            TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+//
+//        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+//
+//        TOOL->m_pCurrentObject = Find_GameObject(pObjectTag);
+//
+//        if (nullptr != TOOL->m_pCurrentObject)
+//            TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+//    }
+//    else
+//        TOOL->m_pCurrentObject = Find_GameObject(pObjectTag);
+//}
+void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
+{
+    ImGui::SeparatorText("Navigation");
+    ImGui::BeginChild("Navigations", ImVec2(200, 400), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+
+    ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+    static _uint iSelected = { 0 };
+    for (_uint i = 0; i < m_vecPoints.size(); ++i)
+    {
+        if (i == iSelected)
+            node_flags |= ImGuiTreeNodeFlags_Selected;
+
+        _char szId[8] = { "" };
+        _itoa_s(i, szId, 10);
+
+        if (ImGui::TreeNode(szId))
+        {
+            iSelected = i;
+            ImGui::TreePop();
+        }
+    }
+    ImGui::EndChild();
+
+    _vector vPosition = m_pTerrain->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+    _float arrData[3] = { vPosition.m128_f32[0], vPosition.m128_f32[1], vPosition.m128_f32[2] };
+    ImGui::DragFloat3("Position", arrData, 0.1f, 0.f, 100.f, "%.1f");
+    vPosition = XMVectorSet(arrData[0], arrData[1], arrData[2], 1.f);
+    m_pTerrain->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPosition);
+
+    ImGui::Separator();
 }
 
 void CTool_HeightMap::Free()

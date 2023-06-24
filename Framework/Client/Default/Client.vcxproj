@@ -165,7 +165,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Public\CBackGround.h" />
+    <ClInclude Include="..\Public\CStatic_Object.h" />
+    <ClInclude Include="..\Public\CUI_Rect.h" />
     <ClInclude Include="..\Public\CCamera_Free.h" />
     <ClInclude Include="..\Public\CLevel_GamePlay.h" />
     <ClInclude Include="..\Public\CLevel_Loading.h" />
@@ -182,7 +183,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Private\CBackGround.cpp" />
+    <ClCompile Include="..\Private\CStatic_Object.cpp" />
+    <ClCompile Include="..\Private\CUI_Rect.cpp" />
     <ClCompile Include="..\Private\CCamera_Free.cpp" />
     <ClCompile Include="..\Private\CLevel_GamePlay.cpp" />
     <ClCompile Include="..\Private\CLevel_Loading.cpp" />

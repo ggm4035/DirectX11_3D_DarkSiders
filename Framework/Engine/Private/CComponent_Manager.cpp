@@ -53,7 +53,7 @@ CComponent* CComponent_Manager::Clone_Component(const _uint& iLevelIndex, const 
 	if (nullptr == pPrototype)
 		return nullptr;
 
-	CComponent* pComponent = pPrototype->Clone(pOwner, pArg);
+	CComponent* pComponent = pPrototype->Clone(iLevelIndex, pOwner, pArg);
 
 	if (nullptr == pComponent)
 		return nullptr;
@@ -66,7 +66,7 @@ CComponent* CComponent_Manager::Clone_Transform(CComponent* pOwner, void* pArg)
 	if (nullptr == m_pPrototype_Transform)
 		return nullptr;
 
-	CComponent* pComponent = m_pPrototype_Transform->Clone(pOwner, pArg);
+	CComponent* pComponent = m_pPrototype_Transform->Clone(0, pOwner, pArg);
 	if (nullptr == pComponent)
 		return nullptr;
 

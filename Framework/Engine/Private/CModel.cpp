@@ -48,6 +48,7 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 		Data.Duration = Animation->m_Duration;
 		Data.TickPerSec = Animation->m_TickPerSec;
 		Data.iNumChannels = Animation->m_iNumChannels;
+		Data.bIsLoop = Animation->m_isLoop;
 
 		CHANNELDATA* pChannels = new CHANNELDATA[Data.iNumChannels];
 		for (_uint i = 0; i < Data.iNumChannels; ++i)
@@ -132,7 +133,7 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& Mo
 	return S_OK;
 }
 
-HRESULT CModel::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CModel::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	return S_OK;
 }
@@ -166,6 +167,9 @@ HRESULT CModel::Bind_Material(CShader* pShader, const string& strTypename, const
 		return E_FAIL;
 
 	_uint iMaterialIndex = m_vecMeshes[iMeshIndex]->Get_MaterialIndex();
+
+	if (nullptr == m_vecMaterials[iMaterialIndex].pMtrlTexture[eTextureType])
+		return S_OK;
 
 	return m_vecMaterials[iMaterialIndex].pMtrlTexture[eTextureType]->Bind_ShaderResource(pShader, strTypename);
 }
@@ -278,11 +282,11 @@ CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	return pInstance;
 }
 
-CModel* CModel::Clone(CComponent * pOwner, void* pArg)
+CModel* CModel::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CModel* pInstance = new CModel(*this);
 
-	if (FAILED(pInstance->Initialize(pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CModel");
 		Safe_Release(pInstance);

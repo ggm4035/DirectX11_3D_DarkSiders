@@ -171,7 +171,7 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
 
     /* VIBuffer Component */
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain",
-        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 129, 129, 1.f))))
+        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 129, 257, 1.f))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain_Height",
@@ -220,29 +220,28 @@ HRESULT CToolMainApp::Ready_NonAnimModels()
     Safe_AddRef(pGameInstance);
 
     /* Model 경로 설정 */
-    _char szFullPath[MAX_PATH] = { "" };
-    GetCurrentDirectoryA(MAX_PATH, szFullPath);
-    string strFullPath = "";
-
-    strFullPath = strFullPath + szFullPath + "\\Models\\NonAnimModels\\Hell.dat";
+    list<string> ModelPaths;
+    pGameInstance->Extraction_Data("../../ModelDatas/NonAnimModels", ".dat", ModelPaths);
 
     /* PivotMatrix 설정*/
     _matrix PivotMatrix = XMMatrixIdentity();
     PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
 
     /* Model Read 작업 실행*/
-    _char szName[MAX_PATH];
-    pGameInstance->ReadModels(strFullPath, m_FilePaths, m_vecModelDatas);
-
-    for (auto& Data : m_vecModelDatas)
+    _uint iIndex = 0;
+    for (auto& Path : ModelPaths)
     {
-        wstring wstrTag = L"Model_";
-        wstrTag = wstrTag + Data.szTag;
+        pGameInstance->ReadModels(Path, m_FilePaths, m_vecModelDatas);
+
+        wstring wstrTag = L"";
+        wstrTag = wstrTag + L"Model_" + m_vecModelDatas[iIndex].szTag;
 
         if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrTag.c_str(),
-            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, Data, PivotMatrix))))
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecModelDatas[iIndex++], PivotMatrix))))
             return E_FAIL;
     }
+    TOOL->m_pModelDatas = &m_vecModelDatas;
+
     Safe_Release(pGameInstance);
 
     return S_OK;
@@ -254,14 +253,8 @@ HRESULT CToolMainApp::Ready_AnimModels()
     Safe_AddRef(pGameInstance);
 
     /* Model 경로 설정 */
-    _char szFullPath[MAX_PATH] = { "" };
-    GetCurrentDirectoryA(MAX_PATH, szFullPath);
-    string strFullPath = "";
-
-    strFullPath = strFullPath + szFullPath + "\\Models\\AnimModels";
-
     list<string> ModelPaths;
-    pGameInstance->Extraction_Data(strFullPath, ".dat", ModelPaths);
+    pGameInstance->Extraction_Data("../../ModelDatas/AnimModels", ".dat", ModelPaths);
 
     /* PivotMatrix 설정*/
     _matrix PivotMatrix = XMMatrixIdentity();
@@ -271,26 +264,24 @@ HRESULT CToolMainApp::Ready_AnimModels()
     _uint iIndex = 0;
     for (auto& Path : ModelPaths)
     {
-        _char szName[MAX_PATH];
-        string strTag = "";
-        pGameInstance->ReadModels(Path, m_FilePaths, m_AnimModelData);
+        wstring wstrTag = L"";
+        pGameInstance->ReadModels(Path, m_FilePaths, m_vecAnimModelData);
 
-        _splitpath_s(Path.c_str(), nullptr, 0, nullptr, 0, szName, MAX_PATH, nullptr, 0);
+        wstring wstrName = m_vecAnimModelData[iIndex].szTag;
 
-        string strName = szName;
-        if (string::npos != strName.find("_"))
-            strTag = "Anim_";
+        if (wstring::npos != wstrName.find(L"_"))
+            wstrTag = L"Anim_";
         else
-            strTag = "Model_";
+            wstrTag = L"Model_";
 
-        strTag += strName;
+        wstrTag += wstrName;
 
-        if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, pGameInstance->strToWStr(strTag).c_str(),
-            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_AnimModelData[iIndex++], PivotMatrix))))
+        if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrTag.c_str(),
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecAnimModelData[iIndex++], PivotMatrix))))
             return E_FAIL;
     }
 
-    TOOL->m_pAnimModelDatas = &m_AnimModelData;
+    TOOL->m_pAnimModelDatas = &m_vecAnimModelData;
     TOOL->m_pFilePaths = &m_FilePaths;
 
     Safe_Release(pGameInstance);
@@ -360,41 +351,10 @@ CToolMainApp* CToolMainApp::Create()
 void CToolMainApp::Free()
 {
     for (auto& Model : m_vecModelDatas)
-    {
-        for (_uint i = 0; i < Model.iNumMeshes; ++i)
-        {
-            Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
-            Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
-            Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
-            Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
-        }
-        Safe_Delete_Array(Model.pMaterialPaths);
-        Safe_Delete_Array(Model.pMeshDatas);
-        Safe_Delete_Array(Model.pBoneDatas);
-    }
+        Safe_Delete_BinaryData(Model);
 
-    for (auto& Model : m_AnimModelData)
-    {
-        for (_uint i = 0; i < Model.iNumAnimations; ++i)
-        {
-            for (_uint j = 0; j < Model.pAnimations[i].iNumChannels; ++j)
-            {
-                Safe_Delete_Array(Model.pAnimations[i].pChannels[j].pKeyFrames);
-            }
-            Safe_Delete_Array(Model.pAnimations[i].pChannels);
-        }
-        Safe_Delete_Array(Model.pAnimations);
-        for (_uint i = 0; i < Model.iNumMeshes; ++i)
-        {
-            Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
-            Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
-            Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
-            Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
-        }
-        Safe_Delete_Array(Model.pMaterialPaths);
-        Safe_Delete_Array(Model.pMeshDatas);
-        Safe_Delete_Array(Model.pBoneDatas);
-    }
+    for (auto& Model : m_vecAnimModelData)
+        Safe_Delete_BinaryData(Model);
 
     Safe_Release(m_pRenderer);
     Safe_Release(m_pContext);

@@ -27,8 +27,9 @@ HRESULT CComponent::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CComponent::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CComponent::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
+	m_iLayerIndex = iLayerIndex;
 	m_pOwner = pOwner;
 	return S_OK;
 }
@@ -58,9 +59,9 @@ HRESULT CComposite::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CComposite::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CComposite::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if(FAILED(CComponent::Initialize(pOwner, pArg)))
+	if(FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;

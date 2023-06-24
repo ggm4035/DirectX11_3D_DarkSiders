@@ -40,7 +40,7 @@ HRESULT CObject_Manager::Add_GameObject(const _uint& iLayerIndex, const wstring&
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
-	CGameObject* pGameObject = pPrototype->Clone(nullptr, pArg); // Add_GameObject로 만드는 객체를 최상위 노드로 가정한다.
+	CGameObject* pGameObject = pPrototype->Clone(iLayerIndex, nullptr, pArg);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 

@@ -38,15 +38,19 @@ private:
     _float m_fSharpness = { 0.f };
     _float m_fDir = { 1.f };
 
+private:
+    vector<TRIANGLE> m_vecPoints;
+
 public:
     _int m_iXCount = { 129 };
-    _int m_iZCount = { 129 };
+    _int m_iZCount = { 257 };
     _float m_fInterval = { 1.f };
 
 private:
     HRESULT Bind_Shader_Resources();
     void Control_Height(CGameInstance* pGameInstance);
     void Draw_Filter(CGameInstance* pGameInstance);
+    void Make_Navigation(CGameInstance* pGameInstance);
 
 public:
     virtual void Free() override;

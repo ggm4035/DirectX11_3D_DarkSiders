@@ -49,6 +49,31 @@ namespace Engine
 		}
 	}
 
+	template <typename T>
+	void Safe_Delete_BinaryData(T& Data)
+	{
+		for (_uint i = 0; i < Data.iNumAnimations; ++i)
+		{
+			for (_uint j = 0; j < Data.pAnimations[i].iNumChannels; ++j)
+			{
+				Safe_Delete_Array(Data.pAnimations[i].pChannels[j].pKeyFrames);
+			}
+			Safe_Delete_Array(Data.pAnimations[i].pChannels);
+		}
+		Safe_Delete_Array(Data.pAnimations);
+
+		for (_uint i = 0; i < Data.iNumMeshes; ++i)
+		{
+			Safe_Delete_Array(Data.pMeshDatas[i].pBoneIndices);
+			Safe_Delete_Array(Data.pMeshDatas[i].pNonAnimVertices);
+			Safe_Delete_Array(Data.pMeshDatas[i].pAnimVertices);
+			Safe_Delete_Array(Data.pMeshDatas[i].pIndices);
+		}
+		Safe_Delete_Array(Data.pMaterialPaths);
+		Safe_Delete_Array(Data.pMeshDatas);
+		Safe_Delete_Array(Data.pBoneDatas);
+	}
+
 	//////////////////////////////////////////////////////////////////
 	/////////////////////////////////Functor ÇÔ¼ö°´Ã¼//////////////////////////
 
@@ -73,7 +98,7 @@ namespace Engine
 		}
 
 	private:
-		const wchar_t*		m_pTargetTag = nullptr;
+		const wchar_t* m_pTargetTag = nullptr;
 	};
 
 }

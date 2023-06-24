@@ -19,9 +19,9 @@ HRESULT CGameObjectUI::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CGameObjectUI::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CGameObjectUI::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CComposite::Initialize(pOwner, pArg)))
+	if (FAILED(CComposite::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)

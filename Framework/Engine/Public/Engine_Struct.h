@@ -170,8 +170,10 @@ namespace Engine
 	/* Save Data Object */
 	typedef struct tagModelData
 	{
-		_tchar szModelTag[MAX_PATH] = { L"" };
+		_tchar szObjectTag[MAX_PATH] = { L"" };
 		_float4x4 TransformMatrix;
+		_float3 vAngle;
+		MODEL_BINARYDATA BinaryData;
 	}MODELDATA;
 
 	typedef struct tagFileData

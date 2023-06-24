@@ -75,7 +75,7 @@ void CImWindow_Top::RenderMode(CGameInstance* pGameInstance)
         {
             RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
             for (auto& pObject : m_GameObjectList)
-                    pObject->Set_RasterizerState(RasterizerDesc);
+                pObject->Set_RasterizerState(RasterizerDesc);
 
             m_isPickSolidMode = false;
             m_isSolidMode = true;
@@ -84,7 +84,7 @@ void CImWindow_Top::RenderMode(CGameInstance* pGameInstance)
         {
             RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
             for (auto& pObject : m_GameObjectList)
-                    pObject->Set_RasterizerState(RasterizerDesc);
+                pObject->Set_RasterizerState(RasterizerDesc);
 
             RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
             if (nullptr != TOOL->m_pCurrentObject)
@@ -97,7 +97,7 @@ void CImWindow_Top::RenderMode(CGameInstance* pGameInstance)
         {
             RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
             for (auto& pObject : m_GameObjectList)
-                    pObject->Set_RasterizerState(RasterizerDesc);
+                pObject->Set_RasterizerState(RasterizerDesc);
 
             m_isPickSolidMode = false;
             m_isSolidMode = false;
@@ -143,6 +143,8 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
             string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
             // action
 
+            _ulong dwByte = { 0 };
+            /* Model 저장 */
             HANDLE hFile = CreateFileA(filePathName.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
             if (INVALID_HANDLE_VALUE == hFile)
@@ -151,7 +153,6 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 return;
             }
 
-            _ulong dwByte = { 0 };
             auto iter = m_GameObjectList.begin();
 
             /* 1. Terrain을 저장한다. */
@@ -168,13 +169,13 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
             D3D11_MAPPED_SUBRESOURCE MappedSubResource;
             ZeroMemory(&MappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
-            dynamic_cast<CVIBuffer_Terrain*>((*iter)->Get_Buffer())->Begin(MappedSubResource);
+            (*iter)->Get_Buffer()->Begin(MappedSubResource);
             VTXPOSNORTEX* pVertices = reinterpret_cast<VTXPOSNORTEX*>(MappedSubResource.pData);
 
-            for(_uint i = 0; i < iXCount * iZCount; ++i)
+            for (_uint i = 0; i < iXCount * iZCount; ++i)
                 WriteFile(hFile, &pVertices[i].vPosition, sizeof(_float3), &dwByte, nullptr);
 
-            dynamic_cast<CVIBuffer_Terrain*>((*iter)->Get_Buffer())->End();
+            (*iter)->Get_Buffer()->End();
 
             ++iter;
 
@@ -184,13 +185,19 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
 
             for (_uint i = 1; i < m_GameObjectList.size(); ++i, ++iter)
             {
-                /* Write szModelTag */
+                /* Write szObjectTag */
                 _uint iTaglength = lstrlen((*iter)->Get_Model()->Get_Tag().c_str()) + 1;
                 WriteFile(hFile, &iTaglength, sizeof(_uint), &dwByte, nullptr);
-                WriteFile(hFile, (*iter)->Get_Model()->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
+                WriteFile(hFile, (*iter)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
 
                 /* Write TransformMatrix */
                 WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldMatrix(), sizeof(_float4x4), &dwByte, nullptr);
+
+                /* Write vAngle */
+                WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
+
+                /* Write Binary Datas */
+                Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
             }
 
             /* 3. 카메라를 저장한다. */
@@ -290,6 +297,7 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
                     return;
 
                 pObject->Get_Transform()->Set_Matrix(Data.TransformMatrix);
+                pObject->Get_Transform()->Set_Angle(Data.vAngle);
 
                 /* Rasterizer */
                 RasterizerDesc.CullMode = { D3D11_CULL_BACK };
@@ -300,19 +308,163 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
 
                 /* Components */
                 pObject->Add_Shader(L"Shader_Mesh");
-                pObject->Add_Model(Data.szModelTag);
+                pObject->Add_Model(Data.BinaryData.szTag);
 
                 pObject->Set_Tag(pGameInstance->strToWStr(szObjName));
                 ++idx;
             }
 
+            for (auto& Data : FileData.vecModelData)
+                Safe_Delete_BinaryData(Data.BinaryData);
+
             Safe_Delete_Array(FileData.pPositions);
         }
-    
+
         // close
         ImGuiFileDialog::Instance()->Close();
     }
 
+}
+
+void CImWindow_Top::Write_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte)
+{
+    /* Write szTag */
+    _uint iPathLength = { 0 };
+    iPathLength = lstrlen(Data.szTag) + 1;
+    WriteFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+    WriteFile(hFile, Data.szTag, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
+
+    /* Write iNumMeshes */
+    WriteFile(hFile, &Data.iNumMeshes, sizeof(_uint), &dwByte, nullptr);
+
+    /* Write iNumMaterials */
+    WriteFile(hFile, &Data.iNumMaterials, sizeof(_uint), &dwByte, nullptr);
+
+    /* Write szMaterialTexturePath */
+    _uint iTexturePathlength = { 0 };
+    for (_uint iMaterialIndex = 0; iMaterialIndex < Data.iNumMaterials; ++iMaterialIndex)
+    {
+        for (_uint iTextureIndex = 0; iTextureIndex < 21; ++iTextureIndex)
+        {
+            iTexturePathlength = lstrlen(Data.pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex]) + 1;
+            WriteFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
+            WriteFile(hFile, Data.pMaterialPaths[iMaterialIndex].szMaterialTexturePath[iTextureIndex],
+                sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
+        }
+    }
+
+    /* Write iNumBones */
+    WriteFile(hFile, &Data.iNumBones, sizeof(_uint), &dwByte, nullptr);
+
+    /*===== BONE DATAS ======*/
+    if (0 < Data.iNumBones)
+    {
+        for (_uint iBoneIndex = 0; iBoneIndex < Data.iNumBones; ++iBoneIndex)
+        {
+            /* Write szName_Bone */
+            _uint iNameLength = strlen(Data.pBoneDatas[iBoneIndex].szName) + 1;
+            WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+            WriteFile(hFile, Data.pBoneDatas[iBoneIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+            /* Write iParentIdx */
+            WriteFile(hFile, &Data.pBoneDatas[iBoneIndex].iParentIdx, sizeof(_uint), &dwByte, nullptr);
+
+            /* Write iIndex */
+            WriteFile(hFile, &Data.pBoneDatas[iBoneIndex].iIndex, sizeof(_uint), &dwByte, nullptr);
+
+            /* Write TransformationMatrix */
+            WriteFile(hFile, &Data.pBoneDatas[iBoneIndex].TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+            /* Write OffsetMatrix */
+            WriteFile(hFile, &Data.pBoneDatas[iBoneIndex].OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+        }
+    }
+
+    /* Write iNumAnimations */
+    WriteFile(hFile, &Data.iNumAnimations, sizeof(_uint), &dwByte, nullptr);
+
+    /*===== ANIMATION DATAS ======*/
+    for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
+    {
+        /* Write szName */
+        _uint iNameLength = strlen(Data.pAnimations[iAnimIndex].szName) + 1;
+        WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+        WriteFile(hFile, Data.pAnimations[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+        /* Write Duration */
+        WriteFile(hFile, &Data.pAnimations[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+
+        /* Write TickPerSec */
+        WriteFile(hFile, &Data.pAnimations[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+
+        /* Write iNumChannels */
+        WriteFile(hFile, &Data.pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+
+        /* Write bIsLoop */
+        WriteFile(hFile, &Data.pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
+        /*===== CHANNEL DATAS ======*/
+        for (_uint iChannelIndex = 0; iChannelIndex < Data.pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
+        {
+            /* Write szName */
+            iNameLength = strlen(Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].szName) + 1;
+            WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+            WriteFile(hFile, Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+            /* Write iNumKeyFrames */
+            WriteFile(hFile, &Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+
+            /* Write KeyFrame */
+            WriteFile(hFile, Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames,
+                sizeof(KEYFRAME) * Data.pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+        }
+    }
+
+    /*===== MESH DATAS ======*/
+    for (_uint iMeshIndex = 0; iMeshIndex < Data.iNumMeshes; ++iMeshIndex)
+    {
+        /* Write szName_Mesh */
+        _uint iNameLength = strlen(Data.pMeshDatas[iMeshIndex].szName) + 1;
+        WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+        WriteFile(hFile, Data.pMeshDatas[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+        /* Write iMaterialIndex */
+        WriteFile(hFile, &Data.pMeshDatas[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+
+        /* Write iNumNonAnimVertices */
+        WriteFile(hFile, &Data.pMeshDatas[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+        /* Write iNumAnimVertices */
+        WriteFile(hFile, &Data.pMeshDatas[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+        /* Write iNumIndices */
+        WriteFile(hFile, &Data.pMeshDatas[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
+
+        /* Write iNumMeshBones */
+        WriteFile(hFile, &Data.pMeshDatas[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
+
+        /* Write pBoneIndices */
+        WriteFile(hFile, Data.pMeshDatas[iMeshIndex].pBoneIndices, sizeof(_uint) *
+            Data.pMeshDatas[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
+
+        /* Write pNonAnimVertices */
+        if (0 < Data.pMeshDatas[iMeshIndex].iNumNonAnimVertices)
+        {
+            WriteFile(hFile, Data.pMeshDatas[iMeshIndex].pNonAnimVertices, sizeof(VTXMESH) *
+                Data.pMeshDatas[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
+        }
+
+        /* Write pAnimVertices */
+        if (0 < Data.pMeshDatas[iMeshIndex].iNumAnimVertices)
+        {
+            WriteFile(hFile, Data.pMeshDatas[iMeshIndex].pAnimVertices, sizeof(VTXANIMMESH) *
+                Data.pMeshDatas[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
+        }
+
+        /* Write pIndices */
+        WriteFile(hFile, Data.pMeshDatas[iMeshIndex].pIndices, sizeof(_ulong) *
+            Data.pMeshDatas[iMeshIndex].iNumIndices, &dwByte, nullptr);
+    }
 }
 
 void CImWindow_Top::Free()

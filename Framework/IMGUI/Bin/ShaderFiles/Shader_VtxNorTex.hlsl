@@ -67,7 +67,8 @@ float4 PS_MAIN(PS_IN In) : SV_TARGET0
     
     float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f);
     
-    if (g_vBrushPos.x - g_fBrushRadius < In.vWorldPos.x && In.vWorldPos.x <= g_vBrushPos.x + g_fBrushRadius &&
+    if (g_vBrushPos.x > 0 &&
+        g_vBrushPos.x - g_fBrushRadius < In.vWorldPos.x && In.vWorldPos.x <= g_vBrushPos.x + g_fBrushRadius &&
 		g_vBrushPos.z - g_fBrushRadius < In.vWorldPos.z && In.vWorldPos.z <= g_vBrushPos.z + g_fBrushRadius)
     {
         float2 vTexUV;

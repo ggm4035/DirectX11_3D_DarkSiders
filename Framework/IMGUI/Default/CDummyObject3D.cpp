@@ -2,6 +2,7 @@
 
 #include "CGameInstance.h"
 #include "CToolInstance.h"
+#include "CModel.h"
 
 CDummyObject3D::CDummyObject3D(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject3D(pDevice, pContext)
@@ -18,26 +19,37 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
     vector<MODEL_BINARYDATA>* pModels = TOOL->m_pAnimModelDatas;
 
     MODEL_BINARYDATA retData;
+    ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
+
     for (auto& Data : *pModels)
     {
-        if (Data.szTag == m_wstrTag)
+        wstring wstrTag = { L"Model_" };
+        wstrTag += Data.szTag;
+
+        if (wstrTag == m_pModelCom->Get_Tag())
+        {
             retData = Data;
+            lstrcpy(retData.szTag, wstrTag.c_str());
+            break;
+        }
     }
 
-    retData.pAnimations = nullptr;
+    pModels = TOOL->m_pModelDatas;
 
-    vector<ANIMATIONDATA> vecAnimDatas = m_pModelCom->Get_AnimationDatas();
+    ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
 
-    ANIMATIONDATA* pAnimations = New ANIMATIONDATA[vecAnimDatas.size()];
-
-    _uint i = 0;
-    for (auto& AnimData : vecAnimDatas)
+    for (auto& Data : *pModels)
     {
-        pAnimations[i] = vecAnimDatas[i];
-        ++i;
+        wstring wstrTag = { L"Model_" };
+        wstrTag += Data.szTag;
+
+        if (wstrTag == m_pModelCom->Get_Tag())
+        {
+            retData = Data;
+            lstrcpy(retData.szTag, wstrTag.c_str());
+            break;
+        }
     }
-    retData.iNumAnimations = i;
-    retData.pAnimations = pAnimations;
 
     return retData;
 }
@@ -47,9 +59,9 @@ HRESULT CDummyObject3D::Initialize_Prototype()
     return S_OK;
 }
 
-HRESULT CDummyObject3D::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CDummyObject3D::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-    if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
+    if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
         return E_FAIL;
 
     if (FAILED(Add_Components()))
@@ -254,11 +266,11 @@ CDummyObject3D* CDummyObject3D::Create(ID3D11Device* pDevice, ID3D11DeviceContex
     return pInstance;
 }
 
-CGameObject3D* CDummyObject3D::Clone(CComponent* pOwner, void* pArg)
+CGameObject3D* CDummyObject3D::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
     CDummyObject3D* pInstance = New CDummyObject3D(*this);
 
-    if (FAILED(pInstance->Initialize(pOwner, pArg)))
+    if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
     {
         Safe_Release(pInstance);
         MSG_BOX("Failed to Cloned CDummyObject3D");

@@ -18,9 +18,9 @@ HRESULT CMonster::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMonster::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CMonster::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CGameObject3D::Initialize(pOwner, pArg)))
+	if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -102,6 +102,11 @@ HRESULT CMonster::Set_Shader_Resources()
 		return E_FAIL;
 
 	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition",
+		&LightDesc.vPosition, sizeof(_float4))))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",
 		&LightDesc.vDirection, sizeof(_float4))))
 		return E_FAIL;
@@ -119,7 +124,7 @@ HRESULT CMonster::Set_Shader_Resources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-		&pGameInstance->Get_Trasnform_Inverse_Float4x4(CPipeLine::STATE_VIEW), sizeof(_float4))))
+		&pGameInstance->Get_Camera_Position(), sizeof(_float4))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -139,11 +144,11 @@ CMonster* CMonster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CMonster* CMonster::Clone(CComponent * pOwner, void* pArg)
+CMonster* CMonster::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CMonster* pInstance = new CMonster(*this);
 
-	if (FAILED(pInstance->Initialize(pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CMonster");
 		Safe_Release(pInstance);

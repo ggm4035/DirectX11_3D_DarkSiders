@@ -40,7 +40,11 @@ public:
 		return XMLoadFloat4x4(&m_WorldMatrix).r[_eState];
 	}
 	void Set_State(STATE _eState, _fvector _vState);
+	void Set_Angle(const _float3& vAngle) {
+		m_vAngle = vAngle;
+	}
 
+public:
 	/* Imgui Tool Only*/
 	void Set_Matrix(const _float4x4& fMatrix) {
 		m_WorldMatrix = fMatrix;
@@ -48,7 +52,7 @@ public:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 
 public:
 	void Go_Straight(const _double& TimeDelta);
@@ -72,7 +76,7 @@ private:
 
 public:
 	static CTransform* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	virtual CComponent* Clone(CComponent* pOwner, void* pArg) override;
+	virtual CComponent* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

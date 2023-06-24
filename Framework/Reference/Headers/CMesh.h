@@ -23,7 +23,7 @@ public:
 
 public:
 	virtual HRESULT Initialize_Prototype(CModel::TYPE eModelType, const MESHDATA& MeshData);
-	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 
 private:
 	_char m_szName[MAX_PATH] = { "" };
@@ -39,7 +39,7 @@ private:
 
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::TYPE eModelType, const MESHDATA& MeshData);
-	virtual CMesh* Clone(CComponent* pOwner, void* pArg) override;
+	virtual CMesh* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

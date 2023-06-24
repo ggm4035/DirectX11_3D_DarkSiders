@@ -45,6 +45,7 @@ private:
     void PickingMode(CGameInstance* pGameInstance);
     void Save(CGameInstance* pGameInstance);
     void Load(CGameInstance* pGameInstance);
+    void Write_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte);
 
 public:
     virtual void Free() override;

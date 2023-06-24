@@ -69,7 +69,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eModelType, const MESHDATA& Mes
 	return S_OK;
 }
 
-HRESULT CMesh::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CMesh::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	return S_OK;
 }
@@ -163,11 +163,11 @@ CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMode
 	return pInstance;
 }
 
-CMesh* CMesh::Clone(CComponent * pOwner, void* pArg)
+CMesh* CMesh::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CMesh* pInstance = new CMesh(*this);
 
-	if (FAILED(pInstance->Initialize(pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CMesh");
 		Safe_Release(pInstance);

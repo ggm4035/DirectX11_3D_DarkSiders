@@ -42,7 +42,7 @@ public:/* !!! Warrning Only Tool !!! */
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
-	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent * pOwner, void* pArg) override;
 
 	virtual HRESULT Render(const _uint& iMeshIndex);
 
@@ -82,7 +82,7 @@ private:
 public:
 	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
 		TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
-	virtual CModel* Clone(CComponent * pOwner, void* pArg) override;
+	virtual CModel* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

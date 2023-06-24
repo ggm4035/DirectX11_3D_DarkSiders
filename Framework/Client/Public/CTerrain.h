@@ -14,6 +14,15 @@ BEGIN(Client)
 
 class CTerrain final : public CGameObject3D
 {
+public:
+	typedef struct tagTerrainDesc
+	{
+		_uint iXCount = { 0 };
+		_uint iZCount = { 0 };
+		_float3* pPositions = {nullptr};
+		wstring wstrTextureTag = { L"" };
+	}TERRAINDESC;
+
 private:
 	explicit CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CTerrain(const CTerrain& rhs);
@@ -21,7 +30,7 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -38,7 +47,7 @@ private:
 
 public:
 	static CTerrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject3D* Clone(CComponent* pOwner, void* pArg) override;
+	virtual CGameObject3D* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

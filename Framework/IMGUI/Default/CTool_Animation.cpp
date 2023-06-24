@@ -66,6 +66,7 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
 
             if (ImGui::BeginPopup("Add_Animation"))
             {
+                ImGui::BeginChild("Name", ImVec2(220, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
                 string strTag = pGameInstance->wstrToStr(m_pModel->Get_Tag());
                 strTag += "_";
 
@@ -84,7 +85,9 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
                 for (_uint i = 0; i < AnimationTagList.size(); ++i)
                     ImGui::RadioButton(AnimationTagList[i].c_str(), &iTagIndex, i);
 
-                if (ImGui::Button("Apply"))
+                ImGui::EndChild();
+                /* Add Animation */
+                if (ImGui::Button("Add Animation"))
                 {
                     Add_Animation(pGameInstance, AnimationTagList[iTagIndex]);
                     ImGui::CloseCurrentPopup();
@@ -109,6 +112,14 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
                 iSelected = 0;
             }
         }
+        /* Apply Animation */
+        if (ImGui::Button("Apply"))
+        {
+            for (_uint i = 0; i < m_vecAnimationDatas.size(); ++i)
+                m_pModel->Get_Model()->Set_Animation(i, m_vecAnimationDatas[i]);
+        }
+
+        ImGui::SameLine();
 
         /* Export */
         if (ImGui::Button("Export"))
@@ -143,6 +154,12 @@ void CTool_Animation::Make_New_Model(CGameInstance* pGameInstance, list<class CD
             string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
             // action
 
+            /* Import Model Data */
+            list<string> FilePath;
+            vector<MODEL_BINARYDATA> vecData;
+            pGameInstance->ReadModels(m_strFilePath, FilePath, vecData);
+
+            /* Create Dummy Model */
             _char szName[MAX_PATH] = { "" };
             _splitpath_s(m_strFilePath.c_str(), nullptr, 0, nullptr, 0, szName, MAX_PATH, nullptr, 0);
             string strName = szName;
@@ -152,8 +169,10 @@ void CTool_Animation::Make_New_Model(CGameInstance* pGameInstance, list<class CD
                 wstrName, L"Layer_Tool")))
                 return;
 
+            /* Refresh List */
             WINDOWMGR->Refresh_All_Window();
 
+            /* Bind Model Pointer */
             CDummyObject3D* pObject = { nullptr };
             for (auto& iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
             {
@@ -182,9 +201,17 @@ void CTool_Animation::Make_New_Model(CGameInstance* pGameInstance, list<class CD
 
             pObject->Set_Tag(wstrName);
             m_pModel = pObject;
-            m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
 
             TOOL->m_pCamera->Set_AnimationView();
+
+            /* Add Animation */
+            for (_uint i = 1; i < vecData[0].iNumAnimations; ++i)
+            {
+                m_pModel->Get_Model()->Add_Animation(vecData[0].pAnimations[i]);
+            }
+            m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
+
+            Safe_Delete_BinaryData(vecData[0]);
         }
 
         // close
@@ -237,15 +264,45 @@ void CTool_Animation::Add_Animation(CGameInstance* pGameInstance, const string& 
 
 void CTool_Animation::Export_Animation(CGameInstance* pGameInstance)
 {
-    m_FilePathList.push_back(m_strFilePath);
-    m_vecBinData.push_back(m_pModel->Get_Model_BinaryData());
+    list<string> FilePathList;
+    FilePathList.push_back(m_strFilePath);
+
+    vector<MODEL_BINARYDATA> Temp;
+    MODEL_BINARYDATA Data = m_pModel->Get_Model_BinaryData();
+
+    Data.pAnimations = nullptr;
+
+    ANIMATIONDATA* pAnimations = New ANIMATIONDATA[m_vecAnimationDatas.size()];
+
+    _uint iNumAnimation = 0;
+    for (auto& AnimData : m_vecAnimationDatas)
+    {
+        pAnimations[iNumAnimation] = m_vecAnimationDatas[iNumAnimation];
+        ++iNumAnimation;
+    }
+    Data.iNumAnimations = iNumAnimation;
+    Data.pAnimations = pAnimations;
+
+    Temp.push_back(Data);
 
     _char szFullPath[MAX_PATH] = { "" };
     GetCurrentDirectoryA(MAX_PATH, szFullPath);
     string strFullPath = { "" };
     strFullPath = strFullPath + szFullPath + "\\Out\\";
 
-    pGameInstance->WriteModels(strFullPath, m_FilePathList, m_vecBinData);
+    /* Export Model Data */
+    pGameInstance->WriteModels(strFullPath, FilePathList, Temp);
+
+    /* Remove Datas */
+    pGameInstance->Remove_GameObject(m_pModel->Get_Tag());
+    m_pModel = nullptr;
+    TOOL->m_pCamera->Set_OriginView();
+    WINDOWMGR->Refresh_All_Window();
+    Release_Animation_Data();
+
+    Safe_Delete_Array(pAnimations);
+
+    MSG_BOX("Success to Export");
 }
 
 void CTool_Animation::Release_Animation_Data()
@@ -261,28 +318,8 @@ void CTool_Animation::Release_Animation_Data()
     m_vecAnimationDatas.clear();
 }
 
-void CTool_Animation::Release_Export_Data()
-{
-    m_FilePathList.clear();
-
-    for (auto& BinData : m_vecBinData)
-    {
-        for (_uint i = 0; i < BinData.iNumAnimations; ++i)
-        {
-            for (_uint j = 0; j < BinData.pAnimations[i].iNumChannels; ++j)
-            {
-                Safe_Delete_Array(BinData.pAnimations[i].pChannels[j].pKeyFrames);
-            }
-            Safe_Delete_Array(BinData.pAnimations[i].pChannels);
-        }
-        Safe_Delete_Array(BinData.pAnimations);
-    }
-}
-
 void CTool_Animation::Free()
 {
-    Release_Export_Data();
     Release_Animation_Data();
-
     Safe_Release(m_pModel);
 }

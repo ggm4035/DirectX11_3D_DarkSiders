@@ -9,6 +9,7 @@
 #include <tchar.h>
 #include <windows.h>
 #include "CBase.h"
+#include <cctype>
 #include "ImGuiFileDialog.h"
 
 #define IMFILE ImGuiFileDialog::Instance()

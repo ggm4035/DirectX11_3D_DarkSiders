@@ -158,9 +158,6 @@
     <ClCompile Include="CMainCamera.cpp">
       <Filter>02. GameObject\01. CMainCamera</Filter>
     </ClCompile>
-    <ClCompile Include="CImWindow_Base.cpp">
-      <Filter>01. ImWindow\00. ImWindow_Base</Filter>
-    </ClCompile>
     <ClCompile Include="CImWindow_Inspector.cpp">
       <Filter>01. ImWindow\01. ImWindow_Inspector</Filter>
     </ClCompile>
@@ -205,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="CTool_HeightMap.cpp">
       <Filter>01. ImWindow\00. ImWindow_Base\Tool_HeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Base.cpp">
+      <Filter>01. ImWindow\00. ImWindow_Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

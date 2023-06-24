@@ -17,9 +17,10 @@ public:
 
 public:
 	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(CComponent* pOwner, void* pArg);
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg);
 
 protected:
+	_uint m_iLayerIndex = { 0 };
 	CComponent* m_pOwner = { nullptr };
 	wstring m_wstrTag = { L"" };
 
@@ -28,7 +29,7 @@ protected:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 public:
-	virtual CComponent* Clone(CComponent* pOwner, void* pArg) = 0;
+	virtual CComponent* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 
@@ -41,7 +42,7 @@ protected:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(CComponent * pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent * pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta);
 	virtual void Late_Tick(const _double& TimeDelta);
 	virtual HRESULT Render();
@@ -54,7 +55,7 @@ protected:
 		CComponent **ppOut, CComponent * pOwner, void* pArg = nullptr);
 
 public:
-	virtual CComposite* Clone(CComponent * pOwner, void* pArg) = 0;
+	virtual CComposite* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

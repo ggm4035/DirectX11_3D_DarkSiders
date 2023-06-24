@@ -71,6 +71,13 @@ void CImWindow_Create::Create_Object()
             strcat_s(szDialogTag, m_Types[i]);
             if (ImGui::BeginPopupContextItem(szDialogTag))
             {
+                ImGui::InputText("Search", m_szSearchTag, 256);
+                /* string 소문자로 변환 */
+                string strSearchTag = m_szSearchTag;
+                transform(strSearchTag.begin(), strSearchTag.end(), strSearchTag.begin(), [](_char c) {
+                        return tolower(c);
+                });
+
                 list<CComponent*> PrototypeList = pGameInstance->Get_All_Prototypes();
                 _uint iNumPrototypes = PrototypeList.size();
 
@@ -83,8 +90,16 @@ void CImWindow_Create::Create_Object()
                 {
                     pstrTags[iIndex] = pGameInstance->wstrToStr((*iter)->Get_Tag());
 
-                    if (string::npos != pstrTags[iIndex].find(m_Types[i]))
+                    string strTemp = pstrTags[iIndex];
+                    transform(strTemp.begin(), strTemp.end(), strTemp.begin(), [](_char c) {
+                        return tolower(c);
+                    });
+
+                    if (string::npos != pstrTags[iIndex].find(m_Types[i]) &&
+                        ((0 == strSearchTag.size()) || (string::npos != strTemp.find(strSearchTag))))
+                    {
                         ++iIndex;
+                    }
                 }
 
                 const _char** ppiTems = New const _char * [iIndex];

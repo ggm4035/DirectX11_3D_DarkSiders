@@ -69,7 +69,7 @@ void CImWindow_Base::Tick(const _double& TimeDelta)
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem("HeightMap"))
+        if (ImGui::BeginTabItem("Terrain"))
         {
             m_isIntoAnimTab = false;
             if (nullptr != m_pToolHeightMap)
@@ -161,40 +161,68 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
     if (true == TOOL->m_pTopWindow->isPickingMode())
         Picking_GameObject(pGameInstance);
 
-    for (auto& iter : m_GameObjectList)
+
+    static ImGuiTableFlags flags =
+        ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable
+        | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_NoBordersInBody
+        | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY
+        | ImGuiTableFlags_SizingFixedFit;
+
+    if (ImGui::BeginTable("Table_Animation", 3, flags, ImVec2(0, 300), 0.f))
     {
-        ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+        ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
+        ImGui::TableSetupColumn("ModelTag", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
 
-        pObjectTag = iter->Get_Tag();
+        ImGui::TableHeadersRow();
 
-        if (nullptr != TOOL->m_pCurrentObject && pObjectTag == TOOL->m_pCurrentObject->Get_Tag())
-            node_flags |= ImGuiTreeNodeFlags_Selected;
-
-        ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, pGameInstance->wstrToStr(pObjectTag).c_str());
-        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        /* Animation Data Table Ãâ·Â */
+        static _uint iSelected = 0;
+        _uint iIndex = 0;
+        auto iter = m_GameObjectList.begin();
+        for (auto& Object : m_GameObjectList)
         {
-            if (true == TOOL->m_pTopWindow->isPickSolidMode())
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            if (ImGui::Selectable(std::to_string(iIndex).c_str(), iSelected == iIndex))
             {
-                D3D11_RASTERIZER_DESC RasterizerDesc;
-                ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+                iSelected = iIndex;
 
-                RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-                RasterizerDesc.FrontCounterClockwise = { false };
-                RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+                if (true == TOOL->m_pTopWindow->isPickSolidMode())
+                {
+                    D3D11_RASTERIZER_DESC RasterizerDesc;
+                    ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
 
-                if (nullptr != TOOL->m_pCurrentObject)
-                    TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                    RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+                    RasterizerDesc.FrontCounterClockwise = { false };
+                    RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
 
-                RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+                    if (nullptr != TOOL->m_pCurrentObject)
+                        TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
 
-                TOOL->m_pCurrentObject = Find_GameObject(pObjectTag);
+                    RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
 
-                if (nullptr != TOOL->m_pCurrentObject)
-                    TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                    TOOL->m_pCurrentObject = *iter;
+
+                    if (nullptr != TOOL->m_pCurrentObject)
+                        TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                }
+                else
+                    TOOL->m_pCurrentObject = *iter;
             }
-            else
-                TOOL->m_pCurrentObject = Find_GameObject(pObjectTag);
+
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Tag()).c_str());
+
+            ImGui::TableSetColumnIndex(2);
+            if(nullptr != Object->Get_Model())
+                ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Model()->Get_Tag()).c_str());
+
+            ++iIndex;
+            ++iter;
         }
+        ImGui::EndTable();
     }
 
     if (ImGui::Button("Create new Object"))

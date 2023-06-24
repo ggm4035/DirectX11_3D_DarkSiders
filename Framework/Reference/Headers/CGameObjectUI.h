@@ -30,7 +30,7 @@ public:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -42,7 +42,7 @@ protected:
 	virtual HRESULT Add_Components() = 0;
 
 public:
-	virtual CGameObjectUI* Clone(CComponent* pOwner, void* pArg) = 0;
+	virtual CGameObjectUI* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

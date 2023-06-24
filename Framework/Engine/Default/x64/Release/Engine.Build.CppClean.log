@@ -1,5 +1,4 @@
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\vc142.pdb
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clight.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clayer.obj
@@ -12,6 +11,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgamein
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cfileinfo.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccomponent_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccomponent.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cchannel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccamera_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccamera.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccalculator.obj
@@ -36,6 +36,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cobject
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cmodel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cmesh.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clight_manager.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clight.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.dll

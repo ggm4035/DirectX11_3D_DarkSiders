@@ -2,7 +2,8 @@
 #include "CLoader.h"
 
 #include "CGameInstance.h"
-#include "CBackGround.h"
+#include "CUI_Rect.h"
+#include "CStatic_Object.h"
 #include "CTerrain.h"
 #include "CMonster.h"
 #include "CCamera_Free.h"
@@ -78,19 +79,28 @@ HRESULT CLoader::Load_Level_Logo()
 	m_szLoading = TEXT("텍스쳐 로딩 중.");
 
 	/* For. Prototype_Component_Texture_Test */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Default%d.dds", 2))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, L"Texture_Logo",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Default0.dds"))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
-	
+	FILEDATA FileData;
+	m_pGameInstance->Load("../../Data/test.dat", FileData);
+
+	for (auto& Data : FileData.vecModelData)
+		Safe_Delete_BinaryData(Data.BinaryData);
+	FileData.vecModelData.clear();
+
+	Safe_Delete_Array(FileData.pPositions);
+
+	/* For. Models */
 	m_szLoading = TEXT("셰이더 로딩 중.");
 		
 	m_szLoading = TEXT("객체 로딩 중.");
 
 	/* For. Prototype_GameObject_BackGround */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_BackGround",
-		CBackGround::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(L"BackGround",
+		CUI_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("로딩 완료.");
@@ -108,40 +118,104 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	m_szLoading = TEXT("텍스쳐 로딩 중.");
 
-	/* For. Prototype_Component_Texture_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Terrain",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Tile%d.dds", 2))))
+	/* For. Texture_Terrain */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Terrain",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain%d.png", 2))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
 
-	/* For. Prototype_Component_VIBuffer_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Terrain",
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Height.bmp"))))
+	FILEDATA FileData;
+	m_pGameInstance->Load("../../ModelDatas/testmap.dat", FileData);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"VIBuffer_Terrain",
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For. Models */
+	list<_tchar*> redupList;
+	for (auto& Data : FileData.vecModelData)
+	{
+		auto iter = find_if(redupList.begin(), redupList.end(), [&](_tchar* pData) {
+			if (0 == lstrcmp(pData, Data.BinaryData.szTag))
+				return true;
+			else
+				return false;
+			});
+
+		if (iter == redupList.end())
+		{
+			redupList.push_back(Data.BinaryData.szTag);
+
+			if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, Data.BinaryData.szTag,
+				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, Data.BinaryData, XMMatrixIdentity()))))
+				return E_FAIL;
+		}
+	}
 
 	m_szLoading = TEXT("셰이더 로딩 중.");
 
+	m_szLoading = TEXT("충돌체 로딩 중.");
+
 	m_szLoading = TEXT("객체 로딩 중.");
 
-	/* For. Prototype_GameObject_Monster */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Monster",
-		CMonster::Create(m_pDevice, m_pContext))))
+	/* For. Static Models */
+	/*redupList.clear();
+	for (auto& Data : FileData.vecModelData)
+	{
+		auto iter = find_if(redupList.begin(), redupList.end(), [&](_tchar* pData) {
+			if (0 == lstrcmp(pData, Data.szObjectTag))
+				return true;
+			else
+				return false;
+			});
+
+		if (iter == redupList.end())
+		{
+			redupList.push_back(Data.szObjectTag);
+
+			if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, Data.szObjectTag,
+				CStatic_Object::Create(m_pDevice, m_pContext))))
+				return E_FAIL;
+		}
+	}*/
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Static_Object",
+		CStatic_Object::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For. Prototype_GameObject_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain",
+	/* For. Terrain */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Terrain",
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For. Prototype_GameObject_Camera_Free */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Free",
+	/* For. Camera_Free */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Camera_Free",
 		CCamera_Free::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	list<CComponent*> data = m_pGameInstance->Get_All_Prototypes();
 	m_szLoading = TEXT("로딩 완료.");
 
+	for (auto& Data : FileData.vecModelData)
+		Safe_Delete_BinaryData(Data.BinaryData);
+
+	Safe_Delete_Array(FileData.pPositions);
+
 	m_bIsFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::ReadMapFromFile(const string& wstrPath)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FILEDATA FileData;
+
+	pGameInstance->Load(wstrPath, FileData);
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

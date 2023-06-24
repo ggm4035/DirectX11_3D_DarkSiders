@@ -17,9 +17,9 @@ HRESULT CGameObject3D::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CGameObject3D::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CGameObject3D::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CComposite::Initialize(pOwner, pArg)))
+	if (FAILED(CComposite::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();

@@ -77,9 +77,9 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Cell::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CVIBuffer_Cell::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CVIBuffer::Initialize(pOwner, pArg)))
+	if (FAILED(CVIBuffer::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -106,11 +106,11 @@ CVIBuffer_Cell* CVIBuffer_Cell::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CVIBuffer_Cell* CVIBuffer_Cell::Clone(CComponent * pOwner, void* pArg)
+CVIBuffer_Cell* CVIBuffer_Cell::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Cell* pInstance = new CVIBuffer_Cell(*this);
 
-	if (FAILED(pInstance->Initialize(pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Cell");
 		Safe_Release(pInstance);

@@ -18,6 +18,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_eFormat(rhs.m_eFormat)
 	, m_eTopology(rhs.m_eTopology)
 	, m_vecTriangle(rhs.m_vecTriangle)
+	, m_MappedSubResource(rhs.m_MappedSubResource)
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
@@ -44,9 +45,9 @@ HRESULT CVIBuffer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer::Initialize(CComponent* pOwner, void* pArg)
+HRESULT CVIBuffer::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CComponent::Initialize(pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -69,6 +70,20 @@ HRESULT CVIBuffer::Render()
 	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
 
 	return S_OK;
+}
+
+HRESULT CVIBuffer::Begin(OUT D3D11_MAPPED_SUBRESOURCE& Out)
+{
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &m_MappedSubResource);
+
+	Out = m_MappedSubResource;
+
+	return S_OK;
+}
+
+void CVIBuffer::End()
+{
+	m_pContext->Unmap(m_pVB, 0);
 }
 
 HRESULT CVIBuffer::Create_Buffer(OUT ID3D11Buffer** ppOut)

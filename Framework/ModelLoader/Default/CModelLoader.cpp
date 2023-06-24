@@ -21,25 +21,19 @@ HRESULT CModelLoader::Initialize()
 
 void CModelLoader::Tick()
 {
-	_char szFullPath[MAX_PATH] = { "" };
-	GetCurrentDirectoryA(MAX_PATH, szFullPath);
-	string strFullPath = { "" };
-	strFullPath = strFullPath + szFullPath + "\\Out\\NonAnimModels\\";
 	/* NonAnimModel 바이너리화 */
 	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Environment/Hell", ".fbx", m_FilePathList);
 	ConvertBinary_NonAnimModel();
-	WriteNonAnimModels(strFullPath);
+	WriteNonAnimModels("../../ModelDatas/NonAnimModels/");
 	//ResetData();
 	//m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 
 	ResetData();
 
-	strFullPath = szFullPath;
-	strFullPath = strFullPath + "\\Out\\AnimModels\\";
 	/* AnimModel 바이너리화 */
 	m_pGameInstance->Extraction_Data("../../Resources/AnimModels", ".fbx", m_FilePathList);
 	ConvertBinary_AnimModel();
-	WriteAnimModels(strFullPath);
+	WriteAnimModels("../../ModelDatas/AnimModels/");
 	//ResetData();
 	//m_pGameInstance->ReadModels("AnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 }
@@ -223,20 +217,20 @@ void CModelLoader::WriteAnimModels(const string& strFilePath)
 void CModelLoader::WriteNonAnimModels(const string& strFilePath)
 {
 	auto strPath = m_FilePathList.begin();
-
-	string strFullPath = strFilePath;
-	_char szFileName[MAX_PATH] = { "" };
-	_splitpath_s(strPath->c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
-
-	strFullPath = strFullPath + szFileName + ".dat";
-
-	HANDLE hFile = CreateFileA(strFullPath.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-		return;
-
+	
 	for (_uint iDataIndex = 0; iDataIndex < m_FilePathList.size(); ++iDataIndex)
 	{
+		string strFullPath = strFilePath;
+		_char szFileName[MAX_PATH] = { "" };
+		_splitpath_s(strPath->c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
+
+		strFullPath = strFullPath + szFileName + ".dat";
+
+		HANDLE hFile = CreateFileA(strFullPath.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
 		std::cout << "==== Write Binary Datas " << szFileName << " ====" << endl;
 		_ulong dwByte = { 0 };
 
@@ -321,6 +315,9 @@ void CModelLoader::WriteNonAnimModels(const string& strFilePath)
 			/* Write iNumChannels */
 			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
 
+			/* Write bIsLoop */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
 			/*===== CHANNEL DATAS ======*/
 			std::cout << "WriteFile Channel Datas..." << endl;
 			for (_uint iChannelIndex = 0; iChannelIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
@@ -385,10 +382,9 @@ void CModelLoader::WriteNonAnimModels(const string& strFilePath)
 			WriteFile(hFile, m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].pIndices, sizeof(_ulong) *
 				m_vecDatas[iDataIndex].pMeshDatas[iMeshIndex].iNumIndices, &dwByte, nullptr);
 		}
+		CloseHandle(hFile);
+		std::cout << "==== Success Write Binary Datas ====" << endl;
 	}
-
-	CloseHandle(hFile);
-	std::cout << "==== Success Write Binary Datas ====" << endl;
 }
 
 HRESULT CModelLoader::ConvertBinary_AnimModel()
@@ -739,6 +735,7 @@ HRESULT CModelLoader::Ready_Animation(MODEL_BINARYDATA& Data)
 		pAnimationData[iAnimIndex].Duration = pAnimation->mDuration;
 		pAnimationData[iAnimIndex].TickPerSec = pAnimation->mTicksPerSecond;
 		pAnimationData[iAnimIndex].iNumChannels = pAnimation->mNumChannels;
+		pAnimationData[iAnimIndex].bIsLoop = true;
 
 		if (0 >= pAnimationData[iAnimIndex].iNumChannels)
 			return E_FAIL;
@@ -852,18 +849,7 @@ void CModelLoader::ResetData()
 	m_FilePathList.clear();
 
 	for (auto& Model : m_vecDatas)
-	{
-		for (_uint i = 0; i < Model.iNumMeshes; ++i)
-		{
-			Safe_Delete_Array(Model.pMeshDatas[i].pBoneIndices);
-			Safe_Delete_Array(Model.pMeshDatas[i].pNonAnimVertices);
-			Safe_Delete_Array(Model.pMeshDatas[i].pAnimVertices);
-			Safe_Delete_Array(Model.pMeshDatas[i].pIndices);
-		}
-		Safe_Delete_Array(Model.pMaterialPaths);
-		Safe_Delete_Array(Model.pMeshDatas);
-		Safe_Delete_Array(Model.pBoneDatas);
-	}
+		Safe_Delete_BinaryData(Model);
 	m_vecDatas.clear();
 	m_vecBones.clear();
 }

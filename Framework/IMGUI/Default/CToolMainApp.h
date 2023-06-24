@@ -34,7 +34,7 @@ private:
     vector<MODEL_BINARYDATA> m_vecModelDatas;
     list<string> m_FilePathList;
 
-    vector<MODEL_BINARYDATA> m_AnimModelData;
+    vector<MODEL_BINARYDATA> m_vecAnimModelData;
     list<string> m_FilePaths;
 
 private:

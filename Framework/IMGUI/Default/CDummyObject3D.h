@@ -35,7 +35,7 @@ public:
 public:
     virtual HRESULT Initialize_Prototype() override;
     /* Transform 정보 초기화 하고 싶으면 void*에 값 채우기 */
-    virtual HRESULT Initialize(CComponent* pOwner, void* pArg) override;
+    virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
     virtual void Tick(const _double& TimeDelta) override;
     virtual void Late_Tick(const _double& TimeDelta) override;
     virtual HRESULT Render() override;
@@ -71,7 +71,7 @@ private:
 
 public:
     static CDummyObject3D* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual CGameObject3D* Clone(CComponent* pOwner, void* pArg);
+    virtual CGameObject3D* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg);
     virtual void Free() override;
 };
 

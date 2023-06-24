@@ -2,7 +2,8 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_BoneMatrices[256]; /* 이 메쉬를 그리기위해 사용되는 뼈들의 행렬 VTF */
 
-float4 g_LightDirection;
+float4 g_LightPosition, g_LightDirection;
+float g_LightRange;
 float4 g_LightDiffuse, g_LightSpecular, g_LightAmbient;
 
 float4 g_CameraPosition;
