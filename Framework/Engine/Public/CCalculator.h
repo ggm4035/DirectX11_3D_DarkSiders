@@ -25,6 +25,13 @@ private:
 
 public:
 	virtual void Free() override;
+
+#if defined(_USE_IMGUI) || defined(_DEBUG)
+
+	_vector Picking_On_Spheres(const POINT& ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
+	vector<pair<_uint, _int>> Pick_Spheres(const POINT& ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
+
+#endif
 };
 
 END

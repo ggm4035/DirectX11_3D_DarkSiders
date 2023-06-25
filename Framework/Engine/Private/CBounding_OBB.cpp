@@ -18,6 +18,7 @@ HRESULT CBounding_OBB::Initialize_Prototype()
 		return E_FAIL;
 
 	m_pOBB_Original = new BoundingOrientedBox;
+	m_pOBB = new BoundingOrientedBox;
 
 	m_pOBB_Original->Center = _float3(0.f, 0.f, 0.f);
 	m_pOBB_Original->Extents = _float3(0.5f, 0.5f, 0.5f);
@@ -55,6 +56,11 @@ HRESULT CBounding_OBB::Render()
 	End_Batch();
 
 	return S_OK;
+}
+
+_bool CBounding_OBB::Intersect(CCollider::TYPE eType, const CBounding* pBounding)
+{
+	return _bool();
 }
 
 CBounding_OBB* CBounding_OBB::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

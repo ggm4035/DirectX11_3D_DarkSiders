@@ -42,28 +42,32 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(632,6
   CMesh.cpp
   CModel.cpp
   CNavigation.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(89,81): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(53,102): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(78,100): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(256,106): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CObject_Manager.cpp
   CPipeLine.cpp
   CRenderer.cpp
   CShader.cpp
   CTexture.cpp
   CTransform.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(59,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(59,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(69,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(69,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(79,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(79,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(89,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(89,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(99,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(99,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(109,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(109,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(121,64): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(121,79): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(182,86): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(88,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(88,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(102,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(102,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(112,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(112,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(122,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(122,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(132,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(132,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(142,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(142,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(154,64): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(154,79): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(215,86): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CVIBuffer.cpp
   CVIBuffer_Coordnate.cpp
   CVIBuffer_Cube.cpp
@@ -73,11 +77,8 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(182,
   CVIBuffer_Terrain.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(43,50): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(43,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(69,12): warning C4101: 'vSour' :참조되지 않은 지역 변수입니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(69,19): warning C4101: 'vDest' :참조되지 않은 지역 변수입니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(69,26): warning C4101: 'vNormal' :참조되지 않은 지역 변수입니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(168,83): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(168,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(187,83): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(187,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   DebugDraw.cpp
   Timer.cpp
   Timer_Manager.cpp
@@ -85,7 +86,7 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.c
      ..\Bin\Engine.lib 라이브러리 및 ..\Bin\Engine.exp 개체를 생성하고 있습니다.
   코드를 생성하고 있습니다.
   Previous IPDB not found, fall back to full compilation.
-  All 3060 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 3232 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   코드를 생성했습니다.
 DirectXTK.lib(BasicEffect.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTK.lib(BasicEffect.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 DirectXTK.lib(DDSTextureLoader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTK.lib(DDSTextureLoader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.

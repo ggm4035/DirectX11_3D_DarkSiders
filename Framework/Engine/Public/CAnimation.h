@@ -14,8 +14,15 @@ private:
 	virtual ~CAnimation() = default;
 
 public:
+	_bool isLoop() const {
+		return m_isLoop;
+	}
+
+public:
 	HRESULT Initialize(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones);
 	void Invalidate_TransformationMatrix(CModel::BONES& Bones, const _double& TimeDelta);
+
+	void Reset_Animation();
 
 private:
 	_char m_szName[MAX_PATH] = { "" };

@@ -18,6 +18,7 @@ HRESULT CBounding_AABB::Initialize_Prototype()
 		return E_FAIL;
 
 	m_pAABB_Original = new BoundingBox;
+	m_pAABB = new BoundingBox;
 
 	m_pAABB_Original->Center = _float3(0.f, 0.f, 0.f);
 	m_pAABB_Original->Extents = _float3(0.5f, 0.5f, 0.5f);
@@ -40,7 +41,7 @@ HRESULT CBounding_AABB::Initialize(void* pArg)
 
 void CBounding_AABB::Tick(_fmatrix WorldMatrix)
 {
-	m_pAABB_Original->Transform(*m_pAABB, WorldMatrix);
+	m_pAABB_Original->Transform(*m_pAABB, Remove_Rotation(WorldMatrix));
 }
 
 HRESULT CBounding_AABB::Render()
@@ -52,6 +53,22 @@ HRESULT CBounding_AABB::Render()
 	End_Batch();
 
 	return S_OK;
+}
+
+_bool CBounding_AABB::Intersect(CCollider::TYPE eType, const CBounding* pBounding)
+{
+	return _bool();
+}
+
+_matrix CBounding_AABB::Remove_Rotation(_fmatrix TransformMatrix)
+{
+	_matrix		ResultMatrix = TransformMatrix;
+
+	ResultMatrix.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f) * XMVectorGetX(XMVector3Length(TransformMatrix.r[0]));
+	ResultMatrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f) * XMVectorGetX(XMVector3Length(TransformMatrix.r[1]));
+	ResultMatrix.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f) * XMVectorGetX(XMVector3Length(TransformMatrix.r[2]));
+
+	return ResultMatrix;
 }
 
 CBounding_AABB* CBounding_AABB::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

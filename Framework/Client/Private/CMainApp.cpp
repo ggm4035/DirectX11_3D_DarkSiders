@@ -124,7 +124,7 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 
 HRESULT CMainApp::Ready_Player()
 {
-	m_pGameInstance->ReadModels("../../ModelDatas/AnimModels/Warrior.dat", m_FilePathList, m_vecModelDatas);
+	m_pGameInstance->ReadModels("../../Warrior.dat", m_FilePathList, m_vecModelDatas);
 
 	/* Player Model */
 	_matrix PivotMatrix = XMMatrixIdentity();

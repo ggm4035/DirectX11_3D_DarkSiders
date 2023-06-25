@@ -54,7 +54,7 @@ HRESULT CBounding::Begin_Batch()
 
 	m_pEffect->SetView(pPipeLine->Get_Transform_Matrix(CPipeLine::STATE_VIEW));
 	m_pEffect->SetProjection(pPipeLine->Get_Transform_Matrix(CPipeLine::STATE_PROJ));
-
+	
 	Safe_Release(pPipeLine);
 
 	m_pEffect->Apply(m_pContext);

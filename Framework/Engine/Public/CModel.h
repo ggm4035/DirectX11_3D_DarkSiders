@@ -25,11 +25,7 @@ public:
 	}
 
 public:
-	void Set_AnimIndex(const _uint& iAnimIndex) {
-		if (iAnimIndex >= m_iNumAnimations)
-			return;
-		m_iCurrentAnimIndex = iAnimIndex;
-	}
+	void Set_AnimIndex(const _uint& iAnimIndex);
 
 public:/* !!! Warrning Only Tool !!! */
 	const vector<class CMesh*>& Get_Meshes() const {
@@ -47,7 +43,7 @@ public:
 	virtual HRESULT Render(const _uint& iMeshIndex);
 
 public:
-	void Play_Animation(const _double& TimeDelta);
+	void Play_Animation(const _double& TimeDelta, class CTransform* pTransform = nullptr);
 
 public:
 	HRESULT Bind_Material(class CShader* pShader, const string& strTypename, const _uint & iMeshIndex, TEXTURETYPE eTextureType);

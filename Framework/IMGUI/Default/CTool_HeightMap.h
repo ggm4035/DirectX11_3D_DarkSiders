@@ -38,8 +38,12 @@ private:
     _float m_fSharpness = { 0.f };
     _float m_fDir = { 1.f };
 
-private:
-    vector<TRIANGLE> m_vecPoints;
+private: /* For. Navigation Map */
+    TRIANGLE m_Triangle;
+    _uint m_iCount = { 0 };
+    _int m_iSelectOption = { 0 };
+    _int m_iPickCell = { 0 };
+    vector<TRIANGLE> m_vecPoints; /* ÀúÀå¿ë */
 
 public:
     _int m_iXCount = { 129 };
@@ -51,6 +55,7 @@ private:
     void Control_Height(CGameInstance* pGameInstance);
     void Draw_Filter(CGameInstance* pGameInstance);
     void Make_Navigation(CGameInstance* pGameInstance);
+    void Pick_Navigation(CGameInstance* pGameInstance);
 
 public:
     virtual void Free() override;

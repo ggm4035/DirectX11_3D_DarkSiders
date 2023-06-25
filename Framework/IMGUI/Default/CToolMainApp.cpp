@@ -138,6 +138,11 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
+    /* Navigation Component */
+    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Navigation",
+        CNavigation::Create(m_pDevice, m_pContext))))
+        return E_FAIL;
+
     /* Shader Component */
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Shader_VtxNorTex",
         CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl",

@@ -1,5 +1,7 @@
 #include "CTransform.h"
 
+#include "CNavigation.h"
+
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 	, m_TransformDesc()
@@ -51,12 +53,43 @@ HRESULT CTransform::Initialize(const _uint& iLayerIndex, CComponent* pOwner, voi
 	return S_OK;
 }
 
+HRESULT CTransform::Bind_Navigation(CNavigation* pNavigation)
+{
+	m_pNavigation = pNavigation;
+	Safe_AddRef(m_pNavigation);
+
+	return S_OK;
+}
+
 void CTransform::Go_Straight(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
 
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	CNavigation::RETURNDESC RetDesc;
+	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
+
+	if (nullptr != m_pNavigation)
+		RetDesc = m_pNavigation->is_Move(vPosition);
+
+	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
+	{
+		/* 슬라이딩 */
+		_float fForce = XMVector3Dot(XMVector3Normalize(vLook), XMVector3Normalize(XMLoadFloat3(&RetDesc.vSlide))).m128_f32[0];
+		_vector vDir = XMLoadFloat3(&RetDesc.vSlide);
+
+		vPosition = Get_State(STATE_POSITION);
+
+		if (90.f < acosf(fForce))
+			vDir *= -1.f;
+
+		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
+	}
+
+	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
+		return;
 
 	Set_State(STATE_POSITION, vPosition);
 }
@@ -222,5 +255,7 @@ CComponent* CTransform::Clone(const _uint& iLayerIndex, CComponent* pOwner, void
 
 void CTransform::Free()
 {
+	Safe_Release(m_pNavigation);
+
 	CComponent::Free();
 }

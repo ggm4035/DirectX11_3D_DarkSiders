@@ -8,6 +8,7 @@ BEGIN(Engine)
 class CShader;
 class CTexture;
 class CVIBuffer;
+class CNavigation;
 class CModel;
 END
 
@@ -28,6 +29,7 @@ public:
     CTexture* Get_Texture() { return m_pTextureCom; }
     CRenderer* Get_Renderer() { return m_pRenderer; }
     CModel* Get_Model() { return m_pModelCom; }
+    CNavigation* Get_Navigation() { return m_pNavigationCom; }
     CRenderer::RENDERGROUP Get_RenderGroup() { return m_eRenderGroup; }
     void Updata_Toggle() { m_isUpdate = m_isUpdate ? false : true; }
     MODEL_BINARYDATA Get_Model_BinaryData();
@@ -61,6 +63,7 @@ private:
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer* m_pBufferCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
+    CNavigation* m_pNavigationCom = { nullptr };
 
 private:
     _bool m_isUpdate = { true };

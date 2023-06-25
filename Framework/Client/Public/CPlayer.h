@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CShader;
 class CModel;
+class CNavigation;
 class CCollider;
 END
 
@@ -37,7 +38,8 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
+	CNavigation* m_pNavigationCom = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

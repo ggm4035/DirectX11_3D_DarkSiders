@@ -59,16 +59,21 @@ HRESULT CTerrain::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	//m_pShaderCom->Begin(0);
 
-	m_pBufferCom->Render();
+	//m_pBufferCom->Render();
+
+
+#ifdef _DEBUG
+	m_pNavigationCom->Render_Navigation();
+#endif
 
 	return S_OK;
 }
 
 HRESULT CTerrain::Add_Components()
 {
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"VIBuffer_Terrain",
+	if (FAILED(Add_Component(m_iLayerIndex, L"VIBuffer_Terrain",
 		L"Com_Buffer_Terrain", (CComponent**)&m_pBufferCom, this)))
 		return E_FAIL;
 
@@ -80,6 +85,10 @@ HRESULT CTerrain::Add_Components()
 		L"Com_Renderer", (CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
+	if (FAILED(Add_Component(m_iLayerIndex, L"Navigation",
+		L"Com_Navigation", (CComponent**)&m_pNavigationCom, this)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -89,7 +98,7 @@ HRESULT CTerrain::SetUp_ShaderResources()
 	Safe_AddRef(pGameInstance);
 
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&m_pTransformCom->Get_WorldMatrix())))
+		&m_pTransformCom->Get_WorldFloat4x4())))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
@@ -164,6 +173,7 @@ void CTerrain::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pNavigationCom);
 
 	CGameObject3D::Free();
 }

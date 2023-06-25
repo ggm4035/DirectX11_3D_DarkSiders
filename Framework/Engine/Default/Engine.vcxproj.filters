@@ -297,9 +297,6 @@
     <ClInclude Include="..\Public\CCollider.h">
       <Filter>01.Utility\03. Component\07. Collider</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CBounding.h">
-      <Filter>01.Utility\03. Component\07. Collider\Bounding</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DebugDraw.h">
       <Filter>01.Utility\03. Component\07. Collider\DebugDraw</Filter>
     </ClInclude>
@@ -311,6 +308,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\CBounding_OBB.h">
       <Filter>01.Utility\03. Component\07. Collider\Bounding\OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBounding.h">
+      <Filter>01.Utility\03. Component\07. Collider\Bounding</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

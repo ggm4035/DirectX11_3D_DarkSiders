@@ -1,5 +1,8 @@
 #include "CCollider.h"
 
+#include "CBounding_AABB.h"
+#include "CBounding_Sphere.h"
+
 CCollider::CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 {
@@ -63,6 +66,11 @@ HRESULT CCollider::Render()
 	m_pBounding->Render();
 
 	return S_OK;
+}
+
+_bool CCollider::Intersect(const CCollider* pCollider)
+{
+	return false;
 }
 
 CCollider* CCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType)

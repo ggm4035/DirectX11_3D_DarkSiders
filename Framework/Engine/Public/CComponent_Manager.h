@@ -8,9 +8,13 @@
 #include "CCollider.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CNavigation.h"
 #include "CShader.h"
 #include "CCamera.h"
 #include "CModel.h"
+
+#include "CBounding_AABB.h"
+#include "CBounding_Sphere.h"
 
 BEGIN(Engine)
 

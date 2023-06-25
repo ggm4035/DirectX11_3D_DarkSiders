@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DebugDraw.h"
-#include "CBase.h"
+#include "CCollider.h"
 
 BEGIN(Engine)
 
@@ -23,6 +23,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) = 0;
 	virtual void Tick(_fmatrix WorldMatrix) = 0;
 	virtual HRESULT Render() = 0;
+	virtual _bool Intersect(CCollider::TYPE eType, const CBounding* pBounding) = 0;
 
 protected:
 	ID3D11Device* m_pDevice = { nullptr };

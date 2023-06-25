@@ -8,6 +8,7 @@ class CVIBuffer_Terrain;
 class CTexture;
 class CShader;
 class CRenderer;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -40,6 +41,7 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
+	CNavigation* m_pNavigationCom = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

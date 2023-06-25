@@ -96,6 +96,11 @@ public: /* For.Calculator */
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform);
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CModel* pModel, class CTransform* pTransform);
 
+#if defined(_USE_IMGUI) || defined(_DEBUG)
+	_vector Picking_On_Spheres(const POINT & ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
+	vector<pair<_uint, _int>> Pick_Spheres(const POINT & ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
+#endif
+
 public: /* For. Imgui */
 	void ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight);
 

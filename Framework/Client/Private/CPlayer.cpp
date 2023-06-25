@@ -12,7 +12,7 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
-	:CGameObject3D(rhs)
+	: CGameObject3D(rhs)
 {
 }
 
@@ -29,15 +29,47 @@ HRESULT CPlayer::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	if(nullptr != pArg)
-		m_pTransformCom->Set_Matrix(reinterpret_cast<PLAYERDESC*>(pArg)->WorldMatrix);
+	//if (nullptr != pArg)
+		//m_pTransformCom->Set_Matrix(reinterpret_cast<PLAYERDESC*>(pArg)->WorldMatrix);
 
 	return S_OK;
 }
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
-	m_pModelCom->Play_Animation(TimeDelta);
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Key_Pressing(DIK_UP))
+	{
+		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pModelCom->Set_AnimIndex(1);
+	}
+
+	if (pGameInstance->Key_Up(DIK_UP))
+		m_pModelCom->Set_AnimIndex(0);
+
+	if (pGameInstance->Key_Pressing(DIK_LEFT))
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), -TimeDelta);
+
+	if (pGameInstance->Key_Pressing(DIK_RIGHT))
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+
+	if (pGameInstance->Key_Down(DIK_1))
+		m_pModelCom->Set_AnimIndex(3);
+
+	if (pGameInstance->Key_Down(DIK_2))
+		m_pModelCom->Set_AnimIndex(4);
+
+	if (pGameInstance->Key_Down(DIK_3))
+		m_pModelCom->Set_AnimIndex(5);
+
+	Safe_Release(pGameInstance);
+
+	m_pModelCom->Play_Animation(TimeDelta, m_pTransformCom);
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
@@ -67,43 +99,46 @@ HRESULT CPlayer::Render()
 			return E_FAIL;
 	}
 
-	for (_uint i = 0; i < COLLIDER_END; ++i)
-	{
-		if (nullptr != m_pColliderCom[i])
-			m_pColliderCom[i]->Render();
-	}
-	
+#ifdef _DEBUG
+
+	//m_pNavigationCom->Render_Navigation();
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
+
+#endif
+
 	return S_OK;
 }
 
 HRESULT CPlayer::Add_Components()
 {
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_AnimMesh", L"Com_Shader_AnimMesh", 
-		(CComponent**)&m_pShaderCom, this)))
-		return E_FAIL;
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer", L"Com_Renderer", 
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer", L"Com_Renderer",
 		(CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Model_Player", L"Com_Model_Player", 
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_AnimMesh", L"Com_Shader_AnimMesh",
+		(CComponent**)&m_pShaderCom, this)))
+		return E_FAIL;
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Model_Player", L"Com_Model_Player",
 		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
-	CBounding_Sphere::SPHEREDESC SphereDesc;
-	SphereDesc.fRadius = 1.f;
-	SphereDesc.vPosition = _float3(0.f, SphereDesc.fRadius, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Com_Collider_Sphere", 
-		(CComponent**)&m_pColliderCom[COLLIDER_SPHERE], this, &SphereDesc)))
+	CNavigation::NAVIGATIONDESC NaviDesc;
+	NaviDesc.iCurrentIndex = 0;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
+		(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
 		return E_FAIL;
+	m_pTransformCom->Bind_Navigation(m_pNavigationCom);
 
+	/* Collider */
 	CBounding_AABB::AABBDESC AABBDesc;
 	AABBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
 	AABBDesc.vPosition = _float3(0.f, 1.f, 0.f);
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Com_Collider_AABB", 
-		(CComponent**)&m_pColliderCom[COLLIDER_AABB], this, &AABBDesc)))
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Com_Collider_AABB",
+		(CComponent**)&m_pColliderCom, this, &AABBDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -114,15 +149,15 @@ HRESULT CPlayer::Set_Shader_Resources()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if(FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", 
-		&m_pTransformCom->Get_WorldMatrix())))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
+		&m_pTransformCom->Get_WorldFloat4x4())))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", 
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
 		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", 
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
 		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
 		return E_FAIL;
 
@@ -183,9 +218,8 @@ CPlayer* CPlayer::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg
 
 void CPlayer::Free()
 {
-	for (auto& pCollider : m_pColliderCom)
-		Safe_Release(pCollider);
-
+	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

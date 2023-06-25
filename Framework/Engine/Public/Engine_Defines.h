@@ -58,7 +58,7 @@ using namespace std;
 #endif // _DEBUG
 #else
 
-#ifdef _USE_IMGUI
+#if defined(_USE_IMGUI) || defined(_DEBUG)
 #define New new
 #endif // _USE_IMGUI
 

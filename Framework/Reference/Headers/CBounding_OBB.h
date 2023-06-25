@@ -13,6 +13,11 @@ public:
 		_float3 vRotation;
 	}OBBDESC;
 
+public:
+	const BoundingOrientedBox* Get_BoundingSphere() const {
+		return m_pOBB;
+	}
+
 private:
 	explicit CBounding_OBB(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CBounding_OBB(const CBounding_OBB& rhs);
@@ -23,6 +28,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(_fmatrix WorldMatrix) override;
 	virtual HRESULT Render() override;
+	virtual _bool Intersect(CCollider::TYPE eType, const CBounding* pBounding);
 
 private:
 	BoundingOrientedBox* m_pOBB_Original = { nullptr };

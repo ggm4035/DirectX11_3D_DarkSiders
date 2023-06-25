@@ -28,9 +28,13 @@ private:
 	virtual ~CTransform() = default;
 
 public:
-	_float4x4 Get_WorldMatrix() {
+	_matrix Get_WorldMatrix() {
+		return XMLoadFloat4x4(&m_WorldMatrix);
+	}
+	_float4x4 Get_WorldFloat4x4() {
 		return m_WorldMatrix;
 	}
+
 	_matrix Get_WorldMatrix_Inverse();
 	_float3 Get_Scaled();
 	_float3 Get_Angle() {
@@ -54,6 +58,8 @@ public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
 
+	HRESULT Bind_Navigation(class CNavigation* pNavigation);
+
 public:
 	void Go_Straight(const _double& TimeDelta);
 	void Go_Backward(const _double& TimeDelta);
@@ -62,6 +68,7 @@ public:
 	void Go_Up(const _double& TimeDelta);
 	void Go_Down(const _double& TimeDelta);
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
+
 	void LookAt(_fvector vTargetPosition);
 	void Rotation(_fvector vAxis, const _float& fRadian);
 	void Rotation(const _float3& rDegrees);
@@ -70,6 +77,7 @@ public:
 	void Scaled(const _float3& vScale);
 
 private:
+	class CNavigation* m_pNavigation = { nullptr };
 	_float4x4 m_WorldMatrix;
 	_float3 m_vAngle;
 	TRASNFORMDESC m_TransformDesc;

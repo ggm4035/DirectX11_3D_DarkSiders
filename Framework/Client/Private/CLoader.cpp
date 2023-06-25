@@ -155,6 +155,12 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	m_szLoading = TEXT("셰이더 로딩 중.");
 
+	m_szLoading = TEXT("네비게이션 로딩 중.");
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Navigation",
+		CNavigation::Create(m_pDevice, m_pContext, L"../../ModelDatas/CEX.dat")))) // 네비게이션 저장한 경로가 있어야 쓸 수 있음
+		return E_FAIL;
+
 	m_szLoading = TEXT("충돌체 로딩 중.");
 
 	m_szLoading = TEXT("객체 로딩 중.");

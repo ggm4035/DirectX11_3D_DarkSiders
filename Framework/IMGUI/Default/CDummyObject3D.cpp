@@ -30,12 +30,11 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
         {
             retData = Data;
             lstrcpy(retData.szTag, wstrTag.c_str());
-            break;
+            return retData;
         }
     }
 
     pModels = TOOL->m_pModelDatas;
-
     ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
 
     for (auto& Data : *pModels)
@@ -47,11 +46,11 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
         {
             retData = Data;
             lstrcpy(retData.szTag, wstrTag.c_str());
-            break;
+            return retData;
         }
     }
 
-    return retData;
+    return MODEL_BINARYDATA();
 }
 
 HRESULT CDummyObject3D::Initialize_Prototype()
@@ -194,6 +193,10 @@ HRESULT CDummyObject3D::Add_Components()
         L"Com_Renderer", (CComponent**)&m_pRenderer, this)))
         return E_FAIL;
 
+    if(FAILED(Add_Component(LEVEL_TOOL, L"Navigation",
+        L"Com_Navigation", (CComponent**)&m_pNavigationCom, this)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -207,7 +210,7 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
         if (FAILED(m_pShaderCom->Bind_Rasterizer("g_Rasterizer", 0, m_pRasterizer)))
             return E_FAIL;
 
-        if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldMatrix())))
+        if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4())))
             return E_FAIL;
 
         if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
@@ -247,6 +250,10 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
                 &pGameInstance->Get_Camera_Position(), sizeof(_float4))))
                 return E_FAIL;
         }
+
+        if(nullptr != dynamic_cast<CVIBuffer_Terrain*>(m_pBufferCom))
+            m_pNavigationCom->Render_Navigation();
+
     }
     Safe_Release(pGameInstance);
 
@@ -281,6 +288,7 @@ CGameObject3D* CDummyObject3D::Clone(const _uint& iLayerIndex, CComponent* pOwne
 
 void CDummyObject3D::Free()
 {
+    Safe_Release(m_pNavigationCom);
     Safe_Release(m_pModelCom);
     Safe_Release(m_pRasterizer);
     Safe_Release(m_pRenderer);

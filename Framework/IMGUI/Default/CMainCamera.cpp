@@ -50,7 +50,7 @@ HRESULT CMainCamera::Render()
 
 void CMainCamera::Set_AnimationView()
 {
-    m_OriginMatrix = m_pTransformCom->Get_WorldMatrix();
+    m_OriginMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
     _float4x4 matrix;
     XMStoreFloat4x4(&matrix, XMMatrixIdentity());

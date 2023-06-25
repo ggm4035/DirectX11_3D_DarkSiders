@@ -127,9 +127,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 
 	m_BufferDesc.ByteWidth = { m_iIndexStride * m_iNumIndices };
 	m_BufferDesc.BindFlags = { D3D11_BIND_INDEX_BUFFER };
-	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };
+	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
 	m_BufferDesc.MiscFlags = { 0 };
-	m_BufferDesc.CPUAccessFlags = { D3D11_CPU_ACCESS_WRITE };
+	m_BufferDesc.CPUAccessFlags = { 0 };
 	m_BufferDesc.StructureByteStride = { 0 };
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);

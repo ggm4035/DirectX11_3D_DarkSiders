@@ -1,5 +1,6 @@
 #include "CCalculator.h"
 
+#include "CNavigation.h"
 #include "CPipeLine.h"
 #include "CVIBuffer.h"
 #include "CTransform.h"
@@ -57,7 +58,7 @@ _vector CCalculator::Picking_On_Triangle(const POINT& ptMouse, class CVIBuffer* 
 	vRayDirection = XMVector3Normalize(XMVector3TransformNormal(vRayDirection, ViewMatrix));
 
 	// 월드 스페이스 -> 로컬 스페이스
-	_matrix WorldMatrix = XMLoadFloat4x4(&pTransform->Get_WorldMatrix());
+	_matrix WorldMatrix = XMLoadFloat4x4(&pTransform->Get_WorldFloat4x4());
 	_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, WorldMatrix);
 	vRayOrigin = XMVector3TransformCoord(vRayOrigin, WorldMatrixInverse);
 	vRayDirection = XMVector3Normalize(XMVector3TransformNormal(vRayDirection, WorldMatrixInverse));
@@ -106,3 +107,91 @@ void CCalculator::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 }
+
+#if defined(_USE_IMGUI) || defined(_DEBUG)
+
+_vector CCalculator::Picking_On_Spheres(const POINT& ptMouse, CNavigation* pNavigation, CTransform* pTransform)
+{
+	D3D11_VIEWPORT ViewPort;
+	ZeroMemory(&ViewPort, sizeof D3D11_VIEWPORT);
+
+	_uint iNumViewPorts = 1;
+
+	m_pContext->RSGetViewports(&iNumViewPorts, &ViewPort);
+
+	// 뷰포트 -> 투영 스페이스
+	_float3 vMousePos;
+	vMousePos.x = (_float)ptMouse.x / (ViewPort.Width * 0.5f) - 1.f;
+	vMousePos.y = (_float)ptMouse.y / -(ViewPort.Height * 0.5f) + 1.f;
+	vMousePos.z = 0.f;
+
+	if (fabs(vMousePos.x) > 1.f || fabs(vMousePos.y) > 1.f)
+		return XMVectorSet(-1.f, -1.f, -1.f, -1.f);
+
+	// 투영 스페이스 -> 뷰 스페이스
+	_matrix ProjMatrix = CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_PROJ);
+	ProjMatrix = XMMatrixInverse(nullptr, ProjMatrix);
+	_vector vViewPos = XMVector3TransformCoord(XMLoadFloat3(&vMousePos), ProjMatrix);
+
+	_vector vRayOrigin, vRayDirection;
+	vRayOrigin = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	vRayDirection = XMVector3Normalize(vViewPos - vRayOrigin);
+
+	// 뷰 스페이스 -> 월드 스페이스
+	_matrix ViewMatrix = CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_VIEW);
+	ViewMatrix = XMMatrixInverse(nullptr, ViewMatrix);
+	vRayOrigin = XMVector3TransformCoord(vRayOrigin, ViewMatrix);
+	vRayDirection = XMVector3Normalize(XMVector3TransformNormal(vRayDirection, ViewMatrix));
+
+	// 월드 스페이스 -> 로컬 스페이스
+	_matrix WorldMatrix = XMLoadFloat4x4(&pTransform->Get_WorldFloat4x4());
+	_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, WorldMatrix);
+	vRayOrigin = XMVector3TransformCoord(vRayOrigin, WorldMatrixInverse);
+	vRayDirection = XMVector3Normalize(XMVector3TransformNormal(vRayDirection, WorldMatrixInverse));
+
+	return XMLoadFloat3(&pNavigation->Pick_Sphere(vRayOrigin, vRayDirection));
+}
+
+vector<pair<_uint, _int>> CCalculator::Pick_Spheres(const POINT& ptMouse, CNavigation* pNavigation, CTransform* pTransform)
+{
+	D3D11_VIEWPORT ViewPort;
+	ZeroMemory(&ViewPort, sizeof D3D11_VIEWPORT);
+
+	_uint iNumViewPorts = 1;
+
+	m_pContext->RSGetViewports(&iNumViewPorts, &ViewPort);
+
+	// 뷰포트 -> 투영 스페이스
+	_float3 vMousePos;
+	vMousePos.x = (_float)ptMouse.x / (ViewPort.Width * 0.5f) - 1.f;
+	vMousePos.y = (_float)ptMouse.y / -(ViewPort.Height * 0.5f) + 1.f;
+	vMousePos.z = 0.f;
+
+	if (fabs(vMousePos.x) > 1.f || fabs(vMousePos.y) > 1.f)
+		return vector<pair<_uint, _int>>();
+
+	// 투영 스페이스 -> 뷰 스페이스
+	_matrix ProjMatrix = CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_PROJ);
+	ProjMatrix = XMMatrixInverse(nullptr, ProjMatrix);
+	_vector vViewPos = XMVector3TransformCoord(XMLoadFloat3(&vMousePos), ProjMatrix);
+
+	_vector vRayOrigin, vRayDirection;
+	vRayOrigin = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	vRayDirection = XMVector3Normalize(vViewPos - vRayOrigin);
+
+	// 뷰 스페이스 -> 월드 스페이스
+	_matrix ViewMatrix = CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_VIEW);
+	ViewMatrix = XMMatrixInverse(nullptr, ViewMatrix);
+	vRayOrigin = XMVector3TransformCoord(vRayOrigin, ViewMatrix);
+	vRayDirection = XMVector3Normalize(XMVector3TransformNormal(vRayDirection, ViewMatrix));
+
+	// 월드 스페이스 -> 로컬 스페이스
+	_matrix WorldMatrix = XMLoadFloat4x4(&pTransform->Get_WorldFloat4x4());
+	_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, WorldMatrix);
+	vRayOrigin = XMVector3TransformCoord(vRayOrigin, WorldMatrixInverse);
+	vRayDirection = XMVector3Normalize(XMVector3TransformNormal(vRayDirection, WorldMatrixInverse));
+
+	return pNavigation->Pick_Spheres(vRayOrigin, vRayDirection);
+}
+
+#endif

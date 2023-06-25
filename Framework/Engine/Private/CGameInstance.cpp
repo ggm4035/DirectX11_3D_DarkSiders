@@ -471,6 +471,25 @@ _vector CGameInstance::Picking_On_Triangle(const POINT& ptMouse, CModel* pModel,
 	return m_pCalculator->Picking_On_Triangle(ptMouse, pModel, pTransform);
 }
 
+#if defined(_USE_IMGUI) || defined(_DEBUG)
+_vector CGameInstance::Picking_On_Spheres(const POINT& ptMouse, CNavigation* pNavigation, CTransform* pTransform)
+{
+	if (nullptr == m_pCalculator)
+		return _vector();
+
+	return m_pCalculator->Picking_On_Spheres(ptMouse, pNavigation, pTransform);
+}
+
+vector<pair<_uint, _int>> CGameInstance::Pick_Spheres(const POINT& ptMouse, CNavigation* pNavigation, CTransform* pTransform)
+{
+	if (nullptr == m_pCalculator)
+		return vector<pair<_uint, _int>>();
+
+	return m_pCalculator->Pick_Spheres(ptMouse, pNavigation, pTransform);
+}
+
+#endif
+
 void CGameInstance::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
 {
 	if (nullptr == m_pGraphic_Device)

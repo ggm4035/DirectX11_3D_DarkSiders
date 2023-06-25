@@ -23,6 +23,15 @@ CAnimation::CAnimation(const CAnimation& rhs)
 		Safe_AddRef(Channel);
 }
 
+void CAnimation::Reset_Animation()
+{
+	m_TimeAcc = 0.0;
+	m_isFinished = false;
+	
+	for (auto& iIndex : m_vecChannelCurrentKeyFrames)
+		iIndex = 0;
+}
+
 HRESULT CAnimation::Initialize(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones)
 {
 	strcpy_s(m_szName, AnimationData.szName);

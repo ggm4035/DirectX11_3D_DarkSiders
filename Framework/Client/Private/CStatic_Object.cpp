@@ -96,7 +96,7 @@ HRESULT CStatic_Object::Bind_ShaderResources()
 	Safe_AddRef(pGameInstance);
 
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&m_pTransformCom->Get_WorldMatrix())))
+		&m_pTransformCom->Get_WorldFloat4x4())))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",

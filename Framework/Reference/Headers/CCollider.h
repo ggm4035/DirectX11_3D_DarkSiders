@@ -1,8 +1,6 @@
 #pragma once
 
 #include "CComponent.h"
-#include "CBounding_AABB.h"
-#include "CBounding_Sphere.h"
 
 BEGIN(Engine)
 
@@ -18,11 +16,14 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, CBounding* pBounding, void* pArg);
+	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, class CBounding* pBounding, void* pArg);
 
 public:
 	void Tick(_fmatrix WorldMatrix);
 	HRESULT Render();
+
+public:
+	_bool Intersect(const CCollider* pCollider);
 
 private:
 	CBounding* m_pBounding = { nullptr };

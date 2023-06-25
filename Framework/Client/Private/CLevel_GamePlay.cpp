@@ -131,8 +131,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 	CPlayer::PLAYERDESC PlayerDesc;
 	PlayerDesc.WorldMatrix;
 
+	CTransform::TRASNFORMDESC TransformDesc;
+	TransformDesc.SpeedPerSec = 1.5f;
+	TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
+
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Player",
-		L"Player", pLayerTag)))
+		L"Player", pLayerTag, &TransformDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

@@ -37,6 +37,17 @@ CModel::CModel(const CModel& rhs)
 		m_vecAnimations.push_back(pOriginAnimation->Clone());
 }
 
+void CModel::Set_AnimIndex(const _uint& iAnimIndex)
+{
+	if (iAnimIndex >= m_iNumAnimations)
+		return;
+
+	m_iCurrentAnimIndex = iAnimIndex;
+
+	if (false == m_vecAnimations[m_iCurrentAnimIndex]->isLoop())
+		m_vecAnimations[m_iCurrentAnimIndex]->Reset_Animation();
+}
+
 vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 {
 	vector<ANIMATIONDATA> vecRet;
@@ -146,7 +157,7 @@ HRESULT CModel::Render(const _uint& iMeshIndex)
 	return m_vecMeshes[iMeshIndex]->Render();
 }
 
-void CModel::Play_Animation(const _double& TimeDelta)
+void CModel::Play_Animation(const _double& TimeDelta, CTransform* pTransform)
 {
 	/* 어떤 애니메이션을 재생하려고하는지?! */
 	/* 이 애니메이션은 어떤 뼈를 사용하는지?! */
@@ -157,6 +168,15 @@ void CModel::Play_Animation(const _double& TimeDelta)
 
 	for (auto& pBone : m_vecBones)
 		pBone->Invalidate_CombinedTransformationMatrix(m_vecBones);
+
+	/*if (nullptr != pTransform)
+	{
+		_matrix CombinedTransformMatrix = m_vecBones[4]->Get_CombinedTransformationMatrix();
+		_float4x4 Matrix;
+		XMStoreFloat4x4(&Matrix, CombinedTransformMatrix);
+
+		pTransform->Set_State(CTransform::STATE_POSITION, CombinedTransformMatrix.r[3]);
+	}*/
 }
 
 HRESULT CModel::Bind_Material(CShader* pShader, const string& strTypename, const _uint& iMeshIndex, TEXTURETYPE eTextureType)

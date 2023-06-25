@@ -1,5 +1,9 @@
 #include "CBounding_Sphere.h"
 
+#include "CCollider.h"
+#include "CBounding_AABB.h"
+#include "CBounding_OBB.h"
+
 CBounding_Sphere::CBounding_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBounding(pDevice, pContext)
 {
@@ -18,9 +22,11 @@ HRESULT CBounding_Sphere::Initialize_Prototype()
 		return E_FAIL;
 
 	m_pSphere_Original = new BoundingSphere;
+	m_pSphere = new BoundingSphere;
 
 	m_pSphere_Original->Center = _float3(0.f, 0.f, 0.f);
 	m_pSphere_Original->Radius = 0.5f;
+
 
 	return S_OK;
 }
@@ -52,6 +58,28 @@ HRESULT CBounding_Sphere::Render()
 	End_Batch();
 
 	return S_OK;
+}
+
+_bool CBounding_Sphere::Intersect(CCollider::TYPE eType, const CBounding* pBounding)
+{
+	m_isColl = { false };
+
+	switch (eType)
+	{
+	case Engine::CCollider::TYPE_SPHERE:
+		m_isColl = m_pSphere->Intersects(*((CBounding_Sphere*)pBounding)->m_pSphere);
+		break;
+
+	case Engine::CCollider::TYPE_AABB:
+		m_isColl = m_pSphere->Intersects(*((CBounding_Sphere*)pBounding)->m_pSphere);
+		break;
+
+	case Engine::CCollider::TYPE_OBB:
+		m_isColl = m_pSphere->Intersects(*((CBounding_Sphere*)pBounding)->m_pSphere);
+		break;
+	}
+
+	return m_isColl;
 }
 
 CBounding_Sphere* CBounding_Sphere::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
