@@ -16,7 +16,7 @@ public:
 
 public:
 	virtual HRESULT Initialize_Prototype(const _float3 * pPoints, class CBounding_Sphere* pPrototype);
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual HRESULT Render() override;
 	HRESULT Render_Sphere();
 
@@ -28,7 +28,7 @@ private:
 
 public:
 	static CVIBuffer_Cell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3 * pPoints, class CBounding_Sphere* pPrototype = nullptr);
-	virtual CVIBuffer_Cell* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CVIBuffer_Cell* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

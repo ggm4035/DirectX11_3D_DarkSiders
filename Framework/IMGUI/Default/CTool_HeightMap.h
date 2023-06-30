@@ -43,6 +43,7 @@ private: /* For. Navigation Map */
     _uint m_iCount = { 0 };
     _int m_iSelectOption = { 0 };
     _int m_iPickCell = { 0 };
+    vector<pair<_uint, _int>> m_vecPickSphereInfo;/* first : CellIndex, second : Sphere Index */
     vector<TRIANGLE> m_vecPoints; /* ÀúÀå¿ë */
 
 public:
@@ -56,6 +57,8 @@ private:
     void Draw_Filter(CGameInstance* pGameInstance);
     void Make_Navigation(CGameInstance* pGameInstance);
     void Pick_Navigation(CGameInstance* pGameInstance);
+    void Export_Navigation();
+    void Load_Navigation();
 
 public:
     virtual void Free() override;

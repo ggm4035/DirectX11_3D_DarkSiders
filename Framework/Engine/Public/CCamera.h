@@ -21,11 +21,11 @@ protected:
 	virtual ~CCamera() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize_Prototype() override { return S_OK; }
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
-	virtual void Late_Tick(const _double& TimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual void Late_Tick(const _double& TimeDelta) override {}
+	virtual HRESULT Render() override { return S_OK; }
 
 public:
 	void OnCamera() { m_bSwitch = true; }
@@ -43,7 +43,7 @@ protected:
 	virtual HRESULT Add_Components() override = 0;
 
 public:
-	virtual CGameObject3D* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) = 0;
+	virtual CGameObject3D* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

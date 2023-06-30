@@ -1,5 +1,6 @@
 #include "CCollider.h"
 
+#include "CBounding_OBB.h"
 #include "CBounding_AABB.h"
 #include "CBounding_Sphere.h"
 
@@ -32,15 +33,18 @@ HRESULT CCollider::Initialize_Prototype(TYPE eType)
 		break;
 
 	case Engine::CCollider::TYPE_OBB:
+		m_pBounding = CBounding_OBB::Create(m_pDevice, m_pContext);
+		if (nullptr == m_pBounding)
+			return E_FAIL;
 		break;
 	}
 
 	return S_OK;
 }
 
-HRESULT CCollider::Initialize(const _uint& iLayerIndex, CComponent* pOwner, CBounding* pBounding, void* pArg)
+HRESULT CCollider::Initialize(const _uint& iLevelIndex, CComponent* pOwner, CBounding* pBounding, void* pArg)
 {
-	if (FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	m_pBounding = pBounding->Clone(pArg);
@@ -68,11 +72,6 @@ HRESULT CCollider::Render()
 	return S_OK;
 }
 
-_bool CCollider::Intersect(const CCollider* pCollider)
-{
-	return false;
-}
-
 CCollider* CCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType)
 {
 	CCollider* pInstance = new CCollider(pDevice, pContext);
@@ -86,11 +85,11 @@ CCollider* CCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	return pInstance;
 }
 
-CCollider* CCollider::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CCollider* CCollider::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CCollider* pInstance = new CCollider(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, m_pBounding, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, m_pBounding, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CCollider");
 		Safe_Release(pInstance);

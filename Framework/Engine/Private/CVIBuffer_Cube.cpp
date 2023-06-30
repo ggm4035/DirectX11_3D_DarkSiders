@@ -194,7 +194,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Cube::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CVIBuffer_Cube::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	return S_OK;
 }
@@ -211,11 +211,11 @@ CVIBuffer_Cube* CVIBuffer_Cube::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CComponent* CVIBuffer_Cube::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CComponent* CVIBuffer_Cube::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Cube* pInstance = new CVIBuffer_Cube(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Cube");
 		Safe_Release(pInstance);

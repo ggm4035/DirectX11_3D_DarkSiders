@@ -1,90 +1,35 @@
-﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Navigation.cso
-  CAnimation.cpp
-  CApplication.cpp
-  CBase.cpp
-  CBone.cpp
-  CBounding.cpp
-  CBounding_AABB.cpp
-  CBounding_OBB.cpp
-  CBounding_Sphere.cpp
-  CCalculator.cpp
-  CCamera.cpp
-  CCamera_Manager.cpp
+﻿  CCalculator.cpp
   CCell.cpp
-  CChannel.cpp
-  CCollider.cpp
   CComponent.cpp
   CComponent_Manager.cpp
-  CFileInfo.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(95,51): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(134,86): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(159,86): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(179,106): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(196,85): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(341,65): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(368,61): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(605,64): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(632,60): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CGameInstance.cpp
-  CGameObject.cpp
-  CGameObjectUI.cpp
-  코드를 생성하고 있습니다...
-  컴파일하고 있습니다...
   CGameObject3D.cpp
-  CGraphic_Device.cpp
-  CInput_Device.cpp
-  CLayer.cpp
   CLevel.cpp
-  CLevel_Manager.cpp
-  CLight.cpp
-  CLight_Manager.cpp
-  CMesh.cpp
   CModel.cpp
   CNavigation.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(53,102): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(78,100): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(256,106): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CObject_Manager.cpp
-  CPipeLine.cpp
-  CRenderer.cpp
-  CShader.cpp
-  CTexture.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(290,106): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CTransform.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(69,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(69,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(88,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(88,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(102,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(102,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(112,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(112,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(122,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(122,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(132,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(132,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(142,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(142,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(154,64): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(154,79): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(215,86): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CVIBuffer.cpp
-  CVIBuffer_Coordnate.cpp
-  CVIBuffer_Cube.cpp
-  코드를 생성하고 있습니다...
-  컴파일하고 있습니다...
-  CVIBuffer_Cell.cpp
-  CVIBuffer_Rect.cpp
-  CVIBuffer_Terrain.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(43,50): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(43,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(187,83): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(187,42): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  DebugDraw.cpp
-  Timer.cpp
-  Timer_Manager.cpp
-  Engine_Struct.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(91,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(91,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(115,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(115,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(134,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(134,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(148,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(148,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(158,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(158,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(168,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(168,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(178,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(178,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(188,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(188,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(200,64): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(200,79): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(261,86): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameInstance.cpp
   코드를 생성하고 있습니다...
      ..\Bin\Engine.lib 라이브러리 및 ..\Bin\Engine.exp 개체를 생성하고 있습니다.
 DirectXTKd.lib(BasicEffect.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(BasicEffect.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.

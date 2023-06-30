@@ -23,19 +23,14 @@ CCamera::CCamera(const CCamera& rhs)
 	Safe_AddRef(m_pPipeLine);
 }
 
-HRESULT CCamera::Initialize_Prototype()
-{
-	return S_OK;
-}
-
-HRESULT CCamera::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CCamera::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	if (nullptr != pArg)
 	{
 		CAMERADESC CameraDesc = { };
 		CameraDesc = *static_cast<CAMERADESC*>(pArg);
 
-		if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, &CameraDesc.TransformDesc)))
+		if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, &CameraDesc.TransformDesc)))
 			return E_FAIL;
 
 		m_vEye = CameraDesc.vEye;
@@ -47,7 +42,7 @@ HRESULT CCamera::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* 
 		m_fNear = CameraDesc.fNear;
 		m_fFar = CameraDesc.fFar;
 	}
-	else if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
+	else if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 
@@ -64,15 +59,6 @@ void CCamera::Tick(const _double& TimeDelta)
 
 	m_pPipeLine->Set_Transform(CPipeLine::STATE_VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pPipeLine->Set_Transform(CPipeLine::STATE_PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
-}
-
-void CCamera::Late_Tick(const _double& TimeDelta)
-{
-}
-
-HRESULT CCamera::Render()
-{
-	return S_OK;
 }
 
 void CCamera::Free()

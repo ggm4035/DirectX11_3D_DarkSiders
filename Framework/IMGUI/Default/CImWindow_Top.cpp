@@ -12,10 +12,6 @@
 
 IMPLEMENT_SINGLETON(CImWindow_Top)
 
-CImWindow_Top::CImWindow_Top()
-{
-}
-
 HRESULT CImWindow_Top::Initialize()
 {
     if (FAILED(CImWindow::Initialize()))
@@ -180,10 +176,10 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
             ++iter;
 
             /* 2. 전체 3D 게임오브젝트들을 저장한다. */
-            _uint iNumObjects = m_GameObjectList.size() - 1;
+            _uint iNumObjects = m_GameObjectList.size() - 2;
             WriteFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
 
-            for (_uint i = 1; i < m_GameObjectList.size(); ++i, ++iter)
+            for (_uint i = 1; i < m_GameObjectList.size() - 1; ++i, ++iter)
             {
                 /* Write szObjectTag */
                 _uint iTaglength = lstrlen((*iter)->Get_Model()->Get_Tag().c_str()) + 1;
@@ -191,7 +187,7 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 WriteFile(hFile, (*iter)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
 
                 /* Write TransformMatrix */
-                WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldMatrix(), sizeof(_float4x4), &dwByte, nullptr);
+                WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
 
                 /* Write vAngle */
                 WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
@@ -200,9 +196,13 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
             }
 
-            /* 3. 카메라를 저장한다. */
+            /* 3. Player 저장 */
+            WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
 
-            /* 4. UI를 저장한다. */
+            /* 4. 카메라를 저장한다. */
+
+            /* 5. UI를 저장한다. */
 
             CloseHandle(hFile);
 

@@ -9,10 +9,6 @@
 
 IMPLEMENT_SINGLETON(CImWindow_Create)
 
-CImWindow_Create::CImWindow_Create()
-{
-}
-
 HRESULT CImWindow_Create::Initialize()
 {
     if (FAILED(CImWindow::Initialize()))

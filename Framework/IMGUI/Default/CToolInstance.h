@@ -17,6 +17,7 @@ public:
     class CImWindow_Inspector* m_pInspectorWindow = { nullptr };
     class CImWindow_Create* m_pCreateWindow = { nullptr };
     class CImWindow_Top* m_pTopWindow = { nullptr };
+    class CImWindow_Animation* m_pAnimationWindow = { nullptr };
 
 public:
     class CDummyObject3D* m_pCurrentObject = { nullptr };

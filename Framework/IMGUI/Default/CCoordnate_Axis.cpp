@@ -19,9 +19,9 @@ HRESULT CCoordnate_Axis::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCoordnate_Axis::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CCoordnate_Axis::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -112,11 +112,11 @@ CCoordnate_Axis* CCoordnate_Axis::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 	return pInstance;
 }
 
-CCoordnate_Axis* CCoordnate_Axis::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CCoordnate_Axis* CCoordnate_Axis::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CCoordnate_Axis* pInstance = New CCoordnate_Axis(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
         MSG_BOX("Failed to Cloned CCoordnate_Axis");
 		Safe_Release(pInstance);

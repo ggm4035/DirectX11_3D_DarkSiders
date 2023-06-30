@@ -14,14 +14,9 @@ CGameObjectUI::CGameObjectUI(const CGameObjectUI& rhs)
 {
 }
 
-HRESULT CGameObjectUI::Initialize_Prototype()
+HRESULT CGameObjectUI::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	return S_OK;
-}
-
-HRESULT CGameObjectUI::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
-{
-	if (FAILED(CComposite::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComposite::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
@@ -33,19 +28,6 @@ HRESULT CGameObjectUI::Initialize(const _uint& iLayerIndex, CComponent* pOwner, 
 		Set_Position(_float2(UIDesc.m_fX, UIDesc.m_fY));
 	}
 
-	return S_OK;
-}
-
-void CGameObjectUI::Tick(const _double& TimeDelta)
-{
-}
-
-void CGameObjectUI::Late_Tick(const _double& TimeDelta)
-{
-}
-
-HRESULT CGameObjectUI::Render()
-{
 	return S_OK;
 }
 
@@ -73,5 +55,5 @@ void CGameObjectUI::Set_Position(const _float2& _vPosition)
 
 void CGameObjectUI::Free()
 {
-	CComposite::Free();
+	CGameObject::Free();
 }

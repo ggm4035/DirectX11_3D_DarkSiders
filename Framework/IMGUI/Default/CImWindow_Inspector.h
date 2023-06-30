@@ -13,7 +13,7 @@ class CImWindow_Inspector final : public CImWindow
     DECLARE_SINGLETON(CImWindow_Inspector)
 
 private:
-    explicit CImWindow_Inspector();
+    explicit CImWindow_Inspector() = default;
     virtual ~CImWindow_Inspector() = default;
 
 public:

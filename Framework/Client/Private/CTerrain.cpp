@@ -18,12 +18,12 @@ HRESULT CTerrain::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTerrain::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CTerrain::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	if (nullptr == pArg)
 		return E_FAIL;
 
- 	if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
+ 	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -59,9 +59,9 @@ HRESULT CTerrain::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	//m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(0);
 
-	//m_pBufferCom->Render();
+	m_pBufferCom->Render();
 
 
 #ifdef _DEBUG
@@ -73,7 +73,7 @@ HRESULT CTerrain::Render()
 
 HRESULT CTerrain::Add_Components()
 {
-	if (FAILED(Add_Component(m_iLayerIndex, L"VIBuffer_Terrain",
+	if (FAILED(Add_Component(m_iLevelIndex, L"VIBuffer_Terrain",
 		L"Com_Buffer_Terrain", (CComponent**)&m_pBufferCom, this)))
 		return E_FAIL;
 
@@ -85,7 +85,7 @@ HRESULT CTerrain::Add_Components()
 		L"Com_Renderer", (CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(m_iLayerIndex, L"Navigation",
+	if (FAILED(Add_Component(m_iLevelIndex, L"Navigation",
 		L"Com_Navigation", (CComponent**)&m_pNavigationCom, this)))
 		return E_FAIL;
 
@@ -155,11 +155,11 @@ CTerrain* CTerrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CGameObject3D* CTerrain::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CGameObject3D* CTerrain::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CTerrain* pInstance = new CTerrain(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CTerrain");
 		Safe_Release(pInstance);

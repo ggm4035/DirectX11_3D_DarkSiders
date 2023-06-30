@@ -48,6 +48,9 @@ private:
 	_float3 m_arrNormals[NEIGHBOR_END];
 	_int m_arrNeighborIndex[NEIGHBOR_END] = { -1, -1, -1 };
 
+private:
+	_bool isEqual(_fvector vSourPoint, _fvector vDestPoint);
+
 public:
 	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex);
 	virtual void Free() override;

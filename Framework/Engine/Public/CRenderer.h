@@ -15,8 +15,8 @@ private:
 	virtual ~CRenderer() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize_Prototype() override { return S_OK; }
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	
 public:
 	void Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
@@ -34,7 +34,7 @@ private:
 
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CComponent* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

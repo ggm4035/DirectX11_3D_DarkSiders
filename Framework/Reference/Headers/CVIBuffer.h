@@ -17,8 +17,8 @@ public:
 	void Set_Triangle_Dot(const _uint& iIndex, const _uint& iDot, const _float3& vValue);
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent * pOwner, void* pArg) override;
+	virtual HRESULT Initialize_Prototype() override { return S_OK; }
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) override;
 	virtual HRESULT Render();
 
 public:
@@ -50,7 +50,7 @@ protected:
 	HRESULT Create_Buffer(OUT ID3D11Buffer * *ppOut);
 
 public:
-	virtual CComponent* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) = 0;
+	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

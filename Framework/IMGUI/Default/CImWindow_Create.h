@@ -17,7 +17,7 @@ public:
     enum TYPE { TEXTURE, SHADER, BUFFER, MODEL, TYPE_END };
 
 private:
-    explicit CImWindow_Create();
+    explicit CImWindow_Create() = default;
     virtual ~CImWindow_Create() = default;
 
 public:

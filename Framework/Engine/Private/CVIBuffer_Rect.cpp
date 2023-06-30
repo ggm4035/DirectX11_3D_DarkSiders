@@ -89,9 +89,9 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Rect::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CVIBuffer_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CVIBuffer::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CVIBuffer::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -118,11 +118,11 @@ CVIBuffer_Rect* CVIBuffer_Rect::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CVIBuffer_Rect* CVIBuffer_Rect::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CVIBuffer_Rect* CVIBuffer_Rect::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Rect* pInstance = new CVIBuffer_Rect(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Rect");
 		Safe_Release(pInstance);

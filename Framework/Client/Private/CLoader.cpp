@@ -84,14 +84,6 @@ HRESULT CLoader::Load_Level_Logo()
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
-	FILEDATA FileData;
-	m_pGameInstance->Load("../../Data/test.dat", FileData);
-
-	for (auto& Data : FileData.vecModelData)
-		Safe_Delete_BinaryData(Data.BinaryData);
-	FileData.vecModelData.clear();
-
-	Safe_Delete_Array(FileData.pPositions);
 
 	/* For. Models */
 	m_szLoading = TEXT("셰이더 로딩 중.");
@@ -158,7 +150,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("네비게이션 로딩 중.");
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Navigation",
-		CNavigation::Create(m_pDevice, m_pContext, L"../../ModelDatas/CEX.dat")))) // 네비게이션 저장한 경로가 있어야 쓸 수 있음
+		CNavigation::Create(m_pDevice, m_pContext, L"../../ModelDatas/Navigation.dat")))) // 네비게이션 저장한 경로가 있어야 쓸 수 있음
 		return E_FAIL;
 
 	m_szLoading = TEXT("충돌체 로딩 중.");
@@ -208,20 +200,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_Array(FileData.pPositions);
 
 	m_bIsFinished = true;
-
-	return S_OK;
-}
-
-HRESULT CLoader::ReadMapFromFile(const string& wstrPath)
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	FILEDATA FileData;
-
-	pGameInstance->Load(wstrPath, FileData);
-
-	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

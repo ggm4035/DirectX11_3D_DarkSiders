@@ -40,14 +40,9 @@ void CVIBuffer::Set_Triangle_Dot(const _uint& iIndex, const _uint& iDot, const _
 	m_vecTriangle[iIndex].vDot[iDot] = vValue;
 }
 
-HRESULT CVIBuffer::Initialize_Prototype()
+HRESULT CVIBuffer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	return S_OK;
-}
-
-HRESULT CVIBuffer::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
-{
-	if (FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;

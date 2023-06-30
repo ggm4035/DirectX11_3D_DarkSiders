@@ -3,6 +3,7 @@
 #include "CGameInstance.h"
 #include "CToolInstance.h"
 #include "CImWindow_Manager.h"
+#include "CImWindow_Animation.h"
 
 #include "CMainCamera.h"
 #include "CDummyObject3D.h"
@@ -44,6 +45,7 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
                 {
                     iSelected = iIndex;
                     m_pModel->Get_Model()->Set_AnimIndex(iIndex);
+                    TOOL->m_pAnimationWindow->Refresh_Animation();
                 }
 
                 ImGui::TableSetColumnIndex(1);
@@ -105,11 +107,22 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
             ImGui::SameLine();
             if (ImGui::Button("Delete_Animation"))
             {
-                m_pModel->Get_Model()->Set_AnimIndex(0);
                 m_pModel->Get_Model()->Delete_Animation(iSelected);
+                iSelected = 0 > --iSelected ? 0 : iSelected;
+                m_pModel->Get_Model()->Set_AnimIndex(iSelected);
                 Release_Animation_Data();
                 m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
-                iSelected = 0;
+                TOOL->m_pAnimationWindow->Refresh_Animation();
+            }
+
+            ImGui::SameLine();
+
+            /* 위치 조정하는건데 나중에 고치면 지울거임 */
+            if (ImGui::Button("Origin"))
+            {
+                _float4x4 WorldMatrix;
+                XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
+                m_pModel->Get_Transform()->Set_Matrix(WorldMatrix);
             }
         }
         /* Apply Animation */
@@ -119,7 +132,10 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
                 m_pModel->Get_Model()->Set_Animation(i, m_vecAnimationDatas[i]);
         }
 
-        ImGui::SameLine();
+        /* Control Transformation */
+        Transformation(pGameInstance);
+
+        ImGui::Separator();
 
         /* Export */
         if (ImGui::Button("Export"))
@@ -132,6 +148,7 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
         {
             pGameInstance->Remove_GameObject(m_pModel->Get_Tag());
             m_pModel = nullptr;
+            TOOL->m_pAnimationWindow->Set_Model(nullptr);
             TOOL->m_pCamera->Set_OriginView();
             WINDOWMGR->Refresh_All_Window();
             Release_Animation_Data();
@@ -203,6 +220,7 @@ void CTool_Animation::Make_New_Model(CGameInstance* pGameInstance, list<class CD
             m_pModel = pObject;
 
             TOOL->m_pCamera->Set_AnimationView();
+            TOOL->m_pAnimationWindow->Set_Model(pObject);
 
             /* Add Animation */
             for (_uint i = 1; i < vecData[0].iNumAnimations; ++i)
@@ -296,6 +314,7 @@ void CTool_Animation::Export_Animation(CGameInstance* pGameInstance)
     /* Remove Datas */
     pGameInstance->Remove_GameObject(m_pModel->Get_Tag());
     m_pModel = nullptr;
+    TOOL->m_pAnimationWindow->Set_Model(nullptr);
     TOOL->m_pCamera->Set_OriginView();
     WINDOWMGR->Refresh_All_Window();
     Release_Animation_Data();
@@ -303,6 +322,38 @@ void CTool_Animation::Export_Animation(CGameInstance* pGameInstance)
     Safe_Delete_Array(pAnimations);
 
     MSG_BOX("Success to Export");
+}
+
+void CTool_Animation::Transformation(CGameInstance* pGameInstance)
+{
+    ImGui::SeparatorText("Transformation");
+    _float3 vTranslation;
+    _float fOffset = { 0 };
+
+    _uint iRootFrameIndex = TOOL->m_pAnimationWindow->m_iCurrentRootFrame;
+    vTranslation = m_pModel->Get_Model()->Get_Translation(iRootFrameIndex);
+
+    _float arr[3] = { vTranslation.x, vTranslation.y, vTranslation.z };
+
+    ImGui::InputFloat3("Translation", arr);
+
+    if (ImGui::DragFloat("Offset", &fOffset, 0.01f, -100.f, 100.f, "%.2f"))
+    {
+        for (_uint i = 0; i < m_pModel->Get_Model()->Get_MaxRootKeyFrame(); ++i)
+        {
+            vTranslation = m_pModel->Get_Model()->Get_Translation(i);
+
+            vTranslation.x += fOffset;
+
+            m_pModel->Get_Model()->Set_Translation(i, vTranslation);
+        }
+    }
+    else
+    {
+        vTranslation = _float3(arr[0], arr[1], arr[2]);
+
+        m_pModel->Get_Model()->Set_Translation(iRootFrameIndex, vTranslation);
+    }
 }
 
 void CTool_Animation::Release_Animation_Data()

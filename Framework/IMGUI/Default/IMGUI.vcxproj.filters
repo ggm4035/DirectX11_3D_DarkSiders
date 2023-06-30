@@ -58,17 +58,20 @@
     <Filter Include="02. GameObject\00. Dummy\Camera">
       <UniqueIdentifier>{ec8cb1ec-0a0d-453e-865a-63244f114bf9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. ImWindow\02. ImWindow_Create">
-      <UniqueIdentifier>{3aaa34f6-d454-494f-8643-3c9d433b25e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. ImWindow\03. ImWindow_Top">
-      <UniqueIdentifier>{92c8a30b-87e0-4e10-9a4e-bbfdafa8867e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. ImWindow\00. ImWindow_Base\Tool_Animation">
       <UniqueIdentifier>{b99913e1-b775-4eb2-a867-2a561db141d8}</UniqueIdentifier>
     </Filter>
     <Filter Include="01. ImWindow\00. ImWindow_Base\Tool_HeightMap">
       <UniqueIdentifier>{1b6f1aef-4030-428f-bcea-5bb721132fa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\02. ImWindow_Top">
+      <UniqueIdentifier>{92c8a30b-87e0-4e10-9a4e-bbfdafa8867e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\00. ImWindow_Base\ImWindow_Create">
+      <UniqueIdentifier>{3aaa34f6-d454-494f-8643-3c9d433b25e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. ImWindow\00. ImWindow_Base\ImWindow_Animation">
+      <UniqueIdentifier>{1b5ade38-f4cd-49dd-871a-9f022a9e123d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -112,10 +115,10 @@
       <Filter>02. GameObject\00. Dummy\3D</Filter>
     </ClInclude>
     <ClInclude Include="CImWindow_Create.h">
-      <Filter>01. ImWindow\02. ImWindow_Create</Filter>
+      <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Create</Filter>
     </ClInclude>
     <ClInclude Include="CImWindow_Top.h">
-      <Filter>01. ImWindow\03. ImWindow_Top</Filter>
+      <Filter>01. ImWindow\02. ImWindow_Top</Filter>
     </ClInclude>
     <ClInclude Include="CLevel_Tool.h">
       <Filter>03. Levels</Filter>
@@ -134,6 +137,9 @@
     </ClInclude>
     <ClInclude Include="CTool_HeightMap.h">
       <Filter>01. ImWindow\00. ImWindow_Base\Tool_HeightMap</Filter>
+    </ClInclude>
+    <ClInclude Include="CImWindow_Animation.h">
+      <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -165,10 +171,10 @@
       <Filter>02. GameObject\00. Dummy\3D</Filter>
     </ClCompile>
     <ClCompile Include="CImWindow_Create.cpp">
-      <Filter>01. ImWindow\02. ImWindow_Create</Filter>
+      <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Create</Filter>
     </ClCompile>
     <ClCompile Include="CImWindow_Top.cpp">
-      <Filter>01. ImWindow\03. ImWindow_Top</Filter>
+      <Filter>01. ImWindow\02. ImWindow_Top</Filter>
     </ClCompile>
     <ClCompile Include="CLevel_Tool.cpp">
       <Filter>03. Levels</Filter>
@@ -205,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="CImWindow_Base.cpp">
       <Filter>01. ImWindow\00. ImWindow_Base</Filter>
+    </ClCompile>
+    <ClCompile Include="CImWindow_Animation.cpp">
+      <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -25,8 +25,13 @@ void CModelLoader::Tick()
 	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Environment/Hell", ".fbx", m_FilePathList);
 	ConvertBinary_NonAnimModel();
 	WriteNonAnimModels("../../ModelDatas/NonAnimModels/");
-	//ResetData();
-	//m_pGameInstance->ReadModels("NonAnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
+
+	ResetData();
+
+	/* Weapon 바이너리화 */
+	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Weapon", ".fbx", m_FilePathList);
+	ConvertBinary_AnimModel();
+	WriteAnimModels("../../ModelDatas/Weapon/");
 
 	ResetData();
 
@@ -34,8 +39,6 @@ void CModelLoader::Tick()
 	m_pGameInstance->Extraction_Data("../../Resources/AnimModels", ".fbx", m_FilePathList);
 	ConvertBinary_AnimModel();
 	WriteAnimModels("../../ModelDatas/AnimModels/");
-	//ResetData();
-	//m_pGameInstance->ReadModels("AnimModelsFile.dat", m_FilePathList, m_vecDatas); /* 잘 읽는지 체크용 */
 }
 
 void CModelLoader::WriteAnimModels(const string& strFilePath)

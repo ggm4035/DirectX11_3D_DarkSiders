@@ -63,9 +63,9 @@ HRESULT CShader::Initialize_Prototype(const wstring& ShaderFilePath,
 	return S_OK;
 }
 
-HRESULT CShader::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CShader::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -195,11 +195,11 @@ CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	return pInstance;
 }
 
-CComponent* CShader::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CComponent* CShader::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CShader* pInstance = new CShader(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CShader");
 		Safe_Release(pInstance);

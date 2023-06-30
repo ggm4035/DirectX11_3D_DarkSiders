@@ -4,6 +4,8 @@ CBone::CBone()
 {
 	XMStoreFloat4x4(&m_TransformationMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_NotMoveTransformationMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_NotMoveCombinedTransformationMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
 }
 
@@ -11,6 +13,8 @@ CBone::CBone(const CBone& rhs)
 	: m_strName(rhs.m_strName)
 	, m_TransformationMatrix(rhs.m_TransformationMatrix)
 	, m_CombinedTransformationMatrix(rhs.m_CombinedTransformationMatrix)
+	, m_NotMoveTransformationMatrix(rhs.m_NotMoveTransformationMatrix)
+	, m_NotMoveCombinedTransformationMatrix(rhs.m_NotMoveCombinedTransformationMatrix)
 	, m_OffsetMatrix(rhs.m_OffsetMatrix)
 	, m_iParentIndex(rhs.m_iParentIndex)
 	, m_iIndex(rhs.m_iIndex)
@@ -21,8 +25,9 @@ HRESULT CBone::Initialize(const BONEDATA& BoneData, CBone* pParent)
 {
 	m_strName = BoneData.szName;
 	m_TransformationMatrix = BoneData.TransformationMatrix;
+	m_NotMoveTransformationMatrix = BoneData.TransformationMatrix;
 	m_OffsetMatrix = BoneData.OffsetMatrix;
-	m_iParentIndex = nullptr == pParent ? -1 : pParent->m_iIndex;
+	m_iParentIndex = (nullptr == pParent) ? -1 : pParent->m_iIndex;
 	m_iIndex = BoneData.iIndex;
 
 	return S_OK;
@@ -31,12 +36,18 @@ HRESULT CBone::Initialize(const BONEDATA& BoneData, CBone* pParent)
 void CBone::Invalidate_CombinedTransformationMatrix(const CModel::BONES& Bones)
 {
 	if (-1 == m_iParentIndex)
+	{
 		m_CombinedTransformationMatrix = m_TransformationMatrix;
+		m_NotMoveCombinedTransformationMatrix = m_NotMoveTransformationMatrix;
+	}
 
 	else
 	{
 		XMStoreFloat4x4(&m_CombinedTransformationMatrix,
 			XMLoadFloat4x4(&m_TransformationMatrix) * XMLoadFloat4x4(&Bones[m_iParentIndex]->m_CombinedTransformationMatrix));
+
+		XMStoreFloat4x4(&m_NotMoveCombinedTransformationMatrix,
+			XMLoadFloat4x4(&m_NotMoveTransformationMatrix) * XMLoadFloat4x4(&Bones[m_iParentIndex]->m_NotMoveCombinedTransformationMatrix));
 	}
 }
 

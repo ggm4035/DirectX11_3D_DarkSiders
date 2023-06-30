@@ -13,6 +13,7 @@
 #include "CImWindow_Base.h"
 #include "CImWindow_Inspector.h"
 #include "CImWindow_Create.h"
+#include "CImWindow_Animation.h"
 
 CToolMainApp::CToolMainApp()
     : m_pGameInstance(CGameInstance::GetInstance())
@@ -106,6 +107,9 @@ HRESULT CToolMainApp::Ready_ImWindows()
         return E_FAIL;
 
     if (FAILED(m_pImWindow_Manager->Add_Window(CImWindow_Top::GetInstance())))
+        return E_FAIL;
+
+    if (FAILED(m_pImWindow_Manager->Add_Window(CImWindow_Animation::GetInstance())))
         return E_FAIL;
 
     return S_OK;
@@ -212,6 +216,16 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"Texture_Brush",
         CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Brush.png"))))
+        return E_FAIL;
+
+    /* For. Collider_AABB */
+    if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOL, L"Collider_AABB",
+        CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_AABB))))
+        return E_FAIL;
+
+    /* For. Collider_OBB */
+    if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOL, L"Collider_OBB",
+        CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_OBB))))
         return E_FAIL;
 
     Safe_Release(pGameInstance);

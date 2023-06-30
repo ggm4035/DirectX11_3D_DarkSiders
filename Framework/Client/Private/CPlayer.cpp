@@ -3,8 +3,7 @@
 
 #include "CGameInstance.h"
 
-#include "CShader.h"
-#include "CTexture.h"
+#include "CParts.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject3D(pDevice, pContext)
@@ -21,16 +20,22 @@ HRESULT CPlayer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	//if (nullptr != pArg)
-		//m_pTransformCom->Set_Matrix(reinterpret_cast<PLAYERDESC*>(pArg)->WorldMatrix);
+	if (FAILED(Add_Parts()))
+		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		m_pTransformCom->Set_Matrix(reinterpret_cast<PLAYERDESC*>(pArg)->WorldMatrix);
+		m_pTransformCom->Set_Angle(reinterpret_cast<PLAYERDESC*>(pArg)->vAngle);
+	}
 
 	return S_OK;
 }
@@ -40,10 +45,12 @@ void CPlayer::Tick(const _double& TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	CGameObject3D::Tick(TimeDelta);
+
 	if (pGameInstance->Key_Pressing(DIK_UP))
 	{
+		m_pModelCom->Set_AnimIndex(3); // 1 = 1.5
 		m_pTransformCom->Go_Straight(TimeDelta);
-		m_pModelCom->Set_AnimIndex(1);
 	}
 
 	if (pGameInstance->Key_Up(DIK_UP))
@@ -55,28 +62,48 @@ void CPlayer::Tick(const _double& TimeDelta)
 	if (pGameInstance->Key_Pressing(DIK_RIGHT))
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 
+	if (pGameInstance->Key_Down(DIK_SPACE))
+		m_pModelCom->Set_AnimIndex(5);
+
 	if (pGameInstance->Key_Down(DIK_1))
-		m_pModelCom->Set_AnimIndex(3);
+		m_pModelCom->Set_AnimIndex(6);
 
 	if (pGameInstance->Key_Down(DIK_2))
-		m_pModelCom->Set_AnimIndex(4);
+		m_pModelCom->Set_AnimIndex(7);
 
 	if (pGameInstance->Key_Down(DIK_3))
-		m_pModelCom->Set_AnimIndex(5);
+		m_pModelCom->Set_AnimIndex(8);
+
+	if (pGameInstance->Key_Down(DIK_4))
+		m_pModelCom->Set_AnimIndex(9);
+
+	if (pGameInstance->Key_Down(DIK_5))
+		m_pModelCom->Set_AnimIndex(10);
+
+	if (pGameInstance->Key_Down(DIK_6))
+		m_pModelCom->Set_AnimIndex(11);
 
 	Safe_Release(pGameInstance);
 
-	m_pModelCom->Play_Animation(TimeDelta, m_pTransformCom);
+	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
+
+	m_pModelCom->Play_Animation(TimeDelta);
 
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
 void CPlayer::Late_Tick(const _double& TimeDelta)
 {
+	CGameObject3D::Late_Tick(TimeDelta);
 
+	if (nullptr != m_pRendererCom)
+	{
+		for (auto Pair : m_Parts)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
+
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	}
 }
 
 HRESULT CPlayer::Render()
@@ -101,8 +128,6 @@ HRESULT CPlayer::Render()
 
 #ifdef _DEBUG
 
-	//m_pNavigationCom->Render_Navigation();
-
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Render();
 
@@ -121,7 +146,7 @@ HRESULT CPlayer::Add_Components()
 		(CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Model_Player", L"Com_Model_Player",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Model_Player", L"Com_Model",
 		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
@@ -133,12 +158,43 @@ HRESULT CPlayer::Add_Components()
 	m_pTransformCom->Bind_Navigation(m_pNavigationCom);
 
 	/* Collider */
-	CBounding_AABB::AABBDESC AABBDesc;
+	/*CBounding_AABB::AABBDESC AABBDesc;
 	AABBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
 	AABBDesc.vPosition = _float3(0.f, 1.f, 0.f);
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Com_Collider_AABB",
 		(CComponent**)&m_pColliderCom, this, &AABBDesc)))
+		return E_FAIL;*/
+
+	CBounding_OBB::OBBDESC OBBDesc;
+	OBBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
+	OBBDesc.vPosition = _float3(0.f, 1.f, 0.f);
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Com_Collider_OBB",
+		(CComponent**)&m_pColliderCom, this, &OBBDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Add_Parts()
+{
+	CParts::PARENTDESC Desc;
+
+	const CBone* pBone = m_pModelCom->Get_Bone("Bone_War_Weapon_Sword");
+	if (nullptr == pBone)
+		return E_FAIL;
+
+	XMStoreFloat4x4(&Desc.OffsetMatrix, pBone->Get_OffsetMatrix());
+	XMStoreFloat4x4(&Desc.PivotMatrix, m_pModelCom->Get_PivotMatrix());
+	Desc.pCombinedTransformationMatrix = pBone->Get_CombinedTransformationMatrixPtr();
+	Desc.pNotMoveCombinedTransformationMatrix = pBone->Get_NotMoveCombinedTransformationMatrixPtr();
+	Desc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4Ptr();
+
+	Desc.SpeedPerSec = 7.0;
+	Desc.RotationPerSec = XMConvertToRadians(90.0);
+
+	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon", this, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -204,11 +260,11 @@ CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CPlayer* CPlayer::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CPlayer* CPlayer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CPlayer* pInstance = new CPlayer(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CPlayer");
 		Safe_Release(pInstance);

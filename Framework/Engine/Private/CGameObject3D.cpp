@@ -12,14 +12,9 @@ CGameObject3D::CGameObject3D(const CGameObject3D& rhs)
 {
 }
 
-HRESULT CGameObject3D::Initialize_Prototype()
+HRESULT CGameObject3D::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	return S_OK;
-}
-
-HRESULT CGameObject3D::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
-{
-	if (FAILED(CComposite::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComposite::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -36,20 +31,17 @@ HRESULT CGameObject3D::Initialize(const _uint& iLayerIndex, CComponent* pOwner, 
 
 void CGameObject3D::Tick(const _double& TimeDelta)
 {
+	CGameObject::Tick(TimeDelta);
 }
 
 void CGameObject3D::Late_Tick(const _double& TimeDelta)
 {
-}
-
-HRESULT CGameObject3D::Render()
-{
-	return S_OK;
+	CGameObject::Late_Tick(TimeDelta);
 }
 
 void CGameObject3D::Free()
 {
 	Safe_Release(m_pTransformCom);
 
-	CComposite::Free();
+	CGameObject::Free();
 }

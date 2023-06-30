@@ -37,27 +37,27 @@ HRESULT CCell::Initialize(const _float3* pPoints, const _int& iIndex)
 
 _bool CCell::Compare_Points(_fvector vSourPoint, _fvector vDestPoint)
 {
-	if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_A]), vSourPoint))
+	if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_A]), vSourPoint))
 	{
-		if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_B]), vDestPoint))
+		if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_B]), vDestPoint))
 			return true;
-		else if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_C]), vDestPoint))
+		else if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_C]), vDestPoint))
 			return true;
 	}
 
-	if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_B]), vSourPoint))
+	if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_B]), vSourPoint))
 	{
-		if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_A]), vDestPoint))
+		if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_A]), vDestPoint))
 			return true;
-		else if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_C]), vDestPoint))
+		else if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_C]), vDestPoint))
 			return true;
 	}
 
-	if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_C]), vSourPoint))
+	if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_C]), vSourPoint))
 	{
-		if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_B]), vDestPoint))
+		if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_B]), vDestPoint))
 			return true;
-		else if (true == XMVector3Equal(XMLoadFloat3(&m_arrPoints[POINT_A]), vDestPoint))
+		else if (true == isEqual(XMLoadFloat3(&m_arrPoints[POINT_A]), vDestPoint))
 			return true;
 	}
 
@@ -98,6 +98,17 @@ CCell::RETURNDESC CCell::is_In(_fvector vPosition)
 	}
 
 	return RetDesc;
+}
+
+_bool CCell::isEqual(_fvector vSourPoint, _fvector vDestPoint)
+{
+	for (_uint i = 0; i < 3; ++i)
+	{
+		if (0.3f < fabs(vSourPoint.m128_f32[i] - vDestPoint.m128_f32[i]))
+			return false;
+	}
+
+	return true;
 }
 
 CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex)

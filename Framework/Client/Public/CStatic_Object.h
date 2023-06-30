@@ -29,7 +29,7 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	/* Transform 정보 초기화 하고 싶으면 void*에 값 채우기 */
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -45,7 +45,7 @@ private:
 
 public:
 	static CStatic_Object* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CStatic_Object* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CStatic_Object* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

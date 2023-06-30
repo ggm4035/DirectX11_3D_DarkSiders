@@ -290,9 +290,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Terrain::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CVIBuffer_Terrain::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CVIBuffer::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CVIBuffer::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -461,11 +461,11 @@ CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11Device
  	return pInstance;
 }
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Terrain");
 		Safe_Release(pInstance);

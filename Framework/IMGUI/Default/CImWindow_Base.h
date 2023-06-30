@@ -4,7 +4,6 @@
 
 BEGIN(Engine)
 class CGameInstance;
-class CComponent;
 END
 
 BEGIN(Imgui)
@@ -14,7 +13,7 @@ class CImWindow_Base final : public CImWindow
     DECLARE_SINGLETON(CImWindow_Base)
 
 private:
-    explicit CImWindow_Base();
+    explicit CImWindow_Base() = default;
     virtual ~CImWindow_Base() = default;
 
 public:

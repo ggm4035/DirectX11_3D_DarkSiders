@@ -1,5 +1,6 @@
 #include "CTransform.h"
 
+#include "CModel.h"
 #include "CNavigation.h"
 
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -37,18 +38,16 @@ void CTransform::Set_State(STATE _eState, _fvector _vState)
 	memcpy(&m_WorldMatrix.m[_eState][0], &vState, sizeof vState);
 }
 
-HRESULT CTransform::Initialize_Prototype()
+HRESULT CTransform::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	return S_OK;
-}
-
-HRESULT CTransform::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
-{
-	if (FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
-		memmove(&m_TransformDesc, pArg, sizeof m_TransformDesc);
+	{
+		m_TransformDesc.SpeedPerSec = reinterpret_cast<TRASNFORMDESC*>(pArg)->SpeedPerSec;
+		m_TransformDesc.RotationPerSec = reinterpret_cast<TRASNFORMDESC*>(pArg)->RotationPerSec;
+	}
 
 	return S_OK;
 }
@@ -59,6 +58,53 @@ HRESULT CTransform::Bind_Navigation(CNavigation* pNavigation)
 	Safe_AddRef(m_pNavigation);
 
 	return S_OK;
+}
+
+void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDelta)
+{
+	if (true == pModel->isFinishedAnimation())
+		return;
+
+	_vector vLook = Get_State(STATE_LOOK);
+
+	_float4 vPos = pModel->ComputeAnimMovement();
+	_vector vPosition = XMLoadFloat4(&vPos);
+
+	CNavigation::RETURNDESC RetDesc;
+	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
+
+	/* Move Check */
+	if (nullptr != m_pNavigation)
+		RetDesc = m_pNavigation->is_Move(vPosition);
+	
+	/* Sliding */
+	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
+	{
+		_float fForce = XMVector3Dot(XMVector3Normalize(vLook), XMVector3Normalize(XMLoadFloat3(&RetDesc.vSlide))).m128_f32[0];
+		_vector vDir = XMLoadFloat3(&RetDesc.vSlide);
+
+		vPosition = Get_State(STATE_POSITION);
+
+		if (90.f < acosf(fForce))
+			vDir *= -1.f;
+
+		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
+
+		pModel->Block_Switch(true);
+	}
+
+	/* Stop */
+	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
+	{
+		vPosition = Get_State(STATE_POSITION);
+		pModel->Block_Switch(true);
+	}
+
+	/* Move */
+	else
+		pModel->Block_Switch(false);
+
+	Set_State(STATE_POSITION, vPosition);
 }
 
 void CTransform::Go_Straight(const _double& TimeDelta)
@@ -241,11 +287,11 @@ CTransform* CTransform::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	return pInstance;
 }
 
-CComponent* CTransform::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CComponent* CTransform::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CTransform* pInstance = new CTransform(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CTransform");
 		Safe_Release(pInstance);

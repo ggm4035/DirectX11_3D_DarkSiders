@@ -17,9 +17,10 @@ class CPlayer final : public CGameObject3D
 {
 public:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
-	typedef struct tagPlayerDesc
+	typedef struct tagPlayerDesc : public CTransform::TRASNFORMDESC
 	{
 		_float4x4 WorldMatrix;
+		_float3 vAngle;
 	}PLAYERDESC;
 
 private:
@@ -29,7 +30,7 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
@@ -43,11 +44,12 @@ private:
 
 private:
 	virtual HRESULT Add_Components() override;
+	HRESULT Add_Parts();
 	HRESULT Set_Shader_Resources();
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CPlayer* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CPlayer* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

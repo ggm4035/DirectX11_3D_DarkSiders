@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CGameObject.h"
+#include "CTransform.h"
 
 BEGIN(Engine)
 
@@ -12,21 +13,32 @@ protected:
 	virtual ~CGameObject3D() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
+	CTransform* Get_Transform() const {
+		return m_pTransformCom;
+	}
+
+	CComponent* Get_Component(const wstring& wstrComponentTag) {
+		CComponent* pComponent = { nullptr };
+		pComponent = m_Components.find(wstrComponentTag)->second;
+		return pComponent;
+	}
+
+public:
+	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	/* Transform 정보 초기화 하고 싶으면 void*에 값 채우기 */
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent * pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual HRESULT Render() { return S_OK; }
 
 protected:
-	class CTransform* m_pTransformCom = { nullptr };
+	CTransform* m_pTransformCom = { nullptr };
 
 protected:
 	virtual HRESULT Add_Components() = 0;
 
 public:
-	virtual CGameObject3D* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) = 0;
+	virtual CGameObject3D* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

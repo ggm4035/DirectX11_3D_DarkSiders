@@ -1,6 +1,7 @@
 #include "CComponent.h"
 
 #include "CComponent_Manager.h"
+#include "CObject_Manager.h"
 
 /*=======================================*/
 //				COMPONENT
@@ -22,14 +23,9 @@ CComponent::CComponent(const CComponent& rhs)
 	Safe_AddRef(m_pContext);
 }
 
-HRESULT CComponent::Initialize_Prototype()
+HRESULT CComponent::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	return S_OK;
-}
-
-HRESULT CComponent::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
-{
-	m_iLayerIndex = iLayerIndex;
+	m_iLevelIndex = iLevelIndex;
 	m_pOwner = pOwner;
 	return S_OK;
 }
@@ -50,41 +46,23 @@ CComposite::CComposite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CComposite::CComposite(const CComposite& rhs)
-	:CComponent(rhs)
+	: CComponent(rhs)
 {
 }
 
-HRESULT CComposite::Initialize_Prototype()
+HRESULT CComposite::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	return S_OK;
-}
-
-HRESULT CComposite::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
-{
-	if(FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CComposite::Tick(const _double& TimeDelta)
-{
-}
-
-void CComposite::Late_Tick(const _double& TimeDelta)
-{
-}
-
-HRESULT CComposite::Render()
-{
-	return S_OK;
-}
-
-HRESULT CComposite::Add_Component(const _uint& iNumLevel, const wstring& PrototypeTag, const wstring& ComponentTag, 
+HRESULT CComposite::Add_Component(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& ComponentTag,
 	CComponent** ppOut, CComponent* pOwner, void* pArg)
 {
- 	CComponent* pComponent = CComponent_Manager::GetInstance()->
-		Clone_Component(iNumLevel, PrototypeTag, pOwner, pArg);
+	CComponent* pComponent = CComponent_Manager::GetInstance()->
+		Clone_Component(iLevelIndex, PrototypeTag, pOwner, pArg);
 	if (nullptr == pComponent)
 		return E_FAIL;
 

@@ -22,12 +22,12 @@ HRESULT CStatic_Object::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CStatic_Object::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CStatic_Object::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	if (nullptr == pArg)
 		return E_FAIL;
 
-	if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -36,7 +36,7 @@ HRESULT CStatic_Object::Initialize(const _uint& iLayerIndex, CComponent* pOwner,
 	STATICOBJECTDESC* pDesc = reinterpret_cast<STATICOBJECTDESC*>(pArg);
 	wstring wstrModelTag = pDesc->wstrModelTag;
 
-	if (FAILED(Add_Component(iLayerIndex, wstrModelTag.c_str(), L"Com_Model",
+	if (FAILED(Add_Component(iLevelIndex, wstrModelTag.c_str(), L"Com_Model",
 		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
@@ -150,11 +150,11 @@ CStatic_Object* CStatic_Object::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CStatic_Object* CStatic_Object::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CStatic_Object* CStatic_Object::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CStatic_Object* pInstance = new CStatic_Object(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CStatic_Object");
 		Safe_Release(pInstance);

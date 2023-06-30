@@ -20,7 +20,7 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
 
     MODEL_BINARYDATA retData;
     ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
-
+    
     for (auto& Data : *pModels)
     {
         wstring wstrTag = { L"Model_" };
@@ -58,9 +58,9 @@ HRESULT CDummyObject3D::Initialize_Prototype()
     return S_OK;
 }
 
-HRESULT CDummyObject3D::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CDummyObject3D::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-    if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
+    if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
         return E_FAIL;
 
     if (FAILED(Add_Components()))
@@ -77,10 +77,17 @@ void CDummyObject3D::Tick(const _double& TimeDelta)
 
     if (nullptr != m_pModelCom &&
         CModel::TYPE_ANIM == m_pModelCom->Get_Type())
+    {
+        m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
+
         m_pModelCom->Play_Animation(TimeDelta);
+    }
 
     if (nullptr != m_pRenderer)
         m_pRenderer->Add_RenderGroup(m_eRenderGroup, this);
+
+    if (nullptr != m_pColliderCom)
+        m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CDummyObject3D::Late_Tick(const _double& TimeDelta)
@@ -120,6 +127,10 @@ HRESULT CDummyObject3D::Render()
         if (nullptr != m_pBufferCom)
             m_pBufferCom->Render();
     }
+
+    if (nullptr != m_pColliderCom)
+        m_pColliderCom->Render();
+
 
     return S_OK;
 }
@@ -176,6 +187,18 @@ HRESULT CDummyObject3D::Add_Model(const wstring PrototypeTag)
         return E_FAIL;
 
     m_pModelCom->Set_Tag(PrototypeTag);
+
+    if (PrototypeTag == L"Model_Warrior")
+    {
+        /* Collider */
+        CBounding_AABB::AABBDESC AABBDesc;
+        AABBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
+        AABBDesc.vPosition = _float3(0.f, 1.f, 0.f);
+
+        if (FAILED(Add_Component(LEVEL_TOOL, L"Collider_AABB", L"Com_Collider_AABB",
+            (CComponent**)&m_pColliderCom, this, &AABBDesc)))
+            return E_FAIL;
+    }
 
     return S_OK;
 }
@@ -273,11 +296,11 @@ CDummyObject3D* CDummyObject3D::Create(ID3D11Device* pDevice, ID3D11DeviceContex
     return pInstance;
 }
 
-CGameObject3D* CDummyObject3D::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CGameObject3D* CDummyObject3D::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
     CDummyObject3D* pInstance = New CDummyObject3D(*this);
 
-    if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+    if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
     {
         Safe_Release(pInstance);
         MSG_BOX("Failed to Cloned CDummyObject3D");
@@ -288,6 +311,7 @@ CGameObject3D* CDummyObject3D::Clone(const _uint& iLayerIndex, CComponent* pOwne
 
 void CDummyObject3D::Free()
 {
+    Safe_Release(m_pColliderCom);
     Safe_Release(m_pNavigationCom);
     Safe_Release(m_pModelCom);
     Safe_Release(m_pRasterizer);

@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\CModel.h" />
     <ClInclude Include="..\Public\CNavigation.h" />
     <ClInclude Include="..\Public\CObject_Manager.h" />
+    <ClInclude Include="..\Public\CParts.h" />
     <ClInclude Include="..\Public\CPipeLine.h" />
     <ClInclude Include="..\Public\CRenderer.h" />
     <ClInclude Include="..\Public\CShader.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="..\Public\CVIBuffer_Coordnate.h" />
     <ClInclude Include="..\Public\CVIBuffer_Cube.h" />
     <ClInclude Include="..\Public\CVIBuffer_Cell.h" />
+    <ClInclude Include="..\Public\CVIBuffer_Instancing.h" />
     <ClInclude Include="..\Public\CVIBuffer_Rect.h" />
     <ClInclude Include="..\Public\CVIBuffer_Terrain.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
@@ -252,6 +254,7 @@
     <ClCompile Include="..\Private\CModel.cpp" />
     <ClCompile Include="..\Private\CNavigation.cpp" />
     <ClCompile Include="..\Private\CObject_Manager.cpp" />
+    <ClCompile Include="..\Private\CParts.cpp" />
     <ClCompile Include="..\Private\CPipeLine.cpp" />
     <ClCompile Include="..\Private\CRenderer.cpp" />
     <ClCompile Include="..\Private\CShader.cpp" />
@@ -261,6 +264,7 @@
     <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Cube.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Cell.cpp" />
+    <ClCompile Include="..\Private\CVIBuffer_Instancing.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Rect.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Terrain.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />

@@ -34,6 +34,9 @@ public:
 	_float4x4 Get_WorldFloat4x4() {
 		return m_WorldMatrix;
 	}
+	const _float4x4* Get_WorldFloat4x4Ptr() {
+		return &m_WorldMatrix;
+	}
 
 	_matrix Get_WorldMatrix_Inverse();
 	_float3 Get_Scaled();
@@ -55,12 +58,13 @@ public:
 	}
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual HRESULT Initialize_Prototype() override { return S_OK; }
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 
 	HRESULT Bind_Navigation(class CNavigation* pNavigation);
 
 public:
+	void Animation_Movement(class CModel* pModel, const _double& TimeDelta);
 	void Go_Straight(const _double& TimeDelta);
 	void Go_Backward(const _double& TimeDelta);
 	void Go_Right(const _double& TimeDelta);
@@ -84,7 +88,7 @@ private:
 
 public:
 	static CTransform* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
-	virtual CComponent* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

@@ -87,9 +87,9 @@ HRESULT CNavigation::Initialize_Prototype(const wstring& wstrCellFilePath)
 	return S_OK;
 }
 
-HRESULT CNavigation::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CNavigation::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CComponent::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
@@ -199,6 +199,17 @@ HRESULT CNavigation::SetUp_Neighbors()
 	return S_OK;
 }
 
+_bool CNavigation::isEqual(_fvector vSourPoint, _fvector vDestPoint)
+{
+	for (_uint i = 0; i < 3; ++i)
+	{
+		if (0.2f < fabs(vSourPoint.m128_f32[i] - vDestPoint.m128_f32[i]))
+			return false;
+	}
+
+	return true;
+}
+
 CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& wstrCellFilePath)
 {
 	CNavigation* pInstance = new CNavigation(pDevice, pContext);
@@ -212,11 +223,11 @@ CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return pInstance;
 }
 
-CNavigation* CNavigation::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CNavigation* CNavigation::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CNavigation* pInstance = new CNavigation(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CNavigation");
 		Safe_Release(pInstance);
@@ -240,6 +251,29 @@ void CNavigation::Free()
 }
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
+
+void CNavigation::Remove_Cell(const _uint& iCellIndex)
+{
+	if (m_vecCells.size() <= iCellIndex)
+		return;
+
+	auto iter = m_vecCells.begin();
+
+	for (_uint i = 0; i < iCellIndex; ++i)
+		++iter;
+
+	Safe_Release(m_vecCells[iCellIndex]);
+	m_vecCells.erase(iter);
+
+}
+
+void CNavigation::Remove_All_Cell()
+{
+	for (auto& pCell : m_vecCells)
+		Safe_Release(pCell);
+
+	m_vecCells.clear();
+}
 
 _float3& CNavigation::Get_CellPoint(const _uint& iCellIndex, const _uint& iPointIndex)
 {

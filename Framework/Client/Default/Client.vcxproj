@@ -177,6 +177,7 @@
     <ClInclude Include="..\Public\CMonster.h" />
     <ClInclude Include="..\Public\CPlayer.h" />
     <ClInclude Include="..\Public\CTerrain.h" />
+    <ClInclude Include="..\Public\CWeapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\Private\CMonster.cpp" />
     <ClCompile Include="..\Private\CPlayer.cpp" />
     <ClCompile Include="..\Private\CTerrain.cpp" />
+    <ClCompile Include="..\Private\CWeapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

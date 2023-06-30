@@ -1,38 +1,19 @@
-﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_Vtx.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl(87,5-30): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxAnimMesh.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxCol.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\ShaderFiles\Shader_VtxMesh.hlsl(74,5-57): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxMesh.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\ShaderFiles\Shader_VtxNorTex.hlsl(69,5-57): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxNorTex.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxTex.cso
-  stdafx.cpp
-  CStatic_Object.cpp
-  CUI_Rect.cpp
-  CCamera_Free.cpp
+﻿  CCamera_Free.cpp
   CLevel_GamePlay.cpp
   CLevel_Loading.cpp
   CLevel_Logo.cpp
   CLoader.cpp
-  CMainApp.cpp
   CMonster.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(30,94): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(30,76): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CPlayer.cpp
+  CStatic_Object.cpp
   CTerrain.cpp
+  CUI_Rect.cpp
+  CWeapon.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(60,92): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(64,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CMainApp.cpp
   Client.cpp
   코드를 생성하고 있습니다...
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

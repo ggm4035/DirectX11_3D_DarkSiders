@@ -84,6 +84,20 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	}VTXMESH_DECL;
 
+	typedef struct tagVertex_Instance
+	{
+		XMFLOAT4 vRight;
+		XMFLOAT4 vUp;
+		XMFLOAT4 vLook;
+		XMFLOAT4 vTranslation;
+	}VTXINSTANCE;
+
+	typedef struct ENGINE_DLL tagVertex_Rect_Instance_Declaration
+	{
+		static const _uint iNumElements = { 6 };
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXRECTINSTANCE_DECL;
+
 	typedef struct tagVertex_AnimMesh
 	{
 		XMFLOAT3 vPosition;
@@ -178,6 +192,10 @@ namespace Engine
 
 	typedef struct tagFileData
 	{
+		/* Player */
+		_float4x4 WorldMatrix;
+		_float3 vAngle;
+
 		/* Terrain */
 		_uint iXCount = { 0 };
 		_uint iZCount = { 0 };

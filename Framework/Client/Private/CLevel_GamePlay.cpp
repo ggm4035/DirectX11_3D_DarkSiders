@@ -99,6 +99,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 			return E_FAIL;
 	}
 
+	m_PlayerWorldMatrix = FileData.WorldMatrix;
+	m_vPlayerAngle = FileData.vAngle;
+
 	Safe_Release(pGameInstance);
 
 	for (auto& Data : FileData.vecModelData)
@@ -129,14 +132,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	CPlayer::PLAYERDESC PlayerDesc;
-	PlayerDesc.WorldMatrix;
-
-	CTransform::TRASNFORMDESC TransformDesc;
-	TransformDesc.SpeedPerSec = 1.5f;
-	TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
+	PlayerDesc.WorldMatrix = m_PlayerWorldMatrix;
+	PlayerDesc.vAngle = m_vPlayerAngle;
+	PlayerDesc.SpeedPerSec = 3.f; // °È±â = 1.5, ¶Ù±â 3
+	PlayerDesc.RotationPerSec = XMConvertToRadians(90.f);
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Player",
-		L"Player", pLayerTag, &TransformDesc)))
+		L"Player", pLayerTag, &PlayerDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

@@ -11,7 +11,7 @@ float4 g_CameraPosition;
 
 texture2D g_DiffuseTexture[10];
 
-float g_fDetail = 1.f;
+float g_fDetail = 30.f;
 
 sampler LinearSampler = sampler_state
 {
@@ -62,7 +62,7 @@ float4 PS_MAIN(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
 	
-    float4 vDiffuse = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexUV * g_fDetail);
+    float4 vDiffuse = g_DiffuseTexture[1].Sample(LinearSampler, In.vTexUV * g_fDetail);
     
     float4 vAmbient = float4(0.2f, 0.2f, 0.2f, 0.2f);
     float fShade = max(dot(normalize(In.vNoraml), -normalize(g_LightDirection)), 0.f);

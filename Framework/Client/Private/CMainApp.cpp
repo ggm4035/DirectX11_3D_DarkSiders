@@ -4,6 +4,7 @@
 #include "CGameInstance.h"
 #include "CLevel_Loading.h"
 #include "CPlayer.h"
+#include "CWeapon.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -124,17 +125,34 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 
 HRESULT CMainApp::Ready_Player()
 {
-	m_pGameInstance->ReadModels("../../Warrior.dat", m_FilePathList, m_vecModelDatas);
+	string FilePath;
+	MODEL_BINARYDATA Data;
+
+	m_pGameInstance->ReadModel("../../Warrior.dat", FilePath, Data);
+	m_vecModelDatas.push_back(Data);
 
 	/* Player Model */
 	_matrix PivotMatrix = XMMatrixIdentity();
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Model_Player",
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecModelDatas[0], PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
 		return E_FAIL;
 
-	/* For. Prototype_GameObject_Player */
+	/* For. Player */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Player", CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	m_pGameInstance->ReadModel("../../Chaoseater.dat", FilePath, Data);
+
+	m_vecModelDatas.push_back(Data);
+
+	/* Weapon Model */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Model_Weapon",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+
+	/* For. Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Weapon", CWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

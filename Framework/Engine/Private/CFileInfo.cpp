@@ -461,6 +461,214 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 	CloseHandle(hFile);
 }
 
+void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT MODEL_BINARYDATA& Data)
+{
+	HANDLE hFile = CreateFileA(strFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+		return;
+
+	_ulong dwByte = { 0 };
+
+	ZeroMemory(&Data, sizeof Data);
+
+	_uint iPathLength = { 0 };
+	_char szFilePath[MAX_PATH] = { "" };
+	/* Read strFilePath */
+	ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, szFilePath, sizeof(_char) * iPathLength, &dwByte, nullptr);
+
+	if (0 != dwByte)
+		FilePath = szFilePath;
+
+	/*========== BINARY DATAS ===========*/
+	/* Read szTag */
+	ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
+	ReadFile(hFile, Data.szTag, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
+
+	/* Read iNumMeshes */
+	ReadFile(hFile, &Data.iNumMeshes, sizeof(_uint), &dwByte, nullptr);
+
+	/* Read iNumMaterials */
+	ReadFile(hFile, &Data.iNumMaterials, sizeof(_uint), &dwByte, nullptr);
+
+	/* Read pMaterialPaths */
+	MATERIALPATH* pMaterialPath = { nullptr };
+	if (0 < Data.iNumMaterials)
+	{
+		pMaterialPath = new MATERIALPATH[Data.iNumMaterials];
+		ZeroMemory(pMaterialPath, sizeof(MATERIALPATH) * Data.iNumMaterials);
+	}
+	_uint iTexturePathlength = { 0 };
+	for (_uint iMaterialIndex = 0; iMaterialIndex < Data.iNumMaterials; ++iMaterialIndex)
+	{
+		for (_uint iTextureIndex = 0; iTextureIndex < 21; ++iTextureIndex)
+		{
+			ReadFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, pMaterialPath[iMaterialIndex].szMaterialTexturePath[iTextureIndex],
+				sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
+		}
+	}
+
+	/* Read iNumBones */
+	ReadFile(hFile, &Data.iNumBones, sizeof(_uint), &dwByte, nullptr);
+
+	/*========== BONE DATAS ===========*/
+	BONEDATA* pBoneData = { nullptr };
+	if (0 < Data.iNumBones)
+	{
+		pBoneData = new BONEDATA[Data.iNumBones];
+		ZeroMemory(pBoneData, sizeof(BONEDATA) * Data.iNumBones);
+	}
+
+	for (_uint iBoneIndex = 0; iBoneIndex < Data.iNumBones; ++iBoneIndex)
+	{
+		/* Read szName_Bone */
+		_uint iNameLength = { 0 };
+		ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, pBoneData[iBoneIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+		/* Read iParentIdx */
+		ReadFile(hFile, &pBoneData[iBoneIndex].iParentIdx, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read iIndex */
+		ReadFile(hFile, &pBoneData[iBoneIndex].iIndex, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read TransformationMatrix */
+		ReadFile(hFile, &pBoneData[iBoneIndex].TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		/* Read OffsetMatrix */
+		ReadFile(hFile, &pBoneData[iBoneIndex].OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+	}
+
+	/* Read iNumAnimations */
+	ReadFile(hFile, &Data.iNumAnimations, sizeof(_uint), &dwByte, nullptr);
+
+	/*========== ANIMATION DATAS ===========*/
+	ANIMATIONDATA* pAnimation = { nullptr };
+	if (0 < Data.iNumAnimations)
+	{
+		pAnimation = new ANIMATIONDATA[Data.iNumAnimations];
+		ZeroMemory(pAnimation, sizeof(ANIMATIONDATA) * Data.iNumAnimations);
+	}
+
+	for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
+	{
+		/* Read szName */
+		_uint iNameLength = strlen(pAnimation[iAnimIndex].szName) + 1;
+		ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, pAnimation[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+		/* Read Duration */
+		ReadFile(hFile, &pAnimation[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+
+		/* Read TickPerSec */
+		ReadFile(hFile, &pAnimation[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+
+		/* Read iNumChannels */
+		ReadFile(hFile, &pAnimation[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read bIsLoop */
+		ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
+		/*========== CHANNEL DATAS ===========*/
+		CHANNELDATA* pChannel = { nullptr };
+		if (0 < pAnimation[iAnimIndex].iNumChannels)
+		{
+			pChannel = new CHANNELDATA[pAnimation[iAnimIndex].iNumChannels];
+			ZeroMemory(pChannel, sizeof(CHANNELDATA) * pAnimation[iAnimIndex].iNumChannels);
+		}
+
+		for (_uint iChannelIndex = 0; iChannelIndex < pAnimation[iAnimIndex].iNumChannels; ++iChannelIndex)
+		{
+			/* Read szName */
+			iNameLength = strlen(pChannel[iChannelIndex].szName) + 1;
+			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, pChannel[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+			/* Read iNumKeyFrames */
+			ReadFile(hFile, &pChannel[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+
+			/* Read KeyFrame */
+			KEYFRAME* pKeyFrame = { nullptr };
+			if (0 < pChannel[iChannelIndex].iNumKeyFrames)
+			{
+				pKeyFrame = new KEYFRAME[pChannel[iChannelIndex].iNumKeyFrames];
+				ZeroMemory(pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames);
+			}
+
+			ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+			pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
+		}
+		pAnimation[iAnimIndex].pChannels = pChannel;
+	}
+
+	/*========== MESH DATAS ===========*/
+	MESHDATA* pMeshData = new MESHDATA[Data.iNumMeshes];
+	ZeroMemory(pMeshData, sizeof(MESHDATA) * Data.iNumMeshes);
+	for (_uint iMeshIndex = 0; iMeshIndex < Data.iNumMeshes; ++iMeshIndex)
+	{
+		/* Read szMesh Name*/
+		_uint iNameLength = { 0 };
+		ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, pMeshData[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+
+		/* Read iMaterialIndex */
+		ReadFile(hFile, &pMeshData[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read iNumNonAnimVertices */
+		ReadFile(hFile, &pMeshData[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read iNumAnimVertices */
+		ReadFile(hFile, &pMeshData[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read iNumIndices */
+		ReadFile(hFile, &pMeshData[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read iNumMeshBones */
+		ReadFile(hFile, &pMeshData[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read pBoneIndices */
+		pMeshData[iMeshIndex].pBoneIndices = new _uint[pMeshData[iMeshIndex].iNumMeshBones];
+		ZeroMemory(pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones);
+		ReadFile(hFile, pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
+
+		/* Read pNonAnimVertices */
+		VTXMESH* pNonAnimVertices = { nullptr };
+		if (0 < pMeshData[iMeshIndex].iNumNonAnimVertices)
+		{
+			pNonAnimVertices = new VTXMESH[pMeshData[iMeshIndex].iNumNonAnimVertices];
+			ZeroMemory(pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices);
+			ReadFile(hFile, pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
+		}
+
+		/* Read pAnimVertices */
+		VTXANIMMESH* pAnimVertices = { nullptr };
+		if (0 < pMeshData[iMeshIndex].iNumAnimVertices)
+		{
+			pAnimVertices = new VTXANIMMESH[pMeshData[iMeshIndex].iNumAnimVertices];
+			ZeroMemory(pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices);
+			ReadFile(hFile, pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
+		}
+
+		/* Read pIndices */
+		_ulong* pIndices = new _ulong[pMeshData[iMeshIndex].iNumIndices];
+		ZeroMemory(pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices);
+		ReadFile(hFile, pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices, &dwByte, nullptr);
+
+		pMeshData[iMeshIndex].pNonAnimVertices = pNonAnimVertices;
+		pMeshData[iMeshIndex].pAnimVertices = pAnimVertices;
+		pMeshData[iMeshIndex].pIndices = pIndices;
+	}
+
+	Data.pAnimations = pAnimation;
+	Data.pMaterialPaths = pMaterialPath;
+	Data.pBoneDatas = pBoneData;
+	Data.pMeshDatas = pMeshData;
+
+	CloseHandle(hFile);
+}
+
 HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 {
 	HANDLE hFile = CreateFileA(strFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -470,7 +678,7 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 
 	_ulong dwByte = { 0 };
 
-	/* 1. Terrain을 저장한다. */
+	/* 1. Terrain을 불러온다. */
 	_uint iXCount = { 0 }, iZCount = { 0 };
 
 	/* Read iXCount */
@@ -488,7 +696,7 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 	for (_uint i = 0; i < iXCount * iZCount; ++i)
 		ReadFile(hFile, &OutData.pPositions[i], sizeof(_float3), &dwByte, nullptr);
 
-	/* 2. 전체 3D 게임오브젝트들을 저장한다. */
+	/* 2. 전체 3D 게임오브젝트들을 불러온다. */
 	_uint iNumObjects = { 0 };
 	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
 
@@ -514,9 +722,13 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		OutData.vecModelData.push_back(Data);
 	}
 
-	/* 3. 카메라를 저장한다. */
+	/* 3. Player 불러오기*/
+	ReadFile(hFile, &OutData.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+	ReadFile(hFile, &OutData.vAngle, sizeof(_float3), &dwByte, nullptr);
 
-	/* 4. UI를 저장한다. */
+	/* 3. 카메라를 불러온다. */
+
+	/* 4. UI를 불러온다. */
 
 	CloseHandle(hFile);
 

@@ -11,13 +11,11 @@ CRenderer::CRenderer(const CRenderer& rhs)
 {
 }
 
-HRESULT CRenderer::Initialize_Prototype()
+HRESULT CRenderer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	return S_OK;
-}
+	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
+		return E_FAIL;
 
-HRESULT CRenderer::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
-{
 	return S_OK;
 }
 
@@ -129,7 +127,7 @@ CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	return pInstance;
 }
 
-CComponent* CRenderer::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CComponent* CRenderer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	/* Renderer는 이미 오브젝트 리스트를 가지고 있기때문에 Owner 작업이 불필요함 */
 	AddRef();

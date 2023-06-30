@@ -31,7 +31,7 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& wstrCellFilePath);
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg);
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
 
 public:
 	RETURNDESC is_Move(_fvector vPosition);
@@ -42,10 +42,11 @@ private:
 
 private:
 	HRESULT SetUp_Neighbors();
+	_bool isEqual(_fvector vSourPoint, _fvector vDestPoint);
 
 public:
 	static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& wstrCellFilePath = L"");
-	virtual CNavigation* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CNavigation* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
@@ -54,6 +55,8 @@ public:
 	void Set_CurrentIndex(const _uint& iIndex) {
 		m_NavigationDesc.iCurrentIndex = iIndex;
 	}
+	void Remove_Cell(const _uint& iCellIndex);
+	void Remove_All_Cell();
 	_float3& Get_CellPoint(const _uint& iCellIndex, const _uint& iPointIndex);
 	void Set_CellPosition(const _uint& iCellIndex, const _uint& iPointIndex, const _float3& vPosition);
 	void Add_Cell(const TRIANGLE& Triangle);

@@ -90,9 +90,9 @@ HRESULT CVIBuffer_Coordnate::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Coordnate::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CVIBuffer_Coordnate::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CVIBuffer::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CVIBuffer::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -118,11 +118,11 @@ CVIBuffer_Coordnate* CVIBuffer_Coordnate::Create(ID3D11Device* pDevice, ID3D11De
 	return pInstance;
 }
 
-CVIBuffer_Coordnate* CVIBuffer_Coordnate::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CVIBuffer_Coordnate* CVIBuffer_Coordnate::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CVIBuffer_Coordnate* pInstance = new CVIBuffer_Coordnate(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CVIBuffer_Coordnate");
 		Safe_Release(pInstance);

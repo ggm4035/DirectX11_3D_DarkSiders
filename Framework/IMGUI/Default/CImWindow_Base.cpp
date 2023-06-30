@@ -4,6 +4,7 @@
 #include "CToolInstance.h"
 #include "CImWindow_Manager.h"
 
+#include "CImWindow_Animation.h"
 #include "CImWindow_Inspector.h"
 #include "CImWindow_Create.h"
 #include "CImWindow_Top.h"
@@ -17,10 +18,6 @@
 #include "CTool_HeightMap.h"
 
 IMPLEMENT_SINGLETON(CImWindow_Base)
-
-CImWindow_Base::CImWindow_Base()
-{
-}
 
 HRESULT CImWindow_Base::Initialize()
 {
@@ -64,14 +61,12 @@ void CImWindow_Base::Tick(const _double& TimeDelta)
 
         if (ImGui::BeginTabItem("Hierarchy"))
         {
-            m_isIntoAnimTab = false;
             Hierarchy(pGameInstance);
             ImGui::EndTabItem();
         }
 
         if (ImGui::BeginTabItem("Terrain"))
         {
-            m_isIntoAnimTab = false;
             if (nullptr != m_pToolHeightMap)
                 m_pToolHeightMap->Tick(pGameInstance);
             HeightMap(pGameInstance);
@@ -80,7 +75,6 @@ void CImWindow_Base::Tick(const _double& TimeDelta)
 
         if (ImGui::BeginTabItem("UI"))
         {
-            m_isIntoAnimTab = false;
             UI(pGameInstance);
             ImGui::EndTabItem();
         }
@@ -88,11 +82,18 @@ void CImWindow_Base::Tick(const _double& TimeDelta)
         if (ImGui::BeginTabItem("Animation"))
         {
             m_isIntoAnimTab = true;
+            TOOL->m_pAnimationWindow->m_bIsOpen = true;
             if (nullptr != m_pToolAnimation)
                 m_pToolAnimation->Tick(pGameInstance, m_GameObjectList);
 
             ImGui::EndTabItem();
         }
+        else
+        {
+            m_isIntoAnimTab = false;
+            TOOL->m_pAnimationWindow->m_bIsOpen = false;
+        }
+
         ImGui::EndTabBar();
     }
 
@@ -168,7 +169,7 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
         | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY
         | ImGuiTableFlags_SizingFixedFit;
 
-    if (ImGui::BeginTable("Table_Animation", 3, flags, ImVec2(0, 300), 0.f))
+    if (ImGui::BeginTable("Table_Model", 3, flags, ImVec2(0, 300), 0.f))
     {
         ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
@@ -176,7 +177,7 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
 
         ImGui::TableHeadersRow();
 
-        /* Animation Data Table 출력 */
+        /* Model Data Table 출력 */
         static _uint iSelected = 0;
         _uint iIndex = 0;
         auto iter = m_GameObjectList.begin();

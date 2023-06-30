@@ -14,7 +14,7 @@ class CImWindow_Top final : public CImWindow
     DECLARE_SINGLETON(CImWindow_Top)
 
 private:
-    explicit CImWindow_Top();
+    explicit CImWindow_Top() = default;
     virtual ~CImWindow_Top() = default;
 
 public:

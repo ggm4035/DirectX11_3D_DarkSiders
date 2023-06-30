@@ -18,9 +18,9 @@ HRESULT CMonster::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMonster::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CGameObject3D::Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -144,11 +144,11 @@ CMonster* CMonster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CMonster* CMonster::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CMonster* CMonster::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CMonster* pInstance = new CMonster(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CMonster");
 		Safe_Release(pInstance);

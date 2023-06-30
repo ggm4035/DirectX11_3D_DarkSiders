@@ -29,11 +29,11 @@ public:
 	void Set_Position(const _float2& _vPosition);
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
-	virtual void Tick(const _double& TimeDelta) override;
-	virtual void Late_Tick(const _double& TimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual HRESULT Initialize_Prototype() override { return S_OK; }
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
+	virtual void Tick(const _double& TimeDelta) override {}
+	virtual void Late_Tick(const _double& TimeDelta) override {}
+	virtual HRESULT Render() { return S_OK; };
 
 protected:
 	_float4x4 m_WorldMatrix;
@@ -42,7 +42,7 @@ protected:
 	virtual HRESULT Add_Components() = 0;
 
 public:
-	virtual CGameObjectUI* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) = 0;
+	virtual CGameObjectUI* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

@@ -17,6 +17,10 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_float4x4 m_PlayerWorldMatrix;
+	_float3 m_vPlayerAngle;
+
+private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_BackGround(wstring pLayerTag);
 	HRESULT Ready_Layer_Cameras(wstring pLayerTag);

@@ -16,21 +16,18 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent* pOwner, class CBounding* pBounding, void* pArg);
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, class CBounding* pBounding, void* pArg);
 
 public:
 	void Tick(_fmatrix WorldMatrix);
 	HRESULT Render();
-
-public:
-	_bool Intersect(const CCollider* pCollider);
 
 private:
 	CBounding* m_pBounding = { nullptr };
 
 public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType);
-	virtual CCollider* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CCollider* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

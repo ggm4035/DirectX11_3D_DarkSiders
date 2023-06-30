@@ -12,10 +12,6 @@
 
 IMPLEMENT_SINGLETON(CImWindow_Inspector)
 
-CImWindow_Inspector::CImWindow_Inspector()
-{
-}
-
 HRESULT CImWindow_Inspector::Initialize()
 {
     if (FAILED(CImWindow::Initialize()))

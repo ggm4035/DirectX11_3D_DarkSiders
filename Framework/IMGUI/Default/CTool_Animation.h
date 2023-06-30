@@ -30,6 +30,7 @@ private:
     void Make_New_Model(CGameInstance* pGameInstance, list<class CDummyObject3D*>& ObjectList);
     void Add_Animation(CGameInstance* pGameInstance, const string& strTag);
     void Export_Animation(CGameInstance* pGameInstance);
+    void Transformation(CGameInstance* pGameInstance);
     void Release_Animation_Data();
 
 public:

@@ -43,6 +43,7 @@ using namespace std;
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
+#include <iostream>
 #include <crtdbg.h>
 
 #ifndef DBG_NEW 

@@ -182,47 +182,18 @@ void CTool_HeightMap::Draw_Filter(CGameInstance* pGameInstance)
     /* Function */
 
 }
-//
-//ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, pGameInstance->wstrToStr(pObjectTag).c_str());
-//if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-//{
-//    if (true == TOOL->m_pTopWindow->isPickSolidMode())
-//    {
-//        D3D11_RASTERIZER_DESC RasterizerDesc;
-//        ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
-//
-//        RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-//        RasterizerDesc.FrontCounterClockwise = { false };
-//        RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
-//
-//        if (nullptr != TOOL->m_pCurrentObject)
-//            TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
-//
-//        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
-//
-//        TOOL->m_pCurrentObject = Find_GameObject(pObjectTag);
-//
-//        if (nullptr != TOOL->m_pCurrentObject)
-//            TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
-//    }
-//    else
-//        TOOL->m_pCurrentObject = Find_GameObject(pObjectTag);
-//}
-/*
-Position Setting
-_float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(iCurCellIndex, iCurPointIndex);
-_float arrData[3] = { vPosition.x, vPosition.y, vPosition.z };
-ImGui::DragFloat3("Position", arrData, 0.01f, 0.01f, 100.f, "%.2f");
-vPosition = _float3(arrData[0], arrData[1], arrData[2]);
-m_pTerrain->Get_Navigation()->Set_CellPosition(iCurCellIndex, iCurPointIndex, vPosition);
-*/
 
 void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
 {
     ImGui::SeparatorText("Navigation");
 
+    /* Check Option */
+    ImGui::RadioButton("Nothing", &m_iSelectOption, 0); ImGui::SameLine();
+    ImGui::RadioButton("Make Navi", &m_iSelectOption, 1); ImGui::SameLine();
+    ImGui::RadioButton("Pick Navi", &m_iSelectOption, 2);
+
     /* Navigation List */
-    ImGui::BeginChild("Navigations", ImVec2(330, 400), true, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("Navigations", ImVec2(330, 550), true, ImGuiWindowFlags_HorizontalScrollbar);
     static _int iCur;
 
     _uint iIndex = m_vecPoints.size();
@@ -251,37 +222,72 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
 
         /* Sort Navigation Cells */
         if (ImGui::Button("Sort Navigation Cells"))
+        {
             m_pTerrain->Get_Navigation()->Sort();
+            _uint iCellidx = { 0 };
+            for (auto& Points : m_vecPoints)
+            {
+                for (_uint i = 0; i < 3; ++i)
+                    Points.vDot[i] = m_pTerrain->Get_Navigation()->Get_CellPoint(iCellidx, i);
+
+                ++iCellidx;
+            }
+        }
 
         Safe_Delete_Array(pstrTags);
         Safe_Delete_Array(ppiTems);
+
+        /* Setting Position */
+        if (2 != m_iSelectOption)
+        {
+            for (_int iPointIndex = 0; iPointIndex < 3; ++iPointIndex)
+            {
+                _char szlabel[16];
+                _itoa_s(iPointIndex, szlabel, 10);
+                strcat_s(szlabel, "##point");
+                _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(m_iPickCell, iPointIndex);
+                _float arrData[3] = { vPosition.x, vPosition.y, vPosition.z };
+                ImGui::DragFloat3(szlabel, arrData, 0.01f, 0.01f, 1000.f, "%.2f");
+                vPosition = _float3(arrData[0], arrData[1], arrData[2]);
+                m_pTerrain->Get_Navigation()->Set_CellPosition(m_iPickCell, iPointIndex, vPosition);
+            }
+        }
+        else if (0 < m_vecPickSphereInfo.size())
+        {
+            _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(m_vecPickSphereInfo[0].first, m_vecPickSphereInfo[0].second);
+            _float arrData[3] = { vPosition.x, vPosition.y, vPosition.z };
+            ImGui::DragFloat3("Picking Points", arrData, 0.01f, 0.01f, 1000.f, "%.2f");
+            vPosition = _float3(arrData[0], arrData[1], arrData[2]);
+            for (auto& SphereInfo : m_vecPickSphereInfo)
+                m_pTerrain->Get_Navigation()->Set_CellPosition(SphereInfo.first, SphereInfo.second, vPosition);
+        }
     }
 
     ImGui::EndChild();
 
-    /* Check Option */
-    ImGui::RadioButton("Make Navi", &m_iSelectOption, 0); ImGui::SameLine();
-    ImGui::RadioButton("Pick Navi", &m_iSelectOption, 1);
-
-    /* Setting Position */
-
-    if (0 < iIndex)
-    {
-        for (_int iPointIndex = 0; iPointIndex < 3; ++iPointIndex)
-        {
-            _char szlabel[16];
-            _itoa_s(iPointIndex, szlabel, 10);
-            strcat_s(szlabel, "##point");
-            _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(m_iPickCell, iPointIndex);
-            _float arrData[3] = { vPosition.x, vPosition.y, vPosition.z };
-            ImGui::DragFloat3(szlabel, arrData, 0.01f, 0.01f, 1000.f, "%.2f");
-            vPosition = _float3(arrData[0], arrData[1], arrData[2]);
-            m_pTerrain->Get_Navigation()->Set_CellPosition(m_iPickCell, iPointIndex, vPosition);
-        }
-    }
-
     /* Picking Navigation */
     Pick_Navigation(pGameInstance);
+
+    if (ImGui::Button("Export##Navigation"))
+        Export_Navigation();
+
+    ImGui::SameLine();
+    Load_Navigation();
+
+    /* Remove Cell */
+    if (ImGui::Button("Delete Cell##Navigation"))
+    {
+        auto iter = m_vecPoints.begin();
+
+        for (_uint i = 0; i < m_iPickCell; ++i) ++iter;
+
+        m_pTerrain->Get_Navigation()->Remove_Cell(m_iPickCell);
+        m_vecPoints.erase(iter);
+
+        m_iPickCell = 0 > --m_iPickCell ? 0 : m_iPickCell;
+        m_pTerrain->Get_Navigation()->Set_CurrentIndex(m_iPickCell);
+    }
+
 
     ImGui::Separator();
 }
@@ -297,7 +303,7 @@ void CTool_HeightMap::Pick_Navigation(CGameInstance* pGameInstance)
         _vector vPosition = pGameInstance->Picking_On_Spheres(ptMouse, m_pTerrain->Get_Navigation(), m_pTerrain->Get_Transform());
 
         /* Make Navigation */
-        if (0 == m_iSelectOption)
+        if (1 == m_iSelectOption)
         {
             if (0.f > vPosition.m128_f32[0])
                 vPosition = pGameInstance->Picking_On_Triangle(ptMouse, m_pTerrain->Get_Buffer(), m_pTerrain->Get_Transform());
@@ -316,19 +322,85 @@ void CTool_HeightMap::Pick_Navigation(CGameInstance* pGameInstance)
         }
 
         /* Pick Sphere */
-        if (1 == m_iSelectOption)
+        if (2 == m_iSelectOption)
         {
             if (0.f > vPosition.m128_f32[0])
                 return;
 
+            m_vecPickSphereInfo.clear();
             /* 구체를 찾는다. */
-            vector<pair<_uint, _int>> vecSphereInfo = pGameInstance->Pick_Spheres(ptMouse, m_pTerrain->Get_Navigation(), m_pTerrain->Get_Transform());
-
-            if (0 == vecSphereInfo.size())
-                return;
-
-            
+            m_vecPickSphereInfo = pGameInstance->Pick_Spheres(ptMouse, m_pTerrain->Get_Navigation(), m_pTerrain->Get_Transform());
         }
+    }
+}
+
+void CTool_HeightMap::Export_Navigation()
+{
+    m_pTerrain->Get_Navigation()->Sort();
+
+    HANDLE hFile = CreateFile(L"../Default/Out/Navigation.dat", GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (INVALID_HANDLE_VALUE == hFile)
+        return;
+
+    _ulong dwByte = { 0 };
+
+    for (auto& Position : m_vecPoints)
+        WriteFile(hFile, Position.vDot, sizeof(_float3) * 3, &dwByte, nullptr);
+
+    CloseHandle(hFile);
+
+    MSG_BOX("Success to Export Navigations");
+}
+
+void CTool_HeightMap::Load_Navigation()
+{
+    if (nullptr == m_pTerrain)
+        return;
+
+    if (ImGui::Button("Load Navigation##Navigation"))
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseNavigationData", "Choose File", ".dat"/*".cpp,.h,.hpp"*/, ".");
+
+    // display
+    if (ImGuiFileDialog::Instance()->Display("ChooseNavigationData"))
+    {
+        // action if OK
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+            string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+            string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            // action
+
+            m_pTerrain->Get_Navigation()->Remove_All_Cell();
+
+            m_vecPickSphereInfo.clear();
+            m_vecPoints.clear();
+            
+            HANDLE hFile = CreateFileA(filePathName.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+            _ulong dwByte = { 0 };
+
+            while (true)
+            {
+                TRIANGLE Triangle;
+
+                ReadFile(hFile, Triangle.vDot, sizeof(_float3) * 3, &dwByte, nullptr);
+
+                if (0 == dwByte)
+                    break;
+
+                m_vecPoints.push_back(Triangle);
+            }
+
+            CloseHandle(hFile);
+
+            for (auto& Points : m_vecPoints)
+                m_pTerrain->Get_Navigation()->Add_Cell(Points);
+
+            MSG_BOX("Success to Load Navigation");
+        }
+
+        // close
+        ImGuiFileDialog::Instance()->Close();
     }
 }
 

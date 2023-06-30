@@ -34,23 +34,23 @@ HRESULT CObject_Manager::Add_Prototype(const wstring& PrototypeTag, CGameObject*
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_GameObject(const _uint& iLayerIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, const wstring& LayerTag, void* pArg)
+HRESULT CObject_Manager::Add_GameObject(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, const wstring& LayerTag, void* pArg)
 {
 	CGameObject* pPrototype = Find_Prototype(PrototypeTag);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
-	CGameObject* pGameObject = pPrototype->Clone(iLayerIndex, nullptr, pArg);
+	CGameObject* pGameObject = pPrototype->Clone(iLevelIndex, nullptr, pArg);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	CLayer* pLayer = Find_Layer(iLayerIndex, LayerTag);
+	CLayer* pLayer = Find_Layer(iLevelIndex, LayerTag);
 
 	if (nullptr == pLayer)
 	{
 		pLayer = CLayer::Create();
 
-		m_pLayers[iLayerIndex].emplace(LayerTag, pLayer);
+		m_pLayers[iLevelIndex].emplace(LayerTag, pLayer);
 
 		pLayer->Add_GameObject(pGameObject);
 	}
@@ -60,6 +60,21 @@ HRESULT CObject_Manager::Add_GameObject(const _uint& iLayerIndex, const wstring&
 	pGameObject->Set_Tag(GameObjectTag);
 
 	return S_OK;
+}
+
+CGameObject* CObject_Manager::Clone_GameObject(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, CComponent* pOwner, void* pArg)
+{
+	CGameObject* pPrototype = Find_Prototype(PrototypeTag);
+	if (nullptr == pPrototype)
+		return nullptr;
+
+	CGameObject* pGameObject = pPrototype->Clone(iLevelIndex, pOwner, pArg);
+	if (nullptr == pGameObject)
+		return nullptr;
+
+	pGameObject->Set_Tag(GameObjectTag);
+
+	return pGameObject;
 }
 
 void CObject_Manager::Tick(const _double& TimeDelta)
@@ -137,11 +152,11 @@ CGameObject* CObject_Manager::Find_Prototype(const wstring& PrototypeTag)
 	return iter->second;
 }
 
-CLayer* CObject_Manager::Find_Layer(const _uint& iLayerIndex, const wstring& LayerTag)
+CLayer* CObject_Manager::Find_Layer(const _uint& iLevelIndex, const wstring& LayerTag)
 {
-	auto& iter = m_pLayers[iLayerIndex].find(LayerTag);
+	auto& iter = m_pLayers[iLevelIndex].find(LayerTag);
 
-	if (iter == m_pLayers[iLayerIndex].end())
+	if (iter == m_pLayers[iLevelIndex].end())
 		return nullptr;
 
 	return iter->second;

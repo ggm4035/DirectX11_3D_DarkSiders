@@ -19,12 +19,6 @@
     <Filter Include="01. Levels\01. Level_GamePlay">
       <UniqueIdentifier>{8c7a8ca8-27c2-4ea6-bbbc-26ae3982147e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Levels\99. Level_Loading">
-      <UniqueIdentifier>{4d8384f4-e8a4-4783-8fc7-10622987d984}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\99. Level_Loading\Loader">
-      <UniqueIdentifier>{65e810a4-1df9-461d-81dc-bfdf48e72c83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject">
       <UniqueIdentifier>{4421319e-a267-4e72-82e9-352a5166944f}</UniqueIdentifier>
     </Filter>
@@ -57,6 +51,18 @@
     </Filter>
     <Filter Include="02. GameObject\Environment\Anim_Object">
       <UniqueIdentifier>{5614ebb0-f27e-412c-ac1d-9e6be6247812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Parts">
+      <UniqueIdentifier>{8dc1db7f-9dbe-4333-a802-a156b9652817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Parts\Weapon">
+      <UniqueIdentifier>{bb0f568e-ee17-40ac-a93a-dc9416ae5bca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99. Level_Loading">
+      <UniqueIdentifier>{4d8384f4-e8a4-4783-8fc7-10622987d984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99. Level_Loading\Loader">
+      <UniqueIdentifier>{65e810a4-1df9-461d-81dc-bfdf48e72c83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +117,9 @@
     <ClInclude Include="..\Public\CStatic_Object.h">
       <Filter>02. GameObject\Environment\Static_Object</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CWeapon.h">
+      <Filter>02. GameObject\Parts\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -151,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CStatic_Object.cpp">
       <Filter>02. GameObject\Environment\Static_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CWeapon.cpp">
+      <Filter>02. GameObject\Parts\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

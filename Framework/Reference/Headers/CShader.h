@@ -13,7 +13,7 @@ private:
 
 public:
 	HRESULT Initialize_Prototype(const wstring& pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pInputElementsDesc, const _uint& iNumElements);
-	virtual HRESULT Initialize(const _uint& iLayerIndex, CComponent * pOwner, void* pArg) override;
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) override;
 
 public:
 	HRESULT Bind_RawValue(const string& Typename, const void* pValue, const _uint& iLength);
@@ -33,7 +33,7 @@ private:
 
 public:
 	static CShader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& ShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pInputElementsDesc, const _uint& iNumElements);
-	virtual CComponent* Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg) override;
+	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

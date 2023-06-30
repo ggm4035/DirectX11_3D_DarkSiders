@@ -18,7 +18,7 @@ HRESULT CUI_Rect::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CUI_Rect::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+HRESULT CUI_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CGameObjectUI::UIDESC UIDesc;
 	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
@@ -26,7 +26,7 @@ HRESULT CUI_Rect::Initialize(const _uint& iLayerIndex, CComponent* pOwner, void*
 	UIDesc.m_fSizeX = (_float)g_iWinSizeX;
 	UIDesc.m_fSizeY = (_float)g_iWinSizeY;
 
-	if (FAILED(CGameObjectUI::Initialize(iLayerIndex, pOwner, &UIDesc)))
+	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, &UIDesc)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -113,11 +113,11 @@ CUI_Rect* CUI_Rect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CGameObjectUI* CUI_Rect::Clone(const _uint& iLayerIndex, CComponent* pOwner, void* pArg)
+CGameObjectUI* CUI_Rect::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CUI_Rect* pInstance = new CUI_Rect(*this);
 
-	if (FAILED(pInstance->Initialize(iLayerIndex, pOwner, pArg)))
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned CUI_Rect");
 		Safe_Release(pInstance);
