@@ -19,6 +19,9 @@ HRESULT CImWindow_Create::Initialize()
     m_Types[BUFFER] = "VIBuffer";
     m_Types[MODEL] = "Model";
 
+    m_LayerTag[LAYER_STATIC] = L"Layer_Tool";
+    m_LayerTag[LAYER_MONSTER] = L"Layer_Monster";
+
     return S_OK;
 }
 
@@ -126,17 +129,24 @@ void CImWindow_Create::Create_Object()
         }
     }
 
+    static _int iSelectLayer = { 0 };
+
+    ImGui::RadioButton("Static", &iSelectLayer, 0); ImGui::SameLine();
+    ImGui::RadioButton("Monster", &iSelectLayer, 1);
+
+    m_eCurLayer = (LAYERTYPE)iSelectLayer;
+    
     static _int clicked = 0;
 
     if (ImGui::Button("Create Object"))
     {
         if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
-            pGameInstance->strToWStr(m_szObjectName), L"Layer_Tool")))
+            pGameInstance->strToWStr(m_szObjectName), m_LayerTag[m_eCurLayer])))
             return;
 
         WINDOWMGR->Refresh_All_Window();
 
-        CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(m_szObjectName));
+        CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(m_szObjectName), m_eCurLayer);
         if (nullptr == pObject)
             return;
 
@@ -220,7 +230,7 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         _itoa_s(m_iCloneNum, szNum, 10);
         strcat_s(szObjName, szNum);
 
-        while (nullptr != Find_GameObject(pGameInstance->strToWStr(szObjName)))
+        while (nullptr != Find_GameObject(pGameInstance->strToWStr(szObjName), m_eCurLayer))
         {
             ++m_iCloneNum;
             strcpy_s(szObjName, m_szObjectName);
@@ -229,12 +239,12 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         }
 
         if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
-            pGameInstance->strToWStr(szObjName), L"Layer_Tool")))
+            pGameInstance->strToWStr(szObjName), m_LayerTag[m_eCurLayer])))
             return;
 
         WINDOWMGR->Refresh_All_Window();
 
-        CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(szObjName));
+        CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(szObjName), m_eCurLayer);
         if (nullptr == pObject)
             return;
 
@@ -265,7 +275,6 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         GetCursorPos(&ptMouse);
         ScreenToClient(g_hWnd, &ptMouse);
 
-        /* 임시 코드임 원래 오브젝트 전체의 버택스를 검사해야됨.. */
         CDummyObject3D* pTerrain = Find_GameObject(L"Terrain");
         if (nullptr == pTerrain)
         {
@@ -275,7 +284,6 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         }
 
         _vector vPickPos = pGameInstance->Picking_On_Triangle(ptMouse, pTerrain->Get_Buffer(), pTerrain->Get_Transform());
-        /*========================================================*/
 
         if (0 > vPickPos.m128_f32[3])
         {

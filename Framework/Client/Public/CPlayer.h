@@ -41,6 +41,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
+	class CPlayerAction* m_pActionCom = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

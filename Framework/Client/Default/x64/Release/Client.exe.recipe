@@ -22,6 +22,15 @@
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxNorTex.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxPointInstance.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxRectInstance.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxCube.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxTex.cso</FullPath>
     </ContentFile>
   </ContentFiles>

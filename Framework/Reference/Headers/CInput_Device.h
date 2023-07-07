@@ -17,18 +17,31 @@ private:
 	virtual ~CInput_Device() = default;
 
 public:
-	_byte		Get_DIKeyState(const _ubyte& ubyKeyID)
-	{
+	_ubyte	Peek_Message() {
+		if (true == m_Qmessage.empty())
+			return DIK_END;
+
+		return m_Qmessage.front();
+	}
+
+	_ubyte	Pop_Message() {
+		if (true == m_Qmessage.empty())
+			return DIK_END;
+
+		_ubyte retData = m_Qmessage.front();
+		m_Qmessage.pop();
+		return retData;
+	}
+
+	_ubyte	Get_DIKeyState(const _ubyte& ubyKeyID) {
 		return m_byKeyState[ubyKeyID];
 	}
 
-	_byte		Get_DIMouseState(MOUSEKEYSTATE eMouseID)
-	{
+	_ubyte	Get_DIMouseState(MOUSEKEYSTATE eMouseID) {
 		return m_tMouseState.rgbButtons[eMouseID];
 	}
 
-	_long		Get_DIMouseMove(MOUSEMOVESTATE eMouseMoveID)
-	{
+	_long	Get_DIMouseMove(MOUSEMOVESTATE eMouseMoveID) {
 		return *(((_long*)&m_tMouseState) + eMouseMoveID);
 	}
 
@@ -51,10 +64,12 @@ private:
 	LPDIRECTINPUTDEVICE8	m_pMouse;
 
 private:
-	_byte					m_byKeyState[MAX_DIK];
-	_byte					m_byPreKeyState[MAX_DIK];
+	_ubyte					m_byKeyState[MAX_DIK];
+	_ubyte					m_byPreKeyState[MAX_DIK];
 	DIMOUSESTATE			m_tMouseState;
 	DIMOUSESTATE			m_tPreMouseState;
+
+	queue<_ubyte>			m_Qmessage;
 
 public:
 	virtual void		Free(void) override;

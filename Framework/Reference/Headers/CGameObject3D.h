@@ -17,12 +17,6 @@ public:
 		return m_pTransformCom;
 	}
 
-	CComponent* Get_Component(const wstring& wstrComponentTag) {
-		CComponent* pComponent = { nullptr };
-		pComponent = m_Components.find(wstrComponentTag)->second;
-		return pComponent;
-	}
-
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	/* Transform 정보 초기화 하고 싶으면 void*에 값 채우기 */

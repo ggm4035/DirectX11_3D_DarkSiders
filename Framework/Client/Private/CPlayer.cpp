@@ -3,6 +3,7 @@
 
 #include "CGameInstance.h"
 
+#include "CPlayerAction.h"
 #include "CParts.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -42,48 +43,9 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
 	CGameObject3D::Tick(TimeDelta);
 
-	if (pGameInstance->Key_Pressing(DIK_UP))
-	{
-		m_pModelCom->Set_AnimIndex(3); // 1 = 1.5
-		m_pTransformCom->Go_Straight(TimeDelta);
-	}
-
-	if (pGameInstance->Key_Up(DIK_UP))
-		m_pModelCom->Set_AnimIndex(0);
-
-	if (pGameInstance->Key_Pressing(DIK_LEFT))
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), -TimeDelta);
-
-	if (pGameInstance->Key_Pressing(DIK_RIGHT))
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-
-	if (pGameInstance->Key_Down(DIK_SPACE))
-		m_pModelCom->Set_AnimIndex(5);
-
-	if (pGameInstance->Key_Down(DIK_1))
-		m_pModelCom->Set_AnimIndex(6);
-
-	if (pGameInstance->Key_Down(DIK_2))
-		m_pModelCom->Set_AnimIndex(7);
-
-	if (pGameInstance->Key_Down(DIK_3))
-		m_pModelCom->Set_AnimIndex(8);
-
-	if (pGameInstance->Key_Down(DIK_4))
-		m_pModelCom->Set_AnimIndex(9);
-
-	if (pGameInstance->Key_Down(DIK_5))
-		m_pModelCom->Set_AnimIndex(10);
-
-	if (pGameInstance->Key_Down(DIK_6))
-		m_pModelCom->Set_AnimIndex(11);
-
-	Safe_Release(pGameInstance);
+	m_pActionCom->Tick(TimeDelta);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
@@ -91,10 +53,16 @@ void CPlayer::Tick(const _double& TimeDelta)
 
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	/* 콜라이더 매니저에 콜라이더 추가 */
 }
+
+/* 이후 게임 인스턴스에서 콜라이더들의 충돌을 진행 */
 
 void CPlayer::Late_Tick(const _double& TimeDelta)
 {
+	/* 충돌 이후 작업을 진행 (없으면 스킵) */
+
 	CGameObject3D::Late_Tick(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
@@ -105,6 +73,8 @@ void CPlayer::Late_Tick(const _double& TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	}
 }
+
+/* 모든 게임오브젝트의 latetick이 끝나면 게임 인스턴스에서 콜라이더의 모든 리스트를 비움 */
 
 HRESULT CPlayer::Render()
 {
@@ -172,6 +142,10 @@ HRESULT CPlayer::Add_Components()
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Com_Collider_OBB",
 		(CComponent**)&m_pColliderCom, this, &OBBDesc)))
+		return E_FAIL;
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"PlayerAction", L"Com_Action",
+		(CComponent**)&m_pActionCom, this)))
 		return E_FAIL;
 
 	return S_OK;
@@ -274,6 +248,7 @@ CPlayer* CPlayer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg
 
 void CPlayer::Free()
 {
+	Safe_Release(m_pActionCom);
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pRendererCom);

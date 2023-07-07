@@ -147,6 +147,26 @@ void CModelLoader::WriteAnimModels(const string& strFilePath)
 			/* Write bIsLoop */
 			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
+			/* Write bIsFollowAnimation */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+
+			/* Write iNumRanges */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+
+			/*===== TIMERANGE DATAS ======*/
+			for (_uint iRangeIndex = 0; iRangeIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges; ++iRangeIndex)
+			{
+				/* Write pTypes */
+				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].arrTypes,
+					sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+
+				/* Write fStartPoint */
+				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
+
+				/* Write fEndPoint */
+				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+			}
+
 			/*===== CHANNEL DATAS ======*/
 			std::cout << "WriteFile Channel Datas..." << endl;
 			for (_uint iChannelIndex = 0; iChannelIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
@@ -320,6 +340,23 @@ void CModelLoader::WriteNonAnimModels(const string& strFilePath)
 
 			/* Write bIsLoop */
 			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
+			/* Write iNumRanges */
+			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+
+			/*===== TIMERANGE DATAS ======*/
+			for (_uint iRangeIndex = 0; iRangeIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges; ++iRangeIndex)
+			{
+				/* Write pTypes */
+				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].arrTypes,
+					sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+
+				/* Write fStartPoint */
+				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
+
+				/* Write fEndPoint */
+				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+			}
 
 			/*===== CHANNEL DATAS ======*/
 			std::cout << "WriteFile Channel Datas..." << endl;

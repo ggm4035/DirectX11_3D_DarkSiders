@@ -1,23 +1,7 @@
-﻿  CCamera_Free.cpp
-  CLevel_GamePlay.cpp
-  CLevel_Loading.cpp
-  CLevel_Logo.cpp
-  CLoader.cpp
-  CMonster.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(30,94): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(30,76): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPlayer.cpp
-  CStatic_Object.cpp
-  CTerrain.cpp
-  CUI_Rect.cpp
-  CWeapon.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(60,92): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(64,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CMainApp.cpp
-  Client.cpp
+﻿  CLoader.cpp
   코드를 생성하고 있습니다.
-  76 of 632 functions (12.0%) were compiled, the rest were copied from previous compilation.
-    36 functions were new in current compilation
-    65 functions had inline decision re-evaluated but remain unchanged
+  9 of 892 functions ( 1.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    7 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

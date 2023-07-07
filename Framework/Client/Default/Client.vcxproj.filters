@@ -64,6 +64,30 @@
     <Filter Include="01. Levels\99. Level_Loading\Loader">
       <UniqueIdentifier>{65e810a4-1df9-461d-81dc-bfdf48e72c83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Effect">
+      <UniqueIdentifier>{b9e0e5f9-04c2-4fe7-8572-497d873abede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. MonoBehaviors">
+      <UniqueIdentifier>{26138861-bea3-408f-bfaa-d7d79aea3ed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. MonoBehaviors\Executions">
+      <UniqueIdentifier>{12712c53-5d39-4c0a-b7df-1e4997b59593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Player\PlayerActions">
+      <UniqueIdentifier>{89a772ea-e0be-4276-a4ea-d4bf3126e851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Player\PlayerActions\MoveAction">
+      <UniqueIdentifier>{d6331427-c706-4cbf-b411-67b2a341a629}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Player\PlayerActions\JumpAction">
+      <UniqueIdentifier>{995f4a0a-f80f-4095-b807-f43a0bab6598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Player\PlayerActions\AttackAction">
+      <UniqueIdentifier>{39b74c53-c4ba-4f30-968b-b75544609de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Sky">
+      <UniqueIdentifier>{252be5a5-5b01-48b1-ab5c-1e3ace9753ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,6 +144,24 @@
     <ClInclude Include="..\Public\CWeapon.h">
       <Filter>02. GameObject\Parts\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CRun.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPlayerAction.h">
+      <Filter>02. GameObject\Player\PlayerActions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMoveAction.h">
+      <Filter>02. GameObject\Player\PlayerActions\MoveAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAttackAction.h">
+      <Filter>02. GameObject\Player\PlayerActions\AttackAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CJumpAction.h">
+      <Filter>02. GameObject\Player\PlayerActions\JumpAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSky.h">
+      <Filter>02. GameObject\Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -164,6 +206,24 @@
     <ClCompile Include="..\Private\CWeapon.cpp">
       <Filter>02. GameObject\Parts\Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CRun.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPlayerAction.cpp">
+      <Filter>02. GameObject\Player\PlayerActions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMoveAction.cpp">
+      <Filter>02. GameObject\Player\PlayerActions\MoveAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAttackAction.cpp">
+      <Filter>02. GameObject\Player\PlayerActions\AttackAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CJumpAction.cpp">
+      <Filter>02. GameObject\Player\PlayerActions\JumpAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSky.cpp">
+      <Filter>02. GameObject\Sky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -197,5 +257,20 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
+      <Filter>97. ShaderFiles</Filter>
+    </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

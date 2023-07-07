@@ -2,6 +2,8 @@
 
 #include "CGameInstance.h"
 #include "CDummyObject3D.h"
+#include "CToolInstance.h"
+#include "CImWindow_Base.h"
 
 CTool_HeightMap::CTool_HeightMap()
 {
@@ -31,12 +33,16 @@ void CTool_HeightMap::Tick(CGameInstance* pGameInstance)
     /* Interface */
     static _int iSelected = { 0 };
     ImGui::SeparatorText("Mode");
-    ImGui::RadioButton("Height", &iSelected, 0); ImGui::SameLine();
-    ImGui::RadioButton("Filter", &iSelected, 1); ImGui::SameLine();
-    ImGui::RadioButton("Navigation", &iSelected, 2);
+    ImGui::RadioButton("Terrain##size", &iSelected, 0); ImGui::SameLine();
+    ImGui::RadioButton("Height", &iSelected, 1); ImGui::SameLine();
+    ImGui::RadioButton("Filter", &iSelected, 2); ImGui::SameLine();
+    ImGui::RadioButton("Navigation", &iSelected, 3);
     ImGui::Separator();
 
-    if (2 == iSelected)
+    if (0 == iSelected)
+        Setting_Terrain(pGameInstance);
+
+    else if (3 == iSelected)
         Make_Navigation(pGameInstance);
 
     else
@@ -51,9 +57,9 @@ void CTool_HeightMap::Tick(CGameInstance* pGameInstance)
 
         XMStoreFloat4(&m_vBrushPos, pGameInstance->Picking_On_Triangle(ptMouse, m_pTerrain->Get_Buffer(), m_pTerrain->Get_Transform()));
 
-        if (0 == iSelected)
+        if (1 == iSelected)
             Control_Height(pGameInstance);
-        else
+        if(2 == iSelected)
             Draw_Filter(pGameInstance);
 
         /* Bind Shader Resources */
@@ -74,6 +80,22 @@ HRESULT CTool_HeightMap::Bind_Shader_Resources()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CTool_HeightMap::Setting_Terrain(CGameInstance* pGameInstance)
+{
+    ImGui::SeparatorText("Terrain");
+
+    ImGui::SetNextItemWidth(100.f);
+    ImGui::InputInt("XCount", &m_iXCount);
+    ImGui::SetNextItemWidth(100.f);
+    ImGui::InputInt("ZCount", &m_iZCount);
+
+    if (ImGui::Button("Apply##ReMakeTerrain"))
+    {
+        dynamic_cast<CVIBuffer_Terrain*>(m_pTerrain->Get_Buffer())->Initialize_Prototype(m_iXCount, m_iZCount, m_fInterval);
+        
+    }
 }
 
 void CTool_HeightMap::Control_Height(CGameInstance* pGameInstance)

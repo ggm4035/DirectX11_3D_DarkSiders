@@ -14,7 +14,7 @@ public:
 	}OBBDESC;
 
 public:
-	const BoundingOrientedBox* Get_BoundingSphere() const {
+	const BoundingOrientedBox* Get_BoundingOBB() const {
 		return m_pOBB;
 	}
 
@@ -28,7 +28,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(_fmatrix WorldMatrix) override;
 	virtual HRESULT Render() override;
-	virtual _bool Intersect(CCollider::TYPE eType, const CBounding* pBounding);
+	virtual _bool Intersect(CCollider::TYPE eType, CBounding* pBounding);
 
 private:
 	BoundingOrientedBox* m_pOBB_Original = { nullptr };

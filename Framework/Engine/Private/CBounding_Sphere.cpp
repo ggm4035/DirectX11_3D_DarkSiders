@@ -27,7 +27,6 @@ HRESULT CBounding_Sphere::Initialize_Prototype()
 	m_pSphere_Original->Center = _float3(0.f, 0.f, 0.f);
 	m_pSphere_Original->Radius = 0.5f;
 
-
 	return S_OK;
 }
 
@@ -60,22 +59,22 @@ HRESULT CBounding_Sphere::Render()
 	return S_OK;
 }
 
-_bool CBounding_Sphere::Intersect(CCollider::TYPE eType, const CBounding* pBounding)
+_bool CBounding_Sphere::Intersect(CCollider::TYPE eType, CBounding* pBounding)
 {
 	m_isColl = { false };
 
 	switch (eType)
 	{
 	case Engine::CCollider::TYPE_SPHERE:
-		m_isColl = m_pSphere->Intersects(*((CBounding_Sphere*)pBounding)->m_pSphere);
+		m_isColl = m_pSphere->Intersects(*dynamic_cast<CBounding_Sphere*>(pBounding)->Get_BoundingSphere());
 		break;
 
 	case Engine::CCollider::TYPE_AABB:
-		m_isColl = m_pSphere->Intersects(*((CBounding_Sphere*)pBounding)->m_pSphere);
+		m_isColl = m_pSphere->Intersects(*dynamic_cast<CBounding_AABB*>(pBounding)->Get_BoundingAABB());
 		break;
 
 	case Engine::CCollider::TYPE_OBB:
-		m_isColl = m_pSphere->Intersects(*((CBounding_Sphere*)pBounding)->m_pSphere);
+		m_isColl = m_pSphere->Intersects(*dynamic_cast<CBounding_OBB*>(pBounding)->Get_BoundingOBB());
 		break;
 	}
 

@@ -18,8 +18,6 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype() { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
-	virtual void Tick(const _double& TimeDelta) {}
-	virtual void Late_Tick(const _double& TimeDelta) {}
 
 protected:
 	_uint m_iLevelIndex = { 0 };
@@ -46,8 +44,11 @@ public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) override;
 
+public:
+	CComponent* Get_Component(const wstring& wstrComponentTag);
+
 protected:
-	unordered_map<wstring, CComponent*> m_Components;
+	unordered_map<wstring, CComponent*> m_umapComponents;
 
 protected:
 	HRESULT Add_Component(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& ComponentTag,

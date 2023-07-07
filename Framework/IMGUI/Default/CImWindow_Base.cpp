@@ -49,13 +49,15 @@ void CImWindow_Base::Tick(const _double& TimeDelta)
     ImGui::Begin("Hierarchy ", nullptr, ImGuiWindowFlags_NoResize);
 
     ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-    if (ImGui::BeginTabBar("Tabs", tab_bar_flags))
+    if (ImGui::BeginTabBar("TabBase", tab_bar_flags))
     {
         if (m_PreAnimTab != m_isIntoAnimTab)
         {
-            for (auto& pObject : m_GameObjectList)
-                pObject->Updata_Toggle();
-
+            for (_uint i = 0; i < LAYER_END; ++i)
+            {
+                for (auto& pObject : m_GameObjectList[i])
+                    pObject->Updata_Toggle();
+            }
             m_PreAnimTab = m_isIntoAnimTab;
         }
 
@@ -69,13 +71,13 @@ void CImWindow_Base::Tick(const _double& TimeDelta)
         {
             if (nullptr != m_pToolHeightMap)
                 m_pToolHeightMap->Tick(pGameInstance);
-            HeightMap(pGameInstance);
             ImGui::EndTabItem();
         }
 
         if (ImGui::BeginTabItem("UI"))
         {
-            UI(pGameInstance);
+            if (nullptr != m_pTool_UI)
+                ;// m_pTool_UI->Tick(pGameInstance);
             ImGui::EndTabItem();
         }
 
@@ -144,15 +146,6 @@ void CImWindow_Base::Hierarchy(CGameInstance* pGameInstance)
         Create_Object(pGameInstance);
 }
 
-void CImWindow_Base::HeightMap(CGameInstance* pGameInstance)
-{
-    
-}
-
-void CImWindow_Base::UI(CGameInstance* pGameInstance)
-{
-}
-
 void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
 {
     wstring pObjectTag = L"";
@@ -169,61 +162,130 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
         | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY
         | ImGuiTableFlags_SizingFixedFit;
 
-    if (ImGui::BeginTable("Table_Model", 3, flags, ImVec2(0, 300), 0.f))
+    if (ImGui::BeginTabBar("TabObjects", ImGuiTabBarFlags_None))
     {
-        ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
-        ImGui::TableSetupColumn("ModelTag", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
-
-        ImGui::TableHeadersRow();
-
-        /* Model Data Table 출력 */
-        static _uint iSelected = 0;
-        _uint iIndex = 0;
-        auto iter = m_GameObjectList.begin();
-        for (auto& Object : m_GameObjectList)
+        if (ImGui::BeginTabItem("Static"))
         {
-            ImGui::TableNextRow();
-
-            ImGui::TableSetColumnIndex(0);
-            if (ImGui::Selectable(std::to_string(iIndex).c_str(), iSelected == iIndex))
+            if (ImGui::BeginTable("Table_Model", 3, flags, ImVec2(0, 600), 0.f))
             {
-                iSelected = iIndex;
+                ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
+                ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
+                ImGui::TableSetupColumn("ModelTag", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
 
-                if (true == TOOL->m_pTopWindow->isPickSolidMode())
+                ImGui::TableHeadersRow();
+
+                /* Model Data Table 출력 */
+                static _uint iSelected = 0;
+                _uint iIndex = 0;
+                auto iter = m_GameObjectList[LAYER_STATIC].begin();
+                for (auto& Object : m_GameObjectList[LAYER_STATIC])
                 {
-                    D3D11_RASTERIZER_DESC RasterizerDesc;
-                    ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+                    ImGui::TableNextRow();
 
-                    RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-                    RasterizerDesc.FrontCounterClockwise = { false };
-                    RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+                    ImGui::TableSetColumnIndex(0);
+                    if (ImGui::Selectable(std::to_string(iIndex).c_str(), iSelected == iIndex))
+                    {
+                        iSelected = iIndex;
 
-                    if (nullptr != TOOL->m_pCurrentObject)
-                        TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                        if (true == TOOL->m_pTopWindow->isPickSolidMode())
+                        {
+                            D3D11_RASTERIZER_DESC RasterizerDesc;
+                            ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
 
-                    RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+                            RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+                            RasterizerDesc.FrontCounterClockwise = { false };
+                            RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
 
-                    TOOL->m_pCurrentObject = *iter;
+                            if (nullptr != TOOL->m_pCurrentObject)
+                                TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
 
-                    if (nullptr != TOOL->m_pCurrentObject)
-                        TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                            RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+
+                            TOOL->m_pCurrentObject = *iter;
+
+                            if (nullptr != TOOL->m_pCurrentObject)
+                                TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                        }
+                        else
+                            TOOL->m_pCurrentObject = *iter;
+                    }
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Tag()).c_str());
+
+                    ImGui::TableSetColumnIndex(2);
+                    if (nullptr != Object->Get_Model())
+                        ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Model()->Get_Tag()).c_str());
+
+                    ++iIndex;
+                    ++iter;
                 }
-                else
-                    TOOL->m_pCurrentObject = *iter;
+                ImGui::EndTable();
             }
-
-            ImGui::TableSetColumnIndex(1);
-            ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Tag()).c_str());
-
-            ImGui::TableSetColumnIndex(2);
-            if(nullptr != Object->Get_Model())
-                ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Model()->Get_Tag()).c_str());
-
-            ++iIndex;
-            ++iter;
+            ImGui::EndTabItem();
         }
-        ImGui::EndTable();
+
+        if (ImGui::BeginTabItem("Monster"))
+        {
+            if (ImGui::BeginTable("Table_Model", 3, flags, ImVec2(0, 600), 0.f))
+            {
+                ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
+                ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
+                ImGui::TableSetupColumn("ModelTag", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
+
+                ImGui::TableHeadersRow();
+
+                /* Model Data Table 출력 */
+                static _uint iSelected = 0;
+                _uint iIndex = 0;
+                auto iter = m_GameObjectList[LAYER_MONSTER].begin();
+                for (auto& Object : m_GameObjectList[LAYER_MONSTER])
+                {
+                    ImGui::TableNextRow();
+
+                    ImGui::TableSetColumnIndex(0);
+                    if (ImGui::Selectable(std::to_string(iIndex).c_str(), iSelected == iIndex))
+                    {
+                        iSelected = iIndex;
+
+                        if (true == TOOL->m_pTopWindow->isPickSolidMode())
+                        {
+                            D3D11_RASTERIZER_DESC RasterizerDesc;
+                            ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+
+                            RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+                            RasterizerDesc.FrontCounterClockwise = { false };
+                            RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+
+                            if (nullptr != TOOL->m_pCurrentObject)
+                                TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+
+                            RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+
+                            TOOL->m_pCurrentObject = *iter;
+
+                            if (nullptr != TOOL->m_pCurrentObject)
+                                TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                        }
+                        else
+                            TOOL->m_pCurrentObject = *iter;
+                    }
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Tag()).c_str());
+
+                    ImGui::TableSetColumnIndex(2);
+                    if (nullptr != Object->Get_Model())
+                        ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Model()->Get_Tag()).c_str());
+
+                    ++iIndex;
+                    ++iter;
+                }
+                ImGui::EndTable();
+            }
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
 
     if (ImGui::Button("Create new Object"))
@@ -232,9 +294,8 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
     if (ImGui::BeginPopupContextItem("Create"))
     {
         if (ImGui::Selectable("3D Object"))
-        {
             TOOL->m_pCreateWindow->m_bIsOpen = true;
-        }
+
         if (ImGui::Selectable("Camera"))
         {
 
@@ -261,34 +322,37 @@ void CImWindow_Base::Picking_GameObject(CGameInstance* pGameInstance)
         GetCursorPos(&ptMouse);
         ScreenToClient(g_hWnd, &ptMouse);
 
-        for (auto& pObject : m_GameObjectList)
+        for (_uint i = 0; i < LAYER_END; ++i)
         {
-            if (nullptr == dynamic_cast<CModel*>(pObject->Get_Model()))
-                continue;
-
-            _vector vPosition = pGameInstance->Picking_On_Triangle(ptMouse, pObject->Get_Model(), pObject->Get_Transform());
-
-            if (0 > vPosition.m128_f32[3])
-                continue;
-
-            if (true == TOOL->m_pTopWindow->isPickSolidMode())
+            for (auto& pObject : m_GameObjectList[i])
             {
-                D3D11_RASTERIZER_DESC RasterizerDesc;
-                ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+                if (nullptr == dynamic_cast<CModel*>(pObject->Get_Model()))
+                    continue;
 
-                RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-                RasterizerDesc.FrontCounterClockwise = { false };
-                RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+                _vector vPosition = pGameInstance->Picking_On_Triangle(ptMouse, pObject->Get_Model(), pObject->Get_Transform());
 
-                if (nullptr != TOOL->m_pCurrentObject)
-                    TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                if (0 > vPosition.m128_f32[3])
+                    continue;
 
-                RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+                if (true == TOOL->m_pTopWindow->isPickSolidMode())
+                {
+                    D3D11_RASTERIZER_DESC RasterizerDesc;
+                    ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
 
-                pObject->Set_RasterizerState(RasterizerDesc);
+                    RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+                    RasterizerDesc.FrontCounterClockwise = { false };
+                    RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+
+                    if (nullptr != TOOL->m_pCurrentObject)
+                        TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+
+                    RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+
+                    pObject->Set_RasterizerState(RasterizerDesc);
+                }
+
+                TOOL->m_pCurrentObject = pObject;
             }
-
-            TOOL->m_pCurrentObject = pObject;
         }
     }
     else if (g_hWnd == ::GetFocus() && pGameInstance->Mouse_Pressing(CInput_Device::DIM_LB))

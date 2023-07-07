@@ -8,11 +8,6 @@
 
 IMPLEMENT_SINGLETON(CCalculator)
 
-CCalculator::CCalculator()
-{
-
-}
-
 HRESULT CCalculator::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;

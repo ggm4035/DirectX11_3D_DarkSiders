@@ -19,6 +19,7 @@ public:
 private:
 	_float4x4 m_PlayerWorldMatrix;
 	_float3 m_vPlayerAngle;
+	vector<MODELDATA> m_vecMonsterDatas;
 
 private:
 	HRESULT Ready_Lights();

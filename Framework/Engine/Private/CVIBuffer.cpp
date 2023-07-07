@@ -7,17 +7,20 @@ CVIBuffer::CVIBuffer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	: CComponent(rhs)
-	, m_pVB(rhs.m_pVB), m_pIB(rhs.m_pIB)
-	, m_iNumVertices(rhs.m_iNumVertices)
-	, m_iNumIndices(rhs.m_iNumIndices)
+	, m_pVB(rhs.m_pVB)
+	, m_pIB(rhs.m_pIB)
+	, m_isCloned(true)
 	, m_iStride(rhs.m_iStride)
-	, m_iIndexStride(rhs.m_iIndexStride)
-	, m_BufferDesc(rhs.m_BufferDesc)
-	, m_SubResourceData(rhs.m_SubResourceData)
-	, m_iVertexBuffers(rhs.m_iVertexBuffers)
 	, m_eFormat(rhs.m_eFormat)
 	, m_eTopology(rhs.m_eTopology)
+	, m_BufferDesc(rhs.m_BufferDesc)
 	, m_vecTriangle(rhs.m_vecTriangle)
+	, m_iNumIndices(rhs.m_iNumIndices)
+	, m_iNumVertices(rhs.m_iNumVertices)
+	, m_iIndexStride(rhs.m_iIndexStride)
+	, m_pVerticesPos(rhs.m_pVerticesPos)
+	, m_iVertexBuffers(rhs.m_iVertexBuffers)
+	, m_SubResourceData(rhs.m_SubResourceData)
 	, m_MappedSubResource(rhs.m_MappedSubResource)
 {
 	Safe_AddRef(m_pVB);
@@ -69,6 +72,10 @@ HRESULT CVIBuffer::Render()
 
 HRESULT CVIBuffer::Begin(OUT D3D11_MAPPED_SUBRESOURCE& Out)
 {
+	if (nullptr == m_pVB || 
+		nullptr == m_pContext)
+		return E_FAIL;
+
 	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &m_MappedSubResource);
 
 	Out = m_MappedSubResource;
@@ -78,7 +85,8 @@ HRESULT CVIBuffer::Begin(OUT D3D11_MAPPED_SUBRESOURCE& Out)
 
 void CVIBuffer::End()
 {
-	m_pContext->Unmap(m_pVB, 0);
+	if(nullptr != m_pContext)
+		m_pContext->Unmap(m_pVB, 0);
 }
 
 HRESULT CVIBuffer::Create_Buffer(OUT ID3D11Buffer** ppOut)
@@ -93,6 +101,9 @@ void CVIBuffer::Free()
 {
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
+
+	if (false == m_isCloned)
+		Safe_Delete_Array(m_pVerticesPos);
 
 	CComponent::Free();
 }

@@ -2,11 +2,6 @@
 
 IMPLEMENT_SINGLETON(CLight_Manager)
 
-CLight_Manager::CLight_Manager()
-{
-
-}
-
 HRESULT CLight_Manager::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CLight::LIGHTDESC& LightDesc)
 {
 	CLight* pLight = CLight::Create(pDevice, pContext, LightDesc);

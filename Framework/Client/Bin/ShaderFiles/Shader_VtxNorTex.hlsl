@@ -1,7 +1,6 @@
+#include "Shader_Client_Defines.hlsli"
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-RasterizerState g_Rasterizer;
 
 float4 g_LightPosition, g_LightDirection;
 float g_LightRange;
@@ -12,13 +11,6 @@ float4 g_CameraPosition;
 texture2D g_DiffuseTexture[10];
 
 float g_fDetail = 30.f;
-
-sampler LinearSampler = sampler_state
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = WRAP;
-    AddressV = WRAP;
-};
 
 struct VS_IN
 {
@@ -82,12 +74,15 @@ float4 PS_MAIN(PS_IN In) : SV_TARGET0
 technique11 DefaultTechnique
 {
 	pass Terrain
-	{
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL/*compile gs_5_0 GS_MAIN()*/;
 		HullShader = NULL/*compile hs_5_0 HS_MAIN()*/;
 		DomainShader = NULL/*compile ds_5_0 DS_MAIN()*/;
 		PixelShader = compile ps_5_0 PS_MAIN();
-        SetRasterizerState(g_Rasterizer);
     }
 };

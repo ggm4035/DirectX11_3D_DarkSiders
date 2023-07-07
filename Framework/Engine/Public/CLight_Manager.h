@@ -9,7 +9,7 @@ class CLight_Manager final : public CBase
 	DECLARE_SINGLETON(CLight_Manager)
 
 private:
-	CLight_Manager();
+	CLight_Manager() = default;
 	virtual ~CLight_Manager() = default;
 
 public:

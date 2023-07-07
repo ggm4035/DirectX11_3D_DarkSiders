@@ -8,6 +8,9 @@
 #include "CCamera_Manager.h"
 #include "CFileInfo.h"
 #include "CCalculator.h"
+#include "CFont_Manager.h"
+#include "CFrustum.h"
+#include "CCollider_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -23,6 +26,9 @@ CGameInstance::CGameInstance()
 	, m_pFileInfo{ CFileInfo::GetInstance() }
 	, m_pLight_Manager{ CLight_Manager::GetInstance() }
 	, m_pCalculator{ CCalculator::GetInstance() }
+	, m_pFont_Manager{ CFont_Manager::GetInstance() }
+	, m_pFrustum{ CFrustum::GetInstance() }
+	, m_pCollider_Manager{ CCollider_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pCalculator);
 	Safe_AddRef(m_pLight_Manager);
@@ -35,6 +41,9 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pCamera_Manager);
 	Safe_AddRef(m_pInput_Manager);
+	Safe_AddRef(m_pFont_Manager);
+	Safe_AddRef(m_pFrustum);
+	Safe_AddRef(m_pCollider_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -56,6 +65,9 @@ HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICD
 	CApplication::m_iWinSizeY = GraphicDesc.iViewportSizeY;
 
 	if (FAILED(m_pInput_Manager->Ready_DInput(GraphicDesc.hInst, GraphicDesc.hWnd)))
+		return E_FAIL;
+
+	if (FAILED(m_pFrustum->Initialize()))
 		return E_FAIL;
 
 	if (FAILED(m_pCalculator->Initialize(*ppDevice, *ppContext)))
@@ -86,7 +98,13 @@ void CGameInstance::Tick_Engine(const _double& TimeDelta)
 
 	m_pPipeLine->Tick();
 
+	m_pFrustum->Tick();
+
+	m_pCollider_Manager->Tick();
+
 	m_pObject_Manager->Late_Tick(TimeDelta);
+
+	m_pCollider_Manager->Clear_ColliderList();
 
 	m_pLevel_Manager->Tick(TimeDelta);
 }
@@ -179,12 +197,12 @@ HRESULT CGameInstance::Add_GameObject(const _uint& iNumLayer, const wstring Prot
 	return m_pObject_Manager->Add_GameObject(iNumLayer, PrototypeTag, GameObjectTag, LayerTag, pArg);
 }
 
-list<CGameObject*> CGameInstance::Get_All_GameObject()
+list<CGameObject*> CGameInstance::Get_GameObject_Layer(const wstring& wstrLayerTag)
 {
 	if (nullptr == m_pObject_Manager)
 		return list<CGameObject*>();
 
-	return m_pObject_Manager->Get_All_GameObject();
+	return m_pObject_Manager->Get_GameObject_Layer(wstrLayerTag);
 }
 
 HRESULT CGameInstance::Remove_GameObject(const wstring GameObjectTag)
@@ -300,6 +318,22 @@ _bool CGameInstance::Mouse_Up(CInput_Device::MOUSEKEYSTATE eMouseID)
 		return false;
 
 	return m_pInput_Manager->Mouse_Up(eMouseID);
+}
+
+_ubyte CGameInstance::Peek_Message()
+{
+	if (nullptr == m_pInput_Manager)
+		return 0xCF;
+
+	return m_pInput_Manager->Peek_Message();
+}
+
+_ubyte CGameInstance::Pop_Message()
+{
+	if (nullptr == m_pInput_Manager)
+		return 0xCF;
+
+	return m_pInput_Manager->Pop_Message();
 }
 
 _long CGameInstance::Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMouseMoveID)
@@ -479,6 +513,46 @@ _vector CGameInstance::Picking_On_Triangle(const POINT& ptMouse, CModel* pModel,
 	return m_pCalculator->Picking_On_Triangle(ptMouse, pModel, pTransform);
 }
 
+HRESULT CGameInstance::Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& wstrFontTag, const wstring& wstrFontFilePath)
+{
+	if (nullptr == m_pFont_Manager)
+		return E_FAIL;
+
+	return m_pFont_Manager->Add_Font(pDevice, pContext, wstrFontTag, wstrFontFilePath);
+}
+
+HRESULT CGameInstance::Render_Font(const wstring& wstrFontTag, const wstring& wstrText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+{
+	if (nullptr == m_pFont_Manager)
+		return E_FAIL;
+
+	return m_pFont_Manager->Render_Font(wstrFontTag, wstrText, vPosition, vColor, fRotation, vOrigin, fScale);
+}
+
+void CGameInstance::Transform_To_LocalSpace(_fmatrix WorldMatrix)
+{
+	if (nullptr == m_pFrustum)
+		return;
+
+	m_pFrustum->Transform_To_LocalSpace(WorldMatrix);
+}
+
+_bool CGameInstance::isIn_WorldSpace(_fvector vWorldPosition, _float fRange)
+{
+	if (nullptr == m_pFrustum)
+		return false;
+
+	return m_pFrustum->isIn_WorldSpace(vWorldPosition, fRange);
+}
+
+_bool CGameInstance::isIn_LocalSpace(_fvector vLocalPosition, _float fRange)
+{
+	if (nullptr == m_pFrustum)
+		return false;
+
+	return m_pFrustum->isIn_LocalSpace(vLocalPosition, fRange);
+}
+
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 _vector CGameInstance::Picking_On_Spheres(const POINT& ptMouse, CNavigation* pNavigation, CTransform* pTransform)
 {
@@ -510,6 +584,8 @@ void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
 
+	CFont_Manager::GetInstance()->DestroyInstance();
+
 	CLight_Manager::GetInstance()->DestroyInstance();
 
 	CCalculator::GetInstance()->DestroyInstance();
@@ -517,6 +593,8 @@ void CGameInstance::Release_Engine()
 	CFileInfo::GetInstance()->DestroyInstance();
 
 	CPipeLine::GetInstance()->DestroyInstance();
+
+	CCollider_Manager::GetInstance()->DestroyInstance();
 
 	CObject_Manager::GetInstance()->DestroyInstance();
 
@@ -528,6 +606,8 @@ void CGameInstance::Release_Engine()
 
 	CTimer_Manager::GetInstance()->DestroyInstance();
 
+	CFrustum::GetInstance()->DestroyInstance();
+
 	CInput_Device::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
@@ -535,6 +615,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pCalculator);
 	Safe_Release(m_pFileInfo);
@@ -542,8 +623,10 @@ void CGameInstance::Free()
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pLevel_Manager);
+	Safe_Release(m_pCollider_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pFrustum);
 	Safe_Release(m_pInput_Manager);
 
 	Safe_Release(m_pGraphic_Device);

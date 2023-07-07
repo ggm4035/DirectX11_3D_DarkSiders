@@ -72,6 +72,40 @@ HRESULT CCollider::Render()
 	return S_OK;
 }
 
+_bool CCollider::Intersect(const CCollider* pCollider)
+{
+	return m_pBounding->Intersect(pCollider->m_eColliderType, pCollider->m_pBounding);
+}
+
+void CCollider::On_Collision()
+{
+	while (true != m_Qmessage.empty())
+	{
+		CCollider* pOther = m_Qmessage.front();
+
+
+
+		m_Qmessage.pop();
+	}
+
+
+
+	switch (m_eCurrentState)
+	{
+	case Engine::CCollider::STATE_NONE:
+		m_eCurrentState = STATE_ENTER;
+		break;
+
+	case Engine::CCollider::STATE_ENTER:
+		m_eCurrentState = STATE_STAY;
+		break;
+
+	case Engine::CCollider::STATE_STAY:
+
+		break;
+	}
+}
+
 CCollider* CCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType)
 {
 	CCollider* pInstance = new CCollider(pDevice, pContext);

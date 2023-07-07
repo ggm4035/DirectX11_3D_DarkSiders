@@ -39,7 +39,10 @@ private:
     _bool m_bIsPicking = { false };
     _uint m_iCloneNum = { 0 };
     _char* m_Types[TYPE_END] = { nullptr };
+    _tchar* m_LayerTag[LAYER_END] = { nullptr };
     _bool m_bTypes[TYPE_END] = { false };
+
+    LAYERTYPE m_eCurLayer = { LAYER_END };
 
 public:
     virtual void Free() override;

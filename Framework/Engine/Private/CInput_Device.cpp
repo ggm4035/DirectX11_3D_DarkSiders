@@ -47,7 +47,7 @@ HRESULT CInput_Device::Ready_DInput(HINSTANCE hInst, HWND hWnd)
 
 void CInput_Device::Update_DInput(void)
 {
-	memcpy(m_byPreKeyState, m_byKeyState, sizeof(_byte) * MAX_DIK);
+	memcpy(m_byPreKeyState, m_byKeyState, sizeof(_ubyte) * MAX_DIK);
 	memcpy(&m_tPreMouseState, &m_tMouseState, sizeof(DIMOUSESTATE));
 
 	m_pKeyBoard->GetDeviceState(256, m_byKeyState);
@@ -57,7 +57,10 @@ void CInput_Device::Update_DInput(void)
 _bool CInput_Device::Key_Pressing(const _ubyte& ubyKey)
 {
 	if ((m_byPreKeyState[ubyKey] & 0x80) && (m_byKeyState[ubyKey] & 0x80))
+	{
+		m_Qmessage.push(ubyKey);
 		return true;
+	}
 
 	return false;
 }
@@ -65,7 +68,10 @@ _bool CInput_Device::Key_Pressing(const _ubyte& ubyKey)
 _bool CInput_Device::Key_Down(const _ubyte& ubyKey)
 {
 	if (!(m_byPreKeyState[ubyKey] & 0x80) && (m_byKeyState[ubyKey] & 0x80))
+	{
+		m_Qmessage.push(ubyKey);
 		return true;
+	}
 
 	return false;
 }
@@ -73,7 +79,10 @@ _bool CInput_Device::Key_Down(const _ubyte& ubyKey)
 _bool CInput_Device::Key_Up(const _ubyte& ubyKey)
 {
 	if ((m_byPreKeyState[ubyKey] & 0x80) && !(m_byKeyState[ubyKey] & 0x80))
+	{
+		m_Qmessage.push(ubyKey);
 		return true;
+	}
 
 	return false;
 }
@@ -81,7 +90,10 @@ _bool CInput_Device::Key_Up(const _ubyte& ubyKey)
 _bool CInput_Device::Mouse_Down(MOUSEKEYSTATE eMouseID)
 {
 	if (!m_tPreMouseState.rgbButtons[eMouseID] && m_tMouseState.rgbButtons[eMouseID])
+	{
+		m_Qmessage.push(eMouseID);
 		return true;
+	}
 
 	return false;
 }
@@ -89,7 +101,10 @@ _bool CInput_Device::Mouse_Down(MOUSEKEYSTATE eMouseID)
 _bool CInput_Device::Mouse_Pressing(MOUSEKEYSTATE eMouseID)
 {
 	if (m_tPreMouseState.rgbButtons[eMouseID] && m_tMouseState.rgbButtons[eMouseID])
+	{
+		m_Qmessage.push(eMouseID);
 		return true;
+	}
 
 	return false;
 }
@@ -97,7 +112,10 @@ _bool CInput_Device::Mouse_Pressing(MOUSEKEYSTATE eMouseID)
 _bool CInput_Device::Mouse_Up(MOUSEKEYSTATE eMouseID)
 {
 	if (m_tPreMouseState.rgbButtons[eMouseID] && !m_tMouseState.rgbButtons[eMouseID])
+	{
+		m_Qmessage.push(eMouseID);
 		return true;
+	}
 
 	return false;
 }

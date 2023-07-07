@@ -26,22 +26,29 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimIndex(rand() % 10);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 50, 6.f, rand() % 50, 1.f));
+	if (nullptr != pArg)
+	{
+		m_pTransformCom->Set_Matrix(reinterpret_cast<MONSTERDESC*>(pArg)->WorldMatrix);
+		m_pTransformCom->Set_Angle(reinterpret_cast<MONSTERDESC*>(pArg)->vAngle);
+	}
 
 	return S_OK;
 }
 
 void CMonster::Tick(const _double& TimeDelta)
 {
+	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
+
 	m_pModelCom->Play_Animation(TimeDelta);
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CMonster::Late_Tick(const _double& TimeDelta)
 {
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
 HRESULT CMonster::Render()
@@ -64,21 +71,43 @@ HRESULT CMonster::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
+
+#endif
+
 	return S_OK;
 }
 
 HRESULT CMonster::Add_Components()
 {
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Shader_VtxAnimMesh",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_AnimMesh",
 		L"Com_Shader", (CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Renderer",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer",
 		L"Com_Renderer", (CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Prototype_Component_Model_Player",
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_Goblin",
 		L"Com_Model", (CComponent**)&m_pModelCom, this)))
+		return E_FAIL;
+
+	CNavigation::NAVIGATIONDESC NaviDesc;
+	NaviDesc.iCurrentIndex = 0;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
+		(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
+		return E_FAIL;
+	m_pTransformCom->Bind_Navigation(m_pNavigationCom);
+
+	CBounding_Sphere::SPHEREDESC SphereDesc;
+	SphereDesc.fRadius = 1.f;
+	SphereDesc.vPosition = _float3(0.f, 1.f, 0.f);
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Com_Collider_Sphere",
+		(CComponent**)&m_pColliderCom, this, &SphereDesc)))
 		return E_FAIL;
 
 	return S_OK;

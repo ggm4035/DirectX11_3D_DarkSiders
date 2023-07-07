@@ -41,8 +41,12 @@ protected:
 	_uint m_iNumIndices = { 0 };
 	_uint m_iVertexBuffers = { 0 };
 
+	_bool m_isCloned = { false };
+
 	DXGI_FORMAT m_eFormat;
 	D3D11_PRIMITIVE_TOPOLOGY m_eTopology;
+
+	_float3* m_pVerticesPos = { nullptr };
 
 	vector<TRIANGLE> m_vecTriangle;
 

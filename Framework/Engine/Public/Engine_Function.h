@@ -54,6 +54,8 @@ namespace Engine
 	{
 		for (_uint i = 0; i < Data.iNumAnimations; ++i)
 		{
+			Safe_Delete_Array(Data.pAnimations[i].pTimeRanges);
+
 			for (_uint j = 0; j < Data.pAnimations[i].iNumChannels; ++j)
 			{
 				Safe_Delete_Array(Data.pAnimations[i].pChannels[j].pKeyFrames);

@@ -23,7 +23,7 @@ private:
     virtual ~CDummyObject3D() = default;
 
 public:
-    unordered_map<wstring, CComponent*>* Get_Components() { return &m_Components; }
+    unordered_map<wstring, CComponent*>* Get_Components() { return &m_umapComponents; }
     CTransform* Get_Transform() { return m_pTransformCom; }
     CVIBuffer* Get_Buffer() { return m_pBufferCom; }
     CShader* Get_Shader() { return m_pShaderCom; }

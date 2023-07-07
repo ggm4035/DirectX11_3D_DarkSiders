@@ -9,7 +9,6 @@
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CComponent(pDevice, pContext)
 {
-	ZeroMemory(&m_vCurPosition, sizeof _float4);
 }
 
 CModel::CModel(const CModel& rhs)
@@ -23,8 +22,6 @@ CModel::CModel(const CModel& rhs)
 	, m_eType(rhs.m_eType)
 	, m_iRootBoneIndex(rhs.m_iRootBoneIndex)
 {
-	ZeroMemory(&m_vCurPosition, sizeof _float4);
-
 	for (auto& pOriginBone : rhs.m_vecBones)
 		m_vecBones.push_back(pOriginBone->Clone());
 
@@ -43,17 +40,27 @@ CModel::CModel(const CModel& rhs)
 
 _bool CModel::isLoopAnimation() const
 {
-	return m_vecAnimations[m_iCurrentAnimIndex]->isLoop();
+	return m_pCurrentAnimation->isLoop();
 }
 
 _bool CModel::isFinishedAnimation() const
 {
-	return m_vecAnimations[m_iCurrentAnimIndex]->m_isFinished;
+	return m_pCurrentAnimation->m_isFinished;
+}
+
+_bool CModel::isFollowAnimation() const
+{
+	return m_pCurrentAnimation->m_isFollowAnimation;
+}
+
+_bool CModel::isAbleChangeAnimation() const
+{
+	return m_pCurrentAnimation->m_isAbleChange;
 }
 
 const CBone* CModel::Get_Bone(const _char* pBoneName)
 {
-	auto iter = find_if(m_vecBones.begin(), m_vecBones.end(), [&](CBone* pBone) 
+	auto iter = find_if(m_vecBones.begin(), m_vecBones.end(), [&](CBone* pBone)
 		{
 			if (pBone->Get_Name() == pBoneName)
 				return true;
@@ -67,18 +74,30 @@ const CBone* CModel::Get_Bone(const _char* pBoneName)
 	return (*iter);
 }
 
-void CModel::Set_AnimIndex(const _uint& iAnimIndex)
+void CModel::Change_Animation(const string& strTag)
 {
-	if (iAnimIndex >= m_iNumAnimations ||
-		iAnimIndex == m_iCurrentAnimIndex)
+	if (string::npos != m_pCurrentAnimation->m_strName.find(strTag))
 		return;
 
-	if (false == m_vecAnimations[m_iCurrentAnimIndex]->isLerped())
-		m_vecAnimations[m_iCurrentAnimIndex]->Reset_Animation();
+	CAnimation* pAnimation = Find_Animation(strTag);
 
-	m_vecAnimations[iAnimIndex]->Bind_LerpAnimation(m_vecAnimations[m_iCurrentAnimIndex]);
+	if (nullptr == pAnimation)
+		return;
 
-	m_iCurrentAnimIndex = iAnimIndex;
+	if (false == m_pCurrentAnimation->isLerped())
+		m_pCurrentAnimation->Reset_Animation();
+
+	pAnimation->Bind_LerpAnimation(m_pCurrentAnimation);
+
+	m_pCurrentAnimation = pAnimation;
+
+	m_pCurrentAnimation->m_isAbleChange = false;
+
+	m_pPublisher->Clear_Observers();
+
+	m_pPublisher->Bind_Current_Animation(m_pCurrentAnimation);
+
+	m_pPublisher->Init_Observers(m_pCurrentAnimation->Get_TimeRanges());
 
 	m_isFirst = true;
 }
@@ -109,6 +128,19 @@ HRESULT CModel::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* p
 	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
+	for (auto& iter = m_vecAnimations.begin(); iter != m_vecAnimations.end(); ++iter)
+	{
+		if (string::npos != (*iter)->m_strName.find("Idle"))
+		{
+			m_pCurrentAnimation = *iter;
+
+			m_pPublisher = CPublisher_Animation::Create(m_pDevice, m_pContext);
+			m_pPublisher->Bind_Current_Animation(m_pCurrentAnimation);
+
+			return S_OK;
+		}
+	}
+
 	return S_OK;
 }
 
@@ -120,38 +152,38 @@ HRESULT CModel::Render(const _uint& iMeshIndex)
 	return m_vecMeshes[iMeshIndex]->Render();
 }
 
-_float4 CModel::ComputeAnimMovement()
+_vector CModel::ComputeAnimMovement(OUT _float3* pDirection)
 {
 	CTransform* pTransform = dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Transform();
 
-	if (true == m_vecAnimations[m_iCurrentAnimIndex]->isLoop())
-	{
-		_float4 vPosition;
-		XMStoreFloat4(&vPosition, pTransform->Get_State(CTransform::STATE_POSITION));
+	_vector vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
+	_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+
+	if (false == m_pCurrentAnimation->isFollowAnimation())
 		return vPosition;
-	}
 
 	if (true == m_isFirst)
 	{
-		XMStoreFloat4x4(&m_WorldMatrix, pTransform->Get_WorldMatrix());
 		m_isFirst = false;
-		return _float4(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, m_WorldMatrix._44);
+		m_WorldMatrix = pTransform->Get_WorldFloat4x4();
+		WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+		return WorldMatrix.r[3];
 	}
 
 	/* 오프셋 * 컴바인 * 피벗으로 로컬스페이스 상의 뼈의 상태행렬을 가져온다. */
 	_matrix BoneMatrix = m_vecBones[m_iRootBoneIndex]->Get_OffsetMatrix() * m_vecBones[m_iRootBoneIndex]->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix);
 
-	_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix); /* 객체의 상태(월드)행렬 */
-
 	for (_uint i = 0; i < 3; ++i)
 		BoneMatrix.r[i] = XMVector3Normalize(BoneMatrix.r[i]);
 
-	BoneMatrix *= WorldMatrix;
+	BoneMatrix *= WorldMatrix; /* 로컬상의 뼈행렬을 월드로 변환 */
 
-	XMStoreFloat4(&m_vCurPosition, BoneMatrix.r[3]);
+	XMStoreFloat3(pDirection, XMVector3Normalize(BoneMatrix.r[3] - vPosition));
+
+	vPosition = BoneMatrix.r[3];
 
 	//cout << "X: " << m_vCurPosition.x << " Y: " << m_vCurPosition.y << " Z: " << m_vCurPosition.z << endl;
-	return m_vCurPosition;
+	return vPosition;
 }
 
 void CModel::Play_Animation(const _double& TimeDelta)
@@ -161,28 +193,29 @@ void CModel::Play_Animation(const _double& TimeDelta)
 	/* 뼈들은 각각 어떤 상태(TransformationMatrix)를 취하고 있어야하는가?! */
 
 	/* 현재 애니메이션에서 사용하는 뼈들을 찾아서 해당 뼈들의 TransformationMatrix를 갱신한다. */
-		
-	/* TransformationMatrix 를 선형보간한다. */
-	/* 여기가 실질적으로 뼈가 이동하는 부분 */
 
-	if (false == m_isBlock)
-		m_vecAnimations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrix(m_vecBones, TimeDelta);
-	else /* 벽에 부딪힌 경우 이동값을 죽인다. */
-		m_vecAnimations[m_iCurrentAnimIndex]->Invalidate_NotMoveTransformationMatrix(m_vecBones, TimeDelta);
+	/* TransformationMatrix 를 선형보간한다. */
+
+	/* 여기가 실질적으로 뼈가 이동하는 부분 */
+	m_pCurrentAnimation->Invalidate_TransformationMatrix(m_vecBones, TimeDelta);
 
 	/* 선형보간한 TransformationMatrix들을 CombinedTransformation 에 적용시킨다. */
 	for (auto& pBone : m_vecBones)
 		pBone->Invalidate_CombinedTransformationMatrix(m_vecBones);
+
+	_float fTimeAcc = m_pCurrentAnimation->Get_TimeAcc();
+	if (nullptr != m_pPublisher)
+		m_pPublisher->Tick(fTimeAcc);
 }
 
 void CModel::Pause_Animation()
 {
-	m_vecAnimations[m_iCurrentAnimIndex]->Pause_Animation();
+	m_pCurrentAnimation->Pause_Animation();
 }
 
 void CModel::RePlay_Animation()
 {
-	m_vecAnimations[m_iCurrentAnimIndex]->Play_Animation();
+	m_pCurrentAnimation->Play_Animation();
 }
 
 HRESULT CModel::Bind_Material(CShader* pShader, const string& strTypename, const _uint& iMeshIndex, TEXTURETYPE eTextureType)
@@ -301,6 +334,17 @@ HRESULT CModel::Ready_Animations(const MODEL_BINARYDATA& ModelData)
 	return S_OK;
 }
 
+CAnimation* CModel::Find_Animation(const string& strTag)
+{
+	for (auto iter = m_vecAnimations.begin(); iter != m_vecAnimations.end(); ++iter)
+	{
+		if (string::npos != (*iter)->m_strName.find(strTag))
+			return *iter;
+	}
+
+	return nullptr;
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix)
 {
@@ -349,6 +393,9 @@ void CModel::Free()
 		Safe_Release(pBone);
 	m_vecBones.clear();
 
+	if (TYPE_ANIM == m_eType)
+		Safe_Release(m_pPublisher);
+
 	CComponent::Free();
 }
 
@@ -361,11 +408,27 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 	for (auto& Animation : m_vecAnimations)
 	{
 		ANIMATIONDATA Data;
-		strcpy_s(Data.szName, Animation->m_szName);
+		strcpy_s(Data.szName, Animation->m_strName.c_str());
 		Data.Duration = Animation->m_Duration;
 		Data.TickPerSec = Animation->m_TickPerSec;
 		Data.iNumChannels = Animation->m_iNumChannels;
 		Data.bIsLoop = Animation->m_isLoop;
+		Data.bIsFollowAnimation = Animation->m_isFollowAnimation;
+		Data.iNumRanges = Animation->m_vecTimeRange.size();
+
+		TIMERANGE* pTimeRanges = { nullptr };
+		if(0 < Data.iNumRanges)
+			pTimeRanges = new TIMERANGE[Data.iNumRanges];
+
+		for (_uint iRangeIndex = 0; iRangeIndex < Data.iNumRanges; ++iRangeIndex)
+		{
+			pTimeRanges[iRangeIndex].fStartPoint = Animation->m_vecTimeRange[iRangeIndex].fStartPoint;
+			pTimeRanges[iRangeIndex].fEndPoint = Animation->m_vecTimeRange[iRangeIndex].fEndPoint;
+			
+			for (_uint iTypeIndex = 0; iTypeIndex < OBSERVERTYPE::TYPE_END; ++iTypeIndex)
+				pTimeRanges[iRangeIndex].arrTypes[iTypeIndex] = Animation->m_vecTimeRange[iRangeIndex].arrTypes[iTypeIndex];
+		}
+		Data.pTimeRanges = pTimeRanges;
 
 		CHANNELDATA* pChannels = new CHANNELDATA[Data.iNumChannels];
 		for (_uint i = 0; i < Data.iNumChannels; ++i)
@@ -392,58 +455,102 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 
 const _uint& CModel::Get_MaxKeyFrame() const
 {
-	return m_vecAnimations[m_iCurrentAnimIndex]->Get_MaxKeyFrames();
+	return m_pCurrentAnimation->Get_MaxKeyFrames();
 }
 
 const _uint& CModel::Get_MaxRootKeyFrame() const
 {
-	return m_vecAnimations[m_iCurrentAnimIndex]->Get_MaxRootKeyFrames();
+	return m_pCurrentAnimation->Get_MaxRootKeyFrames();
 }
 
 const _uint& CModel::Get_CurrentKeyFrameIndex() const
 {
-	return m_vecAnimations[m_iCurrentAnimIndex]->Get_CurrentKeyFrameIndex();
+	return m_pCurrentAnimation->Get_CurrentKeyFrameIndex();
 }
 
 const _uint& CModel::Get_CurrentRootKeyFrameIndex() const
 {
-	return m_vecAnimations[m_iCurrentAnimIndex]->Get_CurrentRootKeyFrameIndex();
+	return m_pCurrentAnimation->Get_CurrentRootKeyFrameIndex();
 }
 
 void CModel::Set_KeyFrame(const _uint& iIndex)
 {
-	m_vecAnimations[m_iCurrentAnimIndex]->Set_KeyFrame(iIndex);
+	m_pCurrentAnimation->Set_KeyFrame(iIndex);
 }
 
 void CModel::Set_RootKeyFrame(const _uint& iIndex)
 {
-	m_vecAnimations[m_iCurrentAnimIndex]->Set_RootKeyFrame(iIndex);
+	m_pCurrentAnimation->Set_RootKeyFrame(iIndex);
 }
 
 void CModel::Set_Translation(const _uint& iIndex, const _float3& vTranslation)
 {
-	vector<KEYFRAME>& KeyFrames = m_vecAnimations[m_iCurrentAnimIndex]->Get_RootKeyFrames();
+	vector<KEYFRAME>& KeyFrames = m_pCurrentAnimation->Get_RootKeyFrames();
 
 	KeyFrames[iIndex].vTranslation = vTranslation;
 }
 
+void CModel::Set_KeyFrameTime(const _uint& iIndex, const _float& fTime)
+{
+	vector<KEYFRAME>& KeyFrames = m_pCurrentAnimation->Get_KeyFrames();
+
+	KeyFrames[iIndex].Time = fTime;
+}
+
+void CModel::Set_Duration(const _float& fDuration)
+{
+	m_pCurrentAnimation->m_Duration = (_double)fDuration;
+}
+
+void CModel::Set_TickPerSec(const _float& fTickPerSec)
+{
+	m_pCurrentAnimation->m_TickPerSec = (_double)fTickPerSec;
+}
+
 _float3 CModel::Get_Translation(const _uint& iIndex)
 {
-	vector<KEYFRAME> Data = m_vecAnimations[m_iCurrentAnimIndex]->Get_RootKeyFrames();
+	vector<KEYFRAME> Data = m_pCurrentAnimation->Get_RootKeyFrames();
 	return Data[iIndex].vTranslation;
 }
 
-HRESULT CModel::Set_Animation(_uint iAnimIndex, const ANIMATIONDATA& AnimData)
+_float CModel::Get_KeyFrameTime(const _uint& iIndex)
 {
-	m_vecAnimations[iAnimIndex]->m_Duration = AnimData.Duration;
-	m_vecAnimations[iAnimIndex]->m_TickPerSec = AnimData.TickPerSec;
-	m_vecAnimations[iAnimIndex]->m_isLoop = AnimData.bIsLoop;
+	vector<KEYFRAME> Data = m_pCurrentAnimation->Get_KeyFrames();
+	return Data[iIndex].Time;
+}
 
-	for (_uint i = 0; i < m_vecAnimations[iAnimIndex]->m_iNumChannels; ++i)
+_float CModel::Get_Duration()
+{
+	return _float(m_pCurrentAnimation->m_Duration);
+}
+
+_float CModel::Get_TickPerSec()
+{
+	return _float(m_pCurrentAnimation->m_TickPerSec);
+}
+
+_bool CModel::isPause() const
+{
+	return m_pCurrentAnimation->m_isPause;
+}
+
+HRESULT CModel::Set_Animation(const string& strTag, const ANIMATIONDATA& AnimData)
+{
+	CAnimation* pAnimation = Find_Animation(strTag);
+	if (nullptr == pAnimation)
+		return E_FAIL;
+
+	pAnimation->m_strName = AnimData.szName;
+	pAnimation->m_Duration = AnimData.Duration;
+	pAnimation->m_TickPerSec = AnimData.TickPerSec;
+	pAnimation->m_isLoop = AnimData.bIsLoop;
+	pAnimation->m_isFollowAnimation = AnimData.bIsFollowAnimation;
+
+	for (_uint i = 0; i < pAnimation->m_iNumChannels; ++i)
 	{
-		for (_uint j = 0; j < m_vecAnimations[iAnimIndex]->m_vecChannels[i]->m_iNumKeyFrames; ++j)
+		for (_uint j = 0; j < pAnimation->m_vecChannels[i]->m_iNumKeyFrames; ++j)
 		{
-			m_vecAnimations[iAnimIndex]->m_vecChannels[i]->m_vecKeyFrames[j].Time = AnimData.pChannels[i].pKeyFrames[j].Time;
+			pAnimation->m_vecChannels[i]->m_vecKeyFrames[j].Time = AnimData.pChannels[i].pKeyFrames[j].Time;
 		}
 	}
 
@@ -462,14 +569,20 @@ HRESULT CModel::Add_Animation(const ANIMATIONDATA& AnimData)
 	return S_OK;
 }
 
-HRESULT CModel::Delete_Animation(_uint iIndex)
+HRESULT CModel::Delete_Animation(const string& strTag)
 {
-	vector<CAnimation*>::iterator iter = m_vecAnimations.begin();
+	for (auto iter = m_vecAnimations.begin(); iter != m_vecAnimations.end(); ++iter)
+	{
+		if (string::npos != (*iter)->m_strName.find(strTag))
+		{
+			Safe_Release(*iter);
+			m_pCurrentAnimation = *(iter - 1);
+			m_vecAnimations.erase(iter);
+			return S_OK;
+		}
+	}
 
-	Safe_Release(m_vecAnimations[iIndex]);
-	m_vecAnimations.erase(iter + iIndex);
-
-	return S_OK;
+	return E_FAIL;
 }
 
 #endif

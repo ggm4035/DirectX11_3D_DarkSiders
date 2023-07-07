@@ -13,7 +13,7 @@ public:
 	}AABBDESC;
 
 public:
-	const BoundingBox* Get_BoundingSphere() const {
+	const BoundingBox* Get_BoundingAABB() const {
 		return m_pAABB;
 	}
 
@@ -27,7 +27,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(_fmatrix WorldMatrix) override;
 	virtual HRESULT Render() override;
-	virtual _bool Intersect(CCollider::TYPE eType, const CBounding* pBounding);
+	virtual _bool Intersect(CCollider::TYPE eType, CBounding* pBounding);
 
 private:
 	BoundingBox* m_pAABB_Original = { nullptr };

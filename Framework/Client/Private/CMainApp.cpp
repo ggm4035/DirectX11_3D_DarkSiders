@@ -5,6 +5,10 @@
 #include "CLevel_Loading.h"
 #include "CPlayer.h"
 #include "CWeapon.h"
+#include "CPlayerAction.h"
+#include "CMoveAction.h"
+#include "CJumpAction.h"
+#include "CAttackAction.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -27,6 +31,9 @@ HRESULT Client::CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Fonts()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Prototype_Component_For_Static()))
 		return E_FAIL;
 
@@ -42,6 +49,8 @@ HRESULT Client::CMainApp::Initialize()
 
 void CMainApp::Tick(const _double& TimeDelta)
 {
+	m_TimeAcc += TimeDelta;
+
 	m_pGameInstance->Tick_Engine(TimeDelta);
 }
 
@@ -51,6 +60,18 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_DepthStencil_View();
 
 	m_pRenderer->Draw_RenderGroup();
+
+	++m_iRanderCount;
+
+	if (1.f < m_TimeAcc)
+	{
+		m_wstrFPS = L"FPS : " + to_wstring(m_iRanderCount);
+
+		m_TimeAcc = 0.f;
+		m_iRanderCount = 0;
+	}
+
+	m_pGameInstance->Render_Font(L"Font_135", m_wstrFPS, _float2());
 
 	m_pGameInstance->Present();
 
@@ -81,10 +102,21 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* VIBuffer_Cube */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Cube",
+		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* Shader_VtxTex */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_VtxTex",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl",
 			VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements))))
+		return E_FAIL;
+
+	/* Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_VtxCube",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxCube.hlsl",
+			VTXCUBE_DECL::Elements, VTXCUBE_DECL::iNumElements))))
 		return E_FAIL;
 
 	/* Shader_VtxMesh */
@@ -153,6 +185,34 @@ HRESULT CMainApp::Ready_Player()
 
 	/* For. Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Weapon", CWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. PlayerAction */
+	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerAction", 
+		CPlayerAction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Player_MoveAction */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"MoveAction",
+		CMoveAction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Player_JumpAction */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"JumpAction",
+		CJumpAction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Player_AttackAction */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"AttackAction",
+		CAttackAction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Fonts()
+{
+	if(FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, L"Font_135", L"../../Resources/Fonts/135.spritefont")))
 		return E_FAIL;
 
 	return S_OK;

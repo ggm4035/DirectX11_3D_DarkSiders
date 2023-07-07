@@ -18,6 +18,8 @@ private:
 public:
 	_bool isLoopAnimation() const;
 	_bool isFinishedAnimation() const;
+	_bool isFollowAnimation() const;
+	_bool isAbleChangeAnimation() const;
 
 	const TYPE Get_Type() const {
 		return m_eType;
@@ -31,14 +33,10 @@ public:
 		return m_iNumMeshes;
 	}
 
-	void Block_Switch(_bool bSwitch) {
-		m_isBlock = bSwitch;
-	}
-
 	const class CBone* Get_Bone(const _char* pBoneName);
 
 public:
-	void Set_AnimIndex(const _uint& iAnimIndex);
+	void Change_Animation(const string& strTag);
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
@@ -47,7 +45,7 @@ public:
 	virtual HRESULT Render(const _uint& iMeshIndex);
 
 public:
-	_float4 ComputeAnimMovement();
+	_vector ComputeAnimMovement(OUT _float3* pDirection);
 	void Play_Animation(const _double& TimeDelta);
 	void Pause_Animation();
 	void RePlay_Animation();
@@ -69,23 +67,25 @@ private: /* For.Bone */
 	vector<class CBone*> m_vecBones;
 
 private: /* For.Animation */
-	_uint m_iCurrentAnimIndex = { 0 };
+	class CAnimation* m_pCurrentAnimation = { nullptr };
 	_uint m_iNumAnimations = { 0 };
 	vector<class CAnimation*> m_vecAnimations;
 
+private: /* For.Observer */
+	class CPublisher_Animation* m_pPublisher = { nullptr };
+
 private:
-	_bool m_isBlock = { false };
 	_bool m_isFirst = { true };
 	TYPE m_eType = { TYPE_END };
 	_float4x4 m_PivotMatrix;
 	_float4x4 m_WorldMatrix;
-	_float4 m_vCurPosition;
 
 private:
 	HRESULT Ready_Meshes(const MODEL_BINARYDATA& ModelData, TYPE eModelType);
 	HRESULT Ready_Materials(const MODEL_BINARYDATA& ModelData);
 	HRESULT Ready_Bones(const MODEL_BINARYDATA& ModelData, class CBone* pParent);
 	HRESULT Ready_Animations(const MODEL_BINARYDATA& ModelData);
+	class CAnimation* Find_Animation(const string& strTag);
 
 public:
 	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
@@ -106,12 +106,19 @@ public: /* !!! Warrning !!! Only Tool */
 	void Set_KeyFrame(const _uint& iIndex);
 	void Set_RootKeyFrame(const _uint& iIndex);
 	void Set_Translation(const _uint& iIndex, const _float3& vTranslation);
+	void Set_KeyFrameTime(const _uint& iIndex, const _float& fTime);
+	void Set_Duration(const _float& fDuration);
+	void Set_TickPerSec(const _float& fTickPerSec);
 	_float3 Get_Translation(const _uint& iIndex);
+	_float Get_KeyFrameTime(const _uint& iIndex);
+	_float Get_Duration();
+	_float Get_TickPerSec();
+	_bool isPause() const;
 
 	vector<ANIMATIONDATA> Get_AnimationDatas();
-	HRESULT Set_Animation(_uint iIndex, const ANIMATIONDATA& AnimData);
+	HRESULT Set_Animation(const string& wstrTag, const ANIMATIONDATA& AnimData);
 	HRESULT Add_Animation(const ANIMATIONDATA& AnimData);
-	HRESULT Delete_Animation(_uint iIndex);
+	HRESULT Delete_Animation(const string& wstrTag);
 
 #endif
 };

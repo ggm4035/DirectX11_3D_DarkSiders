@@ -22,7 +22,7 @@ public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
 	void Clear_LevelResources(const _uint& iLevelIndex);
 
 public: /* For. MapEditMode */
-	list<CGameObject*> Get_All_GameObject();
+	list<CGameObject*> Get_GameObject_Layer(const wstring& wstrLayerTag);
 	HRESULT Remove_GameObject(const wstring& GameObjectTag);
 
 private:

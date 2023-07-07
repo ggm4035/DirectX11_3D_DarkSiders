@@ -8,6 +8,7 @@ CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_TransformDesc()
 {
 	ZeroMemory(&m_vAngle, sizeof(_float3));
+	ZeroMemory(&m_vMoveDir, sizeof(_float3));
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
 }
 
@@ -67,8 +68,7 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 
 	_vector vLook = Get_State(STATE_LOOK);
 
-	_float4 vPos = pModel->ComputeAnimMovement();
-	_vector vPosition = XMLoadFloat4(&vPos);
+	_vector vPosition = pModel->ComputeAnimMovement(&m_vMoveDir);
 
 	CNavigation::RETURNDESC RetDesc;
 	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
@@ -89,105 +89,21 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 			vDir *= -1.f;
 
 		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
-
-		pModel->Block_Switch(true);
+		XMStoreFloat3(&m_vMoveDir, XMVector3Normalize(vDir));
 	}
 
 	/* Stop */
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
-	{
-		vPosition = Get_State(STATE_POSITION);
-		pModel->Block_Switch(true);
-	}
-
-	/* Move */
-	else
-		pModel->Block_Switch(false);
-
-	Set_State(STATE_POSITION, vPosition);
-}
-
-void CTransform::Go_Straight(const _double& TimeDelta)
-{
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vLook = Get_State(STATE_LOOK);
-
-	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
-
-	CNavigation::RETURNDESC RetDesc;
-	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
-
-	if (nullptr != m_pNavigation)
-		RetDesc = m_pNavigation->is_Move(vPosition);
-
-	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
-	{
-		/* 슬라이딩 */
-		_float fForce = XMVector3Dot(XMVector3Normalize(vLook), XMVector3Normalize(XMLoadFloat3(&RetDesc.vSlide))).m128_f32[0];
-		_vector vDir = XMLoadFloat3(&RetDesc.vSlide);
-
 		vPosition = Get_State(STATE_POSITION);
 
-		if (90.f < acosf(fForce))
-			vDir *= -1.f;
-
-		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
-	}
-
-	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
-		return;
-
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Backward(const _double& TimeDelta)
+void CTransform::Go(_fvector vDirection, const _double& TimeDelta)
 {
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vLook = Get_State(STATE_LOOK);
+	Turn_Axis(vDirection, TimeDelta);
 
-	vPosition -= XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
-
-	Set_State(STATE_POSITION, vPosition);
-}
-
-void CTransform::Go_Right(const _double& TimeDelta)
-{
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vRight = Get_State(STATE_RIGHT);
-
-	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.SpeedPerSec * TimeDelta;
-
-	Set_State(STATE_POSITION, vPosition);
-}
-
-void CTransform::Go_Left(const _double& TimeDelta)
-{
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vRight = Get_State(STATE_RIGHT);
-
-	vPosition -= XMVector3Normalize(vRight) * m_TransformDesc.SpeedPerSec * TimeDelta;
-
-	Set_State(STATE_POSITION, vPosition);
-}
-
-void CTransform::Go_Up(const _double& TimeDelta)
-{
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vUp = Get_State(STATE_UP);
-
-	vPosition += XMVector3Normalize(vUp) * m_TransformDesc.SpeedPerSec * TimeDelta;
-
-	Set_State(STATE_POSITION, vPosition);
-}
-
-void CTransform::Go_Down(const _double& TimeDelta)
-{
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vUp = Get_State(STATE_RIGHT);
-
-	vPosition -= XMVector3Normalize(vUp) * m_TransformDesc.SpeedPerSec * TimeDelta;
-
-	Set_State(STATE_POSITION, vPosition);
+	Move_Stop_Sliding(TimeDelta);
 }
 
 void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance)
@@ -200,6 +116,30 @@ void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const
 		vPosition += XMVector3Normalize(vDirection) * m_TransformDesc.SpeedPerSec * TimeDelta;
 
 	Set_State(STATE_POSITION, vPosition);
+}
+
+_bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
+{
+	//static _float fTime = (cosf(TimeDelta) + 1.f) * 0.5f;
+
+	m_fTimeAcc += TimeDelta;// *fTime;
+
+	_float fY = fForce * m_fTimeAcc - 3.f * m_fTimeAcc * m_fTimeAcc;
+
+	_vector vPosition = Get_State(STATE_POSITION);
+
+	vPosition.m128_f32[1] += fY;
+	Set_State(STATE_POSITION, vPosition);
+
+	if (35.f > vPosition.m128_f32[1])
+	{
+		vPosition.m128_f32[1] = 35.f;
+		Set_State(STATE_POSITION, vPosition);
+		m_fTimeAcc = 0.f;
+		return false;
+	}
+
+	return true;
 }
 
 void CTransform::LookAt(_fvector vTargetPosition)
@@ -273,6 +213,106 @@ void CTransform::Scaled(const _float3& vScale)
 	Set_State(STATE_RIGHT, XMVector3Normalize(Get_State(STATE_RIGHT)) * vScale.x);
 	Set_State(STATE_UP, XMVector3Normalize(Get_State(STATE_UP)) * vScale.y);
 	Set_State(STATE_LOOK, XMVector3Normalize(Get_State(STATE_LOOK)) * vScale.z);
+}
+
+void CTransform::Cam_Straight(const _double& TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Cam_Backward(const _double & TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition -= XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Cam_Right(const _double & TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vRight = Get_State(STATE_RIGHT);
+
+	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Cam_Left(const _double & TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vRight = Get_State(STATE_RIGHT);
+
+	vPosition -= XMVector3Normalize(vRight) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Cam_Up(const _double& TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vUp = Get_State(STATE_UP);
+
+	vPosition += XMVector3Normalize(vUp) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Turn_Axis(_fvector Dir, const _double& TimeDelta)
+{
+	_vector vDir = XMVector3Normalize(Dir);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	_float fDegree = acosf(XMVector3Dot(vDir, vLook).m128_f32[0]);
+	_float fForce = 5.f * fDegree * TimeDelta ;
+
+	fDegree = XMConvertToDegrees(fDegree);
+
+	if (0.f > XMVector3Cross(vLook, vDir).m128_f32[1])
+		fForce = -fForce;
+
+	if (-0.0f < fDegree && 0.5f > fabs(fForce))
+		Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
+}
+
+void CTransform::Move_Stop_Sliding(const _double& TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	CNavigation::RETURNDESC RetDesc;
+	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
+
+	if (nullptr != m_pNavigation)
+		RetDesc = m_pNavigation->is_Move(vPosition);
+
+	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
+	{
+		/* 슬라이딩 */
+		_float fForce = XMVector3Dot(XMVector3Normalize(vLook), XMVector3Normalize(XMLoadFloat3(&RetDesc.vSlide))).m128_f32[0];
+		_vector vDir = XMLoadFloat3(&RetDesc.vSlide);
+
+		vPosition = Get_State(STATE_POSITION);
+
+		if (90.f < acosf(fForce))
+			vDir *= -1.f;
+
+		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
+	}
+
+	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
+		return;
+
+	Set_State(STATE_POSITION, vPosition);
 }
 
 CTransform* CTransform::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

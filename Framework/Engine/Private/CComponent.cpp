@@ -58,6 +58,16 @@ HRESULT CComposite::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 	return S_OK;
 }
 
+CComponent* CComposite::Get_Component(const wstring& wstrComponentTag)
+{
+	auto iter = m_umapComponents.find(wstrComponentTag);
+
+	if (iter == m_umapComponents.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 HRESULT CComposite::Add_Component(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& ComponentTag,
 	CComponent** ppOut, CComponent* pOwner, void* pArg)
 {
@@ -66,11 +76,11 @@ HRESULT CComposite::Add_Component(const _uint& iLevelIndex, const wstring& Proto
 	if (nullptr == pComponent)
 		return E_FAIL;
 
-	auto& iter = m_Components.find(ComponentTag);
-	if (iter != m_Components.end())
+	auto& iter = m_umapComponents.find(ComponentTag);
+	if (iter != m_umapComponents.end())
 		return E_FAIL;
 
-	m_Components.emplace(ComponentTag, pComponent);
+	m_umapComponents.emplace(ComponentTag, pComponent);
 	*ppOut = pComponent;
 	Safe_AddRef(pComponent);
 
@@ -81,9 +91,9 @@ HRESULT CComposite::Add_Component(const _uint& iLevelIndex, const wstring& Proto
 
 void CComposite::Free()
 {
-	for (auto& Pair : m_Components)
+	for (auto& Pair : m_umapComponents)
 		Safe_Release(Pair.second);
-	m_Components.clear();
+	m_umapComponents.clear();
 
 	CComponent::Free();
 }

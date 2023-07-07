@@ -83,15 +83,14 @@ void CDummyObject3D::Tick(const _double& TimeDelta)
         m_pModelCom->Play_Animation(TimeDelta);
     }
 
-    if (nullptr != m_pRenderer)
-        m_pRenderer->Add_RenderGroup(m_eRenderGroup, this);
-
     if (nullptr != m_pColliderCom)
         m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CDummyObject3D::Late_Tick(const _double& TimeDelta)
 {
+    if (nullptr != m_pRenderer)
+        m_pRenderer->Add_RenderGroup(m_eRenderGroup, this);
 }
 
 HRESULT CDummyObject3D::Render()

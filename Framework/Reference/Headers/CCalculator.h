@@ -9,7 +9,7 @@ class CCalculator final : public CBase
 	DECLARE_SINGLETON(CCalculator)
 
 private:
-	explicit CCalculator();
+	explicit CCalculator() = default;
 	virtual ~CCalculator() = default;
 
 public:

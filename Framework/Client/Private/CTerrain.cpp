@@ -50,6 +50,9 @@ void CTerrain::Tick(const _double& TimeDelta)
 
 void CTerrain::Late_Tick(const _double& TimeDelta)
 {
+
+	//m_pBufferCom->Culling(m_pTransformCom->Get_WorldMatrix());
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }

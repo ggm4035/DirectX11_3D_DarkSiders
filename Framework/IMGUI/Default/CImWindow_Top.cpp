@@ -70,8 +70,12 @@ void CImWindow_Top::RenderMode(CGameInstance* pGameInstance)
         if (ImGui::RadioButton("All Solid", &iMode, 0))
         {
             RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
-            for (auto& pObject : m_GameObjectList)
-                pObject->Set_RasterizerState(RasterizerDesc);
+
+            for (_uint i = 0; i < LAYER_END; ++i)
+            {
+                for (auto& pObject : m_GameObjectList[i])
+                    pObject->Set_RasterizerState(RasterizerDesc);
+            }
 
             m_isPickSolidMode = false;
             m_isSolidMode = true;
@@ -79,8 +83,11 @@ void CImWindow_Top::RenderMode(CGameInstance* pGameInstance)
         if (ImGui::RadioButton("Pick Solid the rest WireFrame", &iMode, 1))
         {
             RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
-            for (auto& pObject : m_GameObjectList)
-                pObject->Set_RasterizerState(RasterizerDesc);
+            for (_uint i = 0; i < LAYER_END; ++i)
+            {
+                for (auto& pObject : m_GameObjectList[i])
+                    pObject->Set_RasterizerState(RasterizerDesc);
+            }
 
             RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
             if (nullptr != TOOL->m_pCurrentObject)
@@ -92,8 +99,11 @@ void CImWindow_Top::RenderMode(CGameInstance* pGameInstance)
         if (ImGui::RadioButton("All WireFrame", &iMode, 2))
         {
             RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
-            for (auto& pObject : m_GameObjectList)
-                pObject->Set_RasterizerState(RasterizerDesc);
+            for (_uint i = 0; i < LAYER_END; ++i)
+            {
+                for (auto& pObject : m_GameObjectList[i])
+                    pObject->Set_RasterizerState(RasterizerDesc);
+            }
 
             m_isPickSolidMode = false;
             m_isSolidMode = false;
@@ -149,7 +159,7 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 return;
             }
 
-            auto iter = m_GameObjectList.begin();
+            auto iter = m_GameObjectList[LAYER_STATIC].begin();
 
             /* 1. Terrain을 저장한다. */
             _uint iXCount = TOOL->m_pBaseWindow->m_pToolHeightMap->m_iXCount;
@@ -176,10 +186,10 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
             ++iter;
 
             /* 2. 전체 3D 게임오브젝트들을 저장한다. */
-            _uint iNumObjects = m_GameObjectList.size() - 2;
+            _uint iNumObjects = m_GameObjectList[LAYER_STATIC].size() - 2;
             WriteFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
 
-            for (_uint i = 1; i < m_GameObjectList.size() - 1; ++i, ++iter)
+            for (_uint i = 1; i < m_GameObjectList[LAYER_STATIC].size() - 1; ++i, ++iter)
             {
                 /* Write szObjectTag */
                 _uint iTaglength = lstrlen((*iter)->Get_Model()->Get_Tag().c_str()) + 1;
@@ -196,13 +206,33 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
             }
 
-            /* 3. Player 저장 */
+            iter = m_GameObjectList[LAYER_MONSTER].begin();
+
+            /* 3. Monster 저장 */
+            iNumObjects = m_GameObjectList[LAYER_MONSTER].size();
+            WriteFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
+
+            for (_uint i = 0; i < iNumObjects; ++i, ++iter)
+            {
+                /* Write szObjectTag */
+                _uint iTaglength = lstrlen((*iter)->Get_Model()->Get_Tag().c_str()) + 1;
+                WriteFile(hFile, &iTaglength, sizeof(_uint), &dwByte, nullptr);
+                WriteFile(hFile, (*iter)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
+
+                /* Write TransformMatrix */
+                WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
+
+                /* Write vAngle */
+                WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
+            }
+
+            /* 4. Player 저장 */
             WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
             WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
 
-            /* 4. 카메라를 저장한다. */
+            /* 5. 카메라를 저장한다. */
 
-            /* 5. UI를 저장한다. */
+            /* 6. UI를 저장한다. */
 
             CloseHandle(hFile);
 
@@ -228,8 +258,11 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
             string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
             // action
 
-            for (auto& pObject : m_GameObjectList)
-                pGameInstance->Remove_GameObject(pObject->Get_Tag());
+            for (_uint i = 0; i < LAYER_END; ++i)
+            {
+                for (auto& pObject : m_GameObjectList[i])
+                    pGameInstance->Remove_GameObject(pObject->Get_Tag());
+            }
 
             FILEDATA FileData;
 
@@ -270,19 +303,22 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
             /* Position Setting */
             dynamic_cast<CVIBuffer_Terrain*>(pObject->Get_Buffer())->Load_Terrain(FileData.iXCount, FileData.iZCount, FileData.pPositions);
 
+            TOOL->m_pBaseWindow->m_pToolHeightMap->m_iXCount = FileData.iXCount;
+            TOOL->m_pBaseWindow->m_pToolHeightMap->m_iZCount = FileData.iZCount;
+
             pObject->Set_Tag(L"Terrain");
 
             TOOL->m_pBaseWindow->m_pToolHeightMap->Set_Terrain(pObject);
 
             TOOL->m_pCurrentObject = pObject;
 
-            /* Load GameObjects */
+            /* Load Static GameObjects */
             _uint idx = { 0 };
             for (auto& Data : FileData.vecModelData)
             {
                 _char szNum[8] = { "" };
                 _char szObjName[256] = { "" };
-                strcpy_s(szObjName, "Test");
+                strcpy_s(szObjName, "Static_Object");
                 _itoa_s(idx, szNum, 10);
                 strcat_s(szObjName, szNum);
 
@@ -308,6 +344,44 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
 
                 /* Components */
                 pObject->Add_Shader(L"Shader_Mesh");
+                pObject->Add_Model(Data.BinaryData.szTag);
+
+                pObject->Set_Tag(pGameInstance->strToWStr(szObjName));
+                ++idx;
+            }
+
+            /* Load Monsters */
+            idx = 0;
+            for (auto& Data : FileData.vecMonsterData)
+            {
+                _char szNum[8] = { "" };
+                _char szObjName[256] = { "" };
+                strcpy_s(szObjName, "Monster");
+                _itoa_s(idx, szNum, 10);
+                strcat_s(szObjName, szNum);
+
+                if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
+                    pGameInstance->strToWStr(szObjName), L"Layer_Monster")))
+                    return;
+
+                WINDOWMGR->Refresh_All_Window();
+
+                pObject = Find_GameObject(pGameInstance->strToWStr(szObjName), LAYER_MONSTER);
+                if (nullptr == pObject)
+                    return;
+
+                pObject->Get_Transform()->Set_Matrix(Data.TransformMatrix);
+                pObject->Get_Transform()->Set_Angle(Data.vAngle);
+
+                /* Rasterizer */
+                RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+                RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+                RasterizerDesc.FrontCounterClockwise = { false };
+
+                pObject->Set_RasterizerState(RasterizerDesc);
+
+                /* Components */
+                pObject->Add_Shader(L"Shader_AnimMesh");
                 pObject->Add_Model(Data.BinaryData.szTag);
 
                 pObject->Set_Tag(pGameInstance->strToWStr(szObjName));

@@ -7,12 +7,21 @@ BEGIN(Engine)
 class CRenderer;
 class CShader;
 class CModel;
+class CNavigation;
+class CCollider;
 END
 
 BEGIN(Client)
 
 class CMonster : public CGameObject3D
 {
+public:
+	typedef struct tagMonsterDesc : public CTransform::TRASNFORMDESC
+	{
+		_float4x4 WorldMatrix;
+		_float3 vAngle;
+	}MONSTERDESC;
+
 private:
 	explicit CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CMonster(const CMonster& rhs);
@@ -29,6 +38,8 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CNavigation* m_pNavigationCom = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

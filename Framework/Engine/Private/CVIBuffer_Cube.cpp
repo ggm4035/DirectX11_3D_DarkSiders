@@ -13,39 +13,39 @@ CVIBuffer_Cube::CVIBuffer_Cube(const CVIBuffer_Cube& rhs)
 HRESULT CVIBuffer_Cube::Initialize_Prototype()
 {
 	m_iVertexBuffers = { 1 };
-	m_iStride = { sizeof(VTXPOSCOL) };
+	m_iStride = { sizeof(VTXCUBE) };
 	m_iNumVertices = { 8 };
 	m_iIndexStride = { sizeof(_ushort) };
 	m_iNumIndices = { 36 };
 	m_eFormat = DXGI_FORMAT_R16_UINT;
 	m_eTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	VTXPOSCOL* pVertices = new VTXPOSCOL[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXPOSCOL) * m_iNumVertices);
+	VTXCUBE* pVertices = new VTXCUBE[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXCUBE) * m_iNumVertices);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
-	pVertices[0].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[0].vTexCoord = pVertices[0].vPosition;
 
 	pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
-	pVertices[1].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[1].vTexCoord = pVertices[1].vPosition;
 
 	pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
-	pVertices[2].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[2].vTexCoord = pVertices[2].vPosition;
 
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
-	pVertices[3].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[3].vTexCoord = pVertices[3].vPosition;
 
 	pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
-	pVertices[4].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[4].vTexCoord = pVertices[4].vPosition;
 
 	pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
-	pVertices[5].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[5].vTexCoord = pVertices[5].vPosition;
 
 	pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
-	pVertices[6].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[6].vTexCoord = pVertices[6].vPosition;
 
 	pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
-	pVertices[7].vColor = _float4(0.f, 1.f, 1.f, 1.f);
+	pVertices[7].vTexCoord = pVertices[7].vPosition;
 
 	_ushort* pIndices = new _ushort[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumIndices);
@@ -124,18 +124,18 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	TriangleDesc.vDot[2] = pVertices[7].vPosition;
 	m_vecTriangle.push_back(TriangleDesc);
 
-	pIndices[24] = 7;
-	pIndices[25] = 6;
-	pIndices[26] = 5;
+	pIndices[24] = 5;
+	pIndices[25] = 4;
+	pIndices[26] = 7;
 
 	TriangleDesc.vDot[0] = pVertices[7].vPosition;
 	TriangleDesc.vDot[1] = pVertices[6].vPosition;
 	TriangleDesc.vDot[2] = pVertices[5].vPosition;
 	m_vecTriangle.push_back(TriangleDesc);
 
-	pIndices[27] = 7;
-	pIndices[28] = 5;
-	pIndices[29] = 4;
+	pIndices[27] = 5;
+	pIndices[28] = 7;
+	pIndices[29] = 6;
 
 	TriangleDesc.vDot[0] = pVertices[7].vPosition;
 	TriangleDesc.vDot[1] = pVertices[5].vPosition;

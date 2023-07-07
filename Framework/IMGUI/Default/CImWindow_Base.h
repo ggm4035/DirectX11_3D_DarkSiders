@@ -25,16 +25,13 @@ private:
     _bool m_isIntoAnimTab = { false };
     _bool m_PreAnimTab = { false };
 
-private: /* For.Animation */
-    class CTool_Animation* m_pToolAnimation = { nullptr };
-
 public:
+    class CTool_Animation* m_pToolAnimation = { nullptr };
     class CTool_HeightMap* m_pToolHeightMap = { nullptr };
+    class CTool_UI* m_pTool_UI = { nullptr };
 
 private:
     void Hierarchy(CGameInstance* pGameInstance);
-    void HeightMap(CGameInstance* pGameInstance);
-    void UI(CGameInstance* pGameInstance);
     void Create_Object(CGameInstance* pGameInstance);
     void Picking_GameObject(CGameInstance* pGameInstance);
 

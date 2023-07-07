@@ -1,7 +1,10 @@
 #include "CVIBuffer_Terrain.h"
 
+#include "CFrustum.h"
+#include "CQuardTree.h"
+
 CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CVIBuffer(pDevice, pContext)
+	: CVIBuffer(pDevice, pContext)
 {
 	ZeroMemory(&m_MappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 }
@@ -10,8 +13,11 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 	: CVIBuffer(rhs)
 	, m_iXCount(rhs.m_iXCount)
 	, m_iZCount(rhs.m_iZCount)
+	, m_pIndices(rhs.m_pIndices)
 	, m_fInterval(rhs.m_fInterval)
+	, m_pQuadTree(rhs.m_pQuadTree)
 {
+	Safe_AddRef(m_pQuadTree);
 }
 
 HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uint& iZCount, const _float& fInterval)
@@ -34,13 +40,16 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 	VTXPOSNORTEX* pVertices = new VTXPOSNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXPOSNORTEX) * m_iNumVertices);
 
+	m_pVerticesPos = new _float3[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(_float3) * m_iNumVertices);
+
 	for (_uint i = 0; i < m_iZCount; ++i)
 	{
 		for (_uint j = 0; j < m_iXCount; ++j)
 		{
 			_uint iIndex = i * m_iXCount + j;
 
-			pVertices[iIndex].vPosition = _float3(j, 0.f, i);
+			m_pVerticesPos[iIndex] = pVertices[iIndex].vPosition = _float3(j, 0.f, i);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexCoord = _float2(j / (m_iXCount - 1.f), i / (m_iZCount - 1.f));
 		}
@@ -48,6 +57,10 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 
 	_ulong* pIndices = new _ulong[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ulong) * m_iNumIndices);
+
+	m_pIndices = new _ulong[m_iNumIndices];
+	ZeroMemory(m_pIndices, sizeof(_ulong) * m_iNumIndices);
+
 	TRIANGLE TriangleDesc;
 	ZeroMemory(&TriangleDesc, sizeof TriangleDesc);
 
@@ -111,10 +124,15 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
 
 	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };
-	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };
 	m_BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
 	m_BufferDesc.StructureByteStride = { m_iStride };
+#if defined(_USE_IMGUI) || defined(_DEBUG)
+	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };
 	m_BufferDesc.CPUAccessFlags = { D3D11_CPU_ACCESS_WRITE };
+#else
+	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
+	m_BufferDesc.CPUAccessFlags = { 0 };
+#endif
 	m_BufferDesc.MiscFlags = { 0 };
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
@@ -127,9 +145,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 
 	m_BufferDesc.ByteWidth = { m_iIndexStride * m_iNumIndices };
 	m_BufferDesc.BindFlags = { D3D11_BIND_INDEX_BUFFER };
-	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
+	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };
 	m_BufferDesc.MiscFlags = { 0 };
-	m_BufferDesc.CPUAccessFlags = { 0 };
+	m_BufferDesc.CPUAccessFlags = { D3D11_CPU_ACCESS_WRITE };
 	m_BufferDesc.StructureByteStride = { 0 };
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
@@ -140,6 +158,16 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _uint& iXCount, const _uin
 
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
+
+	Safe_Release(m_pQuadTree);
+
+	m_pQuadTree = CQuadTree::Create(m_iXCount * m_iZCount - m_iXCount,
+		m_iXCount * m_iZCount - 1,
+		m_iXCount - 1,
+		0);
+
+	if (FAILED(m_pQuadTree->Make_Neighbors()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -194,6 +222,10 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 
 	_ulong* pIndices = new _ulong[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ulong) * m_iNumIndices);
+
+	m_pIndices = new _ulong[m_iNumIndices];
+	ZeroMemory(m_pIndices, sizeof(_ulong) * m_iNumIndices);
+
 	TRIANGLE TriangleDesc;
 	ZeroMemory(&TriangleDesc, sizeof TriangleDesc);
 
@@ -257,10 +289,15 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
 
 	m_BufferDesc.ByteWidth = { m_iStride * m_iNumVertices };
-	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC }; // 최종 맵 제작이 끝나면 default로 변경
+#if defined(_USE_IMGUI) || defined(_DEBUG)
+	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };
+	m_BufferDesc.CPUAccessFlags = { D3D11_CPU_ACCESS_WRITE };
+#else
+	m_BufferDesc.Usage = { D3D11_USAGE_DEFAULT };
+	m_BufferDesc.CPUAccessFlags = { 0 };
+#endif
 	m_BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
 	m_BufferDesc.StructureByteStride = { m_iStride };
-	m_BufferDesc.CPUAccessFlags = { D3D11_CPU_ACCESS_WRITE }; // 이거도 0으로
 	m_BufferDesc.MiscFlags = { 0 };
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
@@ -273,7 +310,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 
 	m_BufferDesc.ByteWidth = { m_iIndexStride * m_iNumIndices };
 	m_BufferDesc.BindFlags = { D3D11_BIND_INDEX_BUFFER };
-	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };// 최종 맵 제작이 끝나면 default로 변경
+	m_BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };
 	m_BufferDesc.MiscFlags = { 0 };
 	m_BufferDesc.CPUAccessFlags = { D3D11_CPU_ACCESS_WRITE };
 	m_BufferDesc.StructureByteStride = { 0 };
@@ -286,6 +323,16 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& wstrHeightMap)
 
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
+
+	Safe_Release(m_pQuadTree);
+
+	m_pQuadTree = CQuadTree::Create(m_iXCount * m_iZCount - m_iXCount,
+		m_iXCount * m_iZCount - 1,
+		m_iXCount - 1,
+		0);
+
+	if (FAILED(m_pQuadTree->Make_Neighbors()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -434,6 +481,31 @@ HRESULT CVIBuffer_Terrain::Load_Terrain()
 	return S_OK;
 }
 
+void CVIBuffer_Terrain::Culling(_fmatrix WorldMatrix)
+{
+	CFrustum* pFrustum = CFrustum::GetInstance();
+	Safe_AddRef(pFrustum);
+
+	pFrustum->Transform_To_LocalSpace(WorldMatrix);
+
+	_uint iNumIndices = { 0 };
+
+	m_pQuadTree->Culling(pFrustum, m_pVerticesPos, m_pIndices, &iNumIndices);
+
+	D3D11_MAPPED_SUBRESOURCE SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	memcpy(SubResource.pData, m_pIndices, sizeof(_ulong) * iNumIndices);
+
+	m_pContext->Unmap(m_pIB, 0);
+
+	m_iNumIndices = iNumIndices;
+
+	Safe_Release(pFrustum);
+}
+
 CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring wstrHeightMap)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
@@ -475,5 +547,10 @@ CVIBuffer_Terrain* CVIBuffer_Terrain::Clone(const _uint& iLevelIndex, CComponent
 
 void CVIBuffer_Terrain::Free()
 {
+	Safe_Release(m_pQuadTree);
+
+	if (false == m_isCloned)
+		Safe_Delete_Array(m_pIndices);
+
 	CVIBuffer::Free();
 }

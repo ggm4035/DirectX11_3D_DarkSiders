@@ -48,12 +48,18 @@ HRESULT CStatic_Object::Initialize(const _uint& iLevelIndex, CComponent* pOwner,
 
 void CStatic_Object::Tick(const _double& TimeDelta)
 {
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
 void CStatic_Object::Late_Tick(const _double& TimeDelta)
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (nullptr != m_pRendererCom &&
+		true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+	Safe_Release(pGameInstance);
 }
 
 HRESULT CStatic_Object::Render()

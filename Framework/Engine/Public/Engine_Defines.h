@@ -24,9 +24,12 @@
 using namespace DirectX;
 
 #include <vector>
+#include <queue>
 #include <list>
 #include <map>
+#include <any>
 #include <unordered_map>
+#include <functional>
 #include <string>
 #include <algorithm>
 #include <atlimage.h>

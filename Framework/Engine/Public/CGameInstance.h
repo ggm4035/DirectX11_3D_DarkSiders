@@ -43,7 +43,7 @@ public: /* For.Object_Manager */
 	HRESULT Add_GameObject(const _uint& iNumLayer, const wstring PrototypeTag, const wstring GameObjectTag, const wstring LayerTag, void* pArg = nullptr);
 
 	/* For. MapEditTool */
-	list<CGameObject*> Get_All_GameObject();
+	list<CGameObject*> Get_GameObject_Layer(const wstring & wstrLayerTag);
 	HRESULT Remove_GameObject(const wstring GameObjectTag);
 
 public: /* For.Component_Manager */
@@ -65,7 +65,9 @@ public: /* For.Input_Manager */
 	_bool	Key_Up(const _ubyte& ubyKey);
 	_bool	Mouse_Down(CInput_Device::MOUSEKEYSTATE eMouseID);
 	_bool	Mouse_Pressing(CInput_Device::MOUSEKEYSTATE eMouseID);
-	_bool	Mouse_Up(CInput_Device::MOUSEKEYSTATE eMouseID);
+	_bool	Mouse_Up(CInput_Device::MOUSEKEYSTATE eMouseID); 
+	_ubyte	Peek_Message();
+	_ubyte	Pop_Message();
 	_long	Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMouseMoveID);
 
 public: /* For.PipeLine */
@@ -97,6 +99,18 @@ public: /* For.Calculator */
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform);
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CModel* pModel, class CTransform* pTransform);
 
+public: /* For.Font_Manager */
+	HRESULT Add_Font(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & wstrFontTag, const wstring & wstrFontFilePath);
+	HRESULT Render_Font(const wstring & wstrFontTag, const wstring & wstrText, const _float2 & vPosition, _fvector vColor = XMVectorSet(0.f, 0.f, 0.f, 1.f), _float fRotation = 0.f, const _float2 & vOrigin = _float2(), _float fScale = 1.f);
+
+public: /* For.Frustum */
+	void Transform_To_LocalSpace(_fmatrix WorldMatrix);
+	_bool isIn_WorldSpace(_fvector vWorldPosition, _float fRange);
+	_bool isIn_LocalSpace(_fvector vLocalPosition, _float fRange);
+
+public: /* For.Collider_Manager */
+
+
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 	_vector Picking_On_Spheres(const POINT & ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
 	vector<pair<_uint, _int>> Pick_Spheres(const POINT & ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
@@ -117,6 +131,9 @@ private:
 	class CFileInfo* m_pFileInfo = { nullptr };
 	class CLight_Manager* m_pLight_Manager = { nullptr };
 	class CCalculator* m_pCalculator = { nullptr };
+	class CFont_Manager* m_pFont_Manager = { nullptr };
+	class CFrustum* m_pFrustum = { nullptr };
+	class CCollider_Manager* m_pCollider_Manager = { nullptr };
 	
 public:
 	static void Release_Engine();

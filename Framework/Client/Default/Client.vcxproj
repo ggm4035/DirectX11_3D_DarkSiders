@@ -104,6 +104,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../../Reference/Headers/;../Public/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,6 +146,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../../Reference/Headers/;../Public/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,6 +167,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\CAttackAction.h" />
+    <ClInclude Include="..\Public\CJumpAction.h" />
+    <ClInclude Include="..\Public\CMoveAction.h" />
+    <ClInclude Include="..\Public\CPlayerAction.h" />
+    <ClInclude Include="..\Public\CRun.h" />
+    <ClInclude Include="..\Public\CSky.h" />
     <ClInclude Include="..\Public\CStatic_Object.h" />
     <ClInclude Include="..\Public\CUI_Rect.h" />
     <ClInclude Include="..\Public\CCamera_Free.h" />
@@ -184,6 +192,12 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\CAttackAction.cpp" />
+    <ClCompile Include="..\Private\CJumpAction.cpp" />
+    <ClCompile Include="..\Private\CMoveAction.cpp" />
+    <ClCompile Include="..\Private\CPlayerAction.cpp" />
+    <ClCompile Include="..\Private\CRun.cpp" />
+    <ClCompile Include="..\Private\CSky.cpp" />
     <ClCompile Include="..\Private\CStatic_Object.cpp" />
     <ClCompile Include="..\Private\CUI_Rect.cpp" />
     <ClCompile Include="..\Private\CCamera_Free.cpp" />
@@ -217,7 +231,14 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCol.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

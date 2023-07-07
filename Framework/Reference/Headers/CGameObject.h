@@ -18,12 +18,13 @@ public:
 	virtual void Late_Tick(const _double & TimeDelta);
 	virtual HRESULT Render() = 0;
 
+
 protected:
 	unordered_map<wstring, CGameObject*> m_Parts;
 
 protected:
-	HRESULT Add_Parts(const _uint & iLevelIndex, const wstring & PrototypeTag, const wstring & ObjectTag,
-	CComponent * pOwner, void* pArg);
+	HRESULT Add_Parts(const _uint & iLevelIndex, const wstring & PrototypeTag, 
+		const wstring & ObjectTag, CComponent * pOwner, void* pArg);
 
 public:
 	virtual CGameObject* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;

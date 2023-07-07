@@ -8,6 +8,12 @@ class ENGINE_DLL CCollider final : public CComponent
 {
 public:
 	enum TYPE { TYPE_SPHERE, TYPE_AABB, TYPE_OBB, TYPE_END };
+	enum STATE { STATE_NONE, STATE_ENTER, STATE_STAY, STATE_END };
+
+public:
+	STATE Get_Current_State() const {
+		return m_eCurrentState;
+	}
 
 private:
 	explicit CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -17,13 +23,23 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, class CBounding* pBounding, void* pArg);
-
-public:
 	void Tick(_fmatrix WorldMatrix);
 	HRESULT Render();
 
+public:
+	_bool Intersect(const CCollider* pCollider);
+	void On_Collision();
+	void Push_Collision_Message(CCollider* pMessage) {
+		m_Qmessage.push(pMessage);
+	}
+
 private:
 	CBounding* m_pBounding = { nullptr };
+
+	TYPE m_eColliderType = { TYPE_END };
+	STATE m_eCurrentState = { STATE_END };
+
+	queue<CCollider*> m_Qmessage;
 
 public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType);

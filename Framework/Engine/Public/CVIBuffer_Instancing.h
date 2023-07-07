@@ -20,15 +20,19 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype(const INSTANCEDESC* pInstanceDesc);
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	virtual void Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
+
+public:
+	HRESULT Begin_Instance(OUT VTXINSTANCE** ppSubResourceData);
+	void End_Instance();
 
 protected:
 	ID3D11Buffer* m_pVBInstance = { nullptr };
 	_uint m_iInstanceStride = { 0 };
 	_uint m_iIndexCountPerInstance = { 0 };
 
-	INSTANCEDESC m_InstanceDesc = { 0 };
+protected: /* INSTANCE DESC */
+	_uint m_iNumInstance = { 0 };
 
 public:
 	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;

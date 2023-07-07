@@ -13,7 +13,7 @@ public:
 	}SPHEREDESC;
 
 public:
-	const BoundingSphere* Get_BoundingSphere() const {
+	BoundingSphere* Get_BoundingSphere() const {
 		return m_pSphere;
 	}
 	void Set_Position(const _float3& vPosition) {
@@ -30,7 +30,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(_fmatrix WorldMatrix) override;
 	virtual HRESULT Render() override;
-	virtual _bool Intersect(CCollider::TYPE eType, const CBounding* pBounding);
+	virtual _bool Intersect(CCollider::TYPE eType, CBounding* pBounding);
 
 private:
 	BoundingSphere* m_pSphere_Original = { nullptr };

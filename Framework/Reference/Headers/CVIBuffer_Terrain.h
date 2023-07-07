@@ -16,13 +16,19 @@ public:
 	virtual HRESULT Initialize_Prototype(const wstring& wstrFilePath);
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) override;
 	virtual HRESULT Render() override;
+
+public:
 	HRESULT Load_Terrain(const _uint iXCount, const _uint iZCount, const _float3 * pPositions);
 	HRESULT Load_Terrain();
+	void Culling(_fmatrix WorldMatrix);
 
 private:
 	_uint m_iXCount = { 0 };
 	_uint m_iZCount = { 0 };
 	_float m_fInterval = { 0.f };
+
+	_ulong* m_pIndices = { nullptr };
+	class CQuadTree* m_pQuadTree = { nullptr };
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring wstrHeightMap);

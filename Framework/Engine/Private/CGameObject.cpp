@@ -8,7 +8,7 @@ CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CGameObject::CGameObject(const CGameObject& rhs)
-	:CComposite(rhs)
+	: CComposite(rhs)
 {
 }
 
@@ -32,7 +32,7 @@ HRESULT CGameObject::Add_Parts(const _uint& iLevelIndex, const wstring& Prototyp
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	auto& iter = m_Parts.find(ObjectTag);
+	auto iter = m_Parts.find(ObjectTag);
 	if (iter != m_Parts.end())
 		return E_FAIL;
 

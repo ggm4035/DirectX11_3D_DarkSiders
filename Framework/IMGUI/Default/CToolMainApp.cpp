@@ -180,7 +180,7 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
 
     /* VIBuffer Component */
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain",
-        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 129, 257, 1.f))))
+        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 257, 257, 1.f))))
         return E_FAIL;
 
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain_Height",
@@ -247,17 +247,23 @@ HRESULT CToolMainApp::Ready_NonAnimModels()
     PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
 
     /* Model Read 작업 실행*/
-    _uint iIndex = 0;
     for (auto& Path : ModelPaths)
     {
-        pGameInstance->ReadModels(Path, m_FilePaths, m_vecModelDatas);
+        string strFilePath = { "" };
+        MODEL_BINARYDATA Data;
+        ZeroMemory(&Data, sizeof(MODEL_BINARYDATA));
+
+        pGameInstance->ReadModel(Path, strFilePath, Data);
 
         wstring wstrTag = L"";
-        wstrTag = wstrTag + L"Model_" + m_vecModelDatas[iIndex].szTag;
+        wstrTag = wstrTag + L"Model_" + Data.szTag;
 
         if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrTag.c_str(),
-            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, m_vecModelDatas[iIndex++], PivotMatrix))))
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, Data, PivotMatrix))))
             return E_FAIL;
+
+        m_FilePaths.push_back(strFilePath);
+        m_vecModelDatas.push_back(Data);
     }
     TOOL->m_pModelDatas = &m_vecModelDatas;
 

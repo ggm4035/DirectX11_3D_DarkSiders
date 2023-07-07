@@ -6,6 +6,7 @@
 #include "CStatic_Object.h"
 #include "CTerrain.h"
 #include "CMonster.h"
+#include "CSky.h"
 #include "CCamera_Free.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -115,6 +116,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain%d.png", 2))))
 		return E_FAIL;
 
+	/* For. Texture_SkyBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SkyBox",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/SkyBox/Sky_0.dds"))))
+		return E_FAIL;
+
 	m_szLoading = TEXT("모델 로딩 중.");
 
 	FILEDATA FileData;
@@ -144,6 +150,21 @@ HRESULT CLoader::Load_Level_GamePlay()
 				return E_FAIL;
 		}
 	}
+
+	/* For. Monster Models  */
+	string FilePath;
+	MODEL_BINARYDATA Data;
+
+	/* Goblin Model */
+	m_pGameInstance->ReadModel("../../Goblin.dat", FilePath, Data);
+
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+
+	Safe_Delete_BinaryData(Data);
 
 	m_szLoading = TEXT("셰이더 로딩 중.");
 
@@ -177,8 +198,20 @@ HRESULT CLoader::Load_Level_GamePlay()
 				return E_FAIL;
 		}
 	}*/
+
+	/* For. SkyBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"SkyBox",
+		CSky::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Static Objects */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Static_Object",
 		CStatic_Object::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Monster_Goblin */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Goblin",
+		CMonster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Terrain */

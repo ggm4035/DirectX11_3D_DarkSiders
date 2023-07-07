@@ -41,6 +41,7 @@ private:
 
 private:
     void Show_Animation_KeyFrame(CGameInstance* pGameInstance);
+    void Demo();
 
 public:
     virtual void Free() override;

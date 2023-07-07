@@ -47,12 +47,13 @@ private: /* For. Navigation Map */
     vector<TRIANGLE> m_vecPoints; /* ÀúÀå¿ë */
 
 public:
-    _int m_iXCount = { 129 };
+    _int m_iXCount = { 257 };
     _int m_iZCount = { 257 };
     _float m_fInterval = { 1.f };
 
 private:
     HRESULT Bind_Shader_Resources();
+    void Setting_Terrain(CGameInstance* pGameInstance);
     void Control_Height(CGameInstance* pGameInstance);
     void Draw_Filter(CGameInstance* pGameInstance);
     void Make_Navigation(CGameInstance* pGameInstance);

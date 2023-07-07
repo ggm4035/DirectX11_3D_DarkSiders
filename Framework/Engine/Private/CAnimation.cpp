@@ -7,49 +7,44 @@ CAnimation::CAnimation()
 }
 
 CAnimation::CAnimation(const CAnimation& rhs)
-	: m_Duration(rhs.m_Duration)
+	: m_isLoop(rhs.m_isLoop)
+	, m_strName(rhs.m_strName)
+	, m_Duration(rhs.m_Duration)
 	, m_TickPerSec(rhs.m_TickPerSec)
-	, m_isLoop(rhs.m_isLoop)
-	, m_iNumChannels(rhs.m_iNumChannels)
 	, m_vecChannels(rhs.m_vecChannels)
-	, m_vecChannelCurrentKeyFrames(rhs.m_vecChannelCurrentKeyFrames)
+	, m_vecTimeRange(rhs.m_vecTimeRange)
+	, m_iNumChannels(rhs.m_iNumChannels)
 	, m_iRootBoneIndex(rhs.m_iRootBoneIndex)
+	, m_isFollowAnimation(rhs.m_isFollowAnimation)
+	, m_vecChannelCurrentKeyFrames(rhs.m_vecChannelCurrentKeyFrames)
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 	, m_iMaxNumFrames(rhs.m_iMaxNumFrames)
-	, m_iMaxNumRootFrames(rhs.m_iMaxNumRootFrames)
 	, m_iMaxFramesIndex(rhs.m_iMaxFramesIndex)
+	, m_iMaxNumRootFrames(rhs.m_iMaxNumRootFrames)
 #endif
 {
-	strcpy_s(m_szName, rhs.m_szName);
-
 	for (auto& Channel : m_vecChannels)
 		Safe_AddRef(Channel);
-}
-
-void CAnimation::Reset_Animation()
-{
-	m_isLerped = true;
-	m_isFinished = false;
-
-	m_TimeAcc = 0.0;
-	for (auto& iIndex : m_vecChannelCurrentKeyFrames)
-		iIndex = 0;
 }
 
 void CAnimation::Bind_LerpAnimation(CAnimation* pLerpAnimation)
 {
 	m_TimeAcc = 0.0;
 	m_pLerpAnimation = pLerpAnimation;
-
+	m_isFinished = false;
 	m_isLerped = false;
 }
 
 HRESULT CAnimation::Initialize(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones)
 {
-	strcpy_s(m_szName, AnimationData.szName);
+	m_isLoop = AnimationData.bIsLoop;
+	m_strName = AnimationData.szName;
 	m_Duration = AnimationData.Duration;
 	m_TickPerSec = AnimationData.TickPerSec;
-	m_isLoop = AnimationData.bIsLoop;
+	m_isFollowAnimation = AnimationData.bIsFollowAnimation;
+
+	if (FAILED(Ready_TimeRanges(AnimationData)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Channels(AnimationData, Bones)))
 		return E_FAIL;
@@ -59,6 +54,7 @@ HRESULT CAnimation::Initialize(const ANIMATIONDATA& AnimationData, const CModel:
 
 void CAnimation::Invalidate_TransformationMatrix(CModel::BONES& Bones, const _double& TimeDelta)
 {
+	m_isAbleChange = false;
 	/* 시간 값에 따른 프레임의 위치를 파악해서 현재프레임과 다음프레임 사이를
 	선형보간하는 형태로 진행한다. */
 	if (true == m_isPause)
@@ -96,48 +92,36 @@ void CAnimation::Invalidate_TransformationMatrix(CModel::BONES& Bones, const _do
 	}
 }
 
-void CAnimation::Invalidate_NotMoveTransformationMatrix(CModel::BONES& Bones, const _double& TimeDelta)
+void CAnimation::Reset_Animation()
 {
-	if (true == m_isPause)
-		return;
+	m_isLerped = true;
+	m_isFinished = false;
 
-	/* 일단 선형보간은 진행 */
-	if (false == m_isLerped)
+	m_TimeAcc = 0.0;
+	for (auto& iIndex : m_vecChannelCurrentKeyFrames)
+		iIndex = 0;
+}
+
+HRESULT CAnimation::Ready_TimeRanges(const ANIMATIONDATA& AnimationData)
+{
+	for (_uint i = 0; i < AnimationData.iNumRanges; ++i)
 	{
-		if (false == Lerp_Animation(Bones, TimeDelta))
-			return;
+		TIMERANGE TimeRange;
+		TimeRange.fStartPoint = AnimationData.pTimeRanges[i].fStartPoint;
+		TimeRange.fEndPoint = AnimationData.pTimeRanges[i].fEndPoint;
+
+		for (_uint j = 0; j < OBSERVERTYPE::TYPE_END; ++j)
+		{
+			TimeRange.arrTypes[j] = OBSERVERTYPE::TYPE_END;
+
+			if (OBSERVERTYPE(j) == AnimationData.pTimeRanges[i].arrTypes[j])
+				TimeRange.arrTypes[j] = OBSERVERTYPE(j);
+		}
+
+		m_vecTimeRange.push_back(TimeRange);
 	}
 
-	if (false == m_isBlock)
-	{
-		m_vecChannelBlockKeyFrames = m_vecChannelCurrentKeyFrames;
-		m_isBlock = true;
-	}
-
-	m_TimeAcc += m_TickPerSec * TimeDelta;
-
-	if (m_TimeAcc >= m_Duration)
-	{
-		if (true == m_isLoop)
-			m_TimeAcc = 0.0;
-		else
-			m_isFinished = true;
-	}
-
-	/* TransformationMatrix 를 선형보간 하긴 해야하는데
-	m_isBlock이 false였다가 true가 된 순간의 키프레임 인덱스를 알아야 그 인덱스의
-	Translation을 이용해서 애니메이션을 멈추게 할 수 있을듯 */
-	_uint iChannelIndex = { 0 };
-	for (auto& pChannel : m_vecChannels)
-	{
-		if (nullptr == pChannel)
-			return;
-
-		pChannel->Invalidate_NotMoveTransformationMatrix(Bones, m_TimeAcc,
-			&m_vecChannelCurrentKeyFrames[iChannelIndex],
-			m_vecChannelBlockKeyFrames[iChannelIndex]);
-		++iChannelIndex;
-	}
+	return S_OK;
 }
 
 HRESULT CAnimation::Ready_Channels(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones)

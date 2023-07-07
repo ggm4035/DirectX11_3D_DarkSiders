@@ -75,20 +75,20 @@ void CMainCamera::KeyInput(const _double& TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (pGameInstance->Key_Pressing(DIK_W))
-		m_pTransformCom->Go_Straight(TimeDelta);
+    if (pGameInstance->Key_Pressing(DIK_W))
+        m_pTransformCom->Cam_Straight(TimeDelta);
 
-	if (pGameInstance->Key_Pressing(DIK_S))
-		m_pTransformCom->Go_Backward(TimeDelta);
+    if (pGameInstance->Key_Pressing(DIK_S))
+        m_pTransformCom->Cam_Backward(TimeDelta);
 
-	if (pGameInstance->Key_Pressing(DIK_D))
-		m_pTransformCom->Go_Right(TimeDelta);
+    if (pGameInstance->Key_Pressing(DIK_A))
+        m_pTransformCom->Cam_Left(TimeDelta);
 
-	if (pGameInstance->Key_Pressing(DIK_A))
-		m_pTransformCom->Go_Left(TimeDelta);
+    if (pGameInstance->Key_Pressing(DIK_D))
+        m_pTransformCom->Cam_Right(TimeDelta);
 
-	if (pGameInstance->Key_Pressing(DIK_SPACE))
-		m_pTransformCom->Go_Up(TimeDelta);
+    if (pGameInstance->Key_Pressing(DIK_SPACE))
+        m_pTransformCom->Cam_Up(TimeDelta);
 
     if (ImGui::IsMousePosValid() && pGameInstance->Mouse_Pressing(CInput_Device::DIM_RB))
     {

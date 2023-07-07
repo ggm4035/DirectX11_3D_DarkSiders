@@ -5,6 +5,7 @@
 
 #include "CPlayer.h"
 #include "CTerrain.h"
+#include "CMonster.h"
 #include "CStatic_Object.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -102,6 +103,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	m_PlayerWorldMatrix = FileData.WorldMatrix;
 	m_vPlayerAngle = FileData.vAngle;
 
+	m_vecMonsterDatas = FileData.vecMonsterData;
+
+	if (pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"SkyBox",
+		L"SkyBox", pLayerTag))
+		return E_FAIL;
+
 	Safe_Release(pGameInstance);
 
 	for (auto& Data : FileData.vecModelData)
@@ -148,17 +155,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 {
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
-
-	/*for (size_t i = 0; i < 20; i++)
+	
+	for (auto& Data : m_vecMonsterDatas)
 	{
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Prototype_GameObject_Monster",
-			L"Monster", pLayerTag)))
-			return E_FAIL;
-	}*/
+		CMonster::MONSTERDESC MonsterDesc;
+		MonsterDesc.WorldMatrix = Data.TransformMatrix;
+		MonsterDesc.vAngle = Data.vAngle;
+		MonsterDesc.SpeedPerSec = 3.f;
+		MonsterDesc.RotationPerSec = XMConvertToRadians(90.f);
 
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Goblin",
+			L"Monster_Goblin", pLayerTag, &MonsterDesc)))
+			return E_FAIL;
+	}
 	Safe_Release(pGameInstance);
 
 	return S_OK;

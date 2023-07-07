@@ -1,5 +1,8 @@
 #include "CBounding_AABB.h"
 
+#include "CBounding_OBB.h"
+#include "CBounding_Sphere.h"
+
 CBounding_AABB::CBounding_AABB(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBounding(pDevice, pContext)
 {
@@ -55,9 +58,26 @@ HRESULT CBounding_AABB::Render()
 	return S_OK;
 }
 
-_bool CBounding_AABB::Intersect(CCollider::TYPE eType, const CBounding* pBounding)
+_bool CBounding_AABB::Intersect(CCollider::TYPE eType, CBounding* pBounding)
 {
-	return _bool();
+	m_isColl = { false };
+
+	switch (eType)
+	{
+	case Engine::CCollider::TYPE_SPHERE:
+		m_isColl = m_pAABB->Intersects(*dynamic_cast<CBounding_Sphere*>(pBounding)->Get_BoundingSphere());
+		break;
+
+	case Engine::CCollider::TYPE_AABB:
+		m_isColl = m_pAABB->Intersects(*dynamic_cast<CBounding_AABB*>(pBounding)->Get_BoundingAABB());
+		break;
+
+	case Engine::CCollider::TYPE_OBB:
+		m_isColl = m_pAABB->Intersects(*dynamic_cast<CBounding_OBB*>(pBounding)->Get_BoundingOBB());
+		break;
+	}
+
+	return m_isColl;
 }
 
 _matrix CBounding_AABB::Remove_Rotation(_fmatrix TransformMatrix)

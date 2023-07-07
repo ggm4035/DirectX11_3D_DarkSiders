@@ -172,6 +172,26 @@ void CFileInfo::WriteModels(const string& strFilePath, const list<string>& FileP
 			/* Write bIsLoop */
 			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
+			/* Write bIsFollowAnimation */
+			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+
+			/* Write iNumRanges */
+			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+
+			/*===== TIMERANGE DATAS ======*/
+			for (_uint iRangeIndex = 0; iRangeIndex < vecData[iDataIndex].pAnimations[iAnimIndex].iNumRanges; ++iRangeIndex)
+			{
+				/* Write pTypes */
+				WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].arrTypes, 
+					sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+
+				/* Write fStartPoint */
+				WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
+
+				/* Write fEndPoint */
+				WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+			}
+
 			/*===== CHANNEL DATAS ======*/
 			for (_uint iChannelIndex = 0; iChannelIndex < vecData[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
 			{
@@ -338,7 +358,7 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 		for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
 		{
 			/* Read szName */
-			_uint iNameLength = strlen(pAnimation[iAnimIndex].szName) + 1;
+			_uint iNameLength = { 0 };
 			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
 			ReadFile(hFile, pAnimation[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
@@ -353,6 +373,34 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 
 			/* Read bIsLoop */
 			ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
+			/* Read bIsFollowAnimation */
+			ReadFile(hFile, &pAnimation[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+
+			/* Read iNumRanges */
+			ReadFile(hFile, &pAnimation[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+
+			/*===== TIMERANGE DATAS ======*/
+			TIMERANGE* pTimeRange = { nullptr };
+			if (0 < pAnimation[iAnimIndex].iNumRanges)
+			{
+				pTimeRange = new TIMERANGE[pAnimation[iAnimIndex].iNumRanges];
+				ZeroMemory(pTimeRange, sizeof(TIMERANGE) * pAnimation[iAnimIndex].iNumRanges);
+			}
+			for (_uint iRangeIndex = 0; iRangeIndex < pAnimation[iAnimIndex].iNumRanges; ++iRangeIndex)
+			{
+				for (auto& Type : pTimeRange[iRangeIndex].arrTypes)
+					Type = OBSERVERTYPE::TYPE_END;
+
+				/* Read arrTypes */
+				ReadFile(hFile, pTimeRange[iRangeIndex].arrTypes, sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+
+				/* Read fStartPoint */
+				ReadFile(hFile, &pTimeRange[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
+
+				/* Read fEndPoint */
+				ReadFile(hFile, &pTimeRange[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+			}
 
 			/*========== CHANNEL DATAS ===========*/
 			CHANNELDATA* pChannel = { nullptr };
@@ -383,6 +431,7 @@ void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePath
 				ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
 				pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
 			}
+			pAnimation[iAnimIndex].pTimeRanges = pTimeRange;
 			pAnimation[iAnimIndex].pChannels = pChannel;
 		}
 
@@ -555,7 +604,7 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 	for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
 	{
 		/* Read szName */
-		_uint iNameLength = strlen(pAnimation[iAnimIndex].szName) + 1;
+		_uint iNameLength = { 0 };
 		ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
 		ReadFile(hFile, pAnimation[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
@@ -570,6 +619,34 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 
 		/* Read bIsLoop */
 		ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
+		/* Read bIsFollowAnimation */
+		ReadFile(hFile, &pAnimation[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+
+		/* Read iNumRanges */
+		ReadFile(hFile, &pAnimation[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+
+		/*===== TIMERANGE DATAS ======*/
+		TIMERANGE* pTimeRange = { nullptr };
+		if (0 < pAnimation[iAnimIndex].iNumRanges)
+		{
+			pTimeRange = new TIMERANGE[pAnimation[iAnimIndex].iNumRanges];
+			ZeroMemory(pTimeRange, sizeof(TIMERANGE) * pAnimation[iAnimIndex].iNumRanges);
+		}
+		for (_uint iRangeIndex = 0; iRangeIndex < pAnimation[iAnimIndex].iNumRanges; ++iRangeIndex)
+		{
+			for (auto& Type : pTimeRange[iRangeIndex].arrTypes)
+				Type = OBSERVERTYPE::TYPE_END;
+
+			/* Read arrTypes */
+			ReadFile(hFile, pTimeRange[iRangeIndex].arrTypes, sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+
+			/* Read fStartPoint */
+			ReadFile(hFile, &pTimeRange[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
+
+			/* Read fEndPoint */
+			ReadFile(hFile, &pTimeRange[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+		}
 
 		/*========== CHANNEL DATAS ===========*/
 		CHANNELDATA* pChannel = { nullptr };
@@ -600,6 +677,7 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 			ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
 			pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
 		}
+		pAnimation[iAnimIndex].pTimeRanges = pTimeRange;
 		pAnimation[iAnimIndex].pChannels = pChannel;
 	}
 
@@ -722,7 +800,29 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		OutData.vecModelData.push_back(Data);
 	}
 
-	/* 3. Player 불러오기*/
+	/* 3. Monster 불러오기 */
+	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
+
+	for (_uint i = 0; i < iNumObjects; ++i)
+	{
+		MODELDATA Data;
+		ZeroMemory(&Data, sizeof(MODELDATA));
+
+		/* Read szTag */
+		_uint iTagLength = { 0 };
+		ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, Data.szObjectTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+
+		/* Read TransformMatrix */
+		ReadFile(hFile, &Data.TransformMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		/* Read vAngle */
+		ReadFile(hFile, &Data.vAngle, sizeof(_float3), &dwByte, nullptr);
+
+		OutData.vecMonsterData.push_back(Data);
+	}
+
+	/* 4. Player 불러오기*/
 	ReadFile(hFile, &OutData.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
 	ReadFile(hFile, &OutData.vAngle, sizeof(_float3), &dwByte, nullptr);
 
@@ -830,6 +930,34 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 		/* Read bIsLoop */
 		ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
+		/* Read bIsFollowAnimation */
+		ReadFile(hFile, &pAnimation[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+
+		/* Read iNumRanges */
+		ReadFile(hFile, &pAnimation[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+
+		/*===== TIMERANGE DATAS ======*/
+		TIMERANGE* pTimeRange = { nullptr };
+		if (0 < pAnimation[iAnimIndex].iNumRanges)
+		{
+			pTimeRange = new TIMERANGE[pAnimation[iAnimIndex].iNumRanges];
+			ZeroMemory(pTimeRange, sizeof(TIMERANGE) * pAnimation[iAnimIndex].iNumRanges);
+		}
+		for (_uint iRangeIndex = 0; iRangeIndex < pAnimation[iAnimIndex].iNumRanges; ++iRangeIndex)
+		{
+			for (auto& Type : pTimeRange[iRangeIndex].arrTypes)
+				Type = OBSERVERTYPE::TYPE_END;
+
+			/* Read arrTypes */
+			ReadFile(hFile, pTimeRange[iRangeIndex].arrTypes, sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+
+			/* Read fStartPoint */
+			ReadFile(hFile, &pTimeRange[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
+
+			/* Read fEndPoint */
+			ReadFile(hFile, &pTimeRange[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+		}
+
 		/*========== CHANNEL DATAS ===========*/
 		CHANNELDATA* pChannel = { nullptr };
 		if (0 < pAnimation[iAnimIndex].iNumChannels)
@@ -859,6 +987,7 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 			ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
 			pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
 		}
+		pAnimation[iAnimIndex].pTimeRanges = pTimeRange;
 		pAnimation[iAnimIndex].pChannels = pChannel;
 	}
 
@@ -928,12 +1057,16 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 
 wstring CFileInfo::strToWStr(const string& str)
 {
-	wstring_convert<codecvt_utf8<wchar_t>, wchar_t> converter;
-	return converter.from_bytes(str);
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+	std::wstring wstrTo(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+	return wstrTo;
 }
 
 string CFileInfo::wstrToStr(const wstring& wstr)
 {
-	wstring_convert<codecvt_utf8<wchar_t>, wchar_t> converter;
-	return converter.to_bytes(wstr);
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	std::string strTo(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	return strTo;
 }

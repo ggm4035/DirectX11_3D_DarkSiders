@@ -103,38 +103,26 @@ void CObject_Manager::Clear_LevelResources(const _uint& iLevelIndex)
 	m_pLayers[iLevelIndex].clear();
 }
 
-list<CGameObject*> CObject_Manager::Get_All_GameObject()
+list<CGameObject*> CObject_Manager::Get_GameObject_Layer(const wstring& wstrLayerTag)
 {
-	list<CGameObject*> retList;
+	CLayer* pLayer = Find_Layer(0, wstrLayerTag);
+	if (nullptr == pLayer)
+		return list<CGameObject*>();
 
-	for (_uint i = 0; i < m_iNumLevels; ++i)
-	{
-		for (auto& Pair : m_pLayers[i])
-		{
-			for (auto& GameObject : Pair.second->m_pGameObjects)
-			{
-				retList.push_back(GameObject);
-			}
-		}
-	}
-
-	return retList;
+	return pLayer->m_pGameObjects;
 }
 
 HRESULT CObject_Manager::Remove_GameObject(const wstring& GameObjectTag)
 {
-	for (_uint i = 0; i < m_iNumLevels; ++i)
+	for (auto& Pair : m_pLayers[0])
 	{
-		for (auto& Pair : m_pLayers[i])
+		for (auto& iter = Pair.second->m_pGameObjects.begin(); iter != Pair.second->m_pGameObjects.end(); ++iter)
 		{
-			for (auto& iter = Pair.second->m_pGameObjects.begin(); iter != Pair.second->m_pGameObjects.end(); ++iter)
+			if (GameObjectTag == (*iter)->Get_Tag())
 			{
-				if (GameObjectTag == (*iter)->Get_Tag())
-				{
-					Safe_Release(*iter);
-					Pair.second->m_pGameObjects.erase(iter);
-					return S_OK;
-				}
+				Safe_Release(*iter);
+				Pair.second->m_pGameObjects.erase(iter);
+				return S_OK;
 			}
 		}
 	}

@@ -58,21 +58,6 @@
     <Filter Include="01.Utility\02. Component\Components\07. Collider">
       <UniqueIdentifier>{b1164c78-e433-4029-8ad5-fb5ee65d2982}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\02. Component\Components\07. Collider\Bounding">
-      <UniqueIdentifier>{c8d86812-63f4-4cb2-9937-ee7934d29569}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02. Component\Components\07. Collider\Bounding\Sphere">
-      <UniqueIdentifier>{6ec978ba-931e-46d5-b617-41c43f22ba63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02. Component\Components\07. Collider\Bounding\AABB">
-      <UniqueIdentifier>{0bc971ae-6e75-4061-ad2e-307bb69d2da5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02. Component\Components\07. Collider\Bounding\OBB">
-      <UniqueIdentifier>{ee80a25a-faf2-43bf-94dd-bbc778614262}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02. Component\Components\07. Collider\DebugDraw">
-      <UniqueIdentifier>{25097a61-69f0-44a8-a121-44c81ec5ab75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\02. Component\Components\06. Navigation">
       <UniqueIdentifier>{5fc13838-9cf5-4eb0-ad01-20f74c6f3b8b}</UniqueIdentifier>
     </Filter>
@@ -168,6 +153,60 @@
     </Filter>
     <Filter Include="01.Utility\02. Component\Components\01. VIBuffer\Instancing\Rect">
       <UniqueIdentifier>{c2ef4fa1-8e7b-4f14-8df1-027dfd9362b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\07. Collider\99. Manager">
+      <UniqueIdentifier>{86796840-599b-44c7-8864-0093309b541b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\07. Collider\98. DebugDraw">
+      <UniqueIdentifier>{25097a61-69f0-44a8-a121-44c81ec5ab75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\08. Behavior">
+      <UniqueIdentifier>{47c1eca5-3e98-44f4-962b-15f668228a3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\08. Behavior\00. Root">
+      <UniqueIdentifier>{1cc097cf-b846-4b62-bc9c-7a5e7305e6b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\08. Behavior\01. Selector">
+      <UniqueIdentifier>{17e0f7f1-1d36-40fb-b361-788f980b7528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\08. Behavior\02. Sequence">
+      <UniqueIdentifier>{d4a00130-0583-4cac-82cf-8db34093543e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\08. Behavior\99. BlackBoard">
+      <UniqueIdentifier>{1c7c3a29-1095-4923-9ddc-597f3a5f1583}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\09. Observer">
+      <UniqueIdentifier>{89d7a377-87df-464d-9e0e-6cd15df84425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\09. Observer\Animation">
+      <UniqueIdentifier>{37eb91ef-9bf1-4803-8b4b-bdba6a8204dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. Font">
+      <UniqueIdentifier>{5aa5a830-09c5-40ce-b121-8516568cd442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. Font\Manager">
+      <UniqueIdentifier>{8e672bfc-6d86-4f48-8e2c-6cf181c6c323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\01. VIBuffer\Terrain\QuardTree">
+      <UniqueIdentifier>{7b4a6dbb-b96d-44eb-bb53-963ceefb80f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\06. Frustum">
+      <UniqueIdentifier>{f09f16bb-03ca-42ca-94ef-d7f91126600b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\07. Collider\00. Bounding">
+      <UniqueIdentifier>{c8d86812-63f4-4cb2-9937-ee7934d29569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\07. Collider\00. Bounding\Sphere">
+      <UniqueIdentifier>{6ec978ba-931e-46d5-b617-41c43f22ba63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\07. Collider\00. Bounding\AABB">
+      <UniqueIdentifier>{0bc971ae-6e75-4061-ad2e-307bb69d2da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\07. Collider\00. Bounding\OBB">
+      <UniqueIdentifier>{ee80a25a-faf2-43bf-94dd-bbc778614262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\07. Collider\01. Collision">
+      <UniqueIdentifier>{0dd309b9-0654-45d4-8bbe-6060d66eeee9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -310,19 +349,19 @@
       <Filter>01.Utility\02. Component\Components\07. Collider</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DebugDraw.h">
-      <Filter>01.Utility\02. Component\Components\07. Collider\DebugDraw</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\98. DebugDraw</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CBounding_Sphere.h">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding\Sphere</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding\Sphere</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CBounding_AABB.h">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding\AABB</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding\AABB</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CBounding_OBB.h">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding\OBB</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding\OBB</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CBounding.h">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CParts.h">
       <Filter>01.Utility\02. Component\GameObjects\00. CGameObject3D\Parts</Filter>
@@ -332,6 +371,51 @@
     </ClInclude>
     <ClInclude Include="..\Public\CVIBuffer_Instancing.h">
       <Filter>01.Utility\02. Component\Components\01. VIBuffer\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CInstance_Rect.h">
+      <Filter>01.Utility\02. Component\Components\01. VIBuffer\Instancing\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CInstance_Point.h">
+      <Filter>01.Utility\02. Component\Components\01. VIBuffer\Instancing\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCollider_Manager.h">
+      <Filter>01.Utility\02. Component\Components\07. Collider\99. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBehavior.h">
+      <Filter>01.Utility\02. Component\Components\08. Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSequence.h">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\02. Sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSelector.h">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\01. Selector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRoot.h">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\00. Root</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBlackBoard.h">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\99. BlackBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPublisher_Animation.h">
+      <Filter>01.Utility\02. Component\Components\09. Observer\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CFont.h">
+      <Filter>00. System\04. Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CFont_Manager.h">
+      <Filter>00. System\04. Font\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CQuardTree.h">
+      <Filter>01.Utility\02. Component\Components\01. VIBuffer\Terrain\QuardTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CFrustum.h">
+      <Filter>01.Utility\06. Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Observer_Interfaces.h">
+      <Filter>01.Utility\02. Component\Components\09. Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCollision.h">
+      <Filter>01.Utility\02. Component\Components\07. Collider\01. Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -459,19 +543,19 @@
       <Filter>01.Utility\02. Component\Components\07. Collider</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CBounding.cpp">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DebugDraw.cpp">
-      <Filter>01.Utility\02. Component\Components\07. Collider\DebugDraw</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\98. DebugDraw</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CBounding_Sphere.cpp">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding\Sphere</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding\Sphere</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CBounding_AABB.cpp">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding\AABB</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding\AABB</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CBounding_OBB.cpp">
-      <Filter>01.Utility\02. Component\Components\07. Collider\Bounding\OBB</Filter>
+      <Filter>01.Utility\02. Component\Components\07. Collider\00. Bounding\OBB</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CParts.cpp">
       <Filter>01.Utility\02. Component\GameObjects\00. CGameObject3D\Parts</Filter>
@@ -482,10 +566,56 @@
     <ClCompile Include="..\Private\CVIBuffer_Instancing.cpp">
       <Filter>01.Utility\02. Component\Components\01. VIBuffer\Instancing</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CInstance_Rect.cpp">
+      <Filter>01.Utility\02. Component\Components\01. VIBuffer\Instancing\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CInstance_Point.cpp">
+      <Filter>01.Utility\02. Component\Components\01. VIBuffer\Instancing\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCollider_Manager.cpp">
+      <Filter>01.Utility\02. Component\Components\07. Collider\99. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBehavior.cpp">
+      <Filter>01.Utility\02. Component\Components\08. Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSequence.cpp">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\02. Sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSelector.cpp">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\01. Selector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRoot.cpp">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\00. Root</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBlackBoard.cpp">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\99. BlackBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPublisher_Animation.cpp">
+      <Filter>01.Utility\02. Component\Components\09. Observer\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFont.cpp">
+      <Filter>00. System\04. Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFont_Manager.cpp">
+      <Filter>00. System\04. Font\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CQuardTree.cpp">
+      <Filter>01.Utility\02. Component\Components\01. VIBuffer\Terrain\QuardTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFrustum.cpp">
+      <Filter>01.Utility\06. Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCollision.cpp">
+      <Filter>01.Utility\02. Component\Components\07. Collider\01. Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
       <Filter>98. ShaderFiles</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

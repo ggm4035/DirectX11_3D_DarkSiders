@@ -65,14 +65,12 @@ public:
 
 public:
 	void Animation_Movement(class CModel* pModel, const _double& TimeDelta);
-	void Go_Straight(const _double& TimeDelta);
-	void Go_Backward(const _double& TimeDelta);
-	void Go_Right(const _double& TimeDelta);
-	void Go_Left(const _double& TimeDelta);
-	void Go_Up(const _double& TimeDelta);
-	void Go_Down(const _double& TimeDelta);
+	void Go(_fvector vDirection, const _double& TimeDelta);
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
-
+	_bool Jump(const _float& fForce, const _double& TimeDelta);
+	void Reset_TimeAcc() {
+		m_fTimeAcc = 0.f;
+	}
 	void LookAt(_fvector vTargetPosition);
 	void Rotation(_fvector vAxis, const _float& fRadian);
 	void Rotation(const _float3& rDegrees);
@@ -80,11 +78,26 @@ public:
 
 	void Scaled(const _float3& vScale);
 
+	/* 임시 (카메라 이동 용) */
+	void Cam_Straight(const _double& TimeDelta);
+	void Cam_Backward(const _double& TimeDelta);
+	void Cam_Right(const _double& TimeDelta);
+	void Cam_Left(const _double& TimeDelta);
+	void Cam_Up(const _double& TimeDelta);
+
 private:
 	class CNavigation* m_pNavigation = { nullptr };
 	_float4x4 m_WorldMatrix;
+	_float3 m_vMoveDir; /* Look과 관계없는 객체의 이동방향 */
 	_float3 m_vAngle;
 	TRASNFORMDESC m_TransformDesc;
+
+private: /* For. Jump */
+	_float m_fTimeAcc = { 0.f };
+
+private:
+	void Turn_Axis(_fvector Dir, const _double& TimeDelta);
+	void Move_Stop_Sliding(const _double& TimeDelta);
 
 public:
 	static CTransform* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);

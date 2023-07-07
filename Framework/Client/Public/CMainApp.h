@@ -35,8 +35,14 @@ private:
 	vector<MODEL_BINARYDATA> m_vecModelDatas;
 
 private:
+	_float m_TimeAcc = { 0.f };
+	wstring m_wstrFPS = { L"" };
+	_uint m_iRanderCount = { 0 };
+
+private:
 	HRESULT Ready_Prototype_Component_For_Static();
 	HRESULT Ready_Player();
+	HRESULT Ready_Fonts();
 
 public:
 	static CMainApp* Create();
