@@ -100,6 +100,8 @@ void CGameInstance::Tick_Engine(const _double& TimeDelta)
 
 	m_pFrustum->Tick();
 
+	m_pObject_Manager->AfterFrustumTick(TimeDelta);
+
 	m_pCollider_Manager->Tick();
 
 	m_pObject_Manager->Late_Tick(TimeDelta);
@@ -551,6 +553,14 @@ _bool CGameInstance::isIn_LocalSpace(_fvector vLocalPosition, _float fRange)
 		return false;
 
 	return m_pFrustum->isIn_LocalSpace(vLocalPosition, fRange);
+}
+
+HRESULT CGameInstance::Add_Collider(COLLIDERGROUP eGroupID, CCollider* pCollider)
+{
+	if (nullptr == m_pCollider_Manager)
+		return E_FAIL;
+
+	return m_pCollider_Manager->Add_Collider(eGroupID, pCollider);
 }
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)

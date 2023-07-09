@@ -32,8 +32,14 @@ public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
+	virtual void AfterFrustumTick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
+
+public:
+	virtual void OnCollisionEnter(const _double& TimeDelta) override;
+	virtual void OnCollisionStay(const _double& TimeDelta) override;
+	virtual void OnCollisionExit(const _double& TimeDelta) override;
 
 private:
 	CRenderer* m_pRendererCom = { nullptr };

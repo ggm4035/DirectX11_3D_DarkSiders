@@ -32,12 +32,16 @@ HRESULT CRenderer::Draw_RenderGroup()
 {
 	if (FAILED(Render_Priority()))
 		return E_FAIL;
+
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
+
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;
+
 	if (FAILED(Render_Blend()))
 		return E_FAIL;
+
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
@@ -82,7 +86,7 @@ HRESULT CRenderer::Render_NonLight()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_NONLIGHT].clear();
-
+	
 	return S_OK;
 }
 

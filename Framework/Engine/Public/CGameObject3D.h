@@ -25,6 +25,11 @@ public:
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() { return S_OK; }
 
+public:
+	virtual void OnCollisionEnter(const _double& TimeDelta) {}
+	virtual void OnCollisionStay(const _double& TimeDelta) {}
+	virtual void OnCollisionExit(const _double& TimeDelta) {}
+
 protected:
 	CTransform* m_pTransformCom = { nullptr };
 

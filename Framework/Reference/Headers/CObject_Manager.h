@@ -18,6 +18,7 @@ public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
 	HRESULT Add_GameObject(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, const wstring& LayerTag, void* pArg);
 	class CGameObject* Clone_GameObject(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, class CComponent* pOwner, void* pArg);
 	void Tick(const _double& TimeDelta);
+	void AfterFrustumTick(const _double& TimeDelta);
 	void Late_Tick(const _double& TimeDelta);
 	void Clear_LevelResources(const _uint& iLevelIndex);
 

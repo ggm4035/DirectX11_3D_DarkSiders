@@ -31,7 +31,6 @@ HRESULT CTerrain::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 	TERRAINDESC* pTerrainDesc = reinterpret_cast<TERRAINDESC*>(pArg);
 	wstring wstrTextureTag = pTerrainDesc->wstrTextureTag;
-	_float3* pPositions = pTerrainDesc->pPositions;
 	_uint iXCount = pTerrainDesc->iXCount;
 	_uint iZCount = pTerrainDesc->iZCount;
 
@@ -39,7 +38,7 @@ HRESULT CTerrain::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 		L"Com_Texture_Terrain", (CComponent**)&m_pTextureCom, this)))
 		return E_FAIL;
 
-	m_pBufferCom->Load_Terrain(iXCount, iZCount, pPositions);
+	m_pBufferCom->Load_Terrain(iXCount, iZCount, pTerrainDesc->pPositions);
 
 	return S_OK;
 }

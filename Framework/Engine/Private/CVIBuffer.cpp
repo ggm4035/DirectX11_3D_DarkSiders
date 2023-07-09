@@ -18,7 +18,6 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_iNumIndices(rhs.m_iNumIndices)
 	, m_iNumVertices(rhs.m_iNumVertices)
 	, m_iIndexStride(rhs.m_iIndexStride)
-	, m_pVerticesPos(rhs.m_pVerticesPos)
 	, m_iVertexBuffers(rhs.m_iVertexBuffers)
 	, m_SubResourceData(rhs.m_SubResourceData)
 	, m_MappedSubResource(rhs.m_MappedSubResource)
@@ -102,8 +101,7 @@ void CVIBuffer::Free()
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
 
-	if (false == m_isCloned)
-		Safe_Delete_Array(m_pVerticesPos);
+	Safe_Delete_Array(m_pVerticesPos);
 
 	CComponent::Free();
 }

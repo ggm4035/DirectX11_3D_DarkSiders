@@ -16,6 +16,7 @@ private:
 public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Tick(const _double& TimeDelta);
+	void AfterFrustumTick(const _double& TimeDelta);
 	void Late_Tick(const _double& TimeDelta);
 
 private:

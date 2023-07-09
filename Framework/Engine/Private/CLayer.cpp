@@ -22,6 +22,12 @@ void CLayer::Tick(const _double& TimeDelta)
 		iter->Tick(TimeDelta);
 }
 
+void CLayer::AfterFrustumTick(const _double& TimeDelta)
+{
+	for (auto& iter : m_pGameObjects)
+		iter->AfterFrustumTick(TimeDelta);
+}
+
 void CLayer::Late_Tick(const _double& TimeDelta)
 {
 	for (auto& iter : m_pGameObjects)
@@ -30,8 +36,8 @@ void CLayer::Late_Tick(const _double& TimeDelta)
 
 void CLayer::Free()
 {
-	for (auto& iter : m_pGameObjects)
-		Safe_Release(iter);
+	for (auto& pGameObject : m_pGameObjects)
+		Safe_Release(pGameObject);
 
 	m_pGameObjects.clear();
 }

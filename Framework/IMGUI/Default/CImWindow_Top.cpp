@@ -206,24 +206,24 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
             }
 
-            iter = m_GameObjectList[LAYER_MONSTER].begin();
+            auto iterMonster = m_GameObjectList[LAYER_MONSTER].begin();
 
             /* 3. Monster 저장 */
             iNumObjects = m_GameObjectList[LAYER_MONSTER].size();
             WriteFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
 
-            for (_uint i = 0; i < iNumObjects; ++i, ++iter)
+            for (_uint i = 0; i < iNumObjects; ++i, ++iterMonster)
             {
                 /* Write szObjectTag */
-                _uint iTaglength = lstrlen((*iter)->Get_Model()->Get_Tag().c_str()) + 1;
+                _uint iTaglength = lstrlen((*iterMonster)->Get_Model()->Get_Tag().c_str()) + 1;
                 WriteFile(hFile, &iTaglength, sizeof(_uint), &dwByte, nullptr);
-                WriteFile(hFile, (*iter)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
+                WriteFile(hFile, (*iterMonster)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
 
                 /* Write TransformMatrix */
-                WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
+                WriteFile(hFile, &(*iterMonster)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
 
                 /* Write vAngle */
-                WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
+                WriteFile(hFile, &(*iterMonster)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
             }
 
             /* 4. Player 저장 */

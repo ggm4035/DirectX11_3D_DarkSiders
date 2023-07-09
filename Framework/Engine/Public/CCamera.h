@@ -32,9 +32,6 @@ public:
 	void OffCamera() { m_bSwitch = false; }
 
 protected:
-	class CPipeLine* m_pPipeLine = { nullptr };
-
-protected:
 	_float4 m_vEye, m_vAt, m_vUp;
 	_float m_fFov, m_fAspect, m_fNear, m_fFar;
 	_bool m_bSwitch = { false };

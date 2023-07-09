@@ -86,6 +86,15 @@ void CObject_Manager::Tick(const _double& TimeDelta)
 	}
 }
 
+void CObject_Manager::AfterFrustumTick(const _double& TimeDelta)
+{
+	for (_uint i = 0; i < m_iNumLevels; ++i)
+	{
+		for (auto& Pair : m_pLayers[i])
+			Pair.second->AfterFrustumTick(TimeDelta);
+	}
+}
+
 void CObject_Manager::Late_Tick(const _double& TimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)

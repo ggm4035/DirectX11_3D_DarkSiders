@@ -109,7 +109,7 @@ public: /* For.Frustum */
 	_bool isIn_LocalSpace(_fvector vLocalPosition, _float fRange);
 
 public: /* For.Collider_Manager */
-
+	HRESULT Add_Collider(COLLIDERGROUP eGroupID, class CCollider* pCollider);
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 	_vector Picking_On_Spheres(const POINT & ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);

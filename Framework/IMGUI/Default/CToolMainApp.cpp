@@ -183,10 +183,6 @@ HRESULT CToolMainApp::Ready_Prototype_Component_For_Tool()
         CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 257, 257, 1.f))))
         return E_FAIL;
 
-    if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Terrain_Height",
-        CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/ExportHeightMap.bmp"))))
-        return E_FAIL;
-
     if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, L"VIBuffer_Cube",
         CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
         return E_FAIL;

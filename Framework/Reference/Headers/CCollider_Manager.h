@@ -12,10 +12,8 @@ class CCollider_Manager final : public CBase, IObserver_Animation
 	DECLARE_SINGLETON(CCollider_Manager)
 
 public:
-	enum COLLIDERGROUP{COL_PLAYER, COL_PLAYERATK, COL_ENEMY, COL_ENEMYATK, COL_ENEMYRANGE, COL_END};
 	typedef struct tagNotifyColliderDesc : public NOTIFYDESC
 	{
-
 	}NOTIFYCOLLIDERDESC;
 
 private:

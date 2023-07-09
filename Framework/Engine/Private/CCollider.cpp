@@ -4,6 +4,8 @@
 #include "CBounding_AABB.h"
 #include "CBounding_Sphere.h"
 
+#include "CGameObject3D.h"
+
 CCollider::CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 {
@@ -11,6 +13,7 @@ CCollider::CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CCollider::CCollider(const CCollider& rhs)
 	: CComponent(rhs)
+	, m_eColliderType(rhs.m_eColliderType)
 {
 }
 
@@ -18,22 +21,23 @@ HRESULT CCollider::Initialize_Prototype(TYPE eType)
 {
 	switch (eType)
 	{
-	case Engine::CCollider::TYPE_SPHERE:
+	case TYPE_SPHERE:
 		m_pBounding = CBounding_Sphere::Create(m_pDevice, m_pContext);
+		m_eColliderType = TYPE_SPHERE;
 		if (nullptr == m_pBounding)
 			return E_FAIL;
-
 		break;
 
-	case Engine::CCollider::TYPE_AABB:
+	case TYPE_AABB:
 		m_pBounding = CBounding_AABB::Create(m_pDevice, m_pContext);
+		m_eColliderType = TYPE_AABB;
 		if (nullptr == m_pBounding)
 			return E_FAIL;
-
 		break;
 
-	case Engine::CCollider::TYPE_OBB:
+	case TYPE_OBB:
 		m_pBounding = CBounding_OBB::Create(m_pDevice, m_pContext);
+		m_eColliderType = TYPE_OBB;
 		if (nullptr == m_pBounding)
 			return E_FAIL;
 		break;
@@ -77,32 +81,37 @@ _bool CCollider::Intersect(const CCollider* pCollider)
 	return m_pBounding->Intersect(pCollider->m_eColliderType, pCollider->m_pBounding);
 }
 
-void CCollider::On_Collision()
+void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 {
+	if (true == m_Qmessage.empty())
+	{
+		pOnwer->OnCollisionExit(TimeDelta);
+		m_eCurrentState = STATE_NONE;
+		return;
+	}
+
 	while (true != m_Qmessage.empty())
 	{
 		CCollider* pOther = m_Qmessage.front();
 
+		switch (m_eCurrentState)
+		{
+		case Engine::CCollider::STATE_NONE:
+			pOnwer->OnCollisionEnter(TimeDelta);
+			m_eCurrentState = STATE_ENTER;
+			break;
 
+		case Engine::CCollider::STATE_ENTER:
+			pOnwer->OnCollisionStay(TimeDelta);
+			m_eCurrentState = STATE_STAY;
+			break;
+
+		case Engine::CCollider::STATE_STAY:
+			pOnwer->OnCollisionStay(TimeDelta);
+			break;
+		}
 
 		m_Qmessage.pop();
-	}
-
-
-
-	switch (m_eCurrentState)
-	{
-	case Engine::CCollider::STATE_NONE:
-		m_eCurrentState = STATE_ENTER;
-		break;
-
-	case Engine::CCollider::STATE_ENTER:
-		m_eCurrentState = STATE_STAY;
-		break;
-
-	case Engine::CCollider::STATE_STAY:
-
-		break;
 	}
 }
 

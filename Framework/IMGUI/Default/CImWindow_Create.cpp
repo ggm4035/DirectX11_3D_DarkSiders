@@ -65,7 +65,7 @@ void CImWindow_Create::Create_Object()
             ImGui::Separator();
             ImGui::Text("PrototypeTag");
             ImGui::SetNextItemWidth(500.f);
-            ImGui::InputText("  ", m_szPrototypeTag[i], 256, ImGuiInputTextFlags_ReadOnly);
+            ImGui::InputText("##PrototypeTag", m_szPrototypeTag[i], 256, ImGuiInputTextFlags_ReadOnly);
 
             strcat_s(szDialogTag, m_Types[i]);
             if (ImGui::BeginPopupContextItem(szDialogTag))

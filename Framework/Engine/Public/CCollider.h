@@ -10,7 +10,16 @@ public:
 	enum TYPE { TYPE_SPHERE, TYPE_AABB, TYPE_OBB, TYPE_END };
 	enum STATE { STATE_NONE, STATE_ENTER, STATE_STAY, STATE_END };
 
+	typedef struct tagCollision
+	{
+		class CGameObject3D* pOwner = { nullptr };
+		class CTransform* pTransform = { nullptr };
+	}COLLISION;
+
 public:
+	const COLLISION& Get_Collision() {
+		return m_CollisionInfo;
+	}
 	STATE Get_Current_State() const {
 		return m_eCurrentState;
 	}
@@ -28,13 +37,14 @@ public:
 
 public:
 	_bool Intersect(const CCollider* pCollider);
-	void On_Collision();
+	void On_Collision(class CGameObject3D* pOnwer, const _double& TimeDelta);
 	void Push_Collision_Message(CCollider* pMessage) {
 		m_Qmessage.push(pMessage);
 	}
 
 private:
-	CBounding* m_pBounding = { nullptr };
+	class CBounding* m_pBounding = { nullptr };
+	COLLISION m_CollisionInfo;
 
 	TYPE m_eColliderType = { TYPE_END };
 	STATE m_eCurrentState = { STATE_END };

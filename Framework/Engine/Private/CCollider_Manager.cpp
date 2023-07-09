@@ -20,9 +20,6 @@ void CCollider_Manager::Tick()
 {
 	/* 콜라이더 충돌 체크 */
 	Collision(COL_PLAYER, COL_ENEMY);
-	Collision(COL_PLAYER, COL_ENEMY);
-	Collision(COL_PLAYER, COL_ENEMY);
-	Collision(COL_PLAYER, COL_ENEMY);
 }
 
 void CCollider_Manager::Clear_ColliderList()
@@ -31,11 +28,11 @@ void CCollider_Manager::Clear_ColliderList()
 	{
 		for (auto& pCollider : m_ColliderList[i])
 			Safe_Release(pCollider);
-		m_ColliderList->clear();
+		m_ColliderList[i].clear();
 	}
 }
 
-/* 이때 울리는 시점이 게임 오브젝트의 tick 중에 호출됨 */
+/* 이때 울리는 시점이 게임 오브젝트의 tick 중에 호출됨 그런데 이때는 콜라이더 없는데 */
 void CCollider_Manager::Update_Observer(NOTIFYDESC* pNotifyDesc)
 {
 	/* 애니메이션이 특정 구간에 진입한 경우 */

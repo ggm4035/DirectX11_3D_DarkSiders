@@ -108,7 +108,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	if (pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"SkyBox",
 		L"SkyBox", pLayerTag))
 		return E_FAIL;
-
+		
 	Safe_Release(pGameInstance);
 
 	for (auto& Data : FileData.vecModelData)
@@ -189,5 +189,7 @@ CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 void CLevel_GamePlay::Free()
 {
+	for (auto& Data : m_vecMonsterDatas)
+		Safe_Delete_BinaryData(Data.BinaryData);
 	CLevel::Free();
 }

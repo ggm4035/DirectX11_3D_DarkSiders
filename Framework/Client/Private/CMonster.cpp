@@ -45,10 +45,27 @@ void CMonster::Tick(const _double& TimeDelta)
 		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
+void CMonster::AfterFrustumTick(const _double& TimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
+	{
+		pGameInstance->Add_Collider(COL_ENEMY, m_pColliderCom);
+
+		if (nullptr != m_pRendererCom)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	}
+
+	Safe_Release(pGameInstance);
+}
+
 void CMonster::Late_Tick(const _double& TimeDelta)
 {
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	/* 여기는 콜라이더가 객체의 상태를 변경 시켰고(On_Collision) 그에 대한 처리를 하는 부분 */
+
+	m_pColliderCom->On_Collision(this, TimeDelta);
 }
 
 HRESULT CMonster::Render()
@@ -187,6 +204,8 @@ CMonster* CMonster::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pA
 
 void CMonster::Free()
 {
+	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

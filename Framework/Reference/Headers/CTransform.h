@@ -37,8 +37,10 @@ public:
 	const _float4x4* Get_WorldFloat4x4Ptr() {
 		return &m_WorldMatrix;
 	}
-
 	_matrix Get_WorldMatrix_Inverse();
+	_vector Get_MoveDirection() {
+		return XMLoadFloat3(&m_vMoveDir);
+	}
 	_float3 Get_Scaled();
 	_float3 Get_Angle() {
 		return m_vAngle;
@@ -66,6 +68,7 @@ public:
 public:
 	void Animation_Movement(class CModel* pModel, const _double& TimeDelta);
 	void Go(_fvector vDirection, const _double& TimeDelta);
+	void Repersive(const _double& TimeDelta);
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
 	_bool Jump(const _float& fForce, const _double& TimeDelta);
 	void Reset_TimeAcc() {

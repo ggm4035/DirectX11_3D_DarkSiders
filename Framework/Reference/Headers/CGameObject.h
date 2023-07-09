@@ -15,6 +15,7 @@ public:
 	virtual HRESULT Initialize_Prototype() = 0;
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) = 0;
 	virtual void Tick(const _double & TimeDelta);
+	virtual void AfterFrustumTick(const _double & TimeDelta) {};
 	virtual void Late_Tick(const _double & TimeDelta);
 	virtual HRESULT Render() = 0;
 

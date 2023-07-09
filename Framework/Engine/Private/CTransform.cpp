@@ -106,6 +106,39 @@ void CTransform::Go(_fvector vDirection, const _double& TimeDelta)
 	Move_Stop_Sliding(TimeDelta);
 }
 
+void CTransform::Repersive(const _double& TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION); 
+	_vector vDirection = -XMVector3Normalize(XMLoadFloat3(&m_vMoveDir));
+
+	vPosition += vDirection * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	CNavigation::RETURNDESC RetDesc;
+	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
+
+	if (nullptr != m_pNavigation)
+		RetDesc = m_pNavigation->is_Move(vPosition);
+
+	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
+	{
+		/* 슬라이딩 */
+		_float fForce = XMVector3Dot(XMVector3Normalize(vDirection), XMVector3Normalize(XMLoadFloat3(&RetDesc.vSlide))).m128_f32[0];
+		_vector vDir = XMLoadFloat3(&RetDesc.vSlide);
+
+		vPosition = Get_State(STATE_POSITION);
+
+		if (90.f < acosf(fForce))
+			vDir *= -1.f;
+
+		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
+	}
+
+	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
+		return;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
 void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
@@ -306,12 +339,14 @@ void CTransform::Move_Stop_Sliding(const _double& TimeDelta)
 		if (90.f < acosf(fForce))
 			vDir *= -1.f;
 
+		XMStoreFloat3(&m_vMoveDir, vDir);
 		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
 	}
 
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
 		return;
 
+	XMStoreFloat3(&m_vMoveDir, vLook);
 	Set_State(STATE_POSITION, vPosition);
 }
 

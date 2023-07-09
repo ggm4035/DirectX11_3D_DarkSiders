@@ -51,27 +51,37 @@ void CPlayer::Tick(const _double& TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+}
 
-	/* 콜라이더 매니저에 콜라이더 추가 */
+void CPlayer::AfterFrustumTick(const _double& TimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+	/* 콜라이더 매니저에 콜라이더 추가를 frustum 이후에 해야되는데 이거는 틱 이후에 실행됨 */
+
+	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0))
+	{
+		pGameInstance->Add_Collider(COL_PLAYER, m_pColliderCom);
+
+		for (auto Pair : m_Parts)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
+
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	}
+
+	Safe_Release(pGameInstance);
 }
 
 /* 이후 게임 인스턴스에서 콜라이더들의 충돌을 진행 */
 
 void CPlayer::Late_Tick(const _double& TimeDelta)
 {
-	/* 충돌 이후 작업을 진행 (없으면 스킵) */
-
 	CGameObject3D::Late_Tick(TimeDelta);
 
-	if (nullptr != m_pRendererCom)
-	{
-		for (auto Pair : m_Parts)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
+	/* 충돌 이후 작업을 진행 (메시지 받은거 처리하는 구간임) */
 
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-	}
+	m_pColliderCom->On_Collision(this, TimeDelta);
 }
 
 /* 모든 게임오브젝트의 latetick이 끝나면 게임 인스턴스에서 콜라이더의 모든 리스트를 비움 */
@@ -98,12 +108,25 @@ HRESULT CPlayer::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	m_pColliderCom->Render();
 
 #endif
 
 	return S_OK;
+}
+
+void CPlayer::OnCollisionEnter(const _double& TimeDelta)
+{
+	m_pTransformCom->Repersive(TimeDelta);
+}
+
+void CPlayer::OnCollisionStay(const _double& TimeDelta)
+{
+	m_pTransformCom->Repersive(TimeDelta);
+}
+
+void CPlayer::OnCollisionExit(const _double& TimeDelta)
+{
 }
 
 HRESULT CPlayer::Add_Components()
@@ -128,21 +151,21 @@ HRESULT CPlayer::Add_Components()
 	m_pTransformCom->Bind_Navigation(m_pNavigationCom);
 
 	/* Collider */
-	/*CBounding_AABB::AABBDESC AABBDesc;
+	CBounding_AABB::AABBDESC AABBDesc;
 	AABBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
 	AABBDesc.vPosition = _float3(0.f, 1.f, 0.f);
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Com_Collider_AABB",
 		(CComponent**)&m_pColliderCom, this, &AABBDesc)))
-		return E_FAIL;*/
-
-	CBounding_OBB::OBBDESC OBBDesc;
-	OBBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
-	OBBDesc.vPosition = _float3(0.f, 1.f, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Com_Collider_OBB",
-		(CComponent**)&m_pColliderCom, this, &OBBDesc)))
 		return E_FAIL;
+
+	//CBounding_OBB::OBBDESC OBBDesc;
+	//OBBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
+	//OBBDesc.vPosition = _float3(0.f, 1.f, 0.f);
+
+	//if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Com_Collider_OBB",
+	//	(CComponent**)&m_pColliderCom, this, &OBBDesc)))
+	//	return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"PlayerAction", L"Com_Action",
 		(CComponent**)&m_pActionCom, this)))
