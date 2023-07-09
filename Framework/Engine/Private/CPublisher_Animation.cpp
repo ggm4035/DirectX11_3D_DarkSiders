@@ -42,7 +42,7 @@ void CPublisher_Animation::Tick(const _float& fTimeAcc)
 					if (nullptr != Range.arrObserver[i])
 					{
 						CCollider_Manager::NOTIFYCOLLIDERDESC Desc;
-
+						Desc.wstrTag = L"Attack";
 						Range.arrObserver[i]->Update_Observer(&Desc);
 					}
 					break;

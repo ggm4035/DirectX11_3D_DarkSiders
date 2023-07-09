@@ -21,7 +21,7 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg) = 0;
-	virtual void Tick(_fmatrix WorldMatrix) = 0;
+	virtual void Tick(const _float3& vOffset, _fmatrix ParentWorldMatrix) = 0;
 	virtual HRESULT Render() = 0;
 	virtual _bool Intersect(CCollider::TYPE eType, CBounding* pBounding) = 0;
 

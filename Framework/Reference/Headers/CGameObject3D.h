@@ -2,11 +2,20 @@
 
 #include "CGameObject.h"
 #include "CTransform.h"
+#include "CCollider.h"
 
 BEGIN(Engine)
 
 class ENGINE_DLL CGameObject3D abstract : public CGameObject
 {
+public:
+	typedef struct tagStatus
+	{
+		_int iMaxHP = { 0 };
+		_int iHP = { 0 };
+		_int iAttack = { 0 };
+	}STATUS;
+
 protected:
 	explicit CGameObject3D(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	explicit CGameObject3D(const CGameObject3D& rhs);
@@ -26,11 +35,12 @@ public:
 	virtual HRESULT Render() { return S_OK; }
 
 public:
-	virtual void OnCollisionEnter(const _double& TimeDelta) {}
-	virtual void OnCollisionStay(const _double& TimeDelta) {}
+	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}
+	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionExit(const _double& TimeDelta) {}
 
 protected:
+	STATUS m_Status;
 	CTransform* m_pTransformCom = { nullptr };
 
 protected:

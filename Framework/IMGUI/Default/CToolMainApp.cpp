@@ -279,7 +279,7 @@ HRESULT CToolMainApp::Ready_AnimModels()
 
     /* PivotMatrix 설정*/
     _matrix PivotMatrix = XMMatrixIdentity();
-    PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(-XMConvertToRadians(90.f));
+    PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);// *XMMatrixRotationY(-XMConvertToRadians(90.f));
 
     /* Model Read 작업 실행*/
     _uint iIndex = 0;
@@ -296,6 +296,11 @@ HRESULT CToolMainApp::Ready_AnimModels()
             wstrTag = L"Model_";
 
         wstrTag += wstrName;
+
+        if(wstring::npos != wstrTag.find(L"Warrior"))
+            PivotMatrix *= XMMatrixRotationY(-XMConvertToRadians(90.f));
+        else
+            PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(180.f));
 
         if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrTag.c_str(),
             CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecAnimModelData[iIndex++], PivotMatrix))))

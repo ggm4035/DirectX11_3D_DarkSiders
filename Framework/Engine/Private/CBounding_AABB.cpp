@@ -42,9 +42,10 @@ HRESULT CBounding_AABB::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CBounding_AABB::Tick(_fmatrix WorldMatrix)
+void CBounding_AABB::Tick(const _float3& vOffset, _fmatrix ParentWorldMatrix)
 {
-	m_pAABB_Original->Transform(*m_pAABB, Remove_Rotation(WorldMatrix));
+	_matrix Matrix = XMMatrixTranslation(vOffset.x, vOffset.y, vOffset.z) * ParentWorldMatrix;
+	m_pAABB_Original->Transform(*m_pAABB, Remove_Rotation(Matrix));
 }
 
 HRESULT CBounding_AABB::Render()

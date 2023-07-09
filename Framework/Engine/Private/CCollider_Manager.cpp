@@ -10,6 +10,9 @@ HRESULT CCollider_Manager::Add_Collider(COLLIDERGROUP eGroupID, CCollider* pColl
 		nullptr == pCollider)
 		return E_FAIL;
 
+	if (string::npos != pCollider->Get_Tag().find(m_wstrEnableTag))
+		pCollider->Switch_On();
+
 	m_ColliderList[eGroupID].push_back(pCollider);
 	Safe_AddRef(pCollider);
 
@@ -19,7 +22,10 @@ HRESULT CCollider_Manager::Add_Collider(COLLIDERGROUP eGroupID, CCollider* pColl
 void CCollider_Manager::Tick()
 {
 	/* 콜라이더 충돌 체크 */
-	Collision(COL_PLAYER, COL_ENEMY);
+	Collision(COL_PLAYERATK, COL_ENEMY);
+	Collision(COL_ENEMY, COL_PLAYER);
+	Collision(COL_ENEMYATK, COL_PLAYER);
+	Collision(COL_ENEMYRANGE, COL_PLAYER);
 }
 
 void CCollider_Manager::Clear_ColliderList()
@@ -30,6 +36,7 @@ void CCollider_Manager::Clear_ColliderList()
 			Safe_Release(pCollider);
 		m_ColliderList[i].clear();
 	}
+	m_wstrEnableTag = L"^-^";
 }
 
 /* 이때 울리는 시점이 게임 오브젝트의 tick 중에 호출됨 그런데 이때는 콜라이더 없는데 */
@@ -37,7 +44,8 @@ void CCollider_Manager::Update_Observer(NOTIFYDESC* pNotifyDesc)
 {
 	/* 애니메이션이 특정 구간에 진입한 경우 */
 	NOTIFYCOLLIDERDESC Desc = *static_cast<NOTIFYCOLLIDERDESC*>(pNotifyDesc);
-
+	
+	m_wstrEnableTag = Desc.wstrTag;
 }
 
 void CCollider_Manager::Collision(COLLIDERGROUP SrcGroup, COLLIDERGROUP DestGroup)

@@ -25,7 +25,7 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_fmatrix WorldMatrix) override;
+	virtual void Tick(const _float3& vOffset, _fmatrix ParentWorldMatrix) override;
 	virtual HRESULT Render() override;
 	virtual _bool Intersect(CCollider::TYPE eType, CBounding* pBounding);
 

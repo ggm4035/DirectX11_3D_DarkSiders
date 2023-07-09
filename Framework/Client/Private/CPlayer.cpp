@@ -45,13 +45,16 @@ void CPlayer::Tick(const _double& TimeDelta)
 {
 	CGameObject3D::Tick(TimeDelta);
 
+	m_pAttackRange->Switch_Off();
+
 	m_pActionCom->Tick(TimeDelta);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 1.f, 0.f));
+	m_pAttackRange->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 1.f, 1.f));
 }
 
 void CPlayer::AfterFrustumTick(const _double& TimeDelta)
@@ -63,6 +66,7 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0))
 	{
 		pGameInstance->Add_Collider(COL_PLAYER, m_pColliderCom);
+		pGameInstance->Add_Collider(COL_PLAYERATK, m_pAttackRange);
 
 		for (auto Pair : m_Parts)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
@@ -82,6 +86,7 @@ void CPlayer::Late_Tick(const _double& TimeDelta)
 	/* 충돌 이후 작업을 진행 (메시지 받은거 처리하는 구간임) */
 
 	m_pColliderCom->On_Collision(this, TimeDelta);
+	m_pAttackRange->On_Collision(this, TimeDelta);
 }
 
 /* 모든 게임오브젝트의 latetick이 끝나면 게임 인스턴스에서 콜라이더의 모든 리스트를 비움 */
@@ -109,20 +114,22 @@ HRESULT CPlayer::Render()
 #ifdef _DEBUG
 
 	m_pColliderCom->Render();
+	m_pAttackRange->Render();
 
 #endif
 
 	return S_OK;
 }
 
-void CPlayer::OnCollisionEnter(const _double& TimeDelta)
+void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	m_pTransformCom->Repersive(TimeDelta);
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack_Range")
+		cout << "공격 해써요!" << endl;
+
 }
 
-void CPlayer::OnCollisionStay(const _double& TimeDelta)
+void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	m_pTransformCom->Repersive(TimeDelta);
 }
 
 void CPlayer::OnCollisionExit(const _double& TimeDelta)
@@ -153,15 +160,19 @@ HRESULT CPlayer::Add_Components()
 	/* Collider */
 	CBounding_AABB::AABBDESC AABBDesc;
 	AABBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
-	AABBDesc.vPosition = _float3(0.f, 1.f, 0.f);
+	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Com_Collider_AABB",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Col_Body",
 		(CComponent**)&m_pColliderCom, this, &AABBDesc)))
 		return E_FAIL;
 
-	//CBounding_OBB::OBBDESC OBBDesc;
-	//OBBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
-	//OBBDesc.vPosition = _float3(0.f, 1.f, 0.f);
+	CBounding_OBB::OBBDESC OBBDesc;
+	OBBDesc.vExtents = _float3(1.5f, 0.5f, 1.f);
+	OBBDesc.vPosition = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack_Range",
+		(CComponent**)&m_pAttackRange, this, &OBBDesc)))
+		return E_FAIL;
 
 	//if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Com_Collider_OBB",
 	//	(CComponent**)&m_pColliderCom, this, &OBBDesc)))
@@ -273,6 +284,7 @@ void CPlayer::Free()
 {
 	Safe_Release(m_pActionCom);
 	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pAttackRange);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);

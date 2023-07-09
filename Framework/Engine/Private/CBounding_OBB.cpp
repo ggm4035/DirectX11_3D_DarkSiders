@@ -45,9 +45,10 @@ HRESULT CBounding_OBB::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CBounding_OBB::Tick(_fmatrix WorldMatrix)
+void CBounding_OBB::Tick(const _float3& vOffset, _fmatrix ParentWorldMatrix)
 {
-	m_pOBB_Original->Transform(*m_pOBB, WorldMatrix);
+	_matrix Matrix = XMMatrixTranslation(vOffset.x, vOffset.y, vOffset.z) * ParentWorldMatrix;
+	m_pOBB_Original->Transform(*m_pOBB, Matrix);
 }
 
 HRESULT CBounding_OBB::Render()

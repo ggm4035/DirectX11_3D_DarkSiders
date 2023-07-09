@@ -68,7 +68,7 @@ public:
 public:
 	void Animation_Movement(class CModel* pModel, const _double& TimeDelta);
 	void Go(_fvector vDirection, const _double& TimeDelta);
-	void Repersive(const _double& TimeDelta);
+	void Repersive(_fvector vOtherDir, const _double& TimeDelta);
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
 	_bool Jump(const _float& fForce, const _double& TimeDelta);
 	void Reset_TimeAcc() {

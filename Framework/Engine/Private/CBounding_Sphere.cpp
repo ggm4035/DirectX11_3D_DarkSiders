@@ -43,9 +43,10 @@ HRESULT CBounding_Sphere::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CBounding_Sphere::Tick(_fmatrix WorldMatrix)
+void CBounding_Sphere::Tick(const _float3& vOffset, _fmatrix ParentWorldMatrix)
 {
-	m_pSphere_Original->Transform(*m_pSphere, WorldMatrix);
+	_matrix Matrix = XMMatrixTranslation(vOffset.x, vOffset.y, vOffset.z) * ParentWorldMatrix;
+	m_pSphere_Original->Transform(*m_pSphere, Matrix);
 }
 
 HRESULT CBounding_Sphere::Render()

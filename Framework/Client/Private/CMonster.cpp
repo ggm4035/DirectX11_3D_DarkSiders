@@ -39,6 +39,23 @@ void CMonster::Tick(const _double& TimeDelta)
 {
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Key_Down(DIK_2))
+		m_pModelCom->Change_Animation("Idle");
+
+	if (pGameInstance->Key_Down(DIK_3))
+		m_pModelCom->Change_Animation("Attack");
+
+	if (pGameInstance->Key_Down(DIK_4))
+		m_pModelCom->Change_Animation("Knockback");
+
+	if (pGameInstance->Key_Down(DIK_5))
+		m_pModelCom->Change_Animation("Get");
+
+	Safe_Release(pGameInstance);
+
 	m_pModelCom->Play_Animation(TimeDelta);
 
 	if (nullptr != m_pColliderCom)
@@ -98,6 +115,22 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
+{
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Body")
+		m_pTransformCom->Repersive(XMLoadFloat3(&Collision.vOtherMoveDirection), TimeDelta);
+}
+
+void CMonster::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
+{
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Body")
+		m_pTransformCom->Repersive(XMLoadFloat3(&Collision.vOtherMoveDirection), TimeDelta);
+}
+
+void CMonster::OnCollisionExit(const _double& TimeDelta)
+{
+}
+
 HRESULT CMonster::Add_Components()
 {
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_AnimMesh",
@@ -123,7 +156,7 @@ HRESULT CMonster::Add_Components()
 	SphereDesc.fRadius = 1.f;
 	SphereDesc.vPosition = _float3(0.f, 1.f, 0.f);
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Com_Collider_Sphere",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body",
 		(CComponent**)&m_pColliderCom, this, &SphereDesc)))
 		return E_FAIL;
 

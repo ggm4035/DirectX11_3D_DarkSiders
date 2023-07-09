@@ -307,6 +307,34 @@ void CTool_Animation::Add_Animation(CGameInstance* pGameInstance, const string& 
 
 void CTool_Animation::Export_Animation(CGameInstance* pGameInstance)
 {
+    //// display
+    //if (ImGuiFileDialog::Instance()->Display("ChooseSaveFileKey"))
+    //{
+    //    // action if OK
+    //    if (ImGuiFileDialog::Instance()->IsOk())
+    //    {
+    //        string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+    //        string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+    //        // action
+
+    //        _ulong dwByte = { 0 };
+    //        /* Model ÀúÀå */
+    //        HANDLE hFile = CreateFileA(filePathName.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+    //        if (INVALID_HANDLE_VALUE == hFile)
+    //        {
+    //            MSG_BOX("Failed Open Save File");
+    //            return;
+    //        }
+
+    //        CloseHandle(hFile);
+
+    //        MSG_BOX("Success Save Files");
+    //    }
+    //    // close
+    //    ImGuiFileDialog::Instance()->Close();
+    //}
+
     list<string> FilePathList;
     FilePathList.push_back(m_strFilePath);
 
@@ -367,7 +395,27 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
 
     _float arr[3] = { vTranslation.x, vTranslation.y, vTranslation.z };
 
+    _float arrOffsets[3] = { 0.f, 0.f, 0.f };
+
     ImGui::DragFloat3("Translation", arr, 0.01f, -100.f, 100.f, "%.2f");
+    if (ImGui::DragFloat3("Offsets##Translation", arrOffsets, 0.01f, -100.f, 100.f, "%.2f"))
+    {
+        for (_uint i = 0; i < m_pModel->Get_Model()->Get_MaxRootKeyFrame(); ++i)
+        {
+            vTranslation = m_pModel->Get_Model()->Get_Translation(i);
+            vTranslation.x += arrOffsets[0];
+            vTranslation.y += arrOffsets[1];
+            vTranslation.z += arrOffsets[2];
+
+            m_pModel->Get_Model()->Set_Translation(i, vTranslation);
+        }
+    }
+    else
+    {
+        vTranslation = _float3(arr[0], arr[1], arr[2]);
+        m_pModel->Get_Model()->Set_Translation(iRootFrameIndex, vTranslation);
+    }
+
     ImGui::DragFloat("Time", &fTime, 0.001f, 0.f, 500.f);
 
     if (ImGui::DragFloat("Offset", &fOffset, 0.001f, -1.f, 1.f))
@@ -383,10 +431,6 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
     }
     else
         m_pModel->Get_Model()->Set_KeyFrameTime(iMaxFrameIndex, fTime);
-
-    vTranslation = _float3(arr[0], arr[1], arr[2]);
-
-    m_pModel->Get_Model()->Set_Translation(iRootFrameIndex, vTranslation);
 
     _float fDuration = m_pModel->Get_Model()->Get_Duration();
     ImGui::DragFloat("Duration", &fDuration, 0.001f, 0.f, 1000.f);

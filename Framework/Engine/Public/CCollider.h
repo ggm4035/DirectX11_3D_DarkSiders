@@ -12,16 +12,23 @@ public:
 
 	typedef struct tagCollision
 	{
-		class CGameObject3D* pOwner = { nullptr };
-		class CTransform* pTransform = { nullptr };
+		class CGameObject3D* pOther = { nullptr };
+		class CTransform* pOtherTransform = { nullptr };
+		_float3 vOtherMoveDirection;
+		CCollider* pMyCollider = { nullptr };
+		CCollider* pOtherCollider = { nullptr };
 	}COLLISION;
 
 public:
-	const COLLISION& Get_Collision() {
-		return m_CollisionInfo;
-	}
 	STATE Get_Current_State() const {
 		return m_eCurrentState;
+	}
+
+	void Switch_On() {
+		m_isEnable = true;
+	}
+	void Switch_Off() {
+		m_isEnable = false;
 	}
 
 private:
@@ -32,7 +39,7 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, class CBounding* pBounding, void* pArg);
-	void Tick(_fmatrix WorldMatrix);
+	void Tick(_fmatrix WorldMatrix, const _float3& vOffset = _float3());
 	HRESULT Render();
 
 public:
@@ -44,7 +51,7 @@ public:
 
 private:
 	class CBounding* m_pBounding = { nullptr };
-	COLLISION m_CollisionInfo;
+	_bool m_isEnable = { true };
 
 	TYPE m_eColliderType = { TYPE_END };
 	STATE m_eCurrentState = { STATE_END };

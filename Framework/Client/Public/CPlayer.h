@@ -37,8 +37,8 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	virtual void OnCollisionEnter(const _double& TimeDelta) override;
-	virtual void OnCollisionStay(const _double& TimeDelta) override;
+	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
+	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionExit(const _double& TimeDelta) override;
 
 private:
@@ -47,6 +47,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
+	CCollider* m_pAttackRange = { nullptr };
 	class CPlayerAction* m_pActionCom = { nullptr };
 
 private:

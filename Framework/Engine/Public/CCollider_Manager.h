@@ -14,6 +14,7 @@ class CCollider_Manager final : public CBase, IObserver_Animation
 public:
 	typedef struct tagNotifyColliderDesc : public NOTIFYDESC
 	{
+		wstring wstrTag = { L"" };
 	}NOTIFYCOLLIDERDESC;
 
 private:
@@ -27,6 +28,7 @@ public:
 
 private:
 	list<class CCollider*> m_ColliderList[COL_END];
+	wstring m_wstrEnableTag = { L"^-^" };
 
 private:
 	virtual void Update_Observer(NOTIFYDESC* pNotifyDesc) override;

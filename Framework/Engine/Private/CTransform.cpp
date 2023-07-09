@@ -96,6 +96,7 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
 		vPosition = Get_State(STATE_POSITION);
 
+	XMStoreFloat3(&m_vMoveDir, vLook);
 	Set_State(STATE_POSITION, vPosition);
 }
 
@@ -106,10 +107,10 @@ void CTransform::Go(_fvector vDirection, const _double& TimeDelta)
 	Move_Stop_Sliding(TimeDelta);
 }
 
-void CTransform::Repersive(const _double& TimeDelta)
+void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION); 
-	_vector vDirection = -XMVector3Normalize(XMLoadFloat3(&m_vMoveDir));
+	_vector vDirection = XMVector3Normalize(vOtherDir);
 
 	vPosition += vDirection * m_TransformDesc.SpeedPerSec * TimeDelta;
 
@@ -136,6 +137,7 @@ void CTransform::Repersive(const _double& TimeDelta)
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
 		return;
 
+	XMStoreFloat3(&m_vMoveDir, vDirection);
 	Set_State(STATE_POSITION, vPosition);
 }
 

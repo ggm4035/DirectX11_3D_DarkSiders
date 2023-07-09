@@ -57,8 +57,21 @@ void CAnimation::Invalidate_TransformationMatrix(CModel::BONES& Bones, const _do
 	m_isAbleChange = false;
 	/* 시간 값에 따른 프레임의 위치를 파악해서 현재프레임과 다음프레임 사이를
 	선형보간하는 형태로 진행한다. */
+
+#if defined(_USE_IMGUI) || defined(_DEBUG)
 	if (true == m_isPause)
+	{
+		_uint channelIndex = { 0 };
+		for (auto& pChannel : m_vecChannels)
+		{
+			if (nullptr == pChannel)
+				return;
+
+			pChannel->Invalidate_TransformationMatrix(Bones, m_TimeAcc, &m_vecChannelCurrentKeyFrames[channelIndex++]);
+		}
 		return;
+	}
+#endif
 
 	/* Lerp가 진행중일 경우에는 애니메이션을 진행하지 않는다. */
 	/* 하지만 초기에 위치를 설정해줘야됨*/

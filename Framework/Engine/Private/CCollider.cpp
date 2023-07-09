@@ -58,12 +58,12 @@ HRESULT CCollider::Initialize(const _uint& iLevelIndex, CComponent* pOwner, CBou
 	return S_OK;
 }
 
-void CCollider::Tick(_fmatrix WorldMatrix)
+void CCollider::Tick(_fmatrix WorldMatrix, const _float3& vOffset)
 {
 	if (nullptr == m_pBounding)
 		return;
 
-	m_pBounding->Tick(WorldMatrix);
+	m_pBounding->Tick(vOffset, WorldMatrix);
 }
 
 HRESULT CCollider::Render()
@@ -78,6 +78,9 @@ HRESULT CCollider::Render()
 
 _bool CCollider::Intersect(const CCollider* pCollider)
 {
+	if (false == m_isEnable)
+		return false;
+
 	return m_pBounding->Intersect(pCollider->m_eColliderType, pCollider->m_pBounding);
 }
 
@@ -94,24 +97,40 @@ void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 	{
 		CCollider* pOther = m_Qmessage.front();
 
+		COLLISION Collision;
+		Collision.pOtherCollider = pOther;
+		Collision.pOther = static_cast<CGameObject3D*>(pOther->m_pOwner);
+		Collision.pMyCollider = this;
+		Collision.pOtherTransform = Collision.pOther->Get_Transform();
+		XMStoreFloat3(&Collision.vOtherMoveDirection, Collision.pOtherTransform->Get_MoveDirection());
+
 		switch (m_eCurrentState)
 		{
 		case Engine::CCollider::STATE_NONE:
-			pOnwer->OnCollisionEnter(TimeDelta);
-			m_eCurrentState = STATE_ENTER;
+			pOnwer->OnCollisionEnter(Collision, TimeDelta);
 			break;
 
 		case Engine::CCollider::STATE_ENTER:
-			pOnwer->OnCollisionStay(TimeDelta);
-			m_eCurrentState = STATE_STAY;
+			pOnwer->OnCollisionStay(Collision, TimeDelta);
 			break;
 
 		case Engine::CCollider::STATE_STAY:
-			pOnwer->OnCollisionStay(TimeDelta);
+			pOnwer->OnCollisionStay(Collision, TimeDelta);
 			break;
 		}
 
 		m_Qmessage.pop();
+	}
+
+	switch (m_eCurrentState)
+	{
+	case Engine::CCollider::STATE_NONE:
+		m_eCurrentState = STATE_ENTER;
+		break;
+
+	case Engine::CCollider::STATE_ENTER:
+		m_eCurrentState = STATE_STAY;
+		break;
 	}
 }
 

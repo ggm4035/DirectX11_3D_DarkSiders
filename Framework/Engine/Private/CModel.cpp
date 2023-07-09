@@ -182,7 +182,7 @@ _vector CModel::ComputeAnimMovement(OUT _float3* pDirection)
 
 	vPosition = BoneMatrix.r[3];
 
-	//cout << "X: " << m_vCurPosition.x << " Y: " << m_vCurPosition.y << " Z: " << m_vCurPosition.z << endl;
+	//cout << "X: " << vPosition.m128_f32[0] << " Y: " << vPosition.m128_f32[1] << " Z: " << vPosition.m128_f32[2] << endl;
 	return vPosition;
 }
 
