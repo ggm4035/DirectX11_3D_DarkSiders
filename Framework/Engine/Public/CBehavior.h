@@ -44,16 +44,21 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	virtual HRESULT Tick(const _double& TimeDelta) { return S_OK; };
+	virtual HRESULT Tick(const _double& TimeDelta) = 0;
 
-	HRESULT AssembleBehavior(const wstring& BehaviorTag, CBehavior* pBehavior);
+public:
+	HRESULT Add_Decoration(function<_bool(class CBlackBoard*)> Func);
+	_bool Check_Decorations();
+	HRESULT Assemble_Behavior(const wstring& BehaviorTag, CBehavior* pBehavior);
 
 protected:
 	/* 블랙보드는 루트노드당 하나씩 가지고 루트노드의 자식들은 루트노드의 블랙보드를 공유하는 형태로 가져갈 것이기 때문에
 	   블랙보드의 생성은 루트노드에서 수행한다. */
 	class CBlackBoard* m_pBlackBoard = { nullptr };
 	CBehavior* m_pParentBehavior = { nullptr };
+	_bool m_isCloned = { false };
 
+	list<class CDecoration*> m_DecorationList;
 	list<BEHAVIOR> m_BehaviorList;
 	list<BEHAVIOR>::iterator m_iterCurBehavior;
 

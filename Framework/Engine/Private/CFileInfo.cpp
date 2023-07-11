@@ -819,6 +819,9 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		/* Read vAngle */
 		ReadFile(hFile, &Data.vAngle, sizeof(_float3), &dwByte, nullptr);
 
+		/* Read Model Binary Datas */
+		Read_BinData(hFile, Data.BinaryData, dwByte);
+
 		OutData.vecMonsterData.push_back(Data);
 	}
 

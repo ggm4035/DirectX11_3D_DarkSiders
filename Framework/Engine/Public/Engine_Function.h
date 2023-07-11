@@ -2,6 +2,20 @@
 
 namespace Engine
 {
+	/* lowBound 에서 highBound로 변환 */
+	static float GetRandomFloat(float lowBound, float highBound)
+	{
+		if (lowBound >= highBound)
+			return lowBound;
+
+		float f = (rand() % 10000) * 0.0001f;
+
+		return (f * (highBound - lowBound)) + lowBound;
+	}
+
+	////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////Template 함수//////////////////////////
+
 	template <typename T>			// 클래스 포인터들을 해제
 	unsigned long Safe_AddRef(T& pointer)
 	{
@@ -76,7 +90,7 @@ namespace Engine
 		Safe_Delete_Array(Data.pBoneDatas);
 	}
 
-	//////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////Functor 함수객체//////////////////////////
 
 	class CTag_Finder

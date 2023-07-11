@@ -5,7 +5,7 @@
 
 #include "CPlayer.h"
 #include "CTerrain.h"
-#include "CMonster.h"
+#include "CGoblin.h"
 #include "CStatic_Object.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -165,11 +165,31 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 		MonsterDesc.vAngle = Data.vAngle;
 		MonsterDesc.SpeedPerSec = 3.f;
 		MonsterDesc.RotationPerSec = XMConvertToRadians(90.f);
+		
+		wstring wstrObjTag = Data.BinaryData.szTag;
 
-		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Goblin",
-			L"Monster_Goblin", pLayerTag, &MonsterDesc)))
-			return E_FAIL;
+		if (wstring::npos != wstrObjTag.find(L"Goblin"))
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Goblin",
+				L"Monster_Goblin", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
+
+		if (wstring::npos != wstrObjTag.find(L"Legion"))
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Legion_Melee",
+				L"Monster_Legion_Melee", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
+
+		if (wstring::npos != wstrObjTag.find(L"HellHound"))
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_HellHound",
+				L"Monster_HellHound", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
 	}
+
 	Safe_Release(pGameInstance);
 
 	return S_OK;

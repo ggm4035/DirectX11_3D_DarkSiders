@@ -224,6 +224,9 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
 
                 /* Write vAngle */
                 WriteFile(hFile, &(*iterMonster)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
+
+                /* Write Binary Datas */
+                Write_BinData(hFile, (*iterMonster)->Get_Model_BinaryData(), dwByte);
             }
 
             /* 4. Player ÀúÀå */
@@ -356,7 +359,8 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
             {
                 _char szNum[8] = { "" };
                 _char szObjName[256] = { "" };
-                strcpy_s(szObjName, "Monster");
+                string strObjName = pGameInstance->wstrToStr(wstring(Data.szObjectTag));
+                strcpy_s(szObjName, strObjName.c_str());
                 _itoa_s(idx, szNum, 10);
                 strcat_s(szObjName, szNum);
 
@@ -391,13 +395,15 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
             for (auto& Data : FileData.vecModelData)
                 Safe_Delete_BinaryData(Data.BinaryData);
 
+            for (auto& Data : FileData.vecMonsterData)
+                Safe_Delete_BinaryData(Data.BinaryData);
+
             Safe_Delete_Array(FileData.pPositions);
         }
 
         // close
         ImGuiFileDialog::Instance()->Close();
     }
-
 }
 
 void CImWindow_Top::Write_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte)
@@ -476,6 +482,25 @@ void CImWindow_Top::Write_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong d
 
         /* Write bIsLoop */
         WriteFile(hFile, &Data.pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+
+        /* Write bIsFollowAnimation */
+        WriteFile(hFile, &Data.pAnimations[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+
+        /* Write iNumRanges */
+        WriteFile(hFile, &Data.pAnimations[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+
+        /*===== TIMERANGE DATAS ======*/
+        for (_uint iRangeIndex = 0; iRangeIndex < Data.pAnimations[iAnimIndex].iNumRanges; ++iRangeIndex)
+        {
+            /* Write arrTypes */
+            WriteFile(hFile, &Data.pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].arrTypes, sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+
+            /* Write fStartPoint */
+            WriteFile(hFile, &Data.pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
+
+            /* Write fEndPoint */
+            WriteFile(hFile, &Data.pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+        }
 
         /*===== CHANNEL DATAS ======*/
         for (_uint iChannelIndex = 0; iChannelIndex < Data.pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)

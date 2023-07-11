@@ -1,5 +1,6 @@
 #include "CBehavior.h"
 
+#include "CDecoration.h"
 #include "CBlackBoard.h"
 
 CBehavior::CBehavior(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -11,6 +12,7 @@ CBehavior::CBehavior(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CBehavior::CBehavior(const CBehavior& rhs)
 	: CComponent(rhs)
 	, m_iterCurBehavior(m_BehaviorList.begin())
+	, m_isCloned(true)
 {
 }
 
@@ -22,7 +24,32 @@ HRESULT CBehavior::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void
 	return S_OK;
 }
 
-HRESULT CBehavior::AssembleBehavior(const wstring& BehaviorTag, CBehavior* _pBehavior)
+HRESULT CBehavior::Add_Decoration(function<_bool(class CBlackBoard*)> Func)
+{
+	if (nullptr == Func)
+		return E_FAIL;
+
+	CDecoration* pDecoration = CDecoration::Create(Func);
+	if (nullptr == pDecoration)
+		return E_FAIL;
+
+	m_DecorationList.push_back(pDecoration);
+
+	return S_OK;
+}
+
+_bool CBehavior::Check_Decorations()
+{
+	for (auto& Deco : m_DecorationList)
+	{
+		if (false == Deco->Is_Execute(m_pBlackBoard))
+			return false;
+	}
+
+	return true;
+}
+
+HRESULT CBehavior::Assemble_Behavior(const wstring& BehaviorTag, CBehavior* _pBehavior)
 {
 	CBehavior* pBehavior = Find_Behavior(BehaviorTag);
 	if (nullptr != pBehavior)
@@ -33,7 +60,13 @@ HRESULT CBehavior::AssembleBehavior(const wstring& BehaviorTag, CBehavior* _pBeh
 	_pBehavior->m_pBlackBoard = m_pBlackBoard;
 	Safe_AddRef(m_pBlackBoard);
 
-	m_BehaviorList.push_back({ BehaviorTag, _pBehavior });
+	BEHAVIOR Behavior;
+	Behavior.wstrBehaviorTag = BehaviorTag;
+	Behavior.pBehavior = _pBehavior;
+
+	m_BehaviorList.push_back(Behavior);
+
+	m_iterCurBehavior = m_BehaviorList.begin();
 
 	return S_OK;
 }
@@ -56,10 +89,14 @@ CBehavior* CBehavior::Find_Behavior(const wstring& BehaviorTag)
 
 void CBehavior::Free()
 {
-	for (auto& Pair : m_BehaviorList)
-		Safe_Release(Pair.pBehavior);
+	for (auto& Desc : m_BehaviorList)
+		Safe_Release(Desc.pBehavior);
 
-	Safe_Release(m_pBlackBoard);
+	for (auto& Func : m_DecorationList)
+		Safe_Release(Func);
+
+	if(true == m_isCloned)
+		Safe_Release(m_pBlackBoard);
 
 	CComponent::Free();
 }

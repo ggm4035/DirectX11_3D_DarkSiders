@@ -56,17 +56,17 @@ HRESULT CJumpAction::Tick(const _double& TimeDelta)
 	{
 	case Client::CPlayerAction::STATE_IDLE:
 		pAction->Set_State(CPlayerAction::STATE_JUMP);
-		isJump = m_pTransform->Jump(1.f, TimeDelta * 0.9f);
+		isJump = m_pTransform->Jump(0.45f, TimeDelta);
 		break;
 
 	case Client::CPlayerAction::STATE_RUN:
 		pAction->Set_State(CPlayerAction::STATE_JUMP);
-		isJump = m_pTransform->Jump(1.f, TimeDelta * 0.9f);
+		isJump = m_pTransform->Jump(0.45f, TimeDelta);
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP_LAND:
 		pAction->Set_State(CPlayerAction::STATE_JUMP);
-		isJump = m_pTransform->Jump(1.f, TimeDelta * 0.9f);
+		isJump = m_pTransform->Jump(0.45f, TimeDelta);
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP:
@@ -75,11 +75,11 @@ HRESULT CJumpAction::Tick(const _double& TimeDelta)
 			pAction->Set_State(CPlayerAction::STATE_DOUBLE_JUMP);
 			dynamic_cast<CPlayer*>(m_pOwner)->Get_Transform()->Reset_TimeAcc();
 		}
-		isJump = m_pTransform->Jump(1.f, TimeDelta * 0.9f);
+		isJump = m_pTransform->Jump(0.45f, TimeDelta);
 		break;
 
 	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
-		isJump = m_pTransform->Jump(1.f, TimeDelta * 0.9f);
+		isJump = m_pTransform->Jump(0.45f, TimeDelta);
 		break;
 	}
 

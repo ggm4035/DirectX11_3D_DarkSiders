@@ -1,0 +1,26 @@
+Materials[1] =
+{
+    Materials[0] = MaterialInstanceConstant'/Game/Characters/Creatures/Legion/Textures/Legion_Spear_Inst_A.Legion_Spear_Inst_A'
+}
+SourceModels[0] = {}
+StaticMaterials[1] =
+{
+    StaticMaterials[0] =
+    {
+        MaterialInterface = MaterialInstanceConstant'/Game/Characters/Creatures/Legion/Textures/Legion_Spear_Inst_A.Legion_Spear_Inst_A'
+        MaterialSlotName = 09 - Default
+        UVChannelData =
+        {
+            bInitialized = true
+            bOverrideDensities = false
+            LocalUVDensities[4] = { 190.269, 159.912, 0, 0 }
+        }
+    }
+}
+Sockets[0] = {}
+ExtendedBounds =
+{
+    Origin = { X=-0.0001297, Y=0.0120831, Z=43.5118 }
+    BoxExtent = { X=11.7412, Y=19.9783, Z=145.13 }
+    SphereRadius = 145.131
+}

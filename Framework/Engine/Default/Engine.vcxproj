@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\CCollision.h" />
     <ClInclude Include="..\Public\CComponent.h" />
     <ClInclude Include="..\Public\CComponent_Manager.h" />
+    <ClInclude Include="..\Public\CDecoration.h" />
     <ClInclude Include="..\Public\CFileInfo.h" />
     <ClInclude Include="..\Public\CFont.h" />
     <ClInclude Include="..\Public\CFont_Manager.h" />
@@ -293,6 +294,7 @@
     <ClCompile Include="..\Private\CCollision.cpp" />
     <ClCompile Include="..\Private\CComponent.cpp" />
     <ClCompile Include="..\Private\CComponent_Manager.cpp" />
+    <ClCompile Include="..\Private\CDecoration.cpp" />
     <ClCompile Include="..\Private\CFileInfo.cpp" />
     <ClCompile Include="..\Private\CFont.cpp" />
     <ClCompile Include="..\Private\CFont_Manager.cpp" />
@@ -357,10 +359,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

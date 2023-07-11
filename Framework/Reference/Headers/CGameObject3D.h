@@ -16,6 +16,8 @@ public:
 		_int iAttack = { 0 };
 	}STATUS;
 
+	enum HITSTATE { NONE, HIT, HITTING, HIT_END };
+
 protected:
 	explicit CGameObject3D(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	explicit CGameObject3D(const CGameObject3D& rhs);
@@ -24,6 +26,9 @@ protected:
 public:
 	CTransform* Get_Transform() const {
 		return m_pTransformCom;
+	}
+	void Get_Damaged() {
+		m_eCurHitState = HIT;
 	}
 
 public:
@@ -41,6 +46,10 @@ public:
 
 protected:
 	STATUS m_Status;
+
+	HITSTATE m_eCurHitState = { NONE };
+	HITSTATE m_ePreHitState = { NONE };
+
 	CTransform* m_pTransformCom = { nullptr };
 
 protected:

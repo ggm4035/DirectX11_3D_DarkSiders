@@ -165,19 +165,19 @@ HRESULT CPlayerAction::AssembleBehaviors()
 	CBehavior* pAction = dynamic_cast<CMoveAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"MoveAction", m_pOwner));
 	if (nullptr == pAction)
 		return E_FAIL;
-	AssembleBehavior(L"MoveAction", pAction);
+	Assemble_Behavior(L"MoveAction", pAction);
 	m_pMoveAction = dynamic_cast<CMoveAction*>(pAction);
 
 	pAction = dynamic_cast<CJumpAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"JumpAction", m_pOwner));
 	if (nullptr == pAction)
 		return E_FAIL;
-	AssembleBehavior(L"JumpAction", pAction);
+	Assemble_Behavior(L"JumpAction", pAction);
 	m_pJumpAction = dynamic_cast<CJumpAction*>(pAction);
 
 	pAction = dynamic_cast<CAttackAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"AttackAction", m_pOwner));
 	if (nullptr == pAction)
 		return E_FAIL;
-	AssembleBehavior(L"AttackAction", pAction);
+	Assemble_Behavior(L"AttackAction", pAction);
 	m_pAttackAction = dynamic_cast<CAttackAction*>(pAction);
 
 	Safe_Release(pGameInstance);

@@ -50,6 +50,11 @@ HRESULT CRoot::Tick(const _double& TimeDelta)
 	return E_FAIL;
 }
 
+HRESULT CRoot::Add_Type(const wstring& wstrTypename, any Type)
+{
+	return m_pBlackBoard->Set_Type(wstrTypename, Type);
+}
+
 CRoot* CRoot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CRoot* pInstance = new CRoot(pDevice, pContext);

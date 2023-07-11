@@ -41,7 +41,9 @@ private:
 
 private:
 	HRESULT Ready_Prototype_Component_For_Static();
+	HRESULT Ready_Behaviors();
 	HRESULT Ready_Player();
+	HRESULT Ready_Parts();
 	HRESULT Ready_Fonts();
 
 public:

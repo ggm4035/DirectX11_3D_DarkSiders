@@ -1,0 +1,100 @@
+Materials[1] =
+{
+    Materials[0] = MaterialInstanceConstant'/Game/Characters/Creatures/Legion/Textures/LegionChampion_Weapon_Inst.LegionChampion_Weapon_Inst'
+}
+SourceModels[0] = {}
+StaticMaterials[1] =
+{
+    StaticMaterials[0] =
+    {
+        MaterialInterface = MaterialInstanceConstant'/Game/Characters/Creatures/Legion/Textures/LegionChampion_Weapon_Inst.LegionChampion_Weapon_Inst'
+        MaterialSlotName = 08 - Default
+        UVChannelData =
+        {
+            bInitialized = true
+            bOverrideDensities = false
+            LocalUVDensities[4] = { 302.162, 325.889, 0, 0 }
+        }
+    }
+}
+Sockets[9] =
+{
+    Sockets[0] =
+    {
+        SocketName = Base
+        RelativeLocation = { X=0, Y=1.52588e-05, Z=13.0733 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[1] =
+    {
+        SocketName = Middle
+        RelativeLocation = { X=0, Y=7.62939e-05, Z=154.124 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[2] =
+    {
+        SocketName = Tip
+        RelativeLocation = { X=9.15527e-05, Y=0.000152588, Z=300 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[3] =
+    {
+        SocketName = Base_Outer_R
+        RelativeLocation = { X=75, Y=-0.00190735, Z=13.0733 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[4] =
+    {
+        SocketName = Base_Outer_L
+        RelativeLocation = { X=-75, Y=1.52588e-05, Z=13.0733 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[5] =
+    {
+        SocketName = Middle_Outer_R
+        RelativeLocation = { X=75, Y=0.000259399, Z=154.124 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[6] =
+    {
+        SocketName = Middle_Outer_L
+        RelativeLocation = { X=-75, Y=7.62939e-05, Z=154.124 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[7] =
+    {
+        SocketName = Tip_Outer_R
+        RelativeLocation = { X=75, Y=-0.00012207, Z=300 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+    Sockets[8] =
+    {
+        SocketName = Tip_Outer_L
+        RelativeLocation = { X=-75, Y=-3.05176e-05, Z=300 }
+        RelativeRotation = { Yaw=0, Pitch=0, Roll=0 }
+        RelativeScale = { X=1, Y=1, Z=1 }
+        Tag = ""
+    }
+}
+ExtendedBounds =
+{
+    Origin = { X=0.565098, Y=-0.925697, Z=69.1116 }
+    BoxExtent = { X=22.3128, Y=69.6702, Z=210.527 }
+    SphereRadius = 221.6
+}

@@ -208,6 +208,9 @@
     <Filter Include="01.Utility\02. Component\Components\07. Collider\01. Collision">
       <UniqueIdentifier>{0dd309b9-0654-45d4-8bbe-6060d66eeee9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\02. Component\Components\08. Behavior\03. Decoration">
+      <UniqueIdentifier>{dcec8f6d-0fba-4e7a-ad4c-67042daba126}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -417,6 +420,9 @@
     <ClInclude Include="..\Public\CCollision.h">
       <Filter>01.Utility\02. Component\Components\07. Collider\01. Collision</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CDecoration.h">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\03. Decoration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -608,14 +614,13 @@
     <ClCompile Include="..\Private\CCollision.cpp">
       <Filter>01.Utility\02. Component\Components\07. Collider\01. Collision</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CDecoration.cpp">
+      <Filter>01.Utility\02. Component\Components\08. Behavior\03. Decoration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
       <Filter>98. ShaderFiles</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

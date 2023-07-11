@@ -4,9 +4,9 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CSelector final : public CBehavior
+class ENGINE_DLL CSelector : public CBehavior
 {
-private:
+protected:
 	explicit CSelector(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CSelector(const CSelector& rhs);
 	virtual ~CSelector() = default;
@@ -14,7 +14,7 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	virtual HRESULT Tick(const _double& TimeDelta) override;
+	virtual HRESULT Tick(const _double& TimeDelta) final;
 
 public:
 	static CSelector* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

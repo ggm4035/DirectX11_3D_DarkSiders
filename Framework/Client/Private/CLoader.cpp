@@ -5,9 +5,11 @@
 #include "CUI_Rect.h"
 #include "CStatic_Object.h"
 #include "CTerrain.h"
-#include "CMonster.h"
 #include "CSky.h"
 #include "CCamera_Free.h"
+#include "CGoblin.h"
+#include "CHellHound.h"
+#include "CLegion_Melee.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -158,12 +160,28 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* Goblin Model */
 	m_pGameInstance->ReadModel("../../Goblin.dat", FilePath, Data);
 
-	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
 		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
 
+	/* HellHound Model */
+	m_pGameInstance->ReadModel("../../HellHound.dat", FilePath, Data);
+
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_HellHound",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Legion Model */
+	m_pGameInstance->ReadModel("../../Legion.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
 	Safe_Delete_BinaryData(Data);
 
 	m_szLoading = TEXT("셰이더 로딩 중.");
@@ -178,27 +196,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	m_szLoading = TEXT("객체 로딩 중.");
 
-	/* For. Static Models */
-	/*redupList.clear();
-	for (auto& Data : FileData.vecModelData)
-	{
-		auto iter = find_if(redupList.begin(), redupList.end(), [&](_tchar* pData) {
-			if (0 == lstrcmp(pData, Data.szObjectTag))
-				return true;
-			else
-				return false;
-			});
-
-		if (iter == redupList.end())
-		{
-			redupList.push_back(Data.szObjectTag);
-
-			if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, Data.szObjectTag,
-				CStatic_Object::Create(m_pDevice, m_pContext))))
-				return E_FAIL;
-		}
-	}*/
-
 	/* For. SkyBox */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"SkyBox",
 		CSky::Create(m_pDevice, m_pContext))))
@@ -211,7 +208,17 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	/* For. Monster_Goblin */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Goblin",
-		CMonster::Create(m_pDevice, m_pContext))))
+		CGoblin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Monster_HellHound */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_HellHound",
+		CHellHound::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Monster_Legion_Melee */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Legion_Melee",
+		CLegion_Melee::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Terrain */
@@ -228,6 +235,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("로딩 완료.");
 
 	for (auto& Data : FileData.vecModelData)
+		Safe_Delete_BinaryData(Data.BinaryData);
+
+	for(auto& Data : FileData.vecMonsterData)
 		Safe_Delete_BinaryData(Data.BinaryData);
 
 	Safe_Delete_Array(FileData.pPositions);

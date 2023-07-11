@@ -78,6 +78,7 @@ public:
 	void Rotation(_fvector vAxis, const _float& fRadian);
 	void Rotation(const _float3& rDegrees);
 	void Turn(_fvector vAxis, const _double& TimeDelta);
+	void LeapJump(const _float& fForce, const _double& TimeDelta);
 
 	void Scaled(const _float3& vScale);
 

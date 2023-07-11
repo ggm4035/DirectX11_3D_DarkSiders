@@ -1,14 +1,12 @@
 #include "stdafx.h"
 #include "CMainApp.h"
 
+#include "MonoBehavior_Defines.h"
+
 #include "CGameInstance.h"
 #include "CLevel_Loading.h"
 #include "CPlayer.h"
 #include "CWeapon.h"
-#include "CPlayerAction.h"
-#include "CMoveAction.h"
-#include "CJumpAction.h"
-#include "CAttackAction.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -35,6 +33,12 @@ HRESULT Client::CMainApp::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component_For_Static()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Behaviors()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Parts()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Player()))
@@ -155,6 +159,70 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	return S_OK;
 }
 
+HRESULT CMainApp::Ready_Behaviors()
+{
+	/* Root */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Root",
+		CRoot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Selector */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Selector",
+		CSelector::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Sequence */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Sequence",
+		CSequence::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* ==== Behaviors ==== */
+
+	/* Tsk_RandomLook */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_RandomLook",
+		CRandomLook::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Run */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Run",
+		CRun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Walk */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Walk",
+		CWalk::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Wait */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Wait",
+		CWait::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Spawn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Spawn",
+		CSpawn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Hit */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Hit",
+		CHit::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Attack_1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack_1",
+		CAttack_1::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* ==== Monster Actions ==== */
+
+	/* Sequence_Patrol */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Sequence_Patrol",
+		CMonster_Patrol::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CMainApp::Ready_Player()
 {
 	string FilePath;
@@ -179,12 +247,8 @@ HRESULT CMainApp::Ready_Player()
 	m_vecModelDatas.push_back(Data);
 
 	/* Weapon Model */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Model_Weapon",
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Model_PlayerWeapon",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
-		return E_FAIL;
-
-	/* For. Weapon */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Weapon", CWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. PlayerAction */
@@ -205,6 +269,15 @@ HRESULT CMainApp::Ready_Player()
 	/* For. Player_AttackAction */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"AttackAction",
 		CAttackAction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Parts()
+{
+	/* For. Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Weapon", CWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

@@ -88,8 +88,8 @@ void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 {
 	if (true == m_Qmessage.empty())
 	{
-		pOnwer->OnCollisionExit(TimeDelta);
 		m_eCurrentState = STATE_NONE;
+		pOnwer->OnCollisionExit(TimeDelta);
 		return;
 	}
 
@@ -102,7 +102,7 @@ void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 		Collision.pOther = static_cast<CGameObject3D*>(pOther->m_pOwner);
 		Collision.pMyCollider = this;
 		Collision.pOtherTransform = Collision.pOther->Get_Transform();
-		XMStoreFloat3(&Collision.vOtherMoveDirection, Collision.pOtherTransform->Get_MoveDirection());
+		XMStoreFloat4(&Collision.vOtherPosition, Collision.pOtherTransform->Get_State(CTransform::STATE_POSITION));
 
 		switch (m_eCurrentState)
 		{

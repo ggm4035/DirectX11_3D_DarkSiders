@@ -2,6 +2,8 @@
 
 #include "CModel.h"
 #include "CNavigation.h"
+#include "CGameObject3D.h"
+#include "CCollider.h"
 
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -137,7 +139,7 @@ void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
 		return;
 
-	XMStoreFloat3(&m_vMoveDir, vDirection);
+	//XMStoreFloat3(&m_vMoveDir, vDirection);
 	Set_State(STATE_POSITION, vPosition);
 }
 
@@ -155,11 +157,9 @@ void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const
 
 _bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
 {
-	//static _float fTime = (cosf(TimeDelta) + 1.f) * 0.5f;
+	m_fTimeAcc += TimeDelta;;
 
-	m_fTimeAcc += TimeDelta;// *fTime;
-
-	_float fY = fForce * m_fTimeAcc - 3.f * m_fTimeAcc * m_fTimeAcc;
+	_float fY = fForce * m_fTimeAcc - 0.8f * m_fTimeAcc * m_fTimeAcc;
 
 	_vector vPosition = Get_State(STATE_POSITION);
 
@@ -238,6 +238,28 @@ void CTransform::Turn(_fvector vAxis, const _double& TimeDelta)
 	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotationMatrix));
 	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotationMatrix));
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
+}
+
+void CTransform::LeapJump(const _float& fForce, const _double& TimeDelta)
+{
+	m_fTimeAcc += TimeDelta;;
+	_float fY = fForce * m_fTimeAcc - 0.8f * m_fTimeAcc * m_fTimeAcc;
+
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition.m128_f32[1] += fY;
+
+	if (0.f > fY && 35.f > vPosition.m128_f32[1])
+	{
+		vPosition.m128_f32[1] = 35.f;
+		Set_State(STATE_POSITION, vPosition);
+		return;
+	}
+
+	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
+	Set_State(STATE_POSITION, vPosition);
+
 }
 
 void CTransform::Scaled(const _float3& vScale)

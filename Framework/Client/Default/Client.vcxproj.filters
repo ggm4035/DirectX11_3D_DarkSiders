@@ -88,6 +88,21 @@
     <Filter Include="02. GameObject\Sky">
       <UniqueIdentifier>{252be5a5-5b01-48b1-ab5c-1e3ace9753ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Monster\Goblin">
+      <UniqueIdentifier>{360022fb-c20d-401b-bb3a-f801ff5d02b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Monster\HellHound">
+      <UniqueIdentifier>{35bfc28f-cdd0-4fa8-80b6-ec20273d3293}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Monster\Legion">
+      <UniqueIdentifier>{9d89151e-3112-4c20-9c45-a43795daf8cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Monster\00. Actions">
+      <UniqueIdentifier>{5b4f2b31-8ccc-401c-a693-cb172f9839b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Monster\Legion\Legion_Melee">
+      <UniqueIdentifier>{1e4704ac-6cb5-448d-adc9-71fa62a730cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -162,6 +177,39 @@
     <ClInclude Include="..\Public\CSky.h">
       <Filter>02. GameObject\Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CGoblin.h">
+      <Filter>02. GameObject\Monster\Goblin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHellHound.h">
+      <Filter>02. GameObject\Monster\HellHound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonoBehavior_Defines.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CWalk.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMonster_Patrol.h">
+      <Filter>02. GameObject\Monster\00. Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRandomLook.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CWait.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHit.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSpawn.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAttack_1.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLegion_Melee.h">
+      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -224,6 +272,36 @@
     <ClCompile Include="..\Private\CSky.cpp">
       <Filter>02. GameObject\Sky</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CGoblin.cpp">
+      <Filter>02. GameObject\Monster\Goblin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHellHound.cpp">
+      <Filter>02. GameObject\Monster\HellHound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CWalk.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMonster_Patrol.cpp">
+      <Filter>02. GameObject\Monster\00. Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRandomLook.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CWait.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHit.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSpawn.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAttack_1.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLegion_Melee.cpp">
+      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -271,6 +349,5 @@
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
       <Filter>97. ShaderFiles</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

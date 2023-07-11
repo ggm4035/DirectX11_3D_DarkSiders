@@ -14,7 +14,7 @@ public:
 	{
 		class CGameObject3D* pOther = { nullptr };
 		class CTransform* pOtherTransform = { nullptr };
-		_float3 vOtherMoveDirection;
+		_float4 vOtherPosition;
 		CCollider* pMyCollider = { nullptr };
 		CCollider* pOtherCollider = { nullptr };
 	}COLLISION;

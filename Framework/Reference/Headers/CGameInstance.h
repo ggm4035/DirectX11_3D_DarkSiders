@@ -25,6 +25,14 @@ public:
 	void Tick_Engine(const _double& TimeDelta);
 	void Clear_LevelResources(const _uint& iLevelIndex); // 레벨 리소스를 지운다.
 
+public:
+	class CGameObject3D* Get_Player() {
+		return m_pPlayer;
+	}
+	void Set_Player(class CGameObject3D* pPlayer) {
+		m_pPlayer = pPlayer;
+		Safe_AddRef(pPlayer);
+	}
 public: /* For.Graphic_Device */
 	HRESULT Clear_BackBuffer_View(const _float4& vClearColor);
 	HRESULT Clear_DepthStencil_View();
@@ -118,6 +126,9 @@ public: /* For.Collider_Manager */
 
 public: /* For. Imgui */
 	void ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight);
+
+private:
+	class CGameObject3D* m_pPlayer = { nullptr };
 
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };

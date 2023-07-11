@@ -81,12 +81,12 @@ void CImWindow_Animation::Show_Animation_KeyFrame(CGameInstance* pGameInstance)
     m_iCurrentFrame = m_pModelCom->Get_CurrentKeyFrameIndex();
     m_iCurrentRootFrame = m_pModelCom->Get_CurrentRootKeyFrameIndex();
 
-    if (ImGui::SliderInt("Animation Frame", &m_iCurrentFrame, 0, m_iMaxKeyFrames - 1))
+    if (ImGui::SliderInt("Animation Frame", &m_iCurrentFrame, 0, m_iMaxKeyFrames - 2))
     {
         m_pModelCom->Set_KeyFrame(m_iCurrentFrame);
     }
 
-    if (ImGui::SliderInt("Animation Root Frame", &m_iCurrentRootFrame, 0, m_iMaxRootKeyFrames - 1))
+    if (ImGui::SliderInt("Animation Root Frame", &m_iCurrentRootFrame, 0, m_iMaxRootKeyFrames - 2))
     {
         m_pModelCom->Set_RootKeyFrame(m_iCurrentRootFrame);
     }

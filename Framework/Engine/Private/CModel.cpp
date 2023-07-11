@@ -76,7 +76,8 @@ const CBone* CModel::Get_Bone(const _char* pBoneName)
 
 void CModel::Change_Animation(const string& strTag)
 {
-	if (string::npos != m_pCurrentAnimation->m_strName.find(strTag))
+	if (string::npos == m_pCurrentAnimation->m_strName.find("Impact") &&
+		string::npos != m_pCurrentAnimation->m_strName.find(strTag))
 		return;
 
 	CAnimation* pAnimation = Find_Animation(strTag);

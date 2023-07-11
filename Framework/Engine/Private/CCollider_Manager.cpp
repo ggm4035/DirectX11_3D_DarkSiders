@@ -24,6 +24,7 @@ void CCollider_Manager::Tick()
 	/* 콜라이더 충돌 체크 */
 	Collision(COL_PLAYERATK, COL_ENEMY);
 	Collision(COL_ENEMY, COL_PLAYER);
+	Collision(COL_ENEMY, COL_ENEMY);
 	Collision(COL_ENEMYATK, COL_PLAYER);
 	Collision(COL_ENEMYRANGE, COL_PLAYER);
 }
@@ -54,8 +55,14 @@ void CCollider_Manager::Collision(COLLIDERGROUP SrcGroup, COLLIDERGROUP DestGrou
 	{
 		for (auto& pDestCollider : m_ColliderList[DestGroup])
 		{
+			if (SrcGroup == DestGroup &&
+				pSrcCollider == pDestCollider)
+				continue;
+
 			if (true == pSrcCollider->Intersect(pDestCollider))
+			{
 				pSrcCollider->Push_Collision_Message(pDestCollider);
+			}
 		}
 	}
 }

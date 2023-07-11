@@ -14,6 +14,12 @@ BEGIN(Client)
 
 class CWeapon : public CParts
 {
+public:
+	typedef struct tagWeaponDesc : public PARENTDESC
+	{
+		wstring wstrModelTag = { L"" };
+	}WEAPONDESC;
+
 private:
 	explicit CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CWeapon(const CWeapon& rhs);

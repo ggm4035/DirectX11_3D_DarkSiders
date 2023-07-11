@@ -168,11 +168,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\CAttackAction.h" />
+    <ClInclude Include="..\Public\CAttack_1.h" />
+    <ClInclude Include="..\Public\CGoblin.h" />
+    <ClInclude Include="..\Public\CHellHound.h" />
+    <ClInclude Include="..\Public\CHit.h" />
     <ClInclude Include="..\Public\CJumpAction.h" />
+    <ClInclude Include="..\Public\CLegion_Melee.h" />
+    <ClInclude Include="..\Public\CMonster_Patrol.h" />
     <ClInclude Include="..\Public\CMoveAction.h" />
     <ClInclude Include="..\Public\CPlayerAction.h" />
+    <ClInclude Include="..\Public\CRandomLook.h" />
     <ClInclude Include="..\Public\CRun.h" />
     <ClInclude Include="..\Public\CSky.h" />
+    <ClInclude Include="..\Public\CSpawn.h" />
     <ClInclude Include="..\Public\CStatic_Object.h" />
     <ClInclude Include="..\Public\CUI_Rect.h" />
     <ClInclude Include="..\Public\CCamera_Free.h" />
@@ -185,7 +193,10 @@
     <ClInclude Include="..\Public\CMonster.h" />
     <ClInclude Include="..\Public\CPlayer.h" />
     <ClInclude Include="..\Public\CTerrain.h" />
+    <ClInclude Include="..\Public\CWait.h" />
+    <ClInclude Include="..\Public\CWalk.h" />
     <ClInclude Include="..\Public\CWeapon.h" />
+    <ClInclude Include="..\Public\MonoBehavior_Defines.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -193,11 +204,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\CAttackAction.cpp" />
+    <ClCompile Include="..\Private\CAttack_1.cpp" />
+    <ClCompile Include="..\Private\CGoblin.cpp" />
+    <ClCompile Include="..\Private\CHellHound.cpp" />
+    <ClCompile Include="..\Private\CHit.cpp" />
     <ClCompile Include="..\Private\CJumpAction.cpp" />
+    <ClCompile Include="..\Private\CLegion_Melee.cpp" />
+    <ClCompile Include="..\Private\CMonster_Patrol.cpp" />
     <ClCompile Include="..\Private\CMoveAction.cpp" />
     <ClCompile Include="..\Private\CPlayerAction.cpp" />
+    <ClCompile Include="..\Private\CRandomLook.cpp" />
     <ClCompile Include="..\Private\CRun.cpp" />
     <ClCompile Include="..\Private\CSky.cpp" />
+    <ClCompile Include="..\Private\CSpawn.cpp" />
     <ClCompile Include="..\Private\CStatic_Object.cpp" />
     <ClCompile Include="..\Private\CUI_Rect.cpp" />
     <ClCompile Include="..\Private\CCamera_Free.cpp" />
@@ -209,6 +228,8 @@
     <ClCompile Include="..\Private\CMonster.cpp" />
     <ClCompile Include="..\Private\CPlayer.cpp" />
     <ClCompile Include="..\Private\CTerrain.cpp" />
+    <ClCompile Include="..\Private\CWait.cpp" />
+    <ClCompile Include="..\Private\CWalk.cpp" />
     <ClCompile Include="..\Private\CWeapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -238,7 +259,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

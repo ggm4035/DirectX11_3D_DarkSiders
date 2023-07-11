@@ -1,0 +1,26 @@
+Materials[1] =
+{
+    Materials[0] = MaterialInstanceConstant'/Game/Characters/Creatures/Legion/Textures/LegionChampion_Weapon_Inst_B.LegionChampion_Weapon_Inst_B'
+}
+SourceModels[0] = {}
+StaticMaterials[1] =
+{
+    StaticMaterials[0] =
+    {
+        MaterialInterface = MaterialInstanceConstant'/Game/Characters/Creatures/Legion/Textures/LegionChampion_Weapon_Inst_B.LegionChampion_Weapon_Inst_B'
+        MaterialSlotName = LegionChampion_Weapon_B_
+        UVChannelData =
+        {
+            bInitialized = true
+            bOverrideDensities = false
+            LocalUVDensities[4] = { 433.9, 519.611, 0, 0 }
+        }
+    }
+}
+Sockets[0] = {}
+ExtendedBounds =
+{
+    Origin = { X=-3.99248, Y=-7.39914, Z=57.3157 }
+    BoxExtent = { X=73.5307, Y=97.9664, Z=199.581 }
+    SphereRadius = 211.344
+}

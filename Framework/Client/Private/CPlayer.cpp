@@ -4,7 +4,7 @@
 #include "CGameInstance.h"
 
 #include "CPlayerAction.h"
-#include "CParts.h"
+#include "CWeapon.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject3D(pDevice, pContext)
@@ -37,6 +37,8 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 		m_pTransformCom->Set_Matrix(reinterpret_cast<PLAYERDESC*>(pArg)->WorldMatrix);
 		m_pTransformCom->Set_Angle(reinterpret_cast<PLAYERDESC*>(pArg)->vAngle);
 	}
+
+	CGameInstance::GetInstance()->Set_Player(this);
 
 	return S_OK;
 }
@@ -124,12 +126,21 @@ HRESULT CPlayer::Render()
 void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack_Range")
-		cout << "공격 해써요!" << endl;
+	{
+		Collision.pOther->Get_Damaged();
+
+		cout << "공격" << endl;
+	}
 
 }
 
 void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Body")
+	{
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&Collision.vOtherPosition));
+		m_pTransformCom->Repersive(vDir, TimeDelta);
+	}
 }
 
 void CPlayer::OnCollisionExit(const _double& TimeDelta)
@@ -187,7 +198,7 @@ HRESULT CPlayer::Add_Components()
 
 HRESULT CPlayer::Add_Parts()
 {
-	CParts::PARENTDESC Desc;
+	CWeapon::WEAPONDESC Desc;
 
 	const CBone* pBone = m_pModelCom->Get_Bone("Bone_War_Weapon_Sword");
 	if (nullptr == pBone)
@@ -201,6 +212,8 @@ HRESULT CPlayer::Add_Parts()
 
 	Desc.SpeedPerSec = 7.0;
 	Desc.RotationPerSec = XMConvertToRadians(90.0);
+
+	Desc.wstrModelTag = L"Model_PlayerWeapon";
 
 	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon", this, &Desc)))
 		return E_FAIL;

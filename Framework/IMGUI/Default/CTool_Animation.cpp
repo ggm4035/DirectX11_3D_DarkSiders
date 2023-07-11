@@ -410,6 +410,7 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
             m_pModel->Get_Model()->Set_Translation(i, vTranslation);
         }
     }
+
     else
     {
         vTranslation = _float3(arr[0], arr[1], arr[2]);
@@ -429,6 +430,7 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
             m_pModel->Get_Model()->Set_KeyFrameTime(i, fTime);
         }
     }
+
     else
         m_pModel->Get_Model()->Set_KeyFrameTime(iMaxFrameIndex, fTime);
 
@@ -444,6 +446,17 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
     {
         Release_Animation_Data();
         m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
+
+        _uint iAnimIndex = 0;
+        for (auto& Data : m_vecAnimationDatas)
+        {
+            vector<TIMERANGE> vecTimeRanges;
+
+            for(_uint i = 0; i < Data.iNumRanges; ++i)
+                vecTimeRanges.push_back(Data.pTimeRanges[i]);
+
+            m_vecRanges.push_back(vecTimeRanges);
+        }
         TOOL->m_pAnimationWindow->Refresh_Animation();
     }
 }
@@ -470,6 +483,9 @@ void CTool_Animation::NotifySetting(CGameInstance* pGameInstance)
             pItems[i] = to_string(i);
             ppItem[i] = pItems[i].c_str();
         }
+
+        if (iSelected >= m_vecRanges[m_iCurrentAnimationIndex].size())
+            iSelected = 0;
         
         if (ImGui::BeginCombo("##Ranges", ppItem[iSelected]))
         {
@@ -479,7 +495,6 @@ void CTool_Animation::NotifySetting(CGameInstance* pGameInstance)
                 if (ImGui::Selectable(pItems[i].c_str(), is_selected))
                     iSelected = i;
 
-                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                 if (is_selected)
                     ImGui::SetItemDefaultFocus();
             }

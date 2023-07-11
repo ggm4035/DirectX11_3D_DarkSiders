@@ -23,6 +23,15 @@ HRESULT CWeapon::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 	if (FAILED(CParts::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		WEAPONDESC Desc = *reinterpret_cast<WEAPONDESC*>(pArg);
+
+		if (FAILED(Add_Component(LEVEL_STATIC, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
+			(CComponent**)&m_pModelCom, this)))
+			return E_FAIL;
+	}
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -39,13 +48,10 @@ void CWeapon::Tick(const _double& TimeDelta)
 	else
 		BoneMatrix = XMLoadFloat4x4(&m_OffsetMatrix) * XMLoadFloat4x4(m_pCombinedTransformationMatrix) * XMLoadFloat4x4(&m_PivotMatrix);
 
-	//m_pTransformCom->Animation_Movement(dynamic_cast<CModel*>(dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Component(L"Com_Model")), TimeDelta);
-
 	for (_uint i = 0; i < 3; ++i)
 		BoneMatrix.r[i] = XMVector3Normalize(BoneMatrix.r[i]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * BoneMatrix * XMLoadFloat4x4(m_pParentWorldMatrix));
-	//XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix));
 }
 
 HRESULT CWeapon::Render()
@@ -75,10 +81,6 @@ HRESULT CWeapon::Add_Components()
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_Mesh", L"Com_Shader_Mesh",
 		(CComponent**)&m_pShaderCom, this)))
-		return E_FAIL;
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Model_Weapon", L"Com_Model_Weapon",
-		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
 	return S_OK;

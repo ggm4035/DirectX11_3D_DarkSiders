@@ -14,22 +14,27 @@ private:
 	virtual ~CBlackBoard() = default;
 
 public:
-	template<typename T>
-	HRESULT Set_Type(IN const wstring & Typename, IN T & Type)
+	HRESULT Set_Type(IN const wstring & Typename, IN any Type)
 	{
-		m_umapType.emplace(Typename, Type);
+		auto iter = m_umapType.find(Typename);
+
+		if (iter == m_umapType.end())
+			m_umapType.emplace(Typename, Type);
+
+		else
+			iter->second = Type;
 
 		return S_OK;
 	}
 
 	template<typename T>
-	HRESULT Get_Type(IN const wstring & Typename, OUT T & Out)
+	HRESULT Get_Type(IN const wstring & Typename, OUT T& Out)
 	{
 		auto iter = m_umapType.find(Typename);
 		if (iter == m_umapType.end())
 			return E_FAIL;
 
-		Out = any_cast<T>(*iter);
+		Out = any_cast<T>(iter->second);
 
 		return S_OK;
 	}

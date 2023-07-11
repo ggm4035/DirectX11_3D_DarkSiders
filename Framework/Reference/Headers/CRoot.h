@@ -17,6 +17,9 @@ public:
 	virtual HRESULT Tick(const _double& TimeDelta) override;
 
 public:
+	HRESULT Add_Type(const wstring& wstrTypename, any Type);
+
+public:
 	static CRoot* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CRoot* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
 	virtual void Free() override;

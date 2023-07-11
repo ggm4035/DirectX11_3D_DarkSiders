@@ -21,7 +21,7 @@ HRESULT CCamera_Free::Initialize_Prototype()
 HRESULT CCamera_Free::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CCamera::CAMERADESC CameraDesc;
-	CameraDesc.vEye = _float4(100.f, 55.f, 10.f, 1.f);
+	CameraDesc.vEye = _float4(90.f, 55.f, 10.f, 1.f);
 	CameraDesc.vAt = _float4(95.f, 35.f, 15.f, 1.f);
 	CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
 

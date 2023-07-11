@@ -23,6 +23,9 @@ HRESULT CSelector::Tick(const _double& TimeDelta)
 	if (0 == m_BehaviorList.size())
 		return E_FAIL;
 
+	if (false == Check_Decorations())
+		return BEHAVIOR_FAIL;
+
 	_int iResult = m_iterCurBehavior->pBehavior->Tick(TimeDelta);
 
 	switch (iResult)
@@ -43,7 +46,7 @@ HRESULT CSelector::Tick(const _double& TimeDelta)
 			return BEHAVIOR_FAIL;
 		}
 		else
-			return BEHAVIOR_RUNNING;
+			return Tick(TimeDelta);
 
 	case BEHAVIOR_ERROR:
 		return BEHAVIOR_ERROR;
