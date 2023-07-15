@@ -36,12 +36,35 @@ HRESULT CCamera_Free::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 	if (FAILED(CCamera::Initialize(iLevelIndex, pOwner, &CameraDesc)))
 		return E_FAIL;
 
+	m_vOffsets = _float3(0.f, 15.f, -10.f);
+
 	return S_OK;
 }
 
 void CCamera_Free::Tick(const _double& TimeDelta)
 {
 	Key_Input(TimeDelta);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CTransform* pPlayerTransform = pGameInstance->Get_Player()->Get_Transform();
+
+	_matrix ParentMatrix = pPlayerTransform->Get_WorldMatrix();
+
+	ParentMatrix.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	ParentMatrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	ParentMatrix.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	_matrix WorldMatrix = /* XMMatrixRotationY */XMMatrixTranslation(m_vOffsets.x, m_vOffsets.y, m_vOffsets.z) * ParentMatrix;
+	_float4x4 WorldFloat4x4;
+	XMStoreFloat4x4(&WorldFloat4x4, WorldMatrix);
+	m_pTransformCom->Set_Matrix(WorldFloat4x4);
+
+	XMStoreFloat4(&m_vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));
+
+	Safe_Release(pGameInstance);
 
 	CCamera::Tick(TimeDelta);
 }
@@ -64,18 +87,6 @@ void CCamera_Free::Key_Input(const _double& TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
-
-	if (pGameInstance->Key_Pressing(DIK_UP))
-		m_pTransformCom->Cam_Straight(TimeDelta);
-
-	if (pGameInstance->Key_Pressing(DIK_DOWN))
-		m_pTransformCom->Cam_Backward(TimeDelta);
-
-	if (pGameInstance->Key_Pressing(DIK_LEFT))
-		m_pTransformCom->Cam_Left(TimeDelta);
-
-	if (pGameInstance->Key_Pressing(DIK_RIGHT))
-		m_pTransformCom->Cam_Right(TimeDelta);
 
 	if (pGameInstance->Mouse_Pressing(CInput_Device::DIM_RB))
 	{

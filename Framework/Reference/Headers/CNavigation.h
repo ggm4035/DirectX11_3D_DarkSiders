@@ -35,6 +35,7 @@ public:
 
 public:
 	RETURNDESC is_Move(_fvector vPosition);
+	_float is_OnNavigation(_fvector vPosition);
 
 private:
 	NAVIGATIONDESC m_NavigationDesc;

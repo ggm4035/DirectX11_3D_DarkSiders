@@ -23,10 +23,13 @@ private:
     class CDummyObject3D* m_pModel = { nullptr };
 
     vector<ANIMATIONDATA> m_vecAnimationDatas;
-    vector<vector<TIMERANGE>> m_vecRanges;
+
     list<CComponent*> m_PrototypeList;
     string m_strFilePath = { "" };
+    _char m_szColliderNotifyTag[MAX_PATH] = { "" };
     _uint m_iCurrentAnimationIndex = { 0 };
+    _uint m_iCurrentNotifyPointIndex = { 0 };
+    _bool m_isAddNotify = { false };
 
 private:
     void Make_New_Model(CGameInstance* pGameInstance, list<class CDummyObject3D*>* pObjectList);
@@ -34,11 +37,10 @@ private:
     void Export_Animation(CGameInstance* pGameInstance);
     void KeyFrameSetting(CGameInstance* pGameInstance);
     void NotifySetting(CGameInstance* pGameInstance);
-    void Release_Animation_Data();
+    void Add_Notify(CGameInstance* pGameInstance);
 
 private:
-    void Store_NotifyDatas();
-    void Refresh_TimeRanges();
+    wstring* Find_NotifyTag(const wstring& wstrTag);
 
 public:
     virtual void Free() override;

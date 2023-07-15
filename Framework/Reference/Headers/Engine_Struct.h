@@ -27,16 +27,9 @@ namespace Engine
 	/* Notify Datas */
 	typedef struct tagNotifyDesc
 	{
-		wstring wstrNotifyTag;
+		_float fPoint = { 0.f };
+		vector<wstring> vecNotifyTags;
 	}NOTIFYDESC;
-
-	/* Animation Publisher Data */
-	typedef struct tagTimeRange
-	{
-		OBSERVERTYPE arrTypes[OBSERVERTYPE::TYPE_END];
-		_float fStartPoint = { 0.f };
-		_float fEndPoint = { 0.f };
-	}TIMERANGE;
 
 	/* ========= VERTEX DESC ========= */
 
@@ -202,7 +195,7 @@ namespace Engine
 	{
 		_char szName[MAX_PATH] = { "" };
 		_uint iNumKeyFrames = { 0 };
-		KEYFRAME* pKeyFrames = { nullptr };
+		vector<KEYFRAME> vecKeyFrames;
 	}CHANNELDATA;
 
 	typedef struct tagAnimationData
@@ -213,9 +206,9 @@ namespace Engine
 		_uint iNumChannels = { 0 };
 		_bool bIsLoop = { true };
 		_bool bIsFollowAnimation = { true };
-		_uint iNumRanges = { 0 };
-		TIMERANGE* pTimeRanges = { nullptr }; 
-		CHANNELDATA* pChannels = { nullptr };
+		_uint iNumPoints = { 0 };
+		vector<NOTIFYDESC> vecNotifyDesc;
+		vector<CHANNELDATA> vecChannels;
 	}ANIMATIONDATA;
 
 	typedef struct tagModelBinaryData
@@ -227,7 +220,7 @@ namespace Engine
 		_uint iNumBones = { 0 }; // 모델이 가지고 있는 전체 뼈의 개수
 		BONEDATA* pBoneDatas = { nullptr }; // 전체 모델의 뼈 정보
 		_uint iNumAnimations = { 0 };
-		ANIMATIONDATA* pAnimations = { nullptr };
+		vector<ANIMATIONDATA> vecAnimations;
 		MESHDATA* pMeshDatas = { nullptr };
 	}MODEL_BINARYDATA;
 

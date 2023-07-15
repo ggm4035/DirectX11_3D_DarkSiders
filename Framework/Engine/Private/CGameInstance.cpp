@@ -459,14 +459,6 @@ void CGameInstance::WriteModels(const string& strFilePath, const list<string>& F
 	return m_pFileInfo->WriteModels(strFilePath, FilePathList, vecData);
 }
 
-void CGameInstance::ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData)
-{
-	if (nullptr == m_pFileInfo)
-		return;
-
-	return m_pFileInfo->ReadModels(strFilePath, FilePathList, vecData);
-}
-
 void CGameInstance::ReadModel(const string& strFilePath, OUT string& FilePath, OUT MODEL_BINARYDATA& Data)
 {
 	if (nullptr == m_pFileInfo)

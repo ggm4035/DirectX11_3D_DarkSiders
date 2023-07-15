@@ -289,19 +289,7 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
     }
 
     if (ImGui::Button("Create new Object"))
-        ImGui::OpenPopup("Create");
-
-    if (ImGui::BeginPopupContextItem("Create"))
-    {
-        if (ImGui::Selectable("3D Object"))
-            TOOL->m_pCreateWindow->m_bIsOpen = true;
-
-        if (ImGui::Selectable("Camera"))
-        {
-
-        }
-        ImGui::EndPopup();
-    }
+        TOOL->m_pCreateWindow->m_bIsOpen = true;
 
     if (ImGui::Button("Delete"))
     {

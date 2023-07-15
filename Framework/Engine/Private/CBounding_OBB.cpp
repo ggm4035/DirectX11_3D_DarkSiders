@@ -47,6 +47,7 @@ HRESULT CBounding_OBB::Initialize(void* pArg)
 
 void CBounding_OBB::Tick(const _float3& vOffset, _fmatrix ParentWorldMatrix)
 {
+	m_isColl = { false };
 	_matrix Matrix = XMMatrixTranslation(vOffset.x, vOffset.y, vOffset.z) * ParentWorldMatrix;
 	m_pOBB_Original->Transform(*m_pOBB, Matrix);
 }
@@ -64,7 +65,6 @@ HRESULT CBounding_OBB::Render()
 
 _bool CBounding_OBB::Intersect(CCollider::TYPE eType, CBounding* pBounding)
 {
-	m_isColl = { false };
 
 	switch (eType)
 	{

@@ -5,9 +5,17 @@
 
 BEGIN(Engine)
 
-class CAnimation final : public CBase, IObserver_Animation
+class CAnimation final : public CBase, IPublisher_Animation, IObserver_Animation
 {
 	friend class CModel;
+
+public:
+	typedef struct tagObserver
+	{
+		_bool isNotify = { false };
+		NOTIFYDESC NotifyDesc;
+		list<IObserver_Animation*> ObserverList;
+	}OBSERVERDESC;
 
 private:
 	explicit CAnimation();
@@ -15,12 +23,6 @@ private:
 	virtual ~CAnimation() = default;
 
 public:
-	vector<TIMERANGE> Get_TimeRanges() const {
-		return m_vecTimeRange;
-	}
-	const _float& Get_TimeAcc() const {
-		return m_TimeAcc;
-	}
 	_bool isFollowAnimation() const {
 		return m_isFollowAnimation;
 	}
@@ -39,11 +41,17 @@ public:
 public:
 	HRESULT Initialize(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones);
 	void Invalidate_TransformationMatrix(CModel::BONES& Bones, const _double& TimeDelta);
-
 	void Reset_Animation();
+	void Reset_Notifys();
+	HRESULT Bind_Notifys(class CGameObject3D* pGameObject);
 
 public:
-	virtual void Update_Observer(NOTIFYDESC* pNotifyDesc) override {
+	// IPublisher_Animation을(를) 통해 상속됨
+	virtual void Attach(const _float& fPoint, IObserver_Animation* pObserver) override;
+	virtual void Detach(const _float& fPoint, IObserver_Animation* pObserver) override;
+	virtual void Notify(const float& fPoint) override;
+
+	virtual void Update_Observer() override {
 		m_isAbleChange = true;
 	}
 
@@ -69,7 +77,7 @@ private:
 	CAnimation* m_pLerpAnimation = { nullptr };
 
 	_uint m_iNumChannels = { 0 };
-	vector<TIMERANGE> m_vecTimeRange;
+	vector<OBSERVERDESC> m_vecObservers;
 	vector<class CChannel*> m_vecChannels;
 	vector<_uint> m_vecChannelBlockKeyFrames;
 	vector<_uint> m_vecChannelCurrentKeyFrames;
@@ -78,6 +86,7 @@ private:
 	HRESULT Ready_TimeRanges(const ANIMATIONDATA& AnimationData);
 	HRESULT Ready_Channels(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones);
 	_bool Lerp_Animation(CModel::BONES& Bones, const _double& TimeDelta);
+	list<IObserver_Animation*>* Find_Observer(const _float& fPoint);
 
 public:
 	static CAnimation* Create(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones);
@@ -90,7 +99,6 @@ public: /* !!! Warrning !!! Only Tool */
 	const _uint& Get_MaxKeyFrames() const {
 		return m_iMaxNumFrames;
 	}
-
 	void Pause_Animation() {
 		m_isPause = true;
 	}

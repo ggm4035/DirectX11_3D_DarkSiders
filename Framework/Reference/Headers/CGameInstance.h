@@ -95,7 +95,6 @@ public: /* For.FileInfo */
 	string wstrToStr(const wstring wstr);
 	HRESULT Extraction_Data(const string & strPath, const _char * pExt, OUT list<string>&FilePathList);
 	void WriteModels(const string & strFilePath, const list<string>&FilePathList, const vector<MODEL_BINARYDATA>&vecData);
-	void ReadModels(const string & strFilePath, OUT list<string>&FilePathList, OUT vector<MODEL_BINARYDATA>&vecData);
 	void ReadModel(const string & strFilePath, OUT string & FilePath, OUT MODEL_BINARYDATA & Data);
 	HRESULT Load(const string & strFilePath, OUT FILEDATA& OutData);
 

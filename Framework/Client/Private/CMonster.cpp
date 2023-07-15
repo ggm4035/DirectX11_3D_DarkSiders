@@ -53,23 +53,27 @@ HRESULT CMonster::Render(const _uint& iPassIndex)
 
 void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Body")
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Body" &&
+		Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
-		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&Collision.vOtherPosition));
+		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
 		m_pTransformCom->Repersive(vDir, TimeDelta);
 	}
 }
 
 void CMonster::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Body") 
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Body" &&
+		Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
-		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&Collision.vOtherPosition));
+		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
 		m_pTransformCom->Repersive(vDir, TimeDelta);
 	}
 }
 
-void CMonster::OnCollisionExit(const _double& TimeDelta)
+void CMonster::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 }
 

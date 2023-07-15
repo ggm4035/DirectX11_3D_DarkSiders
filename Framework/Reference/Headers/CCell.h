@@ -36,6 +36,7 @@ public:
 	HRESULT Initialize(const _float3* pPoints, const _int& iIndex);
 	_bool Compare_Points(_fvector vSourPoint, _fvector vDestPoint);
 	RETURNDESC is_In(_fvector vPosition);
+	_float is_On(_fvector vPosition);
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

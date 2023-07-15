@@ -100,6 +100,15 @@ CCell::RETURNDESC CCell::is_In(_fvector vPosition)
 	return RetDesc;
 }
 
+_float CCell::is_On(_fvector vPosition)
+{
+	_vector vPlane = XMPlaneFromPoints(XMLoadFloat3(&m_arrPoints[POINT_A]), XMLoadFloat3(&m_arrPoints[POINT_B]), XMLoadFloat3(&m_arrPoints[POINT_C]));
+	
+	/* y = (-ax -cz - d) / b*/
+	return (-XMVectorGetX(vPlane) * XMVectorGetX(vPosition)
+		- XMVectorGetZ(vPlane) * XMVectorGetZ(vPosition) - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
+}
+
 _bool CCell::isEqual(_fvector vSourPoint, _fvector vDestPoint)
 {
 	for (_uint i = 0; i < 3; ++i)

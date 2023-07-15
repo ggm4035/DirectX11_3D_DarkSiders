@@ -30,7 +30,7 @@ void CPlayerAction::Set_State(STATE eState)
 			break;
 
 		case Client::CPlayerAction::STATE_RUN:
-			m_pModelCom->Change_Animation("Run_F");
+			m_pModelCom->Change_Animation("Run");
 			break;
 
 		case Client::CPlayerAction::STATE_LATK_1:
@@ -211,7 +211,8 @@ CPlayerAction* CPlayerAction::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CPlayerAction::Free()
 {
-	Safe_Release(m_pModelCom);
+	if(true == m_isCloned)
+		Safe_Release(m_pModelCom);
 
 	Safe_Release(m_pMoveAction);
 	Safe_Release(m_pJumpAction);

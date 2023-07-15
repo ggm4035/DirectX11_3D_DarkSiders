@@ -2,6 +2,7 @@
 #include "CGoblin.h"
 
 #include "MonoBehavior_Defines.h"
+#include "CBlackBoard.h"
 #include "CGameInstance.h"
 #include "CPlayer.h"
 
@@ -23,12 +24,22 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	return S_OK;
 }
 
 void CGoblin::Tick(const _double& TimeDelta)
 {
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
+
+	if (false == m_isSpawn)
+	{
+		_vector vPosition = XMLoadFloat4(&m_vResponPosition);
+
+		vPosition.m128_f32[1] = vPosition.m128_f32[1] - 3.f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	}
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -40,12 +51,14 @@ void CGoblin::Tick(const _double& TimeDelta)
 
 	m_pRoot->Tick(TimeDelta);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
 	if (nullptr != m_pColBody)
 		m_pColBody->Tick(m_pTransformCom->Get_WorldMatrix());
 	if (nullptr != m_pColRange)
 		m_pColRange->Tick(m_pTransformCom->Get_WorldMatrix());
+	if (nullptr != m_pColAttack)
+		m_pColAttack->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 0.5f, 1.f));
 }
 
 void CGoblin::AfterFrustumTick(const _double& TimeDelta)
@@ -57,6 +70,7 @@ void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 	{
 		pGameInstance->Add_Collider(COL_ENEMY, m_pColBody);
 		pGameInstance->Add_Collider(COL_ENEMYRANGE, m_pColRange);
+		pGameInstance->Add_Collider(COL_ENEMYATK, m_pColAttack);
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
@@ -70,6 +84,7 @@ void CGoblin::Late_Tick(const _double& TimeDelta)
 {
 	m_pColBody->On_Collision(this, TimeDelta); 
 	m_pColRange->On_Collision(this, TimeDelta);
+	m_pColAttack->On_Collision(this, TimeDelta);
 }
 
 HRESULT CGoblin::Render()
@@ -83,6 +98,8 @@ HRESULT CGoblin::Render()
 		m_pColBody->Render();
 	if (nullptr != m_pColRange)
 		m_pColRange->Render();
+	if (nullptr != m_pColAttack)
+		m_pColAttack->Render();
 
 #endif
 
@@ -93,7 +110,8 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	if (Collision.pMyCollider == m_pColRange &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
 		m_isSpawn = true;
@@ -103,15 +121,20 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 void CGoblin::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	if (Collision.pMyCollider == m_pColRange &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
 	}
 }
 
-void CGoblin::OnCollisionExit(const _double& TimeDelta)
+void CGoblin::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	m_isRangeInPlayer = false;
+	if (Collision.pMyCollider == m_pColRange &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isRangeInPlayer = false;
+	}
 }
 
 HRESULT CGoblin::Add_Components()
@@ -137,7 +160,18 @@ HRESULT CGoblin::Add_Components()
 		(CComponent**)&m_pColRange, this, &SphereDesc)))
 		return E_FAIL;
 
+	CBounding_AABB::AABBDESC AABBDesc;
+	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
+	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack",
+		(CComponent**)&m_pColAttack, this, &AABBDesc)))
+		return E_FAIL;
+
 	if (FAILED(Make_AI()))
+		return E_FAIL;
+
+	if (FAILED(m_pModelCom->Setup_Notifys()))
 		return E_FAIL;
 
 	return S_OK;
@@ -183,7 +217,18 @@ HRESULT CGoblin::Make_AI()
 	if (nullptr == pWait)
 		return E_FAIL;
 
-	pWait->Set_LimitTime(0.1f);
+	pWait->Set_LimitTime(1.f);
+
+	pWait->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			CGameObject3D::HITSTATE* pCurState = { nullptr };
+			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
+
+			if (CGameObject3D::NONE == *pCurState)
+				return true;
+			else
+				return false;
+		});
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
@@ -234,6 +279,7 @@ void CGoblin::Free()
 {
 	Safe_Release(m_pColBody);
 	Safe_Release(m_pColRange);
+	Safe_Release(m_pColAttack);
 
 	CMonster::Free();
 }

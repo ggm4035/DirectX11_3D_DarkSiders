@@ -77,23 +77,23 @@ HRESULT CMoveAction::Tick(const _double& TimeDelta)
 	case Client::CPlayerAction::STATE_HATK_3:
 		if (true == m_pModel->isAbleChangeAnimation())
 		{
-			m_pTransform->Go(vDirection, TimeDelta);
+			m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
 			pAction->Set_State(CPlayerAction::STATE_RUN);
 		}
 		break;
 
 	case Client::CPlayerAction::STATE_IDLE:
-		m_pTransform->Go(vDirection, TimeDelta);
+		m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_RUN:
-		m_pTransform->Go(vDirection, TimeDelta);
+		m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP_LAND:
-		m_pTransform->Go(vDirection, TimeDelta);
+		m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
@@ -135,8 +135,11 @@ CMoveAction* CMoveAction::Clone(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 void CMoveAction::Free()
 {
-	Safe_Release(m_pTransform);
-	Safe_Release(m_pModel);
+	if (true == m_isCloned)
+	{
+		Safe_Release(m_pTransform);
+		Safe_Release(m_pModel);
+	}
 
 	CBehavior::Free();
 }

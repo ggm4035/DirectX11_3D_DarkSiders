@@ -7,9 +7,6 @@
 #include "CWalk.h"
 
 #include "CGameInstance.h"
-#include "CGameObject3D.h"
-#include "CTransform.h"
-#include "CModel.h"
 
 CMonster_Patrol::CMonster_Patrol(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CSequence(pDevice, pContext)

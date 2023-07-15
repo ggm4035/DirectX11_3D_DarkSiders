@@ -40,7 +40,7 @@ void CHellHound::Tick(const _double& TimeDelta)
 
 	m_pRoot->Tick(TimeDelta);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
 	if (nullptr != m_pColBody)
 		m_pColBody->Tick(m_pTransformCom->Get_WorldMatrix());
@@ -93,24 +93,31 @@ void CHellHound::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	if (Collision.pMyCollider == m_pColRange &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
+		m_isSpawn = true;
 	}
 }
 
 void CHellHound::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	if (Collision.pMyCollider == m_pColRange &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
 	}
 }
 
-void CHellHound::OnCollisionExit(const _double& TimeDelta)
+void CHellHound::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	m_isRangeInPlayer = false;
+	if (Collision.pMyCollider == m_pColRange &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isRangeInPlayer = false;
+	}
 }
 
 HRESULT CHellHound::Add_Components()
@@ -166,9 +173,9 @@ HRESULT CHellHound::Make_AI()
 	if (nullptr == pSelector)
 		return E_FAIL;
 
-	CSpawn* pSpawn = dynamic_cast<CSpawn*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Spawn", this));
+	/*CSpawn* pSpawn = dynamic_cast<CSpawn*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Spawn", this));
 	if (nullptr == pSpawn)
-		return E_FAIL;
+		return E_FAIL;*/
 
 	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
 	if (nullptr == pHit)
@@ -182,8 +189,8 @@ HRESULT CHellHound::Make_AI()
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
-		return E_FAIL;
+	/*if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
+		return E_FAIL;*/
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
 		return E_FAIL;

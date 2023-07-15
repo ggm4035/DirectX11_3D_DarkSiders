@@ -17,15 +17,14 @@ HRESULT CChannel::Initialize(const CHANNELDATA& ChannelData, const CModel::BONES
 				++m_iBoneIndex;
 				return false;
 			}
+
 			else
 				return true;
 		});
 
 	/* Setting KeyFrame */
 	m_iNumKeyFrames = ChannelData.iNumKeyFrames;
-
-	for (_uint i = 0; i < m_iNumKeyFrames; ++i)
-		m_vecKeyFrames.push_back(ChannelData.pKeyFrames[i]);
+	m_vecKeyFrames = ChannelData.vecKeyFrames;
 
 	return S_OK;
 }

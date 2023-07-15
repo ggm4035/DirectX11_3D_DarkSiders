@@ -37,6 +37,17 @@ HRESULT CAttack_1::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
+			CGameObject3D::HITSTATE* pCurState = { nullptr };
+			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
+
+			if (CGameObject3D::NONE == *pCurState)
+				return true;
+			else
+				return false;
+		});
+
+	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
 			_bool* isRangeInPlayer = { false };
 
 			pBlackBoard->Get_Type<_bool*>(L"isRangeInPlayer", isRangeInPlayer);
@@ -50,7 +61,10 @@ HRESULT CAttack_1::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void
 HRESULT CAttack_1::Tick(const _double& TimeDelta)
 {
 	if (false == Check_Decorations())
+	{
+		m_isFirst = true;
 		return BEHAVIOR_FAIL;
+	}
 
 	CGameObject3D* pTarget = { nullptr };
 
@@ -59,16 +73,18 @@ HRESULT CAttack_1::Tick(const _double& TimeDelta)
 	if (true == m_isFirst)
 	{
 		m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		m_pModel->Change_Animation("Attack");
+		m_pModel->Change_Animation("Attack_1");
 		m_isFirst = false;
 	}
 
 	if (true == m_pModel->isFinishedAnimation())
 	{
 		m_isFirst = true;
+		m_pModel->Change_Animation("Idle");
+		return BEHAVIOR_SUCCESS;
 	}
 
-	return BEHAVIOR_SUCCESS;
+	return BEHAVIOR_RUNNING;
 }
 
 CAttack_1* CAttack_1::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

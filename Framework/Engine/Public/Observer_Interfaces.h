@@ -5,18 +5,19 @@
 namespace Engine
 {
 	/* Observer Animation */
-	class IObserver_Animation
+	class ENGINE_DLL IObserver_Animation abstract
 	{
 	public:
 		virtual ~IObserver_Animation() = default;
-		virtual void Update_Observer(NOTIFYDESC* pNotifyDesc) = 0;
+		virtual void Update_Observer() = 0;
 	};
 
-	class IPublisher_Animation
+	class ENGINE_DLL IPublisher_Animation abstract
 	{
 	public:
 		virtual ~IPublisher_Animation() = default;
-		virtual void Init_Observers(const vector<TIMERANGE>& vecRanges) = 0;
-		virtual void Clear_Observers() = 0;
+		virtual void Attach(const float& fPoint, class IObserver_Animation * pObserver) = 0;
+		virtual void Detach(const float& fPoint, class IObserver_Animation* pObserver) = 0;
+		virtual void Notify(const float& fPoint) = 0;
 	};
 }

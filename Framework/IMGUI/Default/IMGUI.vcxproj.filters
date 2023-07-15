@@ -55,9 +55,6 @@
     <Filter Include="02. GameObject\00. Dummy\3D">
       <UniqueIdentifier>{6fd08361-30c6-42d9-ae90-e6d7221409bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\00. Dummy\Camera">
-      <UniqueIdentifier>{ec8cb1ec-0a0d-453e-865a-63244f114bf9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. ImWindow\00. ImWindow_Base\Tool_Animation">
       <UniqueIdentifier>{b99913e1-b775-4eb2-a867-2a561db141d8}</UniqueIdentifier>
     </Filter>

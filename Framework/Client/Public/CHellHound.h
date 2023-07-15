@@ -27,7 +27,7 @@ public:
 public:
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) override;
-	virtual void OnCollisionExit(const _double& TimeDelta) override;
+	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 private:
 	CCollider* m_pColBody = { nullptr };

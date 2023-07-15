@@ -153,59 +153,63 @@ void CFileInfo::WriteModels(const string& strFilePath, const list<string>& FileP
 		WriteFile(hFile, &vecData[iDataIndex].iNumAnimations, sizeof(_uint), &dwByte, nullptr);
 
 		/*===== ANIMATION DATAS ======*/
-		for (_uint iAnimIndex = 0; iAnimIndex < vecData[iDataIndex].iNumAnimations; ++iAnimIndex)
+		for (auto& AnimationData : vecData[iDataIndex].vecAnimations)
 		{
 			/* Write szName */
-			_uint iNameLength = strlen(vecData[iDataIndex].pAnimations[iAnimIndex].szName) + 1;
+			_uint iNameLength = strlen(AnimationData.szName) + 1;
 			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+			WriteFile(hFile, AnimationData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 			/* Write Duration */
-			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.Duration, sizeof(_double), &dwByte, nullptr);
 
 			/* Write TickPerSec */
-			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.TickPerSec, sizeof(_double), &dwByte, nullptr);
 
 			/* Write iNumChannels */
-			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.iNumChannels, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write bIsLoop */
-			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
 			/* Write bIsFollowAnimation */
-			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
 
-			/* Write iNumRanges */
-			WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+			/* Write iNumPoints */
+			_uint iNumPoints = AnimationData.vecNotifyDesc.size();
+			WriteFile(hFile, &iNumPoints, sizeof(_uint), &dwByte, nullptr);
 
-			/*===== TIMERANGE DATAS ======*/
-			for (_uint iRangeIndex = 0; iRangeIndex < vecData[iDataIndex].pAnimations[iAnimIndex].iNumRanges; ++iRangeIndex)
+			/* Write NotifyDesc */
+			for (auto& Notify : AnimationData.vecNotifyDesc)
 			{
-				/* Write pTypes */
-				WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].arrTypes, 
-					sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
 
-				/* Write fStartPoint */
-				WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
-
-				/* Write fEndPoint */
-				WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+				_uint iNumTags = Notify.vecNotifyTags.size();
+				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
+				for (auto& Tags : Notify.vecNotifyTags)
+				{
+					_tchar szTag[MAX_PATH];
+					lstrcpy(szTag, Tags.c_str());
+					_uint iTagLength = Tags.size() + 1;
+					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+					WriteFile(hFile, szTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+				}
 			}
 
 			/*===== CHANNEL DATAS ======*/
-			for (_uint iChannelIndex = 0; iChannelIndex < vecData[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
+			for (auto& ChannelData : AnimationData.vecChannels)
 			{
 				/* Write szName */
-				iNameLength = strlen(vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName) + 1;
+				iNameLength = strlen(ChannelData.szName) + 1;
 				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-				WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+				WriteFile(hFile, ChannelData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 				/* Write iNumKeyFrames */
-				WriteFile(hFile, &vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, &ChannelData.iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
 
 				/* Write KeyFrame */
-				WriteFile(hFile, vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames,
-					sizeof(KEYFRAME) * vecData[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+				for (auto& KeyFrameData : ChannelData.vecKeyFrames)
+					WriteFile(hFile, &KeyFrameData, sizeof(KEYFRAME), &dwByte, nullptr);
 			}
 		}
 
@@ -259,257 +263,6 @@ void CFileInfo::WriteModels(const string& strFilePath, const list<string>& FileP
 	}
 }
 
-void CFileInfo::ReadModels(const string& strFilePath, OUT list<string>& FilePathList, OUT vector<MODEL_BINARYDATA>& vecData)
-{
-	FilePathList.clear();
-
-	HANDLE hFile = CreateFileA(strFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-		return;
-
-	_ulong dwByte = { 0 };
-
-	while (true)
-	{
-		MODEL_BINARYDATA Data;
-		ZeroMemory(&Data, sizeof Data);
-
-		_uint iPathLength = { 0 };
-		_char szFilePath[MAX_PATH] = { "" };
-		/* Read strFilePath */
-		ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, szFilePath, sizeof(_char) * iPathLength, &dwByte, nullptr);
-
-		if (0 != dwByte)
-			FilePathList.push_back(szFilePath);
-
-		/*========== BINARY DATAS ===========*/
-		/* Read szTag */
-		ReadFile(hFile, &iPathLength, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, Data.szTag, sizeof(_tchar) * iPathLength, &dwByte, nullptr);
-
-		/* Read iNumMeshes */
-		ReadFile(hFile, &Data.iNumMeshes, sizeof(_uint), &dwByte, nullptr);
-
-		/* Read iNumMaterials */
-		ReadFile(hFile, &Data.iNumMaterials, sizeof(_uint), &dwByte, nullptr);
-
-		/* Read pMaterialPaths */
-		MATERIALPATH* pMaterialPath = { nullptr };
-		if (0 < Data.iNumMaterials)
-		{
-			pMaterialPath = new MATERIALPATH[Data.iNumMaterials];
-			ZeroMemory(pMaterialPath, sizeof(MATERIALPATH) * Data.iNumMaterials);
-		}
-		_uint iTexturePathlength = { 0 };
-		for (_uint iMaterialIndex = 0; iMaterialIndex < Data.iNumMaterials; ++iMaterialIndex)
-		{
-			for (_uint iTextureIndex = 0; iTextureIndex < 21; ++iTextureIndex)
-			{
-				ReadFile(hFile, &iTexturePathlength, sizeof(_uint), &dwByte, nullptr);
-				ReadFile(hFile, pMaterialPath[iMaterialIndex].szMaterialTexturePath[iTextureIndex],
-					sizeof(_tchar) * iTexturePathlength, &dwByte, nullptr);
-			}
-		}
-
-		/* Read iNumBones */
-		ReadFile(hFile, &Data.iNumBones, sizeof(_uint), &dwByte, nullptr);
-
-		/*========== BONE DATAS ===========*/
-		BONEDATA* pBoneData = { nullptr };
-		if (0 < Data.iNumBones)
-		{
-			pBoneData = new BONEDATA[Data.iNumBones];
-			ZeroMemory(pBoneData, sizeof(BONEDATA) * Data.iNumBones);
-		}
-
-		for (_uint iBoneIndex = 0; iBoneIndex < Data.iNumBones; ++iBoneIndex)
-		{
-			/* Read szName_Bone */
-			_uint iNameLength = { 0 };
-			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			ReadFile(hFile, pBoneData[iBoneIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
-
-			/* Read iParentIdx */
-			ReadFile(hFile, &pBoneData[iBoneIndex].iParentIdx, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iIndex */
-			ReadFile(hFile, &pBoneData[iBoneIndex].iIndex, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read TransformationMatrix */
-			ReadFile(hFile, &pBoneData[iBoneIndex].TransformationMatrix, sizeof(_float4x4), &dwByte, nullptr);
-
-			/* Read OffsetMatrix */
-			ReadFile(hFile, &pBoneData[iBoneIndex].OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
-		}
-
-		/* Read iNumAnimations */
-		ReadFile(hFile, &Data.iNumAnimations, sizeof(_uint), &dwByte, nullptr);
-
-		/*========== ANIMATION DATAS ===========*/
-		ANIMATIONDATA* pAnimation = { nullptr };
-		if (0 < Data.iNumAnimations)
-		{
-			pAnimation = new ANIMATIONDATA[Data.iNumAnimations];
-			ZeroMemory(pAnimation, sizeof(ANIMATIONDATA) * Data.iNumAnimations);
-		}
-
-		for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
-		{
-			/* Read szName */
-			_uint iNameLength = { 0 };
-			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			ReadFile(hFile, pAnimation[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
-
-			/* Read Duration */
-			ReadFile(hFile, &pAnimation[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
-
-			/* Read TickPerSec */
-			ReadFile(hFile, &pAnimation[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
-
-			/* Read iNumChannels */
-			ReadFile(hFile, &pAnimation[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read bIsLoop */
-			ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
-
-			/* Read bIsFollowAnimation */
-			ReadFile(hFile, &pAnimation[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
-
-			/* Read iNumRanges */
-			ReadFile(hFile, &pAnimation[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
-
-			/*===== TIMERANGE DATAS ======*/
-			TIMERANGE* pTimeRange = { nullptr };
-			if (0 < pAnimation[iAnimIndex].iNumRanges)
-			{
-				pTimeRange = new TIMERANGE[pAnimation[iAnimIndex].iNumRanges];
-				ZeroMemory(pTimeRange, sizeof(TIMERANGE) * pAnimation[iAnimIndex].iNumRanges);
-			}
-			for (_uint iRangeIndex = 0; iRangeIndex < pAnimation[iAnimIndex].iNumRanges; ++iRangeIndex)
-			{
-				for (auto& Type : pTimeRange[iRangeIndex].arrTypes)
-					Type = OBSERVERTYPE::TYPE_END;
-
-				/* Read arrTypes */
-				ReadFile(hFile, pTimeRange[iRangeIndex].arrTypes, sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
-
-				/* Read fStartPoint */
-				ReadFile(hFile, &pTimeRange[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
-
-				/* Read fEndPoint */
-				ReadFile(hFile, &pTimeRange[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
-			}
-
-			/*========== CHANNEL DATAS ===========*/
-			CHANNELDATA* pChannel = { nullptr };
-			if (0 < pAnimation[iAnimIndex].iNumChannels)
-			{
-				pChannel = new CHANNELDATA[pAnimation[iAnimIndex].iNumChannels];
-				ZeroMemory(pChannel, sizeof(CHANNELDATA) * pAnimation[iAnimIndex].iNumChannels);
-			}
-
-			for (_uint iChannelIndex = 0; iChannelIndex < pAnimation[iAnimIndex].iNumChannels; ++iChannelIndex)
-			{
-				/* Read szName */
-				iNameLength = strlen(pChannel[iChannelIndex].szName) + 1;
-				ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-				ReadFile(hFile, pChannel[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
-
-				/* Read iNumKeyFrames */
-				ReadFile(hFile, &pChannel[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
-
-				/* Read KeyFrame */
-				KEYFRAME* pKeyFrame = { nullptr };
-				if (0 < pChannel[iChannelIndex].iNumKeyFrames)
-				{
-					pKeyFrame = new KEYFRAME[pChannel[iChannelIndex].iNumKeyFrames];
-					ZeroMemory(pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames);
-				}
-
-				ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
-				pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
-			}
-			pAnimation[iAnimIndex].pTimeRanges = pTimeRange;
-			pAnimation[iAnimIndex].pChannels = pChannel;
-		}
-
-		/*========== MESH DATAS ===========*/
-		MESHDATA* pMeshData = new MESHDATA[Data.iNumMeshes];
-		ZeroMemory(pMeshData, sizeof(MESHDATA) * Data.iNumMeshes);
-		for (_uint iMeshIndex = 0; iMeshIndex < Data.iNumMeshes; ++iMeshIndex)
-		{
-			/* Read szMesh Name*/
-			_uint iNameLength = { 0 };
-			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			ReadFile(hFile, pMeshData[iMeshIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
-
-			/* Read iMaterialIndex */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iNumNonAnimVertices */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iNumNonAnimVertices, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iNumAnimVertices */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iNumAnimVertices, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iNumIndices */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iNumIndices, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read iNumMeshBones */
-			ReadFile(hFile, &pMeshData[iMeshIndex].iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
-
-			/* Read pBoneIndices */
-			pMeshData[iMeshIndex].pBoneIndices = new _uint[pMeshData[iMeshIndex].iNumMeshBones];
-			ZeroMemory(pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones);
-			ReadFile(hFile, pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
-
-			/* Read pNonAnimVertices */
-			VTXMESH* pNonAnimVertices = { nullptr };
-			if (0 < pMeshData[iMeshIndex].iNumNonAnimVertices)
-			{
-				pNonAnimVertices = new VTXMESH[pMeshData[iMeshIndex].iNumNonAnimVertices];
-				ZeroMemory(pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices);
-				ReadFile(hFile, pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
-			}
-
-			/* Read pAnimVertices */
-			VTXANIMMESH* pAnimVertices = { nullptr };
-			if (0 < pMeshData[iMeshIndex].iNumAnimVertices)
-			{
-				pAnimVertices = new VTXANIMMESH[pMeshData[iMeshIndex].iNumAnimVertices];
-				ZeroMemory(pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices);
-				ReadFile(hFile, pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
-			}
-
-			/* Read pIndices */
-			_ulong* pIndices = new _ulong[pMeshData[iMeshIndex].iNumIndices];
-			ZeroMemory(pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices);
-			ReadFile(hFile, pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices, &dwByte, nullptr);
-
-			pMeshData[iMeshIndex].pNonAnimVertices = pNonAnimVertices;
-			pMeshData[iMeshIndex].pAnimVertices = pAnimVertices;
-			pMeshData[iMeshIndex].pIndices = pIndices;
-		}
-
-		if (0 == dwByte)
-		{
-			Safe_Delete_Array(pMeshData);
-			break;
-		}
-
-		Data.pAnimations = pAnimation;
-		Data.pMaterialPaths = pMaterialPath;
-		Data.pBoneDatas = pBoneData;
-		Data.pMeshDatas = pMeshData;
-
-		vecData.push_back(Data);
-	}
-
-	CloseHandle(hFile);
-}
-
 void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT MODEL_BINARYDATA& Data)
 {
 	HANDLE hFile = CreateFileA(strFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -518,8 +271,6 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 		return;
 
 	_ulong dwByte = { 0 };
-
-	ZeroMemory(&Data, sizeof Data);
 
 	_uint iPathLength = { 0 };
 	_char szFilePath[MAX_PATH] = { "" };
@@ -546,7 +297,6 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 	if (0 < Data.iNumMaterials)
 	{
 		pMaterialPath = new MATERIALPATH[Data.iNumMaterials];
-		ZeroMemory(pMaterialPath, sizeof(MATERIALPATH) * Data.iNumMaterials);
 	}
 	_uint iTexturePathlength = { 0 };
 	for (_uint iMaterialIndex = 0; iMaterialIndex < Data.iNumMaterials; ++iMaterialIndex)
@@ -567,7 +317,6 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 	if (0 < Data.iNumBones)
 	{
 		pBoneData = new BONEDATA[Data.iNumBones];
-		ZeroMemory(pBoneData, sizeof(BONEDATA) * Data.iNumBones);
 	}
 
 	for (_uint iBoneIndex = 0; iBoneIndex < Data.iNumBones; ++iBoneIndex)
@@ -594,96 +343,77 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 	ReadFile(hFile, &Data.iNumAnimations, sizeof(_uint), &dwByte, nullptr);
 
 	/*========== ANIMATION DATAS ===========*/
-	ANIMATIONDATA* pAnimation = { nullptr };
-	if (0 < Data.iNumAnimations)
-	{
-		pAnimation = new ANIMATIONDATA[Data.iNumAnimations];
-		ZeroMemory(pAnimation, sizeof(ANIMATIONDATA) * Data.iNumAnimations);
-	}
-
 	for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
 	{
+		ANIMATIONDATA AnimationData;
 		/* Read szName */
 		_uint iNameLength = { 0 };
 		ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, pAnimation[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+		ReadFile(hFile, AnimationData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 		/* Read Duration */
-		ReadFile(hFile, &pAnimation[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.Duration, sizeof(_double), &dwByte, nullptr);
 
 		/* Read TickPerSec */
-		ReadFile(hFile, &pAnimation[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.TickPerSec, sizeof(_double), &dwByte, nullptr);
 
 		/* Read iNumChannels */
-		ReadFile(hFile, &pAnimation[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.iNumChannels, sizeof(_uint), &dwByte, nullptr);
 
 		/* Read bIsLoop */
-		ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
 		/* Read bIsFollowAnimation */
-		ReadFile(hFile, &pAnimation[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
 
 		/* Read iNumRanges */
-		ReadFile(hFile, &pAnimation[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
 
-		/*===== TIMERANGE DATAS ======*/
-		TIMERANGE* pTimeRange = { nullptr };
-		if (0 < pAnimation[iAnimIndex].iNumRanges)
+		/* Read vecNotifyDesc */
+		for (_uint iPointIndex = 0; iPointIndex < AnimationData.iNumPoints; ++iPointIndex)
 		{
-			pTimeRange = new TIMERANGE[pAnimation[iAnimIndex].iNumRanges];
-			ZeroMemory(pTimeRange, sizeof(TIMERANGE) * pAnimation[iAnimIndex].iNumRanges);
-		}
-		for (_uint iRangeIndex = 0; iRangeIndex < pAnimation[iAnimIndex].iNumRanges; ++iRangeIndex)
-		{
-			for (auto& Type : pTimeRange[iRangeIndex].arrTypes)
-				Type = OBSERVERTYPE::TYPE_END;
+			NOTIFYDESC NotifyDesc;
+			ReadFile(hFile, &NotifyDesc.fPoint, sizeof(_float), &dwByte, nullptr);
 
-			/* Read arrTypes */
-			ReadFile(hFile, pTimeRange[iRangeIndex].arrTypes, sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
-
-			/* Read fStartPoint */
-			ReadFile(hFile, &pTimeRange[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
-
-			/* Read fEndPoint */
-			ReadFile(hFile, &pTimeRange[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+			_uint iNumTags = { 0 };
+			ReadFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
+			for (_uint iTagIndex = 0; iTagIndex < iNumTags; ++iTagIndex)
+			{
+				_tchar szTag[MAX_PATH] = { L"" };
+				_uint iTagLength = { 0 };
+				ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+				ReadFile(hFile, szTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+				NotifyDesc.vecNotifyTags.push_back(szTag);
+			}
+			AnimationData.vecNotifyDesc.push_back(NotifyDesc);
 		}
 
 		/*========== CHANNEL DATAS ===========*/
-		CHANNELDATA* pChannel = { nullptr };
-		if (0 < pAnimation[iAnimIndex].iNumChannels)
+		for (_uint iChannelIndex = 0; iChannelIndex < AnimationData.iNumChannels; ++iChannelIndex)
 		{
-			pChannel = new CHANNELDATA[pAnimation[iAnimIndex].iNumChannels];
-			ZeroMemory(pChannel, sizeof(CHANNELDATA) * pAnimation[iAnimIndex].iNumChannels);
-		}
-
-		for (_uint iChannelIndex = 0; iChannelIndex < pAnimation[iAnimIndex].iNumChannels; ++iChannelIndex)
-		{
+			CHANNELDATA ChannelData;
 			/* Read szName */
-			iNameLength = strlen(pChannel[iChannelIndex].szName) + 1;
+			iNameLength = { 0 };
 			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			ReadFile(hFile, pChannel[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+			ReadFile(hFile, ChannelData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 			/* Read iNumKeyFrames */
-			ReadFile(hFile, &pChannel[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &ChannelData.iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
 
 			/* Read KeyFrame */
-			KEYFRAME* pKeyFrame = { nullptr };
-			if (0 < pChannel[iChannelIndex].iNumKeyFrames)
+			for (_uint iKeyFrameIndex = 0; iKeyFrameIndex < ChannelData.iNumKeyFrames; ++iKeyFrameIndex)
 			{
-				pKeyFrame = new KEYFRAME[pChannel[iChannelIndex].iNumKeyFrames];
-				ZeroMemory(pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames);
+				KEYFRAME KeyFrame;
+				ReadFile(hFile, &KeyFrame, sizeof(KEYFRAME), &dwByte, nullptr);
+				ChannelData.vecKeyFrames.push_back(KeyFrame);
 			}
-
-			ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
-			pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
+			AnimationData.vecChannels.push_back(ChannelData);
 		}
-		pAnimation[iAnimIndex].pTimeRanges = pTimeRange;
-		pAnimation[iAnimIndex].pChannels = pChannel;
+		Data.vecAnimations.push_back(AnimationData);
 	}
 
 	/*========== MESH DATAS ===========*/
 	MESHDATA* pMeshData = new MESHDATA[Data.iNumMeshes];
-	ZeroMemory(pMeshData, sizeof(MESHDATA) * Data.iNumMeshes);
 	for (_uint iMeshIndex = 0; iMeshIndex < Data.iNumMeshes; ++iMeshIndex)
 	{
 		/* Read szMesh Name*/
@@ -708,7 +438,6 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 
 		/* Read pBoneIndices */
 		pMeshData[iMeshIndex].pBoneIndices = new _uint[pMeshData[iMeshIndex].iNumMeshBones];
-		ZeroMemory(pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones);
 		ReadFile(hFile, pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
 
 		/* Read pNonAnimVertices */
@@ -716,7 +445,6 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 		if (0 < pMeshData[iMeshIndex].iNumNonAnimVertices)
 		{
 			pNonAnimVertices = new VTXMESH[pMeshData[iMeshIndex].iNumNonAnimVertices];
-			ZeroMemory(pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices);
 			ReadFile(hFile, pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
 		}
 
@@ -725,13 +453,11 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 		if (0 < pMeshData[iMeshIndex].iNumAnimVertices)
 		{
 			pAnimVertices = new VTXANIMMESH[pMeshData[iMeshIndex].iNumAnimVertices];
-			ZeroMemory(pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices);
 			ReadFile(hFile, pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
 		}
 
 		/* Read pIndices */
 		_ulong* pIndices = new _ulong[pMeshData[iMeshIndex].iNumIndices];
-		ZeroMemory(pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices);
 		ReadFile(hFile, pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices, &dwByte, nullptr);
 
 		pMeshData[iMeshIndex].pNonAnimVertices = pNonAnimVertices;
@@ -739,7 +465,6 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 		pMeshData[iMeshIndex].pIndices = pIndices;
 	}
 
-	Data.pAnimations = pAnimation;
 	Data.pMaterialPaths = pMaterialPath;
 	Data.pBoneDatas = pBoneData;
 	Data.pMeshDatas = pMeshData;
@@ -781,7 +506,6 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 	for (_uint i = 0; i < iNumObjects; ++i)
 	{
 		MODELDATA Data;
-		ZeroMemory(&Data, sizeof(MODELDATA));
 
 		/* Read szTag */
 		_uint iTagLength = { 0 };
@@ -806,7 +530,6 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 	for (_uint i = 0; i < iNumObjects; ++i)
 	{
 		MODELDATA Data;
-		ZeroMemory(&Data, sizeof(MODELDATA));
 
 		/* Read szTag */
 		_uint iTagLength = { 0 };
@@ -840,8 +563,6 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 
 void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte)
 {
-	ZeroMemory(&Data, sizeof Data);
-
 	_uint iPathLength = { 0 };
 	/*========== BINARY DATAS ===========*/
 	/* Read szTag */
@@ -880,7 +601,6 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 	if (0 < Data.iNumBones)
 	{
 		pBoneData = new BONEDATA[Data.iNumBones];
-		ZeroMemory(pBoneData, sizeof(BONEDATA) * Data.iNumBones);
 	}
 
 	for (_uint iBoneIndex = 0; iBoneIndex < Data.iNumBones; ++iBoneIndex)
@@ -907,96 +627,77 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 	ReadFile(hFile, &Data.iNumAnimations, sizeof(_uint), &dwByte, nullptr);
 
 	/*========== ANIMATION DATAS ===========*/
-	ANIMATIONDATA* pAnimation = { nullptr };
-	if (0 < Data.iNumAnimations)
-	{
-		pAnimation = new ANIMATIONDATA[Data.iNumAnimations];
-		ZeroMemory(pAnimation, sizeof(ANIMATIONDATA) * Data.iNumAnimations);
-	}
-
 	for (_uint iAnimIndex = 0; iAnimIndex < Data.iNumAnimations; ++iAnimIndex)
 	{
+		ANIMATIONDATA AnimationData;
 		/* Read szName */
-		_uint iNameLength = strlen(pAnimation[iAnimIndex].szName) + 1;
+		_uint iNameLength = { 0 };
 		ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-		ReadFile(hFile, pAnimation[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+		ReadFile(hFile, AnimationData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 		/* Read Duration */
-		ReadFile(hFile, &pAnimation[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.Duration, sizeof(_double), &dwByte, nullptr);
 
 		/* Read TickPerSec */
-		ReadFile(hFile, &pAnimation[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.TickPerSec, sizeof(_double), &dwByte, nullptr);
 
 		/* Read iNumChannels */
-		ReadFile(hFile, &pAnimation[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.iNumChannels, sizeof(_uint), &dwByte, nullptr);
 
 		/* Read bIsLoop */
-		ReadFile(hFile, &pAnimation[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
 		/* Read bIsFollowAnimation */
-		ReadFile(hFile, &pAnimation[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
 
 		/* Read iNumRanges */
-		ReadFile(hFile, &pAnimation[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
 
-		/*===== TIMERANGE DATAS ======*/
-		TIMERANGE* pTimeRange = { nullptr };
-		if (0 < pAnimation[iAnimIndex].iNumRanges)
+		/* Read vecNotifyDesc */
+		for (_uint iPointIndex = 0; iPointIndex < AnimationData.iNumPoints; ++iPointIndex)
 		{
-			pTimeRange = new TIMERANGE[pAnimation[iAnimIndex].iNumRanges];
-			ZeroMemory(pTimeRange, sizeof(TIMERANGE) * pAnimation[iAnimIndex].iNumRanges);
-		}
-		for (_uint iRangeIndex = 0; iRangeIndex < pAnimation[iAnimIndex].iNumRanges; ++iRangeIndex)
-		{
-			for (auto& Type : pTimeRange[iRangeIndex].arrTypes)
-				Type = OBSERVERTYPE::TYPE_END;
+			NOTIFYDESC NotifyDesc;
+			ReadFile(hFile, &NotifyDesc.fPoint, sizeof(_float), &dwByte, nullptr);
 
-			/* Read arrTypes */
-			ReadFile(hFile, pTimeRange[iRangeIndex].arrTypes, sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
-
-			/* Read fStartPoint */
-			ReadFile(hFile, &pTimeRange[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
-
-			/* Read fEndPoint */
-			ReadFile(hFile, &pTimeRange[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+			_uint iNumTags = { 0 };
+			ReadFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
+			for (_uint iTagIndex = 0; iTagIndex < iNumTags; ++iTagIndex)
+			{
+				_tchar szTag[MAX_PATH] = { L"" };
+				_uint iTagLength = { 0 };
+				ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+				ReadFile(hFile, szTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+				NotifyDesc.vecNotifyTags.push_back(szTag);
+			}
+			AnimationData.vecNotifyDesc.push_back(NotifyDesc);
 		}
 
 		/*========== CHANNEL DATAS ===========*/
-		CHANNELDATA* pChannel = { nullptr };
-		if (0 < pAnimation[iAnimIndex].iNumChannels)
+		for (_uint iChannelIndex = 0; iChannelIndex < AnimationData.iNumChannels; ++iChannelIndex)
 		{
-			pChannel = new CHANNELDATA[pAnimation[iAnimIndex].iNumChannels];
-			ZeroMemory(pChannel, sizeof(CHANNELDATA) * pAnimation[iAnimIndex].iNumChannels);
-		}
-
-		for (_uint iChannelIndex = 0; iChannelIndex < pAnimation[iAnimIndex].iNumChannels; ++iChannelIndex)
-		{
+			CHANNELDATA ChannelData;
 			/* Read szName */
-			iNameLength = strlen(pChannel[iChannelIndex].szName) + 1;
+			iNameLength = strlen(ChannelData.szName) + 1;
 			ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			ReadFile(hFile, pChannel[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+			ReadFile(hFile, ChannelData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 			/* Read iNumKeyFrames */
-			ReadFile(hFile, &pChannel[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &ChannelData.iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
 
 			/* Read KeyFrame */
-			KEYFRAME* pKeyFrame = { nullptr };
-			if (0 < pChannel[iChannelIndex].iNumKeyFrames)
+			for (_uint iKeyFrameIndex = 0; iKeyFrameIndex < ChannelData.iNumKeyFrames; ++iKeyFrameIndex)
 			{
-				pKeyFrame = new KEYFRAME[pChannel[iChannelIndex].iNumKeyFrames];
-				ZeroMemory(pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames);
+				KEYFRAME KeyFrame;
+				ReadFile(hFile, &KeyFrame, sizeof(KEYFRAME), &dwByte, nullptr);
+				ChannelData.vecKeyFrames.push_back(KeyFrame);
 			}
-
-			ReadFile(hFile, pKeyFrame, sizeof(KEYFRAME) * pChannel[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
-			pChannel[iChannelIndex].pKeyFrames = pKeyFrame;
+			AnimationData.vecChannels.push_back(ChannelData);
 		}
-		pAnimation[iAnimIndex].pTimeRanges = pTimeRange;
-		pAnimation[iAnimIndex].pChannels = pChannel;
+		Data.vecAnimations.push_back(AnimationData);
 	}
 
 	/*========== MESH DATAS ===========*/
 	MESHDATA* pMeshData = new MESHDATA[Data.iNumMeshes];
-	ZeroMemory(pMeshData, sizeof(MESHDATA) * Data.iNumMeshes);
 	for (_uint iMeshIndex = 0; iMeshIndex < Data.iNumMeshes; ++iMeshIndex)
 	{
 		/* Read szMesh Name*/
@@ -1021,7 +722,6 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 
 		/* Read pBoneIndices */
 		pMeshData[iMeshIndex].pBoneIndices = new _uint[pMeshData[iMeshIndex].iNumMeshBones];
-		ZeroMemory(pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones);
 		ReadFile(hFile, pMeshData[iMeshIndex].pBoneIndices, sizeof(_uint) * pMeshData[iMeshIndex].iNumMeshBones, &dwByte, nullptr);
 
 		/* Read pNonAnimVertices */
@@ -1029,7 +729,6 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 		if (0 < pMeshData[iMeshIndex].iNumNonAnimVertices)
 		{
 			pNonAnimVertices = new VTXMESH[pMeshData[iMeshIndex].iNumNonAnimVertices];
-			ZeroMemory(pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices);
 			ReadFile(hFile, pNonAnimVertices, sizeof(VTXMESH) * pMeshData[iMeshIndex].iNumNonAnimVertices, &dwByte, nullptr);
 		}
 
@@ -1038,13 +737,11 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 		if (0 < pMeshData[iMeshIndex].iNumAnimVertices)
 		{
 			pAnimVertices = new VTXANIMMESH[pMeshData[iMeshIndex].iNumAnimVertices];
-			ZeroMemory(pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices);
 			ReadFile(hFile, pAnimVertices, sizeof(VTXANIMMESH) * pMeshData[iMeshIndex].iNumAnimVertices, &dwByte, nullptr);
 		}
 
 		/* Read pIndices */
 		_ulong* pIndices = new _ulong[pMeshData[iMeshIndex].iNumIndices];
-		ZeroMemory(pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices);
 		ReadFile(hFile, pIndices, sizeof(_ulong) * pMeshData[iMeshIndex].iNumIndices, &dwByte, nullptr);
 
 		pMeshData[iMeshIndex].pNonAnimVertices = pNonAnimVertices;
@@ -1052,7 +749,6 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 		pMeshData[iMeshIndex].pIndices = pIndices;
 	}
 
-	Data.pAnimations = pAnimation;
 	Data.pMaterialPaths = pMaterialPath;
 	Data.pBoneDatas = pBoneData;
 	Data.pMeshDatas = pMeshData;

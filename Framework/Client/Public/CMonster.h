@@ -36,9 +36,9 @@ public:
 	virtual HRESULT Render(const _uint& iPassIndex);
 
 public:
-	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta);
-	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta);
-	virtual void OnCollisionExit(const _double& TimeDelta);
+	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
+	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) override;
+	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 protected:
 	CRoot* m_pRoot = { nullptr };

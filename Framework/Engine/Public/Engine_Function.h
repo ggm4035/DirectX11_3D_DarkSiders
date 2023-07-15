@@ -66,17 +66,7 @@ namespace Engine
 	template <typename T>
 	void Safe_Delete_BinaryData(T& Data)
 	{
-		for (_uint i = 0; i < Data.iNumAnimations; ++i)
-		{
-			Safe_Delete_Array(Data.pAnimations[i].pTimeRanges);
-
-			for (_uint j = 0; j < Data.pAnimations[i].iNumChannels; ++j)
-			{
-				Safe_Delete_Array(Data.pAnimations[i].pChannels[j].pKeyFrames);
-			}
-			Safe_Delete_Array(Data.pAnimations[i].pChannels);
-		}
-		Safe_Delete_Array(Data.pAnimations);
+		Data.vecAnimations.clear();
 
 		for (_uint i = 0; i < Data.iNumMeshes; ++i)
 		{

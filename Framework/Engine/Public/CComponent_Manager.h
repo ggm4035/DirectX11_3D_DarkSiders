@@ -8,7 +8,6 @@
 #include "CCollider.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CPublisher_Animation.h"
 #include "CNavigation.h"
 #include "CShader.h"
 #include "CCamera.h"

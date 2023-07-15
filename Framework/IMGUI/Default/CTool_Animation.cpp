@@ -120,12 +120,10 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
                 string strTag = m_vecAnimationDatas[m_iCurrentAnimationIndex].szName;
                 m_pModel->Get_Model()->Delete_Animation(strTag);
                 m_iCurrentAnimationIndex = 0 > --m_iCurrentAnimationIndex ? 0 : m_iCurrentAnimationIndex;
-                
+
                 m_pModel->Get_Model()->Change_Animation(m_vecAnimationDatas[m_iCurrentAnimationIndex].szName);
-                Release_Animation_Data();
                 m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
-                Refresh_TimeRanges();
-                TOOL->m_pAnimationWindow->Refresh_Animation(); 
+                TOOL->m_pAnimationWindow->Refresh_Animation();
             }
 
             ImGui::SameLine();
@@ -169,7 +167,6 @@ void CTool_Animation::Tick(CGameInstance* pGameInstance, list<class CDummyObject
             TOOL->m_pAnimationWindow->Set_Model(nullptr);
             TOOL->m_pCamera->Set_OriginView();
             WINDOWMGR->Refresh_All_Window();
-            Release_Animation_Data();
         }
     }
 }
@@ -246,11 +243,9 @@ void CTool_Animation::Make_New_Model(CGameInstance* pGameInstance, list<class CD
             /* Add Animation */
             for (_uint i = 1; i < Data.iNumAnimations; ++i)
             {
-                m_pModel->Get_Model()->Add_Animation(Data.pAnimations[i]);
+                m_pModel->Get_Model()->Add_Animation(Data.vecAnimations[i]);
             }
             m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
-
-            Refresh_TimeRanges();
 
             Safe_Delete_BinaryData(Data);
         }
@@ -286,9 +281,6 @@ void CTool_Animation::Add_Animation(CGameInstance* pGameInstance, const string& 
     {
         if (0 == strcmp(Data.szName, vecAnimData[0].szName))
         {
-            Release_Animation_Data();
-            m_vecAnimationDatas = vecAnimData;
-            Release_Animation_Data();
             m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
             return;
         }
@@ -297,66 +289,20 @@ void CTool_Animation::Add_Animation(CGameInstance* pGameInstance, const string& 
     /* 이 부분은 모든 애니메이션 전용 모델은 하나의 애니메이션만 가지고 있다고 가정하고 진행하는 것임. */
     m_pModel->Get_Model()->Add_Animation(vecAnimData[0]);
 
-    Release_Animation_Data();
-    m_vecAnimationDatas = vecAnimData;
-    Release_Animation_Data();
     m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
-
-    Refresh_TimeRanges();
 }
 
 void CTool_Animation::Export_Animation(CGameInstance* pGameInstance)
 {
-    //// display
-    //if (ImGuiFileDialog::Instance()->Display("ChooseSaveFileKey"))
-    //{
-    //    // action if OK
-    //    if (ImGuiFileDialog::Instance()->IsOk())
-    //    {
-    //        string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-    //        string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-    //        // action
-
-    //        _ulong dwByte = { 0 };
-    //        /* Model 저장 */
-    //        HANDLE hFile = CreateFileA(filePathName.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-
-    //        if (INVALID_HANDLE_VALUE == hFile)
-    //        {
-    //            MSG_BOX("Failed Open Save File");
-    //            return;
-    //        }
-
-    //        CloseHandle(hFile);
-
-    //        MSG_BOX("Success Save Files");
-    //    }
-    //    // close
-    //    ImGuiFileDialog::Instance()->Close();
-    //}
-
     list<string> FilePathList;
     FilePathList.push_back(m_strFilePath);
 
     vector<MODEL_BINARYDATA> Temp;
     MODEL_BINARYDATA Data = m_pModel->Get_Model_BinaryData();
 
-    Data.pAnimations = nullptr;
-
-    ANIMATIONDATA* pAnimations = New ANIMATIONDATA[m_vecAnimationDatas.size()];
-
-    /* 따로 저장한 Notify 데이터를 작업한 데이터에 옮기기 */
-    Store_NotifyDatas();
-
     /* 저장 할 데이터에 작업한 데이터를 대입 */
-    _uint iNumAnimation = 0;
-    for (auto& AnimData : m_vecAnimationDatas)
-    {
-        pAnimations[iNumAnimation] = AnimData;
-        ++iNumAnimation;
-    }
-    Data.iNumAnimations = iNumAnimation;
-    Data.pAnimations = pAnimations;
+    Data.iNumAnimations = m_vecAnimationDatas.size();
+    Data.vecAnimations = m_vecAnimationDatas;
 
     Temp.push_back(Data);
 
@@ -371,12 +317,10 @@ void CTool_Animation::Export_Animation(CGameInstance* pGameInstance)
     /* Remove Datas */
     pGameInstance->Remove_GameObject(m_pModel->Get_Tag());
     m_pModel = nullptr;
+    m_vecAnimationDatas.clear();
     TOOL->m_pAnimationWindow->Set_Model(nullptr);
     TOOL->m_pCamera->Set_OriginView();
     WINDOWMGR->Refresh_All_Window();
-    Release_Animation_Data();
-
-    Safe_Delete_Array(pAnimations);
 
     MSG_BOX("Success to Export");
 }
@@ -442,20 +386,17 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
     ImGui::DragFloat("TickPerSec", &fTickPerSec, 0.001f, 0.f, 1000.f);
     m_pModel->Get_Model()->Set_TickPerSec(fTickPerSec);
 
-    if(ImGui::Button("Apply##Animation Datas"))
+    if (ImGui::Button("Apply##Animation Datas"))
     {
-        Release_Animation_Data();
         m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
 
         _uint iAnimIndex = 0;
         for (auto& Data : m_vecAnimationDatas)
         {
-            vector<TIMERANGE> vecTimeRanges;
+            vector<_float> vecPoints;
 
-            for(_uint i = 0; i < Data.iNumRanges; ++i)
-                vecTimeRanges.push_back(Data.pTimeRanges[i]);
-
-            m_vecRanges.push_back(vecTimeRanges);
+            for (_uint i = 0; i < Data.iNumPoints; ++i)
+                vecPoints.push_back(Data.vecNotifyDesc[i].fPoint);
         }
         TOOL->m_pAnimationWindow->Refresh_Animation();
     }
@@ -465,185 +406,129 @@ void CTool_Animation::NotifySetting(CGameInstance* pGameInstance)
 {
     ImGui::SeparatorText("Notify Setting");
 
-    if (ImGui::Button("Create Time Range"))
+    if (ImGui::Button("Create Notify Point"))
     {
-        TIMERANGE Data;
-        m_vecRanges[m_iCurrentAnimationIndex].push_back(Data);
+        NOTIFYDESC NotifyDesc;
+        m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc.push_back(NotifyDesc);
     }
 
-    if (0 < m_vecRanges[m_iCurrentAnimationIndex].size())
+    ImGui::SameLine();
+
+    if (0 < m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc.size())
     {
+        if (ImGui::Button("Add_Notify"))
+            m_isAddNotify = true;
+
         ImGui::SetNextItemWidth(50.f);
 
-        static _uint iSelected = { 0 };
-        string* pItems = New string[m_vecRanges[m_iCurrentAnimationIndex].size()];
-        const _char** ppItem = New const _char * [m_vecRanges[m_iCurrentAnimationIndex].size()];
-        for (_uint i = 0; i < m_vecRanges[m_iCurrentAnimationIndex].size(); ++i)
+        string* pItems = New string[m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc.size()];
+        const _char** ppItem = New const _char * [m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc.size()];
+        for (_uint i = 0; i < m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc.size(); ++i)
         {
             pItems[i] = to_string(i);
             ppItem[i] = pItems[i].c_str();
         }
 
-        if (iSelected >= m_vecRanges[m_iCurrentAnimationIndex].size())
-            iSelected = 0;
-        
-        if (ImGui::BeginCombo("##Ranges", ppItem[iSelected]))
+        if (m_iCurrentNotifyPointIndex >= m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc.size())
+            m_iCurrentNotifyPointIndex = 0;
+
+        if (ImGui::BeginCombo("##Point", ppItem[m_iCurrentNotifyPointIndex]))
         {
-            for (_uint i = 0; i < m_vecRanges[m_iCurrentAnimationIndex].size(); ++i)
+            for (_uint i = 0; i < m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc.size(); ++i)
             {
-                const bool is_selected = (iSelected == i);
+                const bool is_selected = (m_iCurrentNotifyPointIndex == i);
                 if (ImGui::Selectable(pItems[i].c_str(), is_selected))
-                    iSelected = i;
+                    m_iCurrentNotifyPointIndex = i;
 
                 if (is_selected)
                     ImGui::SetItemDefaultFocus();
             }
-            m_vecRanges[m_iCurrentAnimationIndex][0];
             ImGui::EndCombo();
         }
         ImGui::SameLine();
         string strLabel;
-        strLabel = "StartPoint##" + to_string(m_iCurrentAnimationIndex) + to_string(iSelected);
+        strLabel = "NotifyPoint##" + to_string(m_iCurrentAnimationIndex) + to_string(m_iCurrentNotifyPointIndex);
         ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat(strLabel.c_str(), &m_vecRanges[m_iCurrentAnimationIndex][iSelected].fStartPoint, 0.1f, 0.f, 1000.f, "%.1f");
-
-        ImGui::SameLine();
-        strLabel = "EndPoint##" + to_string(m_iCurrentAnimationIndex) + to_string(0);
-        ImGui::SetNextItemWidth(50.f);
-        ImGui::DragFloat(strLabel.c_str(), &m_vecRanges[m_iCurrentAnimationIndex][iSelected].fEndPoint, 0.1f, 0.f, 1000.f, "%.1f");
+        ImGui::DragFloat(strLabel.c_str(), &m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].fPoint, 0.1f, 0.f, 1000.f, "%.1f");
 
         Safe_Delete_Array(pItems);
         Safe_Delete_Array(ppItem);
 
         ImGui::Separator();
 
-        static _uint iSelectObsever = { 0 };
-
-        if(ImGui::Button("Add_Observer"))
-            ImGui::OpenPopup("Add Observer");
-
-        if (ImGui::BeginPopupContextItem("Add Observer"))
+        for (auto& Tag : m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags)
         {
-            if (ImGui::Selectable("Animation"))
+            string strTag = pGameInstance->wstrToStr(Tag);
+            ImGui::Text(strTag.c_str());
+        }
+    }
+
+    if (true == m_isAddNotify)
+        Add_Notify(pGameInstance);
+}
+
+void CTool_Animation::Add_Notify(CGameInstance* pGameInstance)
+{
+    ImGui::SeparatorText("Add_Notify##text");
+
+    if(ImGui::BeginChild("Add_Notify##Child"))
+    {
+        if (ImGui::Button("Animation##Add_Notify"))
+        {
+            wstring wstrTag = pGameInstance->strToWStr(m_vecAnimationDatas[m_iCurrentAnimationIndex].szName);
+            if (nullptr == Find_NotifyTag(wstrTag))
             {
-                if (OBSERVERTYPE::TYPE_ANIMATION != m_vecRanges[m_iCurrentAnimationIndex][iSelected].arrTypes[OBSERVERTYPE::TYPE_ANIMATION])
-                    m_vecRanges[m_iCurrentAnimationIndex][iSelected].arrTypes[OBSERVERTYPE::TYPE_ANIMATION] = OBSERVERTYPE::TYPE_ANIMATION;
+                m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.push_back(wstrTag);
             }
-            if (ImGui::Selectable("Collider"))
+            
+            m_isAddNotify = false;
+        }
+
+        if (ImGui::Button("Collider##Add_Notify"))
+            ImGui::OpenPopup("Add_Collider_Notify");
+
+        ImGui::Button("Sound##Add_Notify");
+
+        if (ImGui::BeginPopup("Add_Collider_Notify"))
+        {
+            ImGui::InputText("##Input_Collider_Tag", m_szColliderNotifyTag, MAX_PATH);
+            if (ImGui::Button("Add_Collider_Notify##Button"))
             {
-                if (OBSERVERTYPE::TYPE_COLLIDER != m_vecRanges[m_iCurrentAnimationIndex][iSelected].arrTypes[OBSERVERTYPE::TYPE_COLLIDER])
-                    m_vecRanges[m_iCurrentAnimationIndex][iSelected].arrTypes[OBSERVERTYPE::TYPE_COLLIDER] = OBSERVERTYPE::TYPE_COLLIDER;
-            }
-            if (ImGui::Selectable("Sound"))
-            {
-                if (OBSERVERTYPE::TYPE_SOUND != m_vecRanges[m_iCurrentAnimationIndex][iSelected].arrTypes[OBSERVERTYPE::TYPE_SOUND])
-                    m_vecRanges[m_iCurrentAnimationIndex][iSelected].arrTypes[OBSERVERTYPE::TYPE_SOUND] = OBSERVERTYPE::TYPE_SOUND;
+                wstring wstrTag = pGameInstance->strToWStr(m_szColliderNotifyTag);
+                if (nullptr == Find_NotifyTag(wstrTag))
+                    m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.push_back(wstrTag);
+
+                m_isAddNotify = false;
             }
             ImGui::EndPopup();
         }
-        ImGui::Button("Delete##Observer");
 
-        ImGui::SameLine(200);
-
-        if (ImGui::BeginChild("##Observer", ImVec2(100, 100)))
-        {
-            ImGui::Text("Observers");
-
-            _uint i = 0;
-            for (auto& Type : m_vecRanges[m_iCurrentAnimationIndex][iSelected].arrTypes)
-            {
-                if (i == Type)
-                {
-                    switch (Type)
-                    {
-                    case OBSERVERTYPE::TYPE_ANIMATION:
-                        if (ImGui::Selectable("Animation", iSelectObsever == i))
-                            iSelectObsever = i;
-                        break;
-
-                    case OBSERVERTYPE::TYPE_COLLIDER:
-                        if (ImGui::Selectable("Collider", iSelectObsever == i))
-                            iSelectObsever = i;
-                        break;
-
-                    case OBSERVERTYPE::TYPE_SOUND:
-                        if (ImGui::Selectable("Sound", iSelectObsever == i))
-                            iSelectObsever = i;
-                        break;
-                    }
-                }
-                ++i;
-            }
-            ImGui::EndChild();
-        }
+        ImGui::EndChild();
     }
+
+    ImGui::Separator();
 }
 
-void CTool_Animation::Release_Animation_Data()
+wstring* CTool_Animation::Find_NotifyTag(const wstring& wstrTag)
 {
-    for (auto& pAnimation : m_vecAnimationDatas)
-    {
-        Safe_Delete_Array(pAnimation.pTimeRanges);
-
-        for (_uint i = 0; i < pAnimation.iNumChannels; ++i)
+    auto iter = find_if(m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.begin(),
+        m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.end(), [&](auto Tag)
         {
-            Safe_Delete_Array(pAnimation.pChannels[i].pKeyFrames);
-        }
-        Safe_Delete_Array(pAnimation.pChannels);
-    }
-    m_vecAnimationDatas.clear();
-    m_vecRanges.clear();
-}
+            if (wstrTag == Tag)
+                return true;
+            else
+                return false;
+        });
 
-void CTool_Animation::Store_NotifyDatas()
-{
-    for (auto& Data : m_vecAnimationDatas)
-    {
-        Safe_Delete_Array(Data.pTimeRanges);
-    }
+    if(iter == m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.end())
+        return nullptr;
 
-    _uint iIndex = { 0 };
-    for (auto& Data : m_vecAnimationDatas)
-    {
-        Data.iNumRanges = m_vecRanges[iIndex].size();
+    wstring ret = wstrTag;
 
-        if(0 < Data.iNumRanges)
-            Data.pTimeRanges = new TIMERANGE[Data.iNumRanges];
-
-        for (_uint iRangeIndex = 0; iRangeIndex < Data.iNumRanges; ++iRangeIndex)
-        {
-            Data.pTimeRanges[iRangeIndex].fStartPoint = m_vecRanges[iIndex][iRangeIndex].fStartPoint;
-            Data.pTimeRanges[iRangeIndex].fEndPoint = m_vecRanges[iIndex][iRangeIndex].fEndPoint;
-
-            for (_uint iTypeIndex = 0; iTypeIndex < OBSERVERTYPE::TYPE_END; ++iTypeIndex)
-                Data.pTimeRanges[iRangeIndex].arrTypes[iTypeIndex] = m_vecRanges[iIndex][iRangeIndex].arrTypes[iTypeIndex];
-        }
-        ++iIndex;
-    }
-}
-
-void CTool_Animation::Refresh_TimeRanges()
-{
-    for (auto& pAnimation : m_vecAnimationDatas)
-    {
-        vector<TIMERANGE> vecTimeRange;
-        for (_uint j = 0; j < pAnimation.iNumRanges; ++j)
-        {
-            TIMERANGE TimeRange;
-            TimeRange.fStartPoint = pAnimation.pTimeRanges[j].fStartPoint;
-            TimeRange.fEndPoint = pAnimation.pTimeRanges[j].fEndPoint;
-
-            for (_uint k = 0; k < OBSERVERTYPE::TYPE_END; ++k)
-                TimeRange.arrTypes[k] = pAnimation.pTimeRanges[j].arrTypes[k];
-
-            vecTimeRange.push_back(TimeRange);
-        }
-        m_vecRanges.push_back(vecTimeRange);
-    }
+    return &ret;
 }
 
 void CTool_Animation::Free()
 {
-    Release_Animation_Data();
     Safe_Release(m_pModel);
 }

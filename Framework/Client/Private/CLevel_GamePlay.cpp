@@ -141,7 +141,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 	CPlayer::PLAYERDESC PlayerDesc;
 	PlayerDesc.WorldMatrix = m_PlayerWorldMatrix;
 	PlayerDesc.vAngle = m_vPlayerAngle;
-	PlayerDesc.SpeedPerSec = 3.f; // °È±â = 1.5, ¶Ù±â 3
+	PlayerDesc.SpeedPerSec = 5.f; // °È±â = 1.5, ¶Ù±â 3
 	PlayerDesc.RotationPerSec = XMConvertToRadians(90.f);
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Player",

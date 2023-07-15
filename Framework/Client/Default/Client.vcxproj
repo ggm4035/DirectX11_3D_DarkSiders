@@ -169,11 +169,14 @@
   <ItemGroup>
     <ClInclude Include="..\Public\CAttackAction.h" />
     <ClInclude Include="..\Public\CAttack_1.h" />
+    <ClInclude Include="..\Public\CAttack_2.h" />
+    <ClInclude Include="..\Public\CAttack_3.h" />
     <ClInclude Include="..\Public\CGoblin.h" />
     <ClInclude Include="..\Public\CHellHound.h" />
     <ClInclude Include="..\Public\CHit.h" />
     <ClInclude Include="..\Public\CJumpAction.h" />
     <ClInclude Include="..\Public\CLegion_Melee.h" />
+    <ClInclude Include="..\Public\CMonster_Attacks.h" />
     <ClInclude Include="..\Public\CMonster_Patrol.h" />
     <ClInclude Include="..\Public\CMoveAction.h" />
     <ClInclude Include="..\Public\CPlayerAction.h" />
@@ -205,11 +208,14 @@
   <ItemGroup>
     <ClCompile Include="..\Private\CAttackAction.cpp" />
     <ClCompile Include="..\Private\CAttack_1.cpp" />
+    <ClCompile Include="..\Private\CAttack_2.cpp" />
+    <ClCompile Include="..\Private\CAttack_3.cpp" />
     <ClCompile Include="..\Private\CGoblin.cpp" />
     <ClCompile Include="..\Private\CHellHound.cpp" />
     <ClCompile Include="..\Private\CHit.cpp" />
     <ClCompile Include="..\Private\CJumpAction.cpp" />
     <ClCompile Include="..\Private\CLegion_Melee.cpp" />
+    <ClCompile Include="..\Private\CMonster_Attacks.cpp" />
     <ClCompile Include="..\Private\CMonster_Patrol.cpp" />
     <ClCompile Include="..\Private\CMoveAction.cpp" />
     <ClCompile Include="..\Private\CPlayerAction.cpp" />

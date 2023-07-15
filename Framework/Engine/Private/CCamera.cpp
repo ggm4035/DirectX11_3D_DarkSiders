@@ -50,9 +50,6 @@ HRESULT CCamera::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CCamera::Tick(const _double& TimeDelta)
 {
-	//if (false == m_bSwitch)
-	//	return;						// 어캐할 지 생각해야할 듯 매니저로 관리해야되나
-
 	CPipeLine* pPipeLine = CPipeLine::GetInstance();
 	Safe_AddRef(pPipeLine);
 

@@ -116,7 +116,7 @@ CNavigation::RETURNDESC CNavigation::is_Move(_fvector vPosition)
 		{
 			if (-1 == CellRetDesc.vecNeighborIndex.front()) /* 구라임 이웃 없음 ㅋ */
 			{
-				NaviRetDesc.eMoveType = TYPE_STOP; /* ㅡㅡ */
+				NaviRetDesc.eMoveType = TYPE_STOP;
 				NaviRetDesc.vSlide = CellRetDesc.vSlide;
 				return NaviRetDesc;
 			}
@@ -157,7 +157,7 @@ CNavigation::RETURNDESC CNavigation::is_Move(_fvector vPosition)
 				CellRetDesc = m_vecCells[CellRetDesc.vecNeighborIndex.back()]->is_In(vPosition);
 			}
 
-			if (2 == CellRetDesc.vecNeighborIndex.size())/* 진짜임 !!!! */
+			if (2 == CellRetDesc.vecNeighborIndex.size()) 
 				break;
 		}
 
@@ -170,6 +170,11 @@ CNavigation::RETURNDESC CNavigation::is_Move(_fvector vPosition)
 	NaviRetDesc.vSlide = CellRetDesc.vSlide;
 
 	return NaviRetDesc;
+}
+
+_float CNavigation::is_OnNavigation(_fvector vPosition)
+{
+	return m_vecCells[m_NavigationDesc.iCurrentIndex]->is_On(vPosition);
 }
 
 HRESULT CNavigation::SetUp_Neighbors()

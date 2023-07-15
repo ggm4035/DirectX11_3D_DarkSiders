@@ -20,6 +20,9 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_float3 m_vOffsets;
+
+private:
 	virtual HRESULT Add_Components() override;
 	void Key_Input(const _double& TimeDelta);
 

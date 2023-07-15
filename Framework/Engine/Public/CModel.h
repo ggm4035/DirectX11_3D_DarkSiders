@@ -41,14 +41,14 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) override;
-
 	virtual HRESULT Render(const _uint& iMeshIndex);
 
 public:
-	_vector ComputeAnimMovement(OUT _float3* pDirection);
-	void Play_Animation(const _double& TimeDelta);
+	_vector ComputeAnimMovement(OUT _float3* pDirection = nullptr);
+	void Play_Animation(const _double& TimeDelta, class CNavigation* pNavigation);
 	void Pause_Animation();
 	void RePlay_Animation();
+	HRESULT Setup_Notifys();
 
 public:
 	HRESULT Bind_Material(class CShader* pShader, const string& strTypename, const _uint & iMeshIndex, TEXTURETYPE eTextureType);
@@ -71,11 +71,9 @@ private: /* For.Animation */
 	_uint m_iNumAnimations = { 0 };
 	vector<class CAnimation*> m_vecAnimations;
 
-private: /* For.Observer */
-	class CPublisher_Animation* m_pPublisher = { nullptr };
-
 private:
 	_bool m_isFirst = { true };
+	_bool m_isCloned = { false };
 	TYPE m_eType = { TYPE_END };
 	_float4x4 m_PivotMatrix;
 	_float4x4 m_WorldMatrix;

@@ -119,8 +119,11 @@ CJumpAction* CJumpAction::Clone(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 void CJumpAction::Free()
 {
-	Safe_Release(m_pTransform);
-	Safe_Release(m_pModel);
+	if (true == m_isCloned)
+	{
+		Safe_Release(m_pTransform);
+		Safe_Release(m_pModel);
+	}
 
 	CBehavior::Free();
 }

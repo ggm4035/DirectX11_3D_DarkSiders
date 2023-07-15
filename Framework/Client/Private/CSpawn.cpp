@@ -65,8 +65,6 @@ HRESULT CSpawn::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
-		vPosition.m128_f32[1] -= 3.f;
-		m_pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
 		m_isFirst = false;
 		m_pModel->Change_Animation("Spawn");
 	}

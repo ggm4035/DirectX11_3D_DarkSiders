@@ -175,12 +175,6 @@
     <Filter Include="01.Utility\02. Component\Components\08. Behavior\99. BlackBoard">
       <UniqueIdentifier>{1c7c3a29-1095-4923-9ddc-597f3a5f1583}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\02. Component\Components\09. Observer">
-      <UniqueIdentifier>{89d7a377-87df-464d-9e0e-6cd15df84425}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02. Component\Components\09. Observer\Animation">
-      <UniqueIdentifier>{37eb91ef-9bf1-4803-8b4b-bdba6a8204dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. System\04. Font">
       <UniqueIdentifier>{5aa5a830-09c5-40ce-b121-8516568cd442}</UniqueIdentifier>
     </Filter>
@@ -399,9 +393,6 @@
     <ClInclude Include="..\Public\CBlackBoard.h">
       <Filter>01.Utility\02. Component\Components\08. Behavior\99. BlackBoard</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CPublisher_Animation.h">
-      <Filter>01.Utility\02. Component\Components\09. Observer\Animation</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CFont.h">
       <Filter>00. System\04. Font</Filter>
     </ClInclude>
@@ -414,14 +405,14 @@
     <ClInclude Include="..\Public\CFrustum.h">
       <Filter>01.Utility\06. Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Observer_Interfaces.h">
-      <Filter>01.Utility\02. Component\Components\09. Observer</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CCollision.h">
       <Filter>01.Utility\02. Component\Components\07. Collider\01. Collision</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CDecoration.h">
       <Filter>01.Utility\02. Component\Components\08. Behavior\03. Decoration</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Observer_Interfaces.h">
+      <Filter>99. Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -595,9 +586,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CBlackBoard.cpp">
       <Filter>01.Utility\02. Component\Components\08. Behavior\99. BlackBoard</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CPublisher_Animation.cpp">
-      <Filter>01.Utility\02. Component\Components\09. Observer\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CFont.cpp">
       <Filter>00. System\04. Font</Filter>

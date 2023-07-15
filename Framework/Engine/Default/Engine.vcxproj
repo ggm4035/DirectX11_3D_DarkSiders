@@ -226,7 +226,6 @@
     <ClInclude Include="..\Public\CObject_Manager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\CPublisher_Animation.h" />
     <ClInclude Include="..\Public\CParts.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -326,7 +325,6 @@
     <ClCompile Include="..\Private\CObject_Manager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\CPublisher_Animation.cpp" />
     <ClCompile Include="..\Private\CParts.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>

@@ -7,15 +7,9 @@
 
 BEGIN(Engine)
 
-class CCollider_Manager final : public CBase, IObserver_Animation
+class CCollider_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CCollider_Manager)
-
-public:
-	typedef struct tagNotifyColliderDesc : public NOTIFYDESC
-	{
-		wstring wstrTag = { L"" };
-	}NOTIFYCOLLIDERDESC;
 
 private:
 	explicit CCollider_Manager() = default;
@@ -28,10 +22,8 @@ public:
 
 private:
 	list<class CCollider*> m_ColliderList[COL_END];
-	wstring m_wstrEnableTag = { L"^-^" };
 
 private:
-	virtual void Update_Observer(NOTIFYDESC* pNotifyDesc) override;
 	void Collision(COLLIDERGROUP SrcGroup, COLLIDERGROUP DestGroup);
 
 public:

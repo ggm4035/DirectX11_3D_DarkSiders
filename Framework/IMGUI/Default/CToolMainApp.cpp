@@ -247,7 +247,6 @@ HRESULT CToolMainApp::Ready_NonAnimModels()
     {
         string strFilePath = { "" };
         MODEL_BINARYDATA Data;
-        ZeroMemory(&Data, sizeof(MODEL_BINARYDATA));
 
         pGameInstance->ReadModel(Path, strFilePath, Data);
 
@@ -282,13 +281,15 @@ HRESULT CToolMainApp::Ready_AnimModels()
     PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);// *XMMatrixRotationY(-XMConvertToRadians(90.f));
 
     /* Model Read 작업 실행*/
-    _uint iIndex = 0;
     for (auto& Path : ModelPaths)
     {
-        wstring wstrTag = L"";
-        pGameInstance->ReadModels(Path, m_FilePaths, m_vecAnimModelData);
+        string FilePath;
+        tagModelBinaryData Data;
 
-        wstring wstrName = m_vecAnimModelData[iIndex].szTag;
+        wstring wstrTag = L"";
+        pGameInstance->ReadModel(Path, FilePath, Data);
+
+        wstring wstrName = Data.szTag;
 
         if (wstring::npos != wstrName.find(L"_"))
             wstrTag = L"Anim_";
@@ -303,8 +304,11 @@ HRESULT CToolMainApp::Ready_AnimModels()
             PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(180.f));
 
         if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, wstrTag.c_str(),
-            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, m_vecAnimModelData[iIndex++], PivotMatrix))))
+            CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
             return E_FAIL;
+
+        m_vecAnimModelData.push_back(Data);
+        m_FilePathList.push_back(FilePath);
     }
 
     TOOL->m_pAnimModelDatas = &m_vecAnimModelData;

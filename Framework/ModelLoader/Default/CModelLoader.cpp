@@ -128,60 +128,61 @@ void CModelLoader::WriteAnimModels(const string& strFilePath)
 
 		/*===== ANIMATION DATAS ======*/
 		std::cout << "WriteFile Animation Datas..." << endl;
-		for (_uint iAnimIndex = 0; iAnimIndex < m_vecDatas[iDataIndex].iNumAnimations; ++iAnimIndex)
+		for (auto& AnimationData : m_vecDatas[iDataIndex].vecAnimations)
 		{
 			/* Write szName */
-			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName) + 1;
+			_uint iNameLength = strlen(AnimationData.szName) + 1;
 			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+			WriteFile(hFile, AnimationData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 			/* Write Duration */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.Duration, sizeof(_double), &dwByte, nullptr);
 
 			/* Write TickPerSec */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.TickPerSec, sizeof(_double), &dwByte, nullptr);
 
 			/* Write iNumChannels */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.iNumChannels, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write bIsLoop */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
 			/* Write bIsFollowAnimation */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
 
 			/* Write iNumRanges */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
 
-			/*===== TIMERANGE DATAS ======*/
-			for (_uint iRangeIndex = 0; iRangeIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges; ++iRangeIndex)
+			/* Write NotifyDesc */
+			std::cout << "WriteFile Channel Datas..." << endl;
+			for (auto& Notify : AnimationData.vecNotifyDesc)
 			{
-				/* Write pTypes */
-				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].arrTypes,
-					sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
 
-				/* Write fStartPoint */
-				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
-
-				/* Write fEndPoint */
-				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+				_uint iNumTags = { 0 };
+				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
+				for (auto& Tags : Notify.vecNotifyTags)
+				{
+					_uint iTagLength = Tags.size() + 1;
+					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+					WriteFile(hFile, Tags.c_str(), sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+				}
 			}
 
 			/*===== CHANNEL DATAS ======*/
-			std::cout << "WriteFile Channel Datas..." << endl;
-			for (_uint iChannelIndex = 0; iChannelIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
+			for (auto& ChannelData : AnimationData.vecChannels)
 			{
 				/* Write szName */
-				iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName) + 1;
+				iNameLength = strlen(ChannelData.szName) + 1;
 				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+				WriteFile(hFile, ChannelData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 				/* Write iNumKeyFrames */
-				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, &ChannelData.iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
 
 				/* Write KeyFrame */
-				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames,
-					sizeof(KEYFRAME) * m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+				for (auto& KeyFrameData : ChannelData.vecKeyFrames)
+					WriteFile(hFile, &KeyFrameData, sizeof(KEYFRAME), &dwByte, nullptr);
 			}
 		}
 
@@ -322,57 +323,57 @@ void CModelLoader::WriteNonAnimModels(const string& strFilePath)
 
 		/*===== ANIMATION DATAS ======*/
 		std::cout << "WriteFile Animation Datas..." << endl;
-		for (_uint iAnimIndex = 0; iAnimIndex < m_vecDatas[iDataIndex].iNumAnimations; ++iAnimIndex)
+		for (auto& AnimationData : m_vecDatas[iDataIndex].vecAnimations)
 		{
 			/* Write szName */
-			_uint iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName) + 1;
+			_uint iNameLength = strlen(AnimationData.szName) + 1;
 			WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-			WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+			WriteFile(hFile, AnimationData.szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
 
 			/* Write Duration */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].Duration, sizeof(_double), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.Duration, sizeof(_double), &dwByte, nullptr);
 
 			/* Write TickPerSec */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].TickPerSec, sizeof(_double), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.TickPerSec, sizeof(_double), &dwByte, nullptr);
 
 			/* Write iNumChannels */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.iNumChannels, sizeof(_uint), &dwByte, nullptr);
 
 			/* Write bIsLoop */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].bIsLoop, sizeof(_bool), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.bIsLoop, sizeof(_bool), &dwByte, nullptr);
 
 			/* Write iNumRanges */
-			WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges, sizeof(_uint), &dwByte, nullptr);
+			WriteFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
 
-			/*===== TIMERANGE DATAS ======*/
-			for (_uint iRangeIndex = 0; iRangeIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumRanges; ++iRangeIndex)
+			/* Write NotifyDesc */
+			for (auto& Notify : AnimationData.vecNotifyDesc)
 			{
-				/* Write pTypes */
-				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].arrTypes,
-					sizeof(OBSERVERTYPE) * OBSERVERTYPE::TYPE_END, &dwByte, nullptr);
+				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
 
-				/* Write fStartPoint */
-				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fStartPoint, sizeof(_float), &dwByte, nullptr);
-
-				/* Write fEndPoint */
-				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pTimeRanges[iRangeIndex].fEndPoint, sizeof(_float), &dwByte, nullptr);
+				_uint iNumTags = { 0 };
+				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
+				for (auto& Tags : Notify.vecNotifyTags)
+				{
+					_uint iTagLength = Tags.size() + 1;
+					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+					WriteFile(hFile, Tags.c_str(), sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+				}
 			}
 
-			/*===== CHANNEL DATAS ======*/
+			/* Write NotifyDesc */
 			std::cout << "WriteFile Channel Datas..." << endl;
-			for (_uint iChannelIndex = 0; iChannelIndex < m_vecDatas[iDataIndex].pAnimations[iAnimIndex].iNumChannels; ++iChannelIndex)
+			for (auto& Notify : AnimationData.vecNotifyDesc)
 			{
-				/* Write szName */
-				iNameLength = strlen(m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName) + 1;
-				WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].szName, sizeof(_char) * iNameLength, &dwByte, nullptr);
+				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
 
-				/* Write iNumKeyFrames */
-				WriteFile(hFile, &m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
-
-				/* Write KeyFrame */
-				WriteFile(hFile, m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].pKeyFrames,
-					sizeof(KEYFRAME) * m_vecDatas[iDataIndex].pAnimations[iAnimIndex].pChannels[iChannelIndex].iNumKeyFrames, &dwByte, nullptr);
+				_uint iNumTags = { 0 };
+				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
+				for (auto& Tags : Notify.vecNotifyTags)
+				{
+					_uint iTagLength = Tags.size() + 1;
+					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+					WriteFile(hFile, Tags.c_str(), sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+				}
 			}
 		}
 
@@ -760,51 +761,44 @@ HRESULT CModelLoader::Ready_Animation(MODEL_BINARYDATA& Data)
 	m_iNumAnimations = m_pAIScene->mNumAnimations;
 	Data.iNumAnimations = m_iNumAnimations;
 
-	ANIMATIONDATA* pAnimationData = { nullptr };
-	if (0 < m_iNumAnimations)
-	{
-		pAnimationData = new ANIMATIONDATA[m_iNumAnimations];
-		ZeroMemory(pAnimationData, sizeof(ANIMATIONDATA) * m_iNumAnimations);
-	}
-
+	vector<ANIMATIONDATA> vecAnimation;
 	for (_uint iAnimIndex = 0; iAnimIndex < m_iNumAnimations; ++iAnimIndex)
 	{
+		ANIMATIONDATA AnimationData;
 		const aiAnimation* pAnimation = m_pAIScene->mAnimations[iAnimIndex];
 
-		strcpy_s(pAnimationData[iAnimIndex].szName, pAnimation->mName.data);
-		pAnimationData[iAnimIndex].Duration = pAnimation->mDuration;
-		pAnimationData[iAnimIndex].TickPerSec = pAnimation->mTicksPerSecond;
-		pAnimationData[iAnimIndex].iNumChannels = pAnimation->mNumChannels;
-		pAnimationData[iAnimIndex].bIsLoop = true;
+		strcpy_s(AnimationData.szName, pAnimation->mName.data);
+		AnimationData.Duration = pAnimation->mDuration;
+		AnimationData.TickPerSec = pAnimation->mTicksPerSecond;
+		AnimationData.iNumChannels = pAnimation->mNumChannels;
+		AnimationData.bIsLoop = true;
 
-		if (0 >= pAnimationData[iAnimIndex].iNumChannels)
+		if (0 >= AnimationData.iNumChannels)
 			return E_FAIL;
 
-		CHANNELDATA* pChannelData = new CHANNELDATA[pAnimation->mNumChannels];
-		ZeroMemory(pChannelData, sizeof(CHANNELDATA) * pAnimation->mNumChannels);
+		vector<CHANNELDATA> vecChannels;
 
 		for (_uint iChannelIndex = 0; iChannelIndex < pAnimation->mNumChannels; ++iChannelIndex)
 		{
+			CHANNELDATA ChannelData;
 			const aiNodeAnim* pChannel = pAnimation->mChannels[iChannelIndex];
 
-			strcpy_s(pChannelData[iChannelIndex].szName, pChannel->mNodeName.data);
-			pChannelData[iChannelIndex].iNumKeyFrames = max(pChannel->mNumScalingKeys, pChannel->mNumRotationKeys);
-			pChannelData[iChannelIndex].iNumKeyFrames = max(pChannelData[iChannelIndex].iNumKeyFrames, pChannel->mNumPositionKeys);
+			strcpy_s(ChannelData.szName, pChannel->mNodeName.data);
+			ChannelData.iNumKeyFrames = max(pChannel->mNumScalingKeys, pChannel->mNumRotationKeys);
+			ChannelData.iNumKeyFrames = max(ChannelData.iNumKeyFrames, pChannel->mNumPositionKeys);
 
-			if (0 >= pChannelData[iChannelIndex].iNumKeyFrames)
+			if (0 >= ChannelData.iNumKeyFrames)
 				return E_FAIL;
 
-			KEYFRAME* pKeyFrameData = new KEYFRAME[pChannelData[iChannelIndex].iNumKeyFrames];
-			ZeroMemory(pKeyFrameData, sizeof(KEYFRAME) * pChannelData[iChannelIndex].iNumKeyFrames);
+			vector<KEYFRAME> vecKeyFrames;
 
 			_float3 vScale;
 			_float4 vRotation;
 			_float3 vTranslation;
 
-			for (_uint iFrameIndex = 0; iFrameIndex < pChannelData[iChannelIndex].iNumKeyFrames; ++iFrameIndex)
+			for (_uint iFrameIndex = 0; iFrameIndex < ChannelData.iNumKeyFrames; ++iFrameIndex)
 			{
 				KEYFRAME KeyFrame;
-				ZeroMemory(&KeyFrame, sizeof(KEYFRAME));
 
 				if (pChannel->mNumScalingKeys > iFrameIndex)
 				{
@@ -833,13 +827,15 @@ HRESULT CModelLoader::Ready_Animation(MODEL_BINARYDATA& Data)
 				KeyFrame.vRotation = vRotation;
 				KeyFrame.vTranslation = vTranslation;
 
-				pKeyFrameData[iFrameIndex] = KeyFrame;
+				vecKeyFrames.push_back(KeyFrame);
 			}
-			pChannelData[iChannelIndex].pKeyFrames = pKeyFrameData;
+			ChannelData.vecKeyFrames = vecKeyFrames;
+			vecChannels.push_back(ChannelData);
 		}
-		pAnimationData[iAnimIndex].pChannels = pChannelData;
+		AnimationData.vecChannels = vecChannels;
+		vecAnimation.push_back(AnimationData);
 	}
-	Data.pAnimations = pAnimationData;
+	Data.vecAnimations = vecAnimation;
 
 	return S_OK;
 }

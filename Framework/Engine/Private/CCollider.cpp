@@ -86,52 +86,87 @@ _bool CCollider::Intersect(const CCollider* pCollider)
 
 void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 {
-	if (true == m_Qmessage.empty())
-	{
-		m_eCurrentState = STATE_NONE;
-		pOnwer->OnCollisionExit(TimeDelta);
-		return;
-	}
+	/* 충돌체크 검사 전에 리스트의 모든 콜리전을 충돌하지 않은상태로 초기화 */
+	for (auto& Pair : m_umapCollisions)
+		Pair.second->isCollision = false;
 
+	/* 메시지 검사 */
 	while (true != m_Qmessage.empty())
 	{
 		CCollider* pOther = m_Qmessage.front();
 
-		COLLISION Collision;
-		Collision.pOtherCollider = pOther;
-		Collision.pOther = static_cast<CGameObject3D*>(pOther->m_pOwner);
-		Collision.pMyCollider = this;
-		Collision.pOtherTransform = Collision.pOther->Get_Transform();
-		XMStoreFloat4(&Collision.vOtherPosition, Collision.pOtherTransform->Get_State(CTransform::STATE_POSITION));
+		/* 충돌체크를 하면서 콜리전의 상태를 충돌한 상태로 변경 */
+		COLLISION* pCollision = { nullptr };
+		Find_Collision(pOther, &pCollision);
 
-		switch (m_eCurrentState)
+		switch (pCollision->eState)
 		{
-		case Engine::CCollider::STATE_NONE:
-			pOnwer->OnCollisionEnter(Collision, TimeDelta);
+		case STATE_NONE:
+			pCollision->eState = STATE_ENTER;
+			pOnwer->OnCollisionEnter(*pCollision, TimeDelta);
 			break;
 
-		case Engine::CCollider::STATE_ENTER:
-			pOnwer->OnCollisionStay(Collision, TimeDelta);
+		case STATE_ENTER:
+			pCollision->eState = STATE_STAY;
+			pOnwer->OnCollisionStay(*pCollision, TimeDelta);
 			break;
 
-		case Engine::CCollider::STATE_STAY:
-			pOnwer->OnCollisionStay(Collision, TimeDelta);
+		case STATE_STAY:
+			pOnwer->OnCollisionStay(*pCollision, TimeDelta);
 			break;
 		}
 
 		m_Qmessage.pop();
 	}
 
-	switch (m_eCurrentState)
+	/* 전체 메시지를 다 확인했는데 리스트에 있는 콜라이더의 상태가 충돌인 상태가 아닌경우 리스트에서 삭제 */
+	for (auto iter = m_umapCollisions.begin(); iter != m_umapCollisions.end();)
 	{
-	case Engine::CCollider::STATE_NONE:
-		m_eCurrentState = STATE_ENTER;
-		break;
+		if (false == iter->second->isCollision)
+		{
+			pOnwer->OnCollisionExit(*iter->second, TimeDelta);
 
-	case Engine::CCollider::STATE_ENTER:
-		m_eCurrentState = STATE_STAY;
-		break;
+			Safe_Release(iter->second->pOther);
+			Safe_Release(iter->second->pOtherCollider);
+
+			Safe_Delete(iter->second);
+
+			iter = m_umapCollisions.erase(iter);
+		}
+		else
+			++iter;
 	}
+}
+
+void CCollider::Find_Collision(CCollider* pCollider, COLLISION** pCollision)
+{
+	auto iter = find_if(m_umapCollisions.begin(), m_umapCollisions.end(), [&](auto Pair)
+		{
+			if (Pair.first == pCollider)
+				return true;
+			else
+				return false;
+		});
+
+	if (iter == m_umapCollisions.end())
+	{
+		*pCollision = new COLLISION;
+		(*pCollision)->pOtherCollider = pCollider;
+		Safe_AddRef(pCollider);
+		(*pCollision)->pOther = static_cast<CGameObject3D*>(pCollider->m_pOwner);
+		Safe_AddRef(pCollider->m_pOwner);
+		(*pCollision)->pMyCollider = this;
+		(*pCollision)->eState = STATE_NONE;
+		(*pCollision)->isCollision = true;
+
+		m_umapCollisions.emplace(pCollider, (*pCollision));
+
+		return;
+	}
+
+	iter->second->isCollision = true;
+
+	(*pCollision) = iter->second;
 }
 
 CCollider* CCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType)
@@ -163,6 +198,14 @@ CCollider* CCollider::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* 
 void CCollider::Free()
 {
 	Safe_Release(m_pBounding);
+
+	for (auto& Pair : m_umapCollisions)
+	{
+		Safe_Release(Pair.second->pOther);
+		Safe_Release(Pair.second->pOtherCollider);
+
+		Safe_Delete(Pair.second);
+	}
 
 	CComponent::Free();
 }

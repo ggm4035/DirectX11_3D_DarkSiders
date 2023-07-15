@@ -16,6 +16,8 @@ CMainApp::CMainApp()
 
 HRESULT Client::CMainApp::Initialize()
 {
+	srand((_uint)time(nullptr));
+
 	GRAPHICDESC		GraphicDesc;
 	ZeroMemory(&GraphicDesc, sizeof GraphicDesc);
 
@@ -213,11 +215,26 @@ HRESULT CMainApp::Ready_Behaviors()
 		CAttack_1::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* Tsk_Attack_2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack_2",
+		CAttack_2::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Attack_3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack_3",
+		CAttack_3::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* ==== Monster Actions ==== */
 
 	/* Sequence_Patrol */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Sequence_Patrol",
 		CMonster_Patrol::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Selector_Attacks */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Selector_Attacks",
+		CMonster_Attacks::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

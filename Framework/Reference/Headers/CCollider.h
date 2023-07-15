@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Observer_Interfaces.h"
 #include "CComponent.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL CCollider final : public CComponent
+class ENGINE_DLL CCollider final : public CComponent, IObserver_Animation
 {
 public:
 	enum TYPE { TYPE_SPHERE, TYPE_AABB, TYPE_OBB, TYPE_END };
@@ -13,22 +14,19 @@ public:
 	typedef struct tagCollision
 	{
 		class CGameObject3D* pOther = { nullptr };
-		class CTransform* pOtherTransform = { nullptr };
-		_float4 vOtherPosition;
 		CCollider* pMyCollider = { nullptr };
 		CCollider* pOtherCollider = { nullptr };
+		STATE eState = { STATE_NONE };
+		_bool isCollision = { false };
 	}COLLISION;
 
 public:
-	STATE Get_Current_State() const {
-		return m_eCurrentState;
-	}
-
-	void Switch_On() {
-		m_isEnable = true;
-	}
 	void Switch_Off() {
 		m_isEnable = false;
+	}
+
+	_bool isEnable() const {
+		return m_isEnable;
 	}
 
 private:
@@ -48,15 +46,21 @@ public:
 	void Push_Collision_Message(CCollider* pMessage) {
 		m_Qmessage.push(pMessage);
 	}
+	virtual void Update_Observer() override {
+		m_isEnable = !m_isEnable;
+	}
 
 private:
 	class CBounding* m_pBounding = { nullptr };
 	_bool m_isEnable = { true };
 
 	TYPE m_eColliderType = { TYPE_END };
-	STATE m_eCurrentState = { STATE_END };
 
 	queue<CCollider*> m_Qmessage;
+	unordered_map<CCollider*, COLLISION*> m_umapCollisions; /* 실시간으로 해당 콜라이더와 충돌중인 얘들을 저장 */
+
+private:
+	void Find_Collision(CCollider* pCollider, COLLISION** pCollision);
 
 public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType);

@@ -17,7 +17,10 @@
 #include "CWalk.h"
 #include "CSpawn.h"
 #include "CAttack_1.h"
+#include "CAttack_2.h"
+#include "CAttack_3.h"
 #include "CHit.h"
 
 /* Monster Actions */
 #include "CMonster_Patrol.h"
+#include "CMonster_Attacks.h"

@@ -210,6 +210,15 @@
     <ClInclude Include="..\Public\CLegion_Melee.h">
       <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CAttack_2.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAttack_3.h">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMonster_Attacks.h">
+      <Filter>02. GameObject\Monster\00. Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -301,6 +310,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\CLegion_Melee.cpp">
       <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAttack_2.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAttack_3.cpp">
+      <Filter>03. MonoBehaviors\Executions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMonster_Attacks.cpp">
+      <Filter>02. GameObject\Monster\00. Actions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

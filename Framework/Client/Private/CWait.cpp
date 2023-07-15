@@ -35,7 +35,8 @@ HRESULT CWait::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pA
 
 HRESULT CWait::Tick(const _double& TimeDelta)
 {
-	Check_Decorations();
+	if (false == Check_Decorations())
+		return BEHAVIOR_FAIL;
 
 	m_fTimeAcc += TimeDelta;
 	m_pModel->Change_Animation("Idle");
@@ -45,7 +46,7 @@ HRESULT CWait::Tick(const _double& TimeDelta)
 		m_fTimeAcc = 0.f;
 		return BEHAVIOR_SUCCESS;
 	}
-
+	
 	return BEHAVIOR_RUNNING;
 }
 

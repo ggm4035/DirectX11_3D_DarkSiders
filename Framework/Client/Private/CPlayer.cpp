@@ -47,13 +47,11 @@ void CPlayer::Tick(const _double& TimeDelta)
 {
 	CGameObject3D::Tick(TimeDelta);
 
-	m_pAttackRange->Switch_Off();
-
 	m_pActionCom->Tick(TimeDelta);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 1.f, 0.f));
 	m_pAttackRange->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 1.f, 1.f));
@@ -63,8 +61,8 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
-	/* 콜라이더 매니저에 콜라이더 추가를 frustum 이후에 해야되는데 이거는 틱 이후에 실행됨 */
 
+	/* 콜라이더 매니저에 콜라이더 추가 */
 	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0))
 	{
 		pGameInstance->Add_Collider(COL_PLAYER, m_pColliderCom);
@@ -125,11 +123,11 @@ HRESULT CPlayer::Render()
 
 void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack_Range")
+	if (Collision.pMyCollider == m_pAttackRange && 
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
+		//cout << "데미지" << endl;
 		Collision.pOther->Get_Damaged();
-
-		cout << "공격" << endl;
 	}
 
 }
@@ -138,12 +136,13 @@ void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& Tim
 {
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
-		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&Collision.vOtherPosition));
+		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
 		m_pTransformCom->Repersive(vDir, TimeDelta);
 	}
 }
 
-void CPlayer::OnCollisionExit(const _double& TimeDelta)
+void CPlayer::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 }
 
@@ -181,9 +180,10 @@ HRESULT CPlayer::Add_Components()
 	OBBDesc.vExtents = _float3(1.5f, 0.5f, 1.f);
 	OBBDesc.vPosition = _float3(0.f, 0.f, 0.f);
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack_Range",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack",
 		(CComponent**)&m_pAttackRange, this, &OBBDesc)))
 		return E_FAIL;
+	m_pAttackRange->Switch_Off();
 
 	//if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Com_Collider_OBB",
 	//	(CComponent**)&m_pColliderCom, this, &OBBDesc)))
@@ -191,6 +191,9 @@ HRESULT CPlayer::Add_Components()
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"PlayerAction", L"Com_Action",
 		(CComponent**)&m_pActionCom, this)))
+		return E_FAIL;
+
+	if (FAILED(m_pModelCom->Setup_Notifys()))
 		return E_FAIL;
 
 	return S_OK;

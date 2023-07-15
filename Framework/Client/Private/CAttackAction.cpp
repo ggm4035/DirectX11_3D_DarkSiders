@@ -31,6 +31,10 @@ HRESULT CAttackAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 HRESULT CAttackAction::Tick(const _double& TimeDelta)
 {
+	if (true == m_pModel->isFinishedAnimation() &&
+		true == m_Qmessage.empty())
+		m_iCombo = -1;
+
 	while (true != m_Qmessage.empty())
 	{
 		if (m_iCombo != m_iPreCombo)
@@ -92,7 +96,22 @@ void CAttackAction::LightAttackCombo()
 	case Client::CPlayerAction::STATE_DASH:
 	case Client::CPlayerAction::STATE_JUMP:
 	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
-		pAction->Set_State(CPlayerAction::STATE_LATK_1);
+		switch (m_iCombo)
+		{
+		case 0:
+			pAction->Set_State(CPlayerAction::STATE_LATK_1);
+			break;
+		case 1:
+			pAction->Set_State(CPlayerAction::STATE_LATK_2);
+			break;
+		case 2:
+			pAction->Set_State(CPlayerAction::STATE_LATK_3);
+			break;
+		case 3:
+			pAction->Set_State(CPlayerAction::STATE_LATK_4);
+			m_iCombo = -1;
+			break;
+		}
 		break;
 
 	case Client::CPlayerAction::STATE_LATK_1:
@@ -130,7 +149,19 @@ void CAttackAction::HeavyAttackCombo()
 	case Client::CPlayerAction::STATE_DASH:
 	case Client::CPlayerAction::STATE_JUMP:
 	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
-		pAction->Set_State(CPlayerAction::STATE_HATK_1);
+		switch (m_iCombo)
+		{
+		case 0:
+			pAction->Set_State(CPlayerAction::STATE_HATK_1);
+			break;
+		case 1:
+			pAction->Set_State(CPlayerAction::STATE_HATK_2);
+			break;
+		case 2:
+			pAction->Set_State(CPlayerAction::STATE_HATK_3);
+			m_iCombo = -1;
+			break;
+		}
 		break;
 
 	case Client::CPlayerAction::STATE_LATK_1:
@@ -183,7 +214,8 @@ CAttackAction* CAttackAction::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CAttackAction::Free()
 {
-	Safe_Release(m_pModel);
+	if (true == m_isCloned)
+		Safe_Release(m_pModel);
 
 	CBehavior::Free();
 }

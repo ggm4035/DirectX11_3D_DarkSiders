@@ -42,7 +42,7 @@ public:
 public:
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) {}
-	virtual void OnCollisionExit(const _double& TimeDelta) {}
+	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 
 protected:
 	STATUS m_Status;
