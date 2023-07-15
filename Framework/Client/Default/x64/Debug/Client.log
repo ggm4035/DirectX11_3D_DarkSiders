@@ -1,66 +1,29 @@
-﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_Vtx.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl(83,5-30): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxAnimMesh.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxCol.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\ShaderFiles\Shader_VtxMesh.hlsl(68,5-57): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxMesh.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\ShaderFiles\Shader_VtxNorTex.hlsl(61,5-57): warning X3206: implicit truncation of vector type
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxNorTex.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxPointInstance.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxRectInstance.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxCube.cso
-FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxTex.cso
-  stdafx.cpp
-  CAttackAction.cpp
+﻿  CAttackAction.cpp
   CAttack_1.cpp
   CAttack_2.cpp
   CAttack_3.cpp
-  CGoblin.cpp
-  CHellHound.cpp
+  CCamera_Free.cpp
   CHit.cpp
   CJumpAction.cpp
-  CLegion_Melee.cpp
-  CMonster_Attacks.cpp
-  CMonster_Patrol.cpp
-  CMoveAction.cpp
-  CPlayerAction.cpp
-  CRandomLook.cpp
-  CRun.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CRun.cpp(43,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSky.cpp
-  CSpawn.cpp
-  CStatic_Object.cpp
-  CUI_Rect.cpp
-  CCamera_Free.cpp
-  코드를 생성하고 있습니다...
-  컴파일하고 있습니다...
   CLevel_GamePlay.cpp
   CLevel_Loading.cpp
   CLevel_Logo.cpp
   CLoader.cpp
-  CMainApp.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\private\CMainApp.cpp(58,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CMonster.cpp
+  CMonster_Attacks.cpp
+  CMonster_Patrol.cpp
+  CMoveAction.cpp
   CPlayer.cpp
+  CPlayerAction.cpp
+  CRun.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CRun.cpp(43,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CSky.cpp
+  CSpawn.cpp
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  CStatic_Object.cpp
   CTerrain.cpp
+  CUI_Rect.cpp
   CWait.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWait.cpp(41,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CWalk.cpp
@@ -68,6 +31,12 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWalk.cpp(43,25): w
   CWeapon.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(66,92): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(70,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CMainApp.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\private\CMainApp.cpp(58,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Client.cpp
+  코드를 생성하고 있습니다...
+  CGoblin.cpp
+  CHellHound.cpp
+  CLegion_Melee.cpp
   코드를 생성하고 있습니다...
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

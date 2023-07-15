@@ -245,7 +245,7 @@ HRESULT CMainApp::Ready_Player()
 	string FilePath;
 	MODEL_BINARYDATA Data;
 
-	m_pGameInstance->ReadModel("../../Warrior.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Warrior.dat", FilePath, Data);
 	m_vecModelDatas.push_back(Data);
 
 	/* Player Model */
@@ -259,7 +259,7 @@ HRESULT CMainApp::Ready_Player()
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Player", CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	m_pGameInstance->ReadModel("../../Chaoseater.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Chaoseater.dat", FilePath, Data);
 
 	m_vecModelDatas.push_back(Data);
 

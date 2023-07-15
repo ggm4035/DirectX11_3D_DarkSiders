@@ -171,11 +171,20 @@
     <ClInclude Include="..\Public\CAttack_1.h" />
     <ClInclude Include="..\Public\CAttack_2.h" />
     <ClInclude Include="..\Public\CAttack_3.h" />
-    <ClInclude Include="..\Public\CGoblin.h" />
-    <ClInclude Include="..\Public\CHellHound.h" />
+    <ClInclude Include="..\Public\CGoblin.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHellHound.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\CHit.h" />
     <ClInclude Include="..\Public\CJumpAction.h" />
-    <ClInclude Include="..\Public\CLegion_Melee.h" />
+    <ClInclude Include="..\Public\CLegion_Melee.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\CMonster_Attacks.h" />
     <ClInclude Include="..\Public\CMonster_Patrol.h" />
     <ClInclude Include="..\Public\CMoveAction.h" />
@@ -210,14 +219,24 @@
     <ClCompile Include="..\Private\CAttack_1.cpp" />
     <ClCompile Include="..\Private\CAttack_2.cpp" />
     <ClCompile Include="..\Private\CAttack_3.cpp" />
-    <ClCompile Include="..\Private\CGoblin.cpp" />
-    <ClCompile Include="..\Private\CHellHound.cpp" />
+    <ClCompile Include="..\Private\CGoblin.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHellHound.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\CHit.cpp" />
     <ClCompile Include="..\Private\CJumpAction.cpp" />
-    <ClCompile Include="..\Private\CLegion_Melee.cpp" />
+    <ClCompile Include="..\Private\CLegion_Melee.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\CMonster_Attacks.cpp" />
     <ClCompile Include="..\Private\CMonster_Patrol.cpp" />
     <ClCompile Include="..\Private\CMoveAction.cpp" />
+    <ClCompile Include="..\Private\CPlayer.cpp" />
     <ClCompile Include="..\Private\CPlayerAction.cpp" />
     <ClCompile Include="..\Private\CRandomLook.cpp" />
     <ClCompile Include="..\Private\CRun.cpp" />
@@ -232,7 +251,6 @@
     <ClCompile Include="..\Private\CLoader.cpp" />
     <ClCompile Include="..\private\CMainApp.cpp" />
     <ClCompile Include="..\Private\CMonster.cpp" />
-    <ClCompile Include="..\Private\CPlayer.cpp" />
     <ClCompile Include="..\Private\CTerrain.cpp" />
     <ClCompile Include="..\Private\CWait.cpp" />
     <ClCompile Include="..\Private\CWalk.cpp" />
@@ -264,6 +282,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\IMGUI\Default\IMGUI.vcxproj" />
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

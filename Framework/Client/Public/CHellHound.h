@@ -30,10 +30,6 @@ public:
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 private:
-	CCollider* m_pColBody = { nullptr };
-	CCollider* m_pColRange = { nullptr };
-
-private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Make_AI();
 

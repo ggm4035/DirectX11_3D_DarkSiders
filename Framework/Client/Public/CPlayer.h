@@ -8,7 +8,6 @@ class CRenderer;
 class CShader;
 class CModel;
 class CNavigation;
-class CCollider;
 END
 
 BEGIN(Client)
@@ -46,8 +45,6 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
-	CCollider* m_pAttackRange = { nullptr };
 	class CPlayerAction* m_pActionCom = { nullptr };
 
 private:

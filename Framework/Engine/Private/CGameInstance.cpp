@@ -11,6 +11,7 @@
 #include "CFont_Manager.h"
 #include "CFrustum.h"
 #include "CCollider_Manager.h"
+#include "CTarget_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -29,6 +30,7 @@ CGameInstance::CGameInstance()
 	, m_pFont_Manager{ CFont_Manager::GetInstance() }
 	, m_pFrustum{ CFrustum::GetInstance() }
 	, m_pCollider_Manager{ CCollider_Manager::GetInstance() }
+	, m_pTarget_Manager{ CTarget_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pCalculator);
 	Safe_AddRef(m_pLight_Manager);
@@ -44,6 +46,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pFrustum);
 	Safe_AddRef(m_pCollider_Manager);
+	Safe_AddRef(m_pTarget_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -547,14 +550,6 @@ _bool CGameInstance::isIn_LocalSpace(_fvector vLocalPosition, _float fRange)
 	return m_pFrustum->isIn_LocalSpace(vLocalPosition, fRange);
 }
 
-HRESULT CGameInstance::Add_Collider(COLLIDERGROUP eGroupID, CCollider* pCollider)
-{
-	if (nullptr == m_pCollider_Manager)
-		return E_FAIL;
-
-	return m_pCollider_Manager->Add_Collider(eGroupID, pCollider);
-}
-
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 _vector CGameInstance::Picking_On_Spheres(const POINT& ptMouse, CNavigation* pNavigation, CTransform* pTransform)
 {
@@ -610,6 +605,8 @@ void CGameInstance::Release_Engine()
 
 	CFrustum::GetInstance()->DestroyInstance();
 
+	CTarget_Manager::GetInstance()->DestroyInstance();
+
 	CInput_Device::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
@@ -619,16 +616,17 @@ void CGameInstance::Free()
 {
 	Safe_Release(m_pPlayer);
 
+	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pCalculator);
 	Safe_Release(m_pFileInfo);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pCamera_Manager);
-	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pCollider_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pInput_Manager);

@@ -53,8 +53,7 @@ void CPlayer::Tick(const _double& TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 1.f, 0.f));
-	m_pAttackRange->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 1.f, 1.f));
+	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CPlayer::AfterFrustumTick(const _double& TimeDelta)
@@ -65,8 +64,12 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 	/* 콜라이더 매니저에 콜라이더 추가 */
 	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0))
 	{
-		pGameInstance->Add_Collider(COL_PLAYER, m_pColliderCom);
-		pGameInstance->Add_Collider(COL_PLAYERATK, m_pAttackRange);
+		if (FAILED(Add_Colliders_To_Manager()))
+		{
+			MSG_BOX("Failed to Add Colliders To Manager");
+			Safe_Release(pGameInstance);
+			return;
+		}
 
 		for (auto Pair : m_Parts)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
@@ -85,8 +88,7 @@ void CPlayer::Late_Tick(const _double& TimeDelta)
 
 	/* 충돌 이후 작업을 진행 (메시지 받은거 처리하는 구간임) */
 
-	m_pColliderCom->On_Collision(this, TimeDelta);
-	m_pAttackRange->On_Collision(this, TimeDelta);
+	On_Colisions(TimeDelta);
 }
 
 /* 모든 게임오브젝트의 latetick이 끝나면 게임 인스턴스에서 콜라이더의 모든 리스트를 비움 */
@@ -113,8 +115,8 @@ HRESULT CPlayer::Render()
 
 #ifdef _DEBUG
 
-	m_pColliderCom->Render();
-	m_pAttackRange->Render();
+	if (FAILED(Render_Colliders()))
+		return E_FAIL;
 
 #endif
 
@@ -123,13 +125,12 @@ HRESULT CPlayer::Render()
 
 void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider == m_pAttackRange && 
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		//cout << "데미지" << endl;
+		cout << "데미지" << endl;
 		Collision.pOther->Get_Damaged();
 	}
-
 }
 
 void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -160,6 +161,7 @@ HRESULT CPlayer::Add_Components()
 		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
+	/* Navigation */
 	CNavigation::NAVIGATIONDESC NaviDesc;
 	NaviDesc.iCurrentIndex = 0;
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
@@ -171,28 +173,26 @@ HRESULT CPlayer::Add_Components()
 	CBounding_AABB::AABBDESC AABBDesc;
 	AABBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
 	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Col_Body",
-		(CComponent**)&m_pColliderCom, this, &AABBDesc)))
+	AABBDesc.eGroup = CCollider::COL_PLAYER;
+	AABBDesc.vOffset = _float3(0.f, 1.f, 0.f);
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Body", &AABBDesc)))
 		return E_FAIL;
 
 	CBounding_OBB::OBBDESC OBBDesc;
 	OBBDesc.vExtents = _float3(1.5f, 0.5f, 1.f);
 	OBBDesc.vPosition = _float3(0.f, 0.f, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack",
-		(CComponent**)&m_pAttackRange, this, &OBBDesc)))
+	OBBDesc.eGroup = CCollider::COL_PLAYER_ATK;
+	OBBDesc.vOffset = _float3(0.f, 1.f, 1.f);
+	OBBDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack", &OBBDesc)))
 		return E_FAIL;
-	m_pAttackRange->Switch_Off();
 
-	//if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_OBB", L"Com_Collider_OBB",
-	//	(CComponent**)&m_pColliderCom, this, &OBBDesc)))
-	//	return E_FAIL;
-
+	/* Actions */
 	if (FAILED(Add_Component(LEVEL_STATIC, L"PlayerAction", L"Com_Action",
 		(CComponent**)&m_pActionCom, this)))
 		return E_FAIL;
 
+	/* Setup Notify */
 	if (FAILED(m_pModelCom->Setup_Notifys()))
 		return E_FAIL;
 
@@ -298,12 +298,10 @@ CPlayer* CPlayer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg
 
 void CPlayer::Free()
 {
-	Safe_Release(m_pActionCom);
-	Safe_Release(m_pColliderCom);
-	Safe_Release(m_pAttackRange);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pActionCom);
 	Safe_Release(m_pModelCom);
 
 	CGameObject3D::Free();

@@ -40,6 +40,7 @@ public:
 	virtual HRESULT Render() { return S_OK; }
 
 public:
+	CCollider* Find_Collider(const wstring& wstrColliderTag);
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) {}
@@ -51,6 +52,16 @@ protected:
 	HITSTATE m_ePreHitState = { NONE };
 
 	CTransform* m_pTransformCom = { nullptr };
+	unordered_map<wstring, CCollider*> m_umapColliders;
+
+protected:
+	HRESULT Add_Collider(const _uint& iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrColliderTag, void* pArg);
+	HRESULT Add_Colliders_To_Manager();
+	void Tick_Colliders(_fmatrix WorldMatrix);
+	void On_Colisions(const _double& TimeDelta);
+#ifdef _DEBUG
+	HRESULT Render_Colliders();
+#endif // _DEBUG
 
 protected:
 	virtual HRESULT Add_Components() = 0;

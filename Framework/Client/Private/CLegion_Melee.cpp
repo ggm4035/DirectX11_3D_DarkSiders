@@ -43,12 +43,7 @@ void CLegion_Melee::Tick(const _double& TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
-	if (nullptr != m_pColBody)
-		m_pColBody->Tick(m_pTransformCom->Get_WorldMatrix());
-	if (nullptr != m_pColRange)
-		m_pColRange->Tick(m_pTransformCom->Get_WorldMatrix());
-	if (nullptr != m_pColAttack)
-		m_pColAttack->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 0.5f, 1.5f));
+	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CLegion_Melee::AfterFrustumTick(const _double& TimeDelta)
@@ -58,9 +53,12 @@ void CLegion_Melee::AfterFrustumTick(const _double& TimeDelta)
 
 	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
 	{
-		pGameInstance->Add_Collider(COL_ENEMY, m_pColBody);
-		pGameInstance->Add_Collider(COL_ENEMYRANGE, m_pColRange);
-		pGameInstance->Add_Collider(COL_ENEMYATK, m_pColAttack);
+		if (FAILED(Add_Colliders_To_Manager()))
+		{
+			MSG_BOX("Failed to Add Colliders To Manager");
+			Safe_Release(pGameInstance);
+			return;
+		}
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
@@ -72,9 +70,7 @@ void CLegion_Melee::AfterFrustumTick(const _double& TimeDelta)
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CLegion_Melee::Late_Tick(const _double& TimeDelta)
 {
-	m_pColBody->On_Collision(this, TimeDelta);
-	m_pColRange->On_Collision(this, TimeDelta);
-	m_pColAttack->On_Collision(this, TimeDelta);
+	On_Colisions(TimeDelta);
 }
 
 HRESULT CLegion_Melee::Render()
@@ -84,12 +80,8 @@ HRESULT CLegion_Melee::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColBody)
-		m_pColBody->Render();
-	if (nullptr != m_pColRange)
-		m_pColRange->Render();
-	if (nullptr != m_pColAttack)
-		m_pColAttack->Render();
+	if (FAILED(Render_Colliders()))
+		return E_FAIL;
 
 #endif
 
@@ -100,7 +92,11 @@ void CLegion_Melee::OnCollisionEnter(CCollider::COLLISION Collision, const _doub
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (Collision.pMyCollider == m_pColRange &&
+	CCollider* pColRange = Find_Collider(L"Col_Range");
+	if (nullptr == pColRange)
+		return;
+
+	if (Collision.pMyCollider == pColRange &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
@@ -110,8 +106,12 @@ void CLegion_Melee::OnCollisionEnter(CCollider::COLLISION Collision, const _doub
 
 void CLegion_Melee::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
+	CCollider* pColRange = Find_Collider(L"Col_Range");
+	if (nullptr == pColRange)
+		return;
+
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider == m_pColRange &&
+	if (Collision.pMyCollider == pColRange &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
@@ -120,7 +120,11 @@ void CLegion_Melee::OnCollisionStay(CCollider::COLLISION Collision, const _doubl
 
 void CLegion_Melee::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider == m_pColRange &&
+	CCollider* pColRange = Find_Collider(L"Col_Range");
+	if (nullptr == pColRange)
+		return;
+
+	if (Collision.pMyCollider == pColRange &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = false;
@@ -139,23 +143,23 @@ HRESULT CLegion_Melee::Add_Components()
 	CBounding_Sphere::SPHEREDESC SphereDesc;
 	SphereDesc.fRadius = 1.f;
 	SphereDesc.vPosition = _float3(0.f, 1.f, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body",
-		(CComponent**)&m_pColBody, this, &SphereDesc)))
+	SphereDesc.eGroup = CCollider::COL_ENEMY;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body", &SphereDesc)))
 		return E_FAIL;
 
 	SphereDesc.fRadius = 10.f;
 	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range",
-		(CComponent**)&m_pColRange, this, &SphereDesc)))
+	SphereDesc.eGroup = CCollider::COL_ENEMY_RANGE;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range", &SphereDesc)))
 		return E_FAIL;
 
 	CBounding_AABB::AABBDESC AABBDesc;
 	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
 	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack",
-		(CComponent**)&m_pColAttack, this, &AABBDesc)))
+	AABBDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	AABBDesc.vOffset = _float3(0.f, 0.5f, 1.5f);
+	AABBDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack", &AABBDesc)))
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
@@ -268,9 +272,5 @@ CLegion_Melee* CLegion_Melee::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CLegion_Melee::Free()
 {
-	Safe_Release(m_pColBody);
-	Safe_Release(m_pColRange);
-	Safe_Release(m_pColAttack);
-
 	CMonster::Free();
 }

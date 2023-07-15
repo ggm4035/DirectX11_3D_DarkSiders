@@ -205,6 +205,15 @@
     <Filter Include="01.Utility\02. Component\Components\08. Behavior\03. Decoration">
       <UniqueIdentifier>{dcec8f6d-0fba-4e7a-ad4c-67042daba126}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\07. RenderTarget">
+      <UniqueIdentifier>{2971febd-5326-46ad-a7a9-460f3cef4265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\07. RenderTarget\Manager">
+      <UniqueIdentifier>{36374a33-57b7-4d45-94ec-cb7cc7934014}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02. Component\Components\02. Renderer\Shader">
+      <UniqueIdentifier>{db093e22-713e-4ddd-8685-f28b38f9d531}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -414,6 +423,12 @@
     <ClInclude Include="..\Public\Observer_Interfaces.h">
       <Filter>99. Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CRenderTarget.h">
+      <Filter>01.Utility\07. RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CTarget_Manager.h">
+      <Filter>01.Utility\07. RenderTarget\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -605,10 +620,19 @@
     <ClCompile Include="..\Private\CDecoration.cpp">
       <Filter>01.Utility\02. Component\Components\08. Behavior\03. Decoration</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CRenderTarget.cpp">
+      <Filter>01.Utility\07. RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CTarget_Manager.cpp">
+      <Filter>01.Utility\07. RenderTarget\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
       <Filter>98. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>01.Utility\02. Component\Components\02. Renderer\Shader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

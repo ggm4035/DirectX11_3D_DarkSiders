@@ -471,7 +471,7 @@ void CTool_Animation::Add_Notify(CGameInstance* pGameInstance)
 {
     ImGui::SeparatorText("Add_Notify##text");
 
-    if(ImGui::BeginChild("Add_Notify##Child"))
+    if (ImGui::BeginChild("Add_Notify##Child"))
     {
         if (ImGui::Button("Animation##Add_Notify"))
         {
@@ -480,7 +480,7 @@ void CTool_Animation::Add_Notify(CGameInstance* pGameInstance)
             {
                 m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.push_back(wstrTag);
             }
-            
+
             m_isAddNotify = false;
         }
 
@@ -520,7 +520,7 @@ wstring* CTool_Animation::Find_NotifyTag(const wstring& wstrTag)
                 return false;
         });
 
-    if(iter == m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.end())
+    if (iter == m_vecAnimationDatas[m_iCurrentAnimationIndex].vecNotifyDesc[m_iCurrentNotifyPointIndex].vecNotifyTags.end())
         return nullptr;
 
     wstring ret = wstrTag;

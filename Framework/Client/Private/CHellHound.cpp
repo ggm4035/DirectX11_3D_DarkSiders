@@ -42,10 +42,7 @@ void CHellHound::Tick(const _double& TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
-	if (nullptr != m_pColBody)
-		m_pColBody->Tick(m_pTransformCom->Get_WorldMatrix());
-	if (nullptr != m_pColRange)
-		m_pColRange->Tick(m_pTransformCom->Get_WorldMatrix());
+	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CHellHound::AfterFrustumTick(const _double& TimeDelta)
@@ -55,8 +52,12 @@ void CHellHound::AfterFrustumTick(const _double& TimeDelta)
 
 	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
 	{
-		pGameInstance->Add_Collider(COL_ENEMY, m_pColBody);
-		pGameInstance->Add_Collider(COL_ENEMYRANGE, m_pColRange);
+		if (FAILED(Add_Colliders_To_Manager()))
+		{
+			MSG_BOX("Failed to Add Colliders To Manager");
+			Safe_Release(pGameInstance);
+			return;
+		}
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
@@ -68,8 +69,7 @@ void CHellHound::AfterFrustumTick(const _double& TimeDelta)
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CHellHound::Late_Tick(const _double& TimeDelta)
 {
-	m_pColBody->On_Collision(this, TimeDelta);
-	m_pColRange->On_Collision(this, TimeDelta);
+	On_Colisions(TimeDelta);
 }
 
 HRESULT CHellHound::Render()
@@ -79,10 +79,8 @@ HRESULT CHellHound::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColBody)
-		m_pColBody->Render();
-	if (nullptr != m_pColRange)
-		m_pColRange->Render();
+	if (FAILED(Render_Colliders()))
+		return E_FAIL;
 
 #endif
 
@@ -93,7 +91,11 @@ void CHellHound::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (Collision.pMyCollider == m_pColRange &&
+	CCollider* pColRange = Find_Collider(L"Col_Range");
+	if (nullptr == pColRange)
+		return;
+
+	if (Collision.pMyCollider == pColRange &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
@@ -103,8 +105,12 @@ void CHellHound::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 
 void CHellHound::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
+	CCollider* pColRange = Find_Collider(L"Col_Range");
+	if (nullptr == pColRange)
+		return;
+
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider == m_pColRange &&
+	if (Collision.pMyCollider == pColRange &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
@@ -113,7 +119,11 @@ void CHellHound::OnCollisionStay(CCollider::COLLISION Collision, const _double& 
 
 void CHellHound::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider == m_pColRange &&
+	CCollider* pColRange = Find_Collider(L"Col_Range");
+	if (nullptr == pColRange)
+		return;
+
+	if (Collision.pMyCollider == pColRange &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = false;
@@ -132,15 +142,14 @@ HRESULT CHellHound::Add_Components()
 	CBounding_Sphere::SPHEREDESC SphereDesc;
 	SphereDesc.fRadius = 1.f;
 	SphereDesc.vPosition = _float3(0.f, 1.f, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body",
-		(CComponent**)&m_pColBody, this, &SphereDesc)))
+	SphereDesc.eGroup = CCollider::COL_ENEMY;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body", &SphereDesc)))
 		return E_FAIL;
 
 	SphereDesc.fRadius = 10.f;
 	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range",
-		(CComponent**)&m_pColRange, this, &SphereDesc)))
+	SphereDesc.eGroup = CCollider::COL_ENEMY_RANGE;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range", &SphereDesc)))
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
@@ -231,8 +240,5 @@ CHellHound* CHellHound::Clone(const _uint& iLevelIndex, CComponent* pOwner, void
 
 void CHellHound::Free()
 {
-	Safe_Release(m_pColBody);
-	Safe_Release(m_pColRange);
-
 	CMonster::Free();
 }

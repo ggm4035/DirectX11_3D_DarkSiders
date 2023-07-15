@@ -51,6 +51,14 @@ HRESULT CCollider::Initialize(const _uint& iLevelIndex, CComponent* pOwner, CBou
 	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		COLLIDERDESC Desc = *reinterpret_cast<COLLIDERDESC*>(pArg);
+		m_eColGroup = Desc.eGroup;
+		m_vOffset = Desc.vOffset;
+		m_isEnable = Desc.isEnable;
+	}
+
 	m_pBounding = pBounding->Clone(pArg);
 	if (nullptr == m_pBounding)
 		return E_FAIL;
@@ -58,12 +66,12 @@ HRESULT CCollider::Initialize(const _uint& iLevelIndex, CComponent* pOwner, CBou
 	return S_OK;
 }
 
-void CCollider::Tick(_fmatrix WorldMatrix, const _float3& vOffset)
+void CCollider::Tick(_fmatrix WorldMatrix)
 {
 	if (nullptr == m_pBounding)
 		return;
 
-	m_pBounding->Tick(vOffset, WorldMatrix);
+	m_pBounding->Tick(m_vOffset, WorldMatrix);
 }
 
 HRESULT CCollider::Render()

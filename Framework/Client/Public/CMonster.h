@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CNavigation;
+class CCollider;
 class CRenderer;
 class CShader;
 class CModel;
@@ -48,6 +49,7 @@ protected:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 protected:
+	_bool m_isAbleAttack = { false };
 	_bool m_isRangeInPlayer = { false };
 	_bool m_isSpawn = { false };
 	_bool m_isSpawnEnd = { false };

@@ -3,7 +3,7 @@
 /* Renderer같은 느낌으로*/
 
 #include "Observer_Interfaces.h"
-#include "CBase.h"
+#include "CCollider.h"
 
 BEGIN(Engine)
 
@@ -16,15 +16,15 @@ private:
 	virtual ~CCollider_Manager() = default;
 
 public:
-	HRESULT Add_Collider(COLLIDERGROUP eGroupID, class CCollider* pCollider);
+	HRESULT Add_Collider(class CCollider* pCollider);
 	void Tick();
 	void Clear_ColliderList();
 
 private:
-	list<class CCollider*> m_ColliderList[COL_END];
+	list<CCollider*> m_ColliderList[CCollider::COL_END];
 
 private:
-	void Collision(COLLIDERGROUP SrcGroup, COLLIDERGROUP DestGroup);
+	void Collision(CCollider::COLLIDERGROUP SrcGroup, CCollider::COLLIDERGROUP DestGroup);
 
 public:
 	virtual void Free() override;

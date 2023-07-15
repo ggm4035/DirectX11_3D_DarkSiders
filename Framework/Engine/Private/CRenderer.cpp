@@ -1,14 +1,40 @@
 #include "CRenderer.h"
 #include "CGameObject.h"
 
+#include "CTarget_Manager.h"
+#include "CShader.h"
+#include "CVIBuffer_Rect.h"
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CComponent(pDevice, pContext)
+	: CComponent(pDevice, pContext)
+	, m_pTarget_Manager(CTarget_Manager::GetInstance())
 {
+	Safe_AddRef(m_pTarget_Manager);
 }
 
-CRenderer::CRenderer(const CRenderer& rhs)
-	:CComponent(rhs)
+HRESULT CRenderer::Initialize_Prototype()
 {
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	_uint iNumViews = { 1 };
+	D3D11_VIEWPORT ViewportDesc;
+
+	m_pContext->RSGetViewports(&iNumViews, &ViewportDesc);
+
+	m_pShader = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Deferred.hlsl",
+		VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements);
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pVIBuffer)
+		return E_FAIL;
+
+#ifdef _DEBUG
+	//m_pTarget_Manager->Ready_Debug
+#endif
+	return S_OK;
 }
 
 HRESULT CRenderer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
@@ -45,6 +71,10 @@ HRESULT CRenderer::Draw_RenderGroup()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
+#ifdef _DEBUG
+	/*if (FAILED(Render_Debug()))
+		return E_FAIL;*/
+#endif
 	return S_OK;
 }
 
@@ -118,6 +148,16 @@ HRESULT CRenderer::Render_UI()
 	return S_OK;
 }
 
+#ifdef _DEBUG
+HRESULT CRenderer::Render_Debug()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	return S_OK;
+}
+#endif
+
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CRenderer* pInstance = new CRenderer(pDevice, pContext);
@@ -133,7 +173,6 @@ CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 CComponent* CRenderer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	/* Renderer는 이미 오브젝트 리스트를 가지고 있기때문에 Owner 작업이 불필요함 */
 	AddRef();
 	return this;
 }
@@ -149,4 +188,8 @@ void CRenderer::Free()
 
 		m_RenderObjects[i].clear();
 	}
+
+	Safe_Release(m_pTarget_Manager);
+	Safe_Release(m_pShader);
+	Safe_Release(m_pVIBuffer);
 }

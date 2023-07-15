@@ -298,7 +298,7 @@ HRESULT CToolMainApp::Ready_AnimModels()
 
         wstrTag += wstrName;
 
-        if(wstring::npos != wstrTag.find(L"Warrior"))
+        if (wstring::npos != wstrTag.find(L"Warrior"))
             PivotMatrix *= XMMatrixRotationY(-XMConvertToRadians(90.f));
         else
             PivotMatrix *= XMMatrixRotationY(XMConvertToRadians(180.f));

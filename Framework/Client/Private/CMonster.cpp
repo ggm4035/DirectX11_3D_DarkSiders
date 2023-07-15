@@ -53,7 +53,7 @@ HRESULT CMonster::Render(const _uint& iPassIndex)
 
 void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Body" &&
+	if (Collision.pOtherCollider->Get_Tag() == L"Col_Body" &&
 		Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
 		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
@@ -64,7 +64,7 @@ void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& T
 
 void CMonster::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Body" &&
+	if (Collision.pOtherCollider->Get_Tag() == L"Col_Body" &&
 		Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
 		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);

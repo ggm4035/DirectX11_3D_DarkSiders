@@ -8,9 +8,9 @@ BEGIN(Engine)
 class CBounding abstract : public CBase
 {
 public:
-	typedef struct tagBoundingDesc
+	typedef struct tagBoundingDesc : public CCollider::COLLIDERDESC
 	{
-		_float3 vPosition;
+		_float3 vPosition = { _float3() };
 	}BOUNDINGDESC;
 
 protected:

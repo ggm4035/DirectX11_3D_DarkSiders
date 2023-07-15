@@ -19,6 +19,8 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
     vector<MODEL_BINARYDATA>* pModels = TOOL->m_pAnimModelDatas;
 
     MODEL_BINARYDATA retData;
+    ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
+    
     for (auto& Data : *pModels)
     {
         wstring wstrTag = { L"Model_" };
@@ -33,6 +35,8 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
     }
 
     pModels = TOOL->m_pModelDatas;
+    ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
+
     for (auto& Data : *pModels)
     {
         wstring wstrTag = { L"Model_" };

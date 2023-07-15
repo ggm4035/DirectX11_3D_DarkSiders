@@ -34,25 +34,11 @@ HRESULT CHit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pAr
 		return E_FAIL;
 	Safe_AddRef(m_pModel);
 
-	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			CGameObject3D::HITSTATE* pCurState = { nullptr };
-			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
-
-			if (CGameObject3D::NONE == *pCurState)
-				return false;
-			else
-				return true;
-		});
-
 	return S_OK;
 }
 
 HRESULT CHit::Tick(const _double& TimeDelta)
 {
-	if (false == Check_Decorations())
-		return BEHAVIOR_FAIL;
-
 	CGameObject3D* pTarget = { nullptr };
 	CGameObject3D::HITSTATE* pCurState = { nullptr };
 	CGameObject3D::HITSTATE* pPreState = { nullptr };
@@ -63,26 +49,31 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 
 	switch (*pCurState)
 	{
-	case CGameObject3D::HIT:
-		if (*pCurState != *pPreState)
+	case CGameObject3D::NONE:
+		if (*pPreState != *pCurState)
 		{
-			m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-			m_pModel->Change_Animation("Impact");
-			*pCurState = CGameObject3D::HITTING;
-			*pPreState = CGameObject3D::HITTING;
+			m_pModel->Change_Animation("Idle");
+			*pPreState = *pCurState;
 		}
-		return BEHAVIOR_RUNNING;
+		return BEHAVIOR_FAIL;
+
+	case CGameObject3D::HIT:
+		m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		m_pModel->Change_Animation("Impact");
+		*pPreState = *pCurState;
+		*pCurState = CGameObject3D::HITTING;
+		return BEHAVIOR_SUCCESS;
 
 	case CGameObject3D::HITTING:
 		if (true == m_pModel->isFinishedAnimation())
 		{
 			*pCurState = CGameObject3D::NONE;
-			*pPreState = CGameObject3D::NONE;
+			return BEHAVIOR_FAIL;
 		}
-		return BEHAVIOR_SUCCESS;
+		return BEHAVIOR_RUNNING;
 	}
 
-	return BEHAVIOR_ERROR;
+	return BEHAVIOR_FAIL;
 }
 
 CHit* CHit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

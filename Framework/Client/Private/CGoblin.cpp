@@ -52,13 +52,8 @@ void CGoblin::Tick(const _double& TimeDelta)
 	m_pRoot->Tick(TimeDelta);
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
-
-	if (nullptr != m_pColBody)
-		m_pColBody->Tick(m_pTransformCom->Get_WorldMatrix());
-	if (nullptr != m_pColRange)
-		m_pColRange->Tick(m_pTransformCom->Get_WorldMatrix());
-	if (nullptr != m_pColAttack)
-		m_pColAttack->Tick(m_pTransformCom->Get_WorldMatrix(), _float3(0.f, 0.5f, 1.f));
+	
+	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CGoblin::AfterFrustumTick(const _double& TimeDelta)
@@ -68,9 +63,12 @@ void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 
 	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
 	{
-		pGameInstance->Add_Collider(COL_ENEMY, m_pColBody);
-		pGameInstance->Add_Collider(COL_ENEMYRANGE, m_pColRange);
-		pGameInstance->Add_Collider(COL_ENEMYATK, m_pColAttack);
+		if (FAILED(Add_Colliders_To_Manager()))
+		{
+			MSG_BOX("Failed to Add Colliders To Manager");
+			Safe_Release(pGameInstance);
+			return;
+		}
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
@@ -82,9 +80,7 @@ void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CGoblin::Late_Tick(const _double& TimeDelta)
 {
-	m_pColBody->On_Collision(this, TimeDelta); 
-	m_pColRange->On_Collision(this, TimeDelta);
-	m_pColAttack->On_Collision(this, TimeDelta);
+	On_Colisions(TimeDelta);
 }
 
 HRESULT CGoblin::Render()
@@ -94,12 +90,8 @@ HRESULT CGoblin::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColBody)
-		m_pColBody->Render();
-	if (nullptr != m_pColRange)
-		m_pColRange->Render();
-	if (nullptr != m_pColAttack)
-		m_pColAttack->Render();
+	if (FAILED(Render_Colliders()))
+		return E_FAIL;
 
 #endif
 
@@ -110,18 +102,31 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (Collision.pMyCollider == m_pColRange &&
+	CCollider* pColRange = Find_Collider(L"Col_Range");
+	if (nullptr == pColRange)
+		return;
+
+	if (Collision.pMyCollider == pColRange &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
-		m_isRangeInPlayer = true;
 		m_isSpawn = true;
 	}
 }
 
 void CGoblin::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
+	CCollider* pColMeleeRange = Find_Collider(L"Col_Melee_Range");
+	if (nullptr == pColMeleeRange)
+		return;
+
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider == m_pColRange &&
+	if (Collision.pMyCollider == pColMeleeRange &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = true;
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
@@ -130,7 +135,13 @@ void CGoblin::OnCollisionStay(CCollider::COLLISION Collision, const _double& Tim
 
 void CGoblin::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider == m_pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = false;
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = false;
@@ -147,25 +158,33 @@ HRESULT CGoblin::Add_Components()
 		return E_FAIL;
 
 	CBounding_Sphere::SPHEREDESC SphereDesc;
+	CBounding_AABB::AABBDESC AABBDesc;
+	/* Col_Body */
 	SphereDesc.fRadius = 0.5f;
 	SphereDesc.vPosition = _float3(0.f, 0.5f, 0.f);
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body",
-		(CComponent**)&m_pColBody, this, &SphereDesc)))
+	SphereDesc.eGroup = CCollider::COL_ENEMY;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body", &SphereDesc)))
 		return E_FAIL;
 
+	/* Col_Range */
 	SphereDesc.fRadius = 10.f;
 	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range",
-		(CComponent**)&m_pColRange, this, &SphereDesc)))
+	SphereDesc.eGroup = CCollider::COL_ENEMY_RANGE;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range", &SphereDesc)))
 		return E_FAIL;
 
-	CBounding_AABB::AABBDESC AABBDesc;
-	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
-	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	/* Col_Attack_Range */
+	SphereDesc.fRadius = 5.f;
+	SphereDesc.eGroup = CCollider::COL_ENEMY_MELEE_RANGE;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
+		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack",
-		(CComponent**)&m_pColAttack, this, &AABBDesc)))
+	/* Add_Col_Attack */
+	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
+	AABBDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	AABBDesc.vOffset = _float3(0.f, 0.5f, 1.f);
+	AABBDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack", &AABBDesc)))
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
@@ -189,11 +208,14 @@ HRESULT CGoblin::Make_AI()
 
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
+
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
 	m_pRoot->Add_Type(L"ePreHitState", &m_ePreHitState);
+
 	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
 	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
+	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
 	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
 
 	/* Behaviors */
@@ -234,13 +256,13 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
-		return E_FAIL;
-
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
-		return E_FAIL;
+	/*if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
+		return E_FAIL;*/
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Attack_1", pAttack_1)))
+		return E_FAIL;
+
+	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
 		return E_FAIL;
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
@@ -277,9 +299,5 @@ CGoblin* CGoblin::Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pA
 
 void CGoblin::Free()
 {
-	Safe_Release(m_pColBody);
-	Safe_Release(m_pColRange);
-	Safe_Release(m_pColAttack);
-
 	CMonster::Free();
 }

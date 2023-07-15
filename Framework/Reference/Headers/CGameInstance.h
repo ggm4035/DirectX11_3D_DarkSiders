@@ -116,7 +116,6 @@ public: /* For.Frustum */
 	_bool isIn_LocalSpace(_fvector vLocalPosition, _float fRange);
 
 public: /* For.Collider_Manager */
-	HRESULT Add_Collider(COLLIDERGROUP eGroupID, class CCollider* pCollider);
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 	_vector Picking_On_Spheres(const POINT & ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
@@ -144,6 +143,7 @@ private:
 	class CFont_Manager* m_pFont_Manager = { nullptr };
 	class CFrustum* m_pFrustum = { nullptr };
 	class CCollider_Manager* m_pCollider_Manager = { nullptr };
+	class CTarget_Manager* m_pTarget_Manager = { nullptr };
 	
 public:
 	static void Release_Engine();

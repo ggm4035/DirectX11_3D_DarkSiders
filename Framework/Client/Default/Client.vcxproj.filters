@@ -177,12 +177,6 @@
     <ClInclude Include="..\Public\CSky.h">
       <Filter>02. GameObject\Sky</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CGoblin.h">
-      <Filter>02. GameObject\Monster\Goblin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CHellHound.h">
-      <Filter>02. GameObject\Monster\HellHound</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MonoBehavior_Defines.h">
       <Filter>99.Headers</Filter>
     </ClInclude>
@@ -207,9 +201,6 @@
     <ClInclude Include="..\Public\CAttack_1.h">
       <Filter>03. MonoBehaviors\Executions</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CLegion_Melee.h">
-      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CAttack_2.h">
       <Filter>03. MonoBehaviors\Executions</Filter>
     </ClInclude>
@@ -218,6 +209,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\CMonster_Attacks.h">
       <Filter>02. GameObject\Monster\00. Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLegion_Melee.h">
+      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CGoblin.h">
+      <Filter>02. GameObject\Monster\Goblin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHellHound.h">
+      <Filter>02. GameObject\Monster\HellHound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -247,9 +247,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CCamera_Free.cpp">
       <Filter>02. GameObject\Camera\Camera_Free</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CPlayer.cpp">
-      <Filter>02. GameObject\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CMonster.cpp">
       <Filter>02. GameObject\Monster</Filter>
@@ -281,12 +278,6 @@
     <ClCompile Include="..\Private\CSky.cpp">
       <Filter>02. GameObject\Sky</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CGoblin.cpp">
-      <Filter>02. GameObject\Monster\Goblin</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CHellHound.cpp">
-      <Filter>02. GameObject\Monster\HellHound</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CWalk.cpp">
       <Filter>03. MonoBehaviors\Executions</Filter>
     </ClCompile>
@@ -308,9 +299,6 @@
     <ClCompile Include="..\Private\CAttack_1.cpp">
       <Filter>03. MonoBehaviors\Executions</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CLegion_Melee.cpp">
-      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CAttack_2.cpp">
       <Filter>03. MonoBehaviors\Executions</Filter>
     </ClCompile>
@@ -319,6 +307,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\CMonster_Attacks.cpp">
       <Filter>02. GameObject\Monster\00. Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLegion_Melee.cpp">
+      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CGoblin.cpp">
+      <Filter>02. GameObject\Monster\Goblin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHellHound.cpp">
+      <Filter>02. GameObject\Monster\HellHound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPlayer.cpp">
+      <Filter>02. GameObject\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -367,5 +367,6 @@
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
       <Filter>97. ShaderFiles</Filter>
     </None>
+    <None Include="..\..\IMGUI\Default\IMGUI.vcxproj" />
   </ItemGroup>
 </Project>

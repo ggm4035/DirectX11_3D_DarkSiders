@@ -232,6 +232,7 @@
     <ClInclude Include="..\Public\CPipeLine.h" />
     <ClInclude Include="..\Public\CQuardTree.h" />
     <ClInclude Include="..\Public\CRenderer.h" />
+    <ClInclude Include="..\Public\CRenderTarget.h" />
     <ClInclude Include="..\Public\CRoot.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -242,6 +243,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CShader.h" />
+    <ClInclude Include="..\Public\CTarget_Manager.h" />
     <ClInclude Include="..\public\CTexture.h" />
     <ClInclude Include="..\Public\CTransform.h" />
     <ClInclude Include="..\Public\CVIBuffer.h" />
@@ -331,6 +333,7 @@
     <ClCompile Include="..\Private\CPipeLine.cpp" />
     <ClCompile Include="..\Private\CQuardTree.cpp" />
     <ClCompile Include="..\Private\CRenderer.cpp" />
+    <ClCompile Include="..\Private\CRenderTarget.cpp" />
     <ClCompile Include="..\Private\CRoot.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -341,6 +344,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CShader.cpp" />
+    <ClCompile Include="..\Private\CTarget_Manager.cpp" />
     <ClCompile Include="..\private\CTexture.cpp" />
     <ClCompile Include="..\Private\CTransform.cpp" />
     <ClCompile Include="..\Private\CVIBuffer.cpp" />
@@ -356,6 +360,7 @@
     <ClCompile Include="..\Public\Engine_Struct.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

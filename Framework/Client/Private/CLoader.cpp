@@ -126,7 +126,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("모델 로딩 중.");
 
 	FILEDATA FileData;
-	m_pGameInstance->Load("../../ModelDatas/testmap.dat", FileData);
+	m_pGameInstance->Load("../../Data/testmap.dat", FileData);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"VIBuffer_Terrain",
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
@@ -158,7 +158,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	MODEL_BINARYDATA Data;
 
 	/* Goblin Model */
-	m_pGameInstance->ReadModel("../../Goblin.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Goblin.dat", FilePath, Data);
 
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
@@ -168,7 +168,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_BinaryData(Data);
 
 	/* HellHound Model */
-	m_pGameInstance->ReadModel("../../HellHound.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/HellHound.dat", FilePath, Data);
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_HellHound",
@@ -177,7 +177,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_BinaryData(Data);
 
 	/* Legion Model */
-	m_pGameInstance->ReadModel("../../Legion.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Legion.dat", FilePath, Data);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
@@ -189,7 +189,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("네비게이션 로딩 중.");
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Navigation",
-		CNavigation::Create(m_pDevice, m_pContext, L"../../ModelDatas/Navigation.dat")))) // 네비게이션 저장한 경로가 있어야 쓸 수 있음
+		CNavigation::Create(m_pDevice, m_pContext, L"../../Data/Navigation.dat")))) // 네비게이션 저장한 경로가 있어야 쓸 수 있음
 		return E_FAIL;
 
 	m_szLoading = TEXT("충돌체 로딩 중.");
