@@ -220,6 +220,9 @@
     <None Include="..\..\misc\debuggers\imgui.natstepfilter">
       <Filter>IMGUIFile\imgui</Filter>
     </None>
+    <None Include="..\Bin\ShaderFiles\Shader_Imgui_Defines.hlsli">
+      <Filter>96. ShaderFiles</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtx.hlsl">
@@ -238,6 +241,9 @@
       <Filter>96. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+      <Filter>96. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
       <Filter>96. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

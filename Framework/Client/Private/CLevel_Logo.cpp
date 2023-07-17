@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CLevel_Logo.h"
 
 #include "CGameInstance.h"

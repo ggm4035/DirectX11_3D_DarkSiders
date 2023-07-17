@@ -49,6 +49,7 @@ private:
     HRESULT Ready_Prototype_Component_For_Tool();
     HRESULT Ready_NonAnimModels();
     HRESULT Ready_AnimModels();
+    HRESULT Ready_Fonts();
 
     void Update_Demo();
 

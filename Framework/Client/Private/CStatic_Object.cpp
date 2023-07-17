@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CStatic_Object.h"
 
 #include "CShader.h"
@@ -56,7 +56,7 @@ void CStatic_Object::Late_Tick(const _double& TimeDelta)
 	Safe_AddRef(pGameInstance);
 
 	if (nullptr != m_pRendererCom &&
-		true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+		true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f))
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
 	Safe_Release(pGameInstance);
@@ -72,6 +72,7 @@ HRESULT CStatic_Object::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, TYPE_NORMALS);
 
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;
@@ -101,16 +102,19 @@ HRESULT CStatic_Object::Bind_ShaderResources()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	_float4x4 InputMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&m_pTransformCom->Get_WorldFloat4x4())))
+		&InputMatrix)))
 		return E_FAIL;
 
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
+		&InputMatrix)))
 		return E_FAIL;
 
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
+		&InputMatrix)))
 		return E_FAIL;
 
 	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
@@ -135,8 +139,9 @@ HRESULT CStatic_Object::Bind_ShaderResources()
 		&LightDesc.vAmbient, sizeof(_float4))))
 		return E_FAIL;
 
+	_float4 vCameraPosition = pGameInstance->Get_Camera_Position();
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition", 
-		&pGameInstance->Get_Camera_Position(), sizeof(_float4))))
+		&vCameraPosition, sizeof(_float4))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

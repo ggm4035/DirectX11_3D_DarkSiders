@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CJumpAction.h"
 
 #include "CPlayer.h"

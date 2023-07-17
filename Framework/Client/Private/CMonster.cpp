@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CMonster.h"
 
 #include "CRoot.h"
@@ -19,10 +19,20 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
+	if (FAILED(CMonster::Add_Components()))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 	{
 		m_pTransformCom->Set_Matrix(reinterpret_cast<MONSTERDESC*>(pArg)->WorldMatrix);
 		m_pTransformCom->Set_Angle(reinterpret_cast<MONSTERDESC*>(pArg)->vAngle);
+
+		CNavigation::NAVIGATIONDESC NaviDesc;
+		NaviDesc.iCurrentIndex = reinterpret_cast<MONSTERDESC*>(pArg)->iNavigationIndex;
+		if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
+			(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
+			return E_FAIL;
+		m_pTransformCom->Bind_Navigation(m_pNavigationCom);
 	}
 
 	return S_OK;
@@ -87,13 +97,6 @@ HRESULT CMonster::Add_Components()
 		L"Com_Renderer", (CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
-	CNavigation::NAVIGATIONDESC NaviDesc;
-	NaviDesc.iCurrentIndex = 0;
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
-		(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
-		return E_FAIL;
-	m_pTransformCom->Bind_Navigation(m_pNavigationCom);
-
 	return S_OK;
 }
 
@@ -102,16 +105,16 @@ HRESULT CMonster::Set_Shader_Resources()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&m_pTransformCom->Get_WorldFloat4x4())))
+	_float4x4 InputMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
@@ -136,8 +139,9 @@ HRESULT CMonster::Set_Shader_Resources()
 		&LightDesc.vAmbient, sizeof(_float4))))
 		return E_FAIL;
 
+	_float4 InputData = pGameInstance->Get_Camera_Position();
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-		&pGameInstance->Get_Camera_Position(), sizeof(_float4))))
+		&InputData, sizeof(_float4))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

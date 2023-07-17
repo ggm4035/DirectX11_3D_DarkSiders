@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CLegion_Melee.h"
 
 #include "CBlackBoard.h"
@@ -133,9 +133,6 @@ void CLegion_Melee::OnCollisionExit(CCollider::COLLISION Collision, const _doubl
 
 HRESULT CLegion_Melee::Add_Components()
 {
-	if (FAILED(CMonster::Add_Components()))
-		return E_FAIL;
-
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_Legion",
 		L"Com_Model", (CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
@@ -181,8 +178,8 @@ HRESULT CLegion_Melee::Make_AI()
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-	m_pRoot->Add_Type(L"ePreHitState", &m_ePreHitState);
 	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
 	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
 	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
 	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
@@ -199,10 +196,6 @@ HRESULT CLegion_Melee::Make_AI()
 
 	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
 	if (nullptr == pHit)
-		return E_FAIL;
-
-	CMonster_Attacks* pAttacks = dynamic_cast<CMonster_Attacks*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector_Attacks", this));
-	if (nullptr == pAttacks)
 		return E_FAIL;
 
 	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
@@ -232,13 +225,7 @@ HRESULT CLegion_Melee::Make_AI()
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Attacks", pAttacks)))
-		return E_FAIL;
-
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
-		return E_FAIL;
-
-	if (FAILED(pAttacks->Assemble_Childs()))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

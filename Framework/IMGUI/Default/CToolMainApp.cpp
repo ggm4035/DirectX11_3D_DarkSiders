@@ -27,14 +27,14 @@ HRESULT CToolMainApp::Initialize()
 {
     if (FAILED(CoInitializeEx(nullptr, 0)))
         return E_FAIL;
-
+    
     // Initialize Engine
     GRAPHICDESC GraphicDesc;
     GraphicDesc.eWinMode = GRAPHICDESC::WM_WIN;
     GraphicDesc.hWnd = g_hWnd;
     GraphicDesc.hInst = g_hInst;
-    GraphicDesc.iViewportSizeX = g_iWinSizeX;
-    GraphicDesc.iViewportSizeY = g_iWinSizeY;
+    GraphicDesc.iViewportSizeX = 1264;// g_iWinSizeX;
+    GraphicDesc.iViewportSizeY = 681;// g_iWinSizeY;
     FAILED_CHECK_RETURN(m_pGameInstance->Initialize_Engine(LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext), E_FAIL);
 
     // Initialize Imgui
@@ -58,6 +58,10 @@ HRESULT CToolMainApp::Initialize()
 
     // Initialize ImWindows
     if (FAILED(Ready_ImWindows()))
+        return E_FAIL;
+
+    // Initialize Fonts
+    if (FAILED(Ready_Fonts()))
         return E_FAIL;
 
     // Initialize Level
@@ -317,6 +321,12 @@ HRESULT CToolMainApp::Ready_AnimModels()
     Safe_Release(pGameInstance);
 
     return S_OK;
+}
+
+HRESULT CToolMainApp::Ready_Fonts()
+{
+    if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, L"Font_135", L"../../Resources/Fonts/135.spritefont")))
+        return E_FAIL;
 }
 
 void CToolMainApp::Update_Demo()

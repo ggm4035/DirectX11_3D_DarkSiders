@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CLoader.h"
 
 #include "CGameInstance.h"
@@ -115,13 +115,17 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	/* For. Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Terrain",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain%d.png", 2))))
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain%d.png", 5))))
 		return E_FAIL;
 
 	/* For. Texture_SkyBox */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SkyBox",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/SkyBox/Sky_0.dds"))))
 		return E_FAIL;
+
+	/* For. Texture_NMTerrain */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_NMTerrain",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain3_nm.png"))))
 
 	m_szLoading = TEXT("¸ðµ¨ ·Îµù Áß.");
 

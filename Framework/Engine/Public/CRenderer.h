@@ -24,6 +24,8 @@ public:
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_NonBlend();
+	HRESULT Render_Light();
+	HRESULT Render_Deferred();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blend();
 	HRESULT Render_UI();
@@ -34,9 +36,12 @@ private:
 
 private:
 	class CTarget_Manager* m_pTarget_Manager = { nullptr };
+	class CLight_Manager* m_pLight_Manager = { nullptr };
+
 	class CShader* m_pShader = { nullptr };
 	class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
-	_float4x4 m_ViewMatrix, m_ProjMatrix;
+
+	_float4x4 m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 private:
 	list<class CGameObject*> m_RenderObjects[RENDER_END];

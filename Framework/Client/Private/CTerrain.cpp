@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CTerrain.h"
 
 #include "CGameInstance.h"
@@ -60,11 +60,13 @@ HRESULT CTerrain::Render()
 {
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
+	
+	if (FAILED(m_pNmTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture")))
+		return E_FAIL;
 
 	m_pShaderCom->Begin(0);
 
 	m_pBufferCom->Render();
-
 
 #ifdef _DEBUG
 	m_pNavigationCom->Render_Navigation();
@@ -77,6 +79,10 @@ HRESULT CTerrain::Add_Components()
 {
 	if (FAILED(Add_Component(m_iLevelIndex, L"VIBuffer_Terrain",
 		L"Com_Buffer_Terrain", (CComponent**)&m_pBufferCom, this)))
+		return E_FAIL;
+
+	if (FAILED(Add_Component(m_iLevelIndex, L"Texture_NMTerrain",
+		L"Com_Texture_NMTerrain", (CComponent**)&m_pNmTextureCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_VtxNorTex",
@@ -99,16 +105,19 @@ HRESULT CTerrain::SetUp_ShaderResources()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	_float4x4 InputMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&m_pTransformCom->Get_WorldFloat4x4())))
+		&InputMatrix)))
 		return E_FAIL;
 
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
+		&InputMatrix)))
 		return E_FAIL;
 
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
+		&InputMatrix)))
 		return E_FAIL;
 
 	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
@@ -133,8 +142,9 @@ HRESULT CTerrain::SetUp_ShaderResources()
 		&LightDesc.vAmbient, sizeof(_float4))))
 		return E_FAIL;
 
+	_float4 vCameraPosition = pGameInstance->Get_Camera_Position();
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition", 
-		&pGameInstance->Get_Camera_Position(), sizeof(_float4))))
+		&vCameraPosition, sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
@@ -174,6 +184,7 @@ void CTerrain::Free()
 	Safe_Release(m_pBufferCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pNmTextureCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pNavigationCom);
 

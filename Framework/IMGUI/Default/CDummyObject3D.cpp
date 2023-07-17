@@ -19,7 +19,7 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
     vector<MODEL_BINARYDATA>* pModels = TOOL->m_pAnimModelDatas;
 
     MODEL_BINARYDATA retData;
-    ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
+
     
     for (auto& Data : *pModels)
     {
@@ -35,7 +35,7 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
     }
 
     pModels = TOOL->m_pModelDatas;
-    ZeroMemory(&retData, sizeof(MODEL_BINARYDATA));
+
 
     for (auto& Data : *pModels)
     {
@@ -126,6 +126,9 @@ HRESULT CDummyObject3D::Render()
         if (nullptr != m_pBufferCom)
             m_pBufferCom->Render();
     }
+
+    if (nullptr != dynamic_cast<CVIBuffer_Terrain*>(m_pBufferCom))
+        m_pNavigationCom->Render_Navigation();
 
     if (nullptr != m_pColliderCom)
         m_pColliderCom->Render();
@@ -272,10 +275,6 @@ HRESULT CDummyObject3D::Set_Shader_Resources()
                 &pGameInstance->Get_Camera_Position(), sizeof(_float4))))
                 return E_FAIL;
         }
-
-        if(nullptr != dynamic_cast<CVIBuffer_Terrain*>(m_pBufferCom))
-            m_pNavigationCom->Render_Navigation();
-
     }
     Safe_Release(pGameInstance);
 

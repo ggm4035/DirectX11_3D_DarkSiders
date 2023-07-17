@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CGoblin.h"
 
 #include "MonoBehavior_Defines.h"
@@ -102,11 +102,7 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	CCollider* pColRange = Find_Collider(L"Col_Range");
-	if (nullptr == pColRange)
-		return;
-
-	if (Collision.pMyCollider == pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isSpawn = true;
@@ -115,12 +111,8 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 
 void CGoblin::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CCollider* pColMeleeRange = Find_Collider(L"Col_Melee_Range");
-	if (nullptr == pColMeleeRange)
-		return;
-
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider == pColMeleeRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isAbleAttack = true;
@@ -150,9 +142,6 @@ void CGoblin::OnCollisionExit(CCollider::COLLISION Collision, const _double& Tim
 
 HRESULT CGoblin::Add_Components()
 {
-	if (FAILED(CMonster::Add_Components()))
-		return E_FAIL;
-
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_Goblin",
 		L"Com_Model", (CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
@@ -210,7 +199,6 @@ HRESULT CGoblin::Make_AI()
 	m_pRoot->Add_Type(L"vDirection", _float3());
 
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-	m_pRoot->Add_Type(L"ePreHitState", &m_ePreHitState);
 
 	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
 	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
@@ -256,8 +244,8 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	/*if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
-		return E_FAIL;*/
+	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
+		return E_FAIL;
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Attack_1", pAttack_1)))
 		return E_FAIL;

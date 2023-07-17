@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CHellHound.h"
 
 #include "MonoBehavior_Defines.h"
@@ -132,9 +132,6 @@ void CHellHound::OnCollisionExit(CCollider::COLLISION Collision, const _double& 
 
 HRESULT CHellHound::Add_Components()
 {
-	if (FAILED(CMonster::Add_Components()))
-		return E_FAIL;
-
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_HellHound",
 		L"Com_Model", (CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
@@ -171,8 +168,8 @@ HRESULT CHellHound::Make_AI()
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-	m_pRoot->Add_Type(L"ePreHitState", &m_ePreHitState);
 	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
 	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
 	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
 	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());

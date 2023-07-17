@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CWeapon.h"
 
 #include "CGameInstance.h"
@@ -95,12 +95,14 @@ HRESULT CWeapon::Set_Shader_Resources()
 		&m_WorldMatrix)))
 		return E_FAIL;
 
+	_float4x4 InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
+		&InputMatrix)))
 		return E_FAIL;
 
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
+		&InputMatrix)))
 		return E_FAIL;
 
 	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
@@ -125,8 +127,9 @@ HRESULT CWeapon::Set_Shader_Resources()
 		&LightDesc.vAmbient, sizeof(_float4))))
 		return E_FAIL;
 
+	_float4 vCameraPosition = pGameInstance->Get_Camera_Position();
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-		&pGameInstance->Get_Camera_Position(), sizeof(_float4))))
+		&vCameraPosition, sizeof(_float4))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

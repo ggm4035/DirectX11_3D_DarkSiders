@@ -170,7 +170,7 @@ HRESULT CShader::Begin(const _uint& iPassIndex)
 	if (iPassIndex >= m_iNumPasses)
 		return E_FAIL;
 
-	ID3DX11EffectTechnique* pTechnique = m_pEffect->GetTechniqueByIndex(iPassIndex);
+	ID3DX11EffectTechnique* pTechnique = m_pEffect->GetTechniqueByIndex(0);
 	if (nullptr == pTechnique)
 		return E_FAIL;
 

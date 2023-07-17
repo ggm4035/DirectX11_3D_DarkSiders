@@ -2,14 +2,25 @@
 
 IMPLEMENT_SINGLETON(CLight_Manager)
 
-HRESULT CLight_Manager::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CLight::LIGHTDESC& LightDesc)
+HRESULT CLight_Manager::Add_Light(const CLight::LIGHTDESC& LightDesc)
 {
-	CLight* pLight = CLight::Create(pDevice, pContext, LightDesc);
+	CLight* pLight = CLight::Create(LightDesc);
 
 	if (nullptr == pLight)
 		return E_FAIL;
 
 	m_vecLights.push_back(pLight);
+
+	return S_OK;
+}
+
+HRESULT CLight_Manager::Render_Lights(CShader* pShader, CVIBuffer_Rect* m_pVIBuffer)
+{
+	for (auto& pLight : m_vecLights)
+	{
+		if(nullptr != pLight)
+			pLight->Render(pShader, m_pVIBuffer);
+	}
 
 	return S_OK;
 }

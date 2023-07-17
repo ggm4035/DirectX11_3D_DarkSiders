@@ -100,7 +100,7 @@ public: /* For.FileInfo */
 
 public: /* For.Light_Manager*/
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint & iIndex);
-	HRESULT Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const CLight::LIGHTDESC & LightDesc);
+	HRESULT Add_Light(const CLight::LIGHTDESC & LightDesc);
 
 public: /* For.Calculator */
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform);

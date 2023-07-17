@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "CBehavior.h"
 #include "CGameObject3D.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CModel;

@@ -1,6 +1,6 @@
 
-#include "Client_Defines.h"
 #include "CBehavior.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CModel;

@@ -21,7 +21,7 @@ public:
 	}LIGHTDESC;
 
 private:
-	explicit CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CLight() = default;
 	virtual ~CLight() = default;
 
 public:
@@ -29,14 +29,13 @@ public:
 
 public:
 	HRESULT Initialize(const LIGHTDESC& LightDesc);
+	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 
 private:
-	ID3D11Device* m_pDevice = { nullptr };
-	ID3D11DeviceContext* m_pContext = { nullptr };
 	LIGHTDESC m_LightDesc;
 
 public:
-	static CLight* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
+	static CLight* Create(const LIGHTDESC& LightDesc);
 	virtual void Free() override;
 };
 

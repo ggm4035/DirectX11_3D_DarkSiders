@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CGameObject;
+class CGameInstance;
 END
 
 BEGIN(Imgui)
@@ -25,6 +26,7 @@ private:
     _char m_szTag[MAX_PATH] = { "" };
 
 private:
+    void Show_ObjectInfo(CGameInstance* pGameInstance);
     void Show_Components();
     void Show_Transform();
     void Show_Texture();

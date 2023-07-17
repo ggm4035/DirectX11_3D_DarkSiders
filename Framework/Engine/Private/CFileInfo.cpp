@@ -518,6 +518,9 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		/* Read vAngle */
 		ReadFile(hFile, &Data.vAngle, sizeof(_float3), &dwByte, nullptr);
 
+		/* Read Navigation Index */
+		ReadFile(hFile, &Data.iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
+
 		/* Read Model Binary Datas */
 		Read_BinData(hFile, Data.BinaryData, dwByte);
 
@@ -541,6 +544,9 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 
 		/* Read vAngle */
 		ReadFile(hFile, &Data.vAngle, sizeof(_float3), &dwByte, nullptr);
+
+		/* Read Navigation Index */
+		ReadFile(hFile, &Data.iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
 
 		/* Read Model Binary Datas */
 		Read_BinData(hFile, Data.BinaryData, dwByte);

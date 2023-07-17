@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CMonster_Patrol.h"
 
 #include "CBlackBoard.h"
@@ -25,7 +25,7 @@ HRESULT CMonster_Patrol::Initialize(const _uint& iLevelIndex, CComponent* pOwner
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			_bool* isRangeInPlayer = { false };
+			_bool* isRangeInPlayer = { nullptr };
 
 			pBlackBoard->Get_Type<_bool*>(L"isRangeInPlayer", isRangeInPlayer);
 

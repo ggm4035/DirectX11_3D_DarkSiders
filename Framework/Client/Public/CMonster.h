@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "CGameObject3D.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CNavigation;
@@ -21,6 +21,7 @@ public:
 	{
 		_float4x4 WorldMatrix;
 		_float3 vAngle;
+		_uint iNavigationIndex = { 0 };
 	}MONSTERDESC;
 
 protected:

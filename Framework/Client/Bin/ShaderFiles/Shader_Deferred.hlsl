@@ -1,6 +1,19 @@
 
-matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D		g_Texture;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+
+texture2D g_DiffuseTexture;
+texture2D g_NormalTexture;
+texture2D g_ShadeTexture;
+
+vector g_vLightDir;
+vector g_vLightPos;
+float g_fLightRange;
+
+vector g_vLightDiffuse;
+vector g_vLightSpecular;
+vector g_vLightAmbient;
+
+texture2D g_Texture;
 
 sampler LinearSampler = sampler_state
 {
@@ -18,13 +31,13 @@ sampler PointSampler = sampler_state
 
 struct VS_IN
 {
-	float3		vPosition : POSITION;	
+	float3		vPosition : POSITION;
 	float2		vTexUV : TEXCOORD0;
 };
 
 struct VS_OUT
 {
-	float4		vPosition : SV_POSITION;	
+	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
 };
 
@@ -55,13 +68,51 @@ struct PS_OUT
 };
 
 /* 픽셀을 받고 픽셀의 색을 결정하여 리턴한다. */
-PS_OUT PS_MAIN_DEBUG(PS_IN In) : SV_TARGET0
+PS_OUT PS_MAIN_DEBUG(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
 	return Out;	
+}
+
+struct PS_OUT_LIGHT
+{
+    float4 vShade : SV_TARGET0;
+};
+
+PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
+{
+    PS_OUT_LIGHT Out = (PS_OUT_LIGHT) 0;
+    
+    vector vNormalDesc = g_NormalTexture.Sample(PointSampler, In.vTexUV);
+    vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+    
+    Out.vShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f); // + g_vLightAmbient;
+    
+    return Out;
+}
+
+PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_DEFERRED(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+    if (vDiffuse.a == 0.f)
+        discard;
+    vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
+    
+    Out.vColor = vDiffuse * vShade;
+    
+    return Out;
 }
 
 RasterizerState RS_Default
@@ -78,24 +129,68 @@ DepthStencilState DSS_Default
 	DepthFunc = less_equal;
 };
 
+DepthStencilState DSS_Depth_Disable
+{
+    DepthEnable = false;
+    DepthWriteMask = zero;
+};
+
 BlendState BS_Default
 {
 	BlendEnable[0] = false;
 };
 
-
-
 technique11		DefaultTechnique
 {
-	pass Debug
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DSS_Default, 0);
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL/*compile gs_5_0 GS_MAIN()*/;
-		HullShader = NULL/*compile hs_5_0 HS_MAIN()*/;
-		DomainShader = NULL/*compile ds_5_0 DS_MAIN()*/;
-		PixelShader = compile ps_5_0 PS_MAIN_DEBUG();
-	}	
+    pass Debug
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_DEBUG();
+    }
+
+    pass Light_Directional
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Depth_Disable, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_DIRECTIONAL();
+    }
+
+    pass Light_Point
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Depth_Disable, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_POINT();
+    }
+
+    pass Deferred
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Depth_Disable, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_DEFERRED();
+    }
 }

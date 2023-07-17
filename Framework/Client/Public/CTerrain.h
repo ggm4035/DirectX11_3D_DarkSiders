@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "CGameObject3D.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CVIBuffer_Terrain;
@@ -39,6 +39,7 @@ public:
 private:
 	CVIBuffer_Terrain* m_pBufferCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	CTexture* m_pNmTextureCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };

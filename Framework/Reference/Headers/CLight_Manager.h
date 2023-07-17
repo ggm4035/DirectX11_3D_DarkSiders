@@ -16,7 +16,8 @@ public:
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint& iIndex);
 
 public:
-	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CLight::LIGHTDESC& LightDesc);
+	HRESULT Add_Light(const CLight::LIGHTDESC& LightDesc);
+	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* m_pVIBuffer);
 
 private:
 	vector<CLight*> m_vecLights;

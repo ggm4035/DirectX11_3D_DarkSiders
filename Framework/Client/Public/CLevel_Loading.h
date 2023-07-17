@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "CLevel.h"
+#include "Client_Defines.h"
 
 BEGIN(Client)
 

@@ -3,6 +3,8 @@
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 #include "CVIBuffer_Cell.h"
 #include "CGameInstance.h"
+#include "CFont_Manager.h"
+#include "CFrustum.h"
 #endif
 
 CCell::CCell(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -103,7 +105,7 @@ CCell::RETURNDESC CCell::is_In(_fvector vPosition)
 _float CCell::is_On(_fvector vPosition)
 {
 	_vector vPlane = XMPlaneFromPoints(XMLoadFloat3(&m_arrPoints[POINT_A]), XMLoadFloat3(&m_arrPoints[POINT_B]), XMLoadFloat3(&m_arrPoints[POINT_C]));
-	
+
 	/* y = (-ax -cz - d) / b*/
 	return (-XMVectorGetX(vPlane) * XMVectorGetX(vPosition)
 		- XMVectorGetZ(vPlane) * XMVectorGetZ(vPosition) - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
@@ -178,7 +180,8 @@ HRESULT CCell::Render()
 	if (nullptr == m_pBuffer)
 		return E_FAIL;
 
-	m_pBuffer->Render();
+	if (FAILED(m_pBuffer->Render()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -206,6 +209,29 @@ HRESULT CCell::Render_Sphere()
 	return S_OK;
 }
 
+HRESULT CCell::Render_Font()
+{
+	CFont_Manager* pFont_Manager = CFont_Manager::GetInstance();
+
+	Safe_AddRef(pFont_Manager);
+
+	_vector vPosition = (XMLoadFloat3(&m_arrPoints[0]) + XMLoadFloat3(&m_arrPoints[1]) + XMLoadFloat3(&m_arrPoints[2])) / 3.f;
+
+	vPosition = XMVector3TransformCoord(vPosition, CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_VIEW));
+	vPosition = XMVector3TransformCoord(vPosition, CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_PROJ));
+	wstring wstrIndex = to_wstring(m_iIndex);
+
+	_float screenX = ((XMVectorGetX(vPosition) + 1.0f) * 0.5f) * 1280;
+	_float screenY = ((-XMVectorGetY(vPosition) + 1.0f) * 0.5f) * 720;
+
+	if (FAILED(pFont_Manager->Render_Font(L"Font_135", wstrIndex, _float2(screenX, screenY), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.4f)))
+		return E_FAIL;
+
+	Safe_Release(pFont_Manager);
+
+	return S_OK;
+}
+
 void CCell::Sort()
 {
 	_vector vLineAB = XMLoadFloat3(&m_arrPoints[POINT_B]) - XMLoadFloat3(&m_arrPoints[POINT_A]);
@@ -218,10 +244,6 @@ void CCell::Sort()
 		_float3 vTemp = m_arrPoints[POINT_B];
 		m_arrPoints[POINT_B] = m_arrPoints[POINT_C];
 		m_arrPoints[POINT_C] = vTemp;
-
-		vTemp = m_arrNormals[NEIGHBOR_AB];
-		m_arrNormals[NEIGHBOR_AB] = m_arrNormals[NEIGHBOR_CA];
-		m_arrNormals[NEIGHBOR_CA] = vTemp;
 	}
 }
 

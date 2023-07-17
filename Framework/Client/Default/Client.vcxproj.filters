@@ -1,356 +1,352 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="98.Default">
-      <UniqueIdentifier>{620a8e63-548b-40d2-88d9-e033cc0956bc}</UniqueIdentifier>
+    <Filter Include="00. MainApp">
+      <UniqueIdentifier>{77a4fcb4-74ed-4443-b511-656de00dd5bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99.Headers">
-      <UniqueIdentifier>{e296279c-e36e-4a6f-bef1-dc56aa576244}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.MainApp">
-      <UniqueIdentifier>{00740b1c-55d6-4e82-b855-95dd954aaca4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels">
-      <UniqueIdentifier>{f0a603fb-ad79-4483-87b3-a9622a04dfe8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\00. Level_Logo">
-      <UniqueIdentifier>{6a162262-b125-4168-8516-03bccf598898}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\01. Level_GamePlay">
-      <UniqueIdentifier>{8c7a8ca8-27c2-4ea6-bbbc-26ae3982147e}</UniqueIdentifier>
+    <Filter Include="01. Level">
+      <UniqueIdentifier>{3438a748-3fc2-4cd1-a4f2-60b03ca6e512}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObject">
-      <UniqueIdentifier>{4421319e-a267-4e72-82e9-352a5166944f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. ShaderFiles">
-      <UniqueIdentifier>{e00542d5-bcff-4309-9d4a-11f315bae038}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Camera">
-      <UniqueIdentifier>{4a1653ab-30f2-4b57-90f9-c4af8aa416f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Camera\Camera_Free">
-      <UniqueIdentifier>{031c7df3-afbf-4335-a4da-3d32f52b6e35}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Player">
-      <UniqueIdentifier>{2517d608-0c9d-4f5d-830e-c4ae48a908e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Monster">
-      <UniqueIdentifier>{d9062a12-1a44-4d4b-a54d-3bde862fb965}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Environment">
-      <UniqueIdentifier>{e1d3b298-7249-4a1d-8b9a-2cb769a60e9b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Environment\Terrain">
-      <UniqueIdentifier>{33d642fa-3091-46e2-a765-b922d6528579}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\UI">
-      <UniqueIdentifier>{3fdcf253-5904-4a3a-919b-67c3b9f3af14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Environment\Static_Object">
-      <UniqueIdentifier>{b11112c8-0428-44cc-954f-e7980f77c1e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Environment\Anim_Object">
-      <UniqueIdentifier>{5614ebb0-f27e-412c-ac1d-9e6be6247812}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Parts">
-      <UniqueIdentifier>{8dc1db7f-9dbe-4333-a802-a156b9652817}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Parts\Weapon">
-      <UniqueIdentifier>{bb0f568e-ee17-40ac-a93a-dc9416ae5bca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\99. Level_Loading">
-      <UniqueIdentifier>{4d8384f4-e8a4-4783-8fc7-10622987d984}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\99. Level_Loading\Loader">
-      <UniqueIdentifier>{65e810a4-1df9-461d-81dc-bfdf48e72c83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Effect">
-      <UniqueIdentifier>{b9e0e5f9-04c2-4fe7-8572-497d873abede}</UniqueIdentifier>
+      <UniqueIdentifier>{9c0eba2b-7ce2-41c8-b899-5d7019eb993c}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. MonoBehaviors">
-      <UniqueIdentifier>{26138861-bea3-408f-bfaa-d7d79aea3ed5}</UniqueIdentifier>
+      <UniqueIdentifier>{6a0b25ca-5da3-414c-8707-48a51cb4c432}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. MonoBehaviors\Executions">
-      <UniqueIdentifier>{12712c53-5d39-4c0a-b7df-1e4997b59593}</UniqueIdentifier>
+    <Filter Include="97. ShaderFiles">
+      <UniqueIdentifier>{6a342525-dd34-4199-800a-fcc2ac37151d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Player\PlayerActions">
-      <UniqueIdentifier>{89a772ea-e0be-4276-a4ea-d4bf3126e851}</UniqueIdentifier>
+    <Filter Include="99. Headers">
+      <UniqueIdentifier>{37d115a9-349b-4df7-8648-a1798d5cdd60}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Player\PlayerActions\MoveAction">
-      <UniqueIdentifier>{d6331427-c706-4cbf-b411-67b2a341a629}</UniqueIdentifier>
+    <Filter Include="01. Level\00. Level_Logo">
+      <UniqueIdentifier>{3973ae34-5dff-455e-a2b4-f7e242c737bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Player\PlayerActions\JumpAction">
-      <UniqueIdentifier>{995f4a0a-f80f-4095-b807-f43a0bab6598}</UniqueIdentifier>
+    <Filter Include="01. Level\01. Level_GamePlay">
+      <UniqueIdentifier>{c456ece9-7874-4945-b4d3-1e62b5887616}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Player\PlayerActions\AttackAction">
-      <UniqueIdentifier>{39b74c53-c4ba-4f30-968b-b75544609de8}</UniqueIdentifier>
+    <Filter Include="01. Level\99. Level_Loading">
+      <UniqueIdentifier>{ca4f21c5-d125-45e2-a67b-49f542683470}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Sky">
-      <UniqueIdentifier>{252be5a5-5b01-48b1-ab5c-1e3ace9753ff}</UniqueIdentifier>
+    <Filter Include="01. Level\99. Level_Loading\Loader">
+      <UniqueIdentifier>{47515268-fbcd-43bd-8559-519faed41aee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Monster\Goblin">
-      <UniqueIdentifier>{360022fb-c20d-401b-bb3a-f801ff5d02b6}</UniqueIdentifier>
+    <Filter Include="02. GameObject\01. Monster">
+      <UniqueIdentifier>{60686553-c835-48e3-9f9d-bf46657e5fc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Monster\HellHound">
-      <UniqueIdentifier>{35bfc28f-cdd0-4fa8-80b6-ec20273d3293}</UniqueIdentifier>
+    <Filter Include="02. GameObject\01. Monster\00. Actions">
+      <UniqueIdentifier>{fa67aaea-8c69-4855-8a46-5295ba1d3cca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Monster\Legion">
-      <UniqueIdentifier>{9d89151e-3112-4c20-9c45-a43795daf8cb}</UniqueIdentifier>
+    <Filter Include="02. GameObject\01. Monster\01. Goblin">
+      <UniqueIdentifier>{5ff86110-2e8e-42c6-b3b2-dbb0462cf3be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Monster\00. Actions">
-      <UniqueIdentifier>{5b4f2b31-8ccc-401c-a693-cb172f9839b4}</UniqueIdentifier>
+    <Filter Include="02. GameObject\01. Monster\02. HellHound">
+      <UniqueIdentifier>{f5d58a59-c98a-483b-a28a-47e524a59452}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Monster\Legion\Legion_Melee">
-      <UniqueIdentifier>{1e4704ac-6cb5-448d-adc9-71fa62a730cd}</UniqueIdentifier>
+    <Filter Include="02. GameObject\00. Player">
+      <UniqueIdentifier>{89161d61-250c-48b9-83e0-19e00e13a01d}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <Filter Include="02. GameObject\00. Player\PlayerActions">
+      <UniqueIdentifier>{c8c9e6a3-4e00-4053-b3f1-8732e7fcf0df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\00. AttackAction">
+      <UniqueIdentifier>{237343f7-f536-41b4-8dbe-7526ab686949}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\01. JumpAction">
+      <UniqueIdentifier>{2f226dfa-3b84-4925-8f3f-f39d81c04b40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\02. MoveAction">
+      <UniqueIdentifier>{0bb76e58-2d0a-49b3-8e1f-84f8f9e06a31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. Environment">
+      <UniqueIdentifier>{17fc5572-0174-4615-b984-6a48a49de314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. Environment\00. Anim_Object">
+      <UniqueIdentifier>{f4577e5a-07d9-44bc-96f6-faf5e8543ec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. Environment\01. Static_Object">
+      <UniqueIdentifier>{77e2a82a-bd5e-4fca-8545-b3631251b97a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. Environment\02. Terrain">
+      <UniqueIdentifier>{91265c91-eb01-4086-ba6d-9a1031691267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. Environment\03. Sky">
+      <UniqueIdentifier>{35acc4be-ac12-4c93-af6e-e559b165e24e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\03. Parts">
+      <UniqueIdentifier>{b4907ddb-e07f-491f-820f-af3201a0cdeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\03. Parts\00. Weapon">
+      <UniqueIdentifier>{8baa57bc-f740-401e-9bbc-a3ab053b4b19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\04. UI">
+      <UniqueIdentifier>{a5ef5317-f793-4856-aaa8-def1f8d1b6c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\05. Camera">
+      <UniqueIdentifier>{034f9140-9994-48c1-aa49-63ad0ea4eb8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Default">
+      <UniqueIdentifier>{eb3c224c-bae0-4907-81f3-ce03694ea332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\03. Legion">
+      <UniqueIdentifier>{4f3122b0-66c5-4f52-9a14-f85bab31fe5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\03. Legion\Legion_Melee">
+      <UniqueIdentifier>{24bf42fc-ed64-4a97-a9d5-cc8a8e6bd961}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
-      <Filter>98.Default</Filter>
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>98. Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>98.Default</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>98.Default</Filter>
+      <Filter>98. Default</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>98.Default</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\CMainApp.h">
-      <Filter>00.MainApp</Filter>
+      <Filter>98. Default</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
-      <Filter>99.Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CLevel_Logo.h">
-      <Filter>01. Levels\00. Level_Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CLevel_GamePlay.h">
-      <Filter>01. Levels\01. Level_GamePlay</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CLevel_Loading.h">
-      <Filter>01. Levels\99. Level_Loading</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CLoader.h">
-      <Filter>01. Levels\99. Level_Loading\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CTerrain.h">
-      <Filter>02. GameObject\Environment\Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CCamera_Free.h">
-      <Filter>02. GameObject\Camera\Camera_Free</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CPlayer.h">
-      <Filter>02. GameObject\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CMonster.h">
-      <Filter>02. GameObject\Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CUI_Rect.h">
-      <Filter>02. GameObject\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CStatic_Object.h">
-      <Filter>02. GameObject\Environment\Static_Object</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CWeapon.h">
-      <Filter>02. GameObject\Parts\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CRun.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CPlayerAction.h">
-      <Filter>02. GameObject\Player\PlayerActions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CMoveAction.h">
-      <Filter>02. GameObject\Player\PlayerActions\MoveAction</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CAttackAction.h">
-      <Filter>02. GameObject\Player\PlayerActions\AttackAction</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CJumpAction.h">
-      <Filter>02. GameObject\Player\PlayerActions\JumpAction</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CSky.h">
-      <Filter>02. GameObject\Sky</Filter>
+      <Filter>99. Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MonoBehavior_Defines.h">
-      <Filter>99.Headers</Filter>
+      <Filter>99. Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CWalk.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CMonster_Patrol.h">
-      <Filter>02. GameObject\Monster\00. Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CRandomLook.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CWait.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CHit.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CSpawn.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+    <ClInclude Include="..\Public\CMainApp.h">
+      <Filter>00. MainApp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CAttack_1.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+      <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CAttack_2.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+      <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CAttack_3.h">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+      <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CMonster_Attacks.h">
-      <Filter>02. GameObject\Monster\00. Actions</Filter>
+    <ClInclude Include="..\Public\CWalk.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CWait.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSpawn.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRandomLook.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHit.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRun.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLoader.h">
+      <Filter>01. Level\99. Level_Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLevel_GamePlay.h">
+      <Filter>01. Level\01. Level_GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLevel_Loading.h">
+      <Filter>01. Level\99. Level_Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLevel_Logo.h">
+      <Filter>01. Level\00. Level_Logo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLegion_Melee.h">
-      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CGoblin.h">
-      <Filter>02. GameObject\Monster\Goblin</Filter>
+      <Filter>02. GameObject\01. Monster\03. Legion\Legion_Melee</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CHellHound.h">
-      <Filter>02. GameObject\Monster\HellHound</Filter>
+      <Filter>02. GameObject\01. Monster\02. HellHound</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CGoblin.h">
+      <Filter>02. GameObject\01. Monster\01. Goblin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMonster.h">
+      <Filter>02. GameObject\01. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMonster_Patrol.h">
+      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPlayerAction.h">
+      <Filter>02. GameObject\00. Player\PlayerActions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CJumpAction.h">
+      <Filter>02. GameObject\00. Player\PlayerActions\01. JumpAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMoveAction.h">
+      <Filter>02. GameObject\00. Player\PlayerActions\02. MoveAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAttackAction.h">
+      <Filter>02. GameObject\00. Player\PlayerActions\00. AttackAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPlayer.h">
+      <Filter>02. GameObject\00. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSky.h">
+      <Filter>02. GameObject\02. Environment\03. Sky</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CTerrain.h">
+      <Filter>02. GameObject\02. Environment\02. Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CStatic_Object.h">
+      <Filter>02. GameObject\02. Environment\01. Static_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CWeapon.h">
+      <Filter>02. GameObject\03. Parts\00. Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CUI_Rect.h">
+      <Filter>02. GameObject\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCamera_Free.h">
+      <Filter>02. GameObject\05. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMonster_Hit.h">
+      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>98. Default</Filter>
+    </Image>
+    <Image Include="Client.ico">
+      <Filter>98. Default</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
-      <Filter>98.Default</Filter>
+      <Filter>98. Default</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>98.Default</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\CMainApp.cpp">
-      <Filter>00.MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CLoader.cpp">
-      <Filter>01. Levels\99. Level_Loading\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CLevel_GamePlay.cpp">
-      <Filter>01. Levels\01. Level_GamePlay</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CLevel_Logo.cpp">
-      <Filter>01. Levels\00. Level_Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CLevel_Loading.cpp">
-      <Filter>01. Levels\99. Level_Loading</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CTerrain.cpp">
-      <Filter>02. GameObject\Environment\Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CCamera_Free.cpp">
-      <Filter>02. GameObject\Camera\Camera_Free</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CMonster.cpp">
-      <Filter>02. GameObject\Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CUI_Rect.cpp">
-      <Filter>02. GameObject\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CStatic_Object.cpp">
-      <Filter>02. GameObject\Environment\Static_Object</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CWeapon.cpp">
-      <Filter>02. GameObject\Parts\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CRun.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CPlayerAction.cpp">
-      <Filter>02. GameObject\Player\PlayerActions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CMoveAction.cpp">
-      <Filter>02. GameObject\Player\PlayerActions\MoveAction</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CAttackAction.cpp">
-      <Filter>02. GameObject\Player\PlayerActions\AttackAction</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CJumpAction.cpp">
-      <Filter>02. GameObject\Player\PlayerActions\JumpAction</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CSky.cpp">
-      <Filter>02. GameObject\Sky</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CWalk.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CMonster_Patrol.cpp">
-      <Filter>02. GameObject\Monster\00. Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CRandomLook.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CWait.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CHit.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CSpawn.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+    <ClCompile Include="..\Private\CMainApp.cpp">
+      <Filter>00. MainApp</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CAttack_1.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+      <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CAttack_2.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+      <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CAttack_3.cpp">
-      <Filter>03. MonoBehaviors\Executions</Filter>
+      <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CMonster_Attacks.cpp">
-      <Filter>02. GameObject\Monster\00. Actions</Filter>
+    <ClCompile Include="..\Private\CWalk.cpp">
+      <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CLegion_Melee.cpp">
-      <Filter>02. GameObject\Monster\Legion\Legion_Melee</Filter>
+    <ClCompile Include="..\Private\CWait.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSpawn.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRandomLook.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHit.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRun.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLoader.cpp">
+      <Filter>01. Level\99. Level_Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel_GamePlay.cpp">
+      <Filter>01. Level\01. Level_GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel_Logo.cpp">
+      <Filter>01. Level\00. Level_Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLevel_Loading.cpp">
+      <Filter>01. Level\99. Level_Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMonster.cpp">
+      <Filter>02. GameObject\01. Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CGoblin.cpp">
-      <Filter>02. GameObject\Monster\Goblin</Filter>
+      <Filter>02. GameObject\01. Monster\01. Goblin</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CHellHound.cpp">
-      <Filter>02. GameObject\Monster\HellHound</Filter>
+      <Filter>02. GameObject\01. Monster\02. HellHound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLegion_Melee.cpp">
+      <Filter>02. GameObject\01. Monster\03. Legion\Legion_Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMonster_Patrol.cpp">
+      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAttackAction.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions\00. AttackAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMoveAction.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions\02. MoveAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPlayerAction.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CJumpAction.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions\01. JumpAction</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CPlayer.cpp">
-      <Filter>02. GameObject\Player</Filter>
+      <Filter>02. GameObject\00. Player</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Client.ico">
-      <Filter>98.Default</Filter>
-    </Image>
-    <Image Include="small.ico">
-      <Filter>98.Default</Filter>
-    </Image>
+    <ClCompile Include="..\Private\CSky.cpp">
+      <Filter>02. GameObject\02. Environment\03. Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CTerrain.cpp">
+      <Filter>02. GameObject\02. Environment\02. Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CStatic_Object.cpp">
+      <Filter>02. GameObject\02. Environment\01. Static_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CWeapon.cpp">
+      <Filter>02. GameObject\03. Parts\00. Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CUI_Rect.cpp">
+      <Filter>02. GameObject\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCamera_Free.cpp">
+      <Filter>02. GameObject\05. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMonster_Hit.cpp">
+      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
-      <Filter>98.Default</Filter>
+      <Filter>98. Default</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
+      <Filter>97. ShaderFiles</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtx.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCol.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
-      <Filter>97. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl">
@@ -359,14 +355,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
-      <Filter>97. ShaderFiles</Filter>
-    </None>
-    <None Include="..\..\IMGUI\Default\IMGUI.vcxproj" />
   </ItemGroup>
 </Project>

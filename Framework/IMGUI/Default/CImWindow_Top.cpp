@@ -202,6 +202,9 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 /* Write vAngle */
                 WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
 
+                /* Write Navigation Index */
+                WriteFile(hFile, &(*iter)->m_iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
+
                 /* Write Binary Datas */
                 Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
             }
@@ -224,6 +227,9 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
 
                 /* Write vAngle */
                 WriteFile(hFile, &(*iterMonster)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
+
+                /* Write Navigation Index */
+                WriteFile(hFile, &(*iterMonster)->m_iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
 
                 /* Write Binary Datas */
                 Write_BinData(hFile, (*iterMonster)->Get_Model_BinaryData(), dwByte);
@@ -337,6 +343,7 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
 
                 pObject->Get_Transform()->Set_Matrix(Data.TransformMatrix);
                 pObject->Get_Transform()->Set_Angle(Data.vAngle);
+                pObject->m_iNavigationIndex = Data.iNavigationIndex;
 
                 /* Rasterizer */
                 RasterizerDesc.CullMode = { D3D11_CULL_BACK };
@@ -376,6 +383,7 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
 
                 pObject->Get_Transform()->Set_Matrix(Data.TransformMatrix);
                 pObject->Get_Transform()->Set_Angle(Data.vAngle);
+                pObject->m_iNavigationIndex = Data.iNavigationIndex;
 
                 /* Rasterizer */
                 RasterizerDesc.CullMode = { D3D11_CULL_BACK };

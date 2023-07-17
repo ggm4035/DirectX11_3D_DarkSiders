@@ -291,6 +291,20 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
     if (ImGui::Button("Create new Object"))
         TOOL->m_pCreateWindow->m_bIsOpen = true;
 
+    //_float fFloat3[3] = { 0.f };
+    //ImGui::SetNextItemWidth(150.f);
+    //if (ImGui::DragFloat3("Offset all Object", fFloat3, 0.01f, -10.f, 10.f, "%.2f"))
+    //{
+    //    for (auto& Object : m_GameObjectList[LAYER_STATIC])
+    //    {
+    //        _vector vPosition = Object->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+    //        for (_uint i = 0; i < 3; ++i)
+    //            vPosition.m128_f32[i] += fFloat3[i];
+
+    //        Object->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPosition);
+    //    }
+    //}
+
     if (ImGui::Button("Delete"))
     {
         if (0 == lstrcmp(L"Terrain", TOOL->m_pCurrentObject->Get_Tag().c_str()))

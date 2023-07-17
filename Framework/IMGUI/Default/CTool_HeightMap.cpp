@@ -218,7 +218,7 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
     ImGui::BeginChild("Navigations", ImVec2(330, 550), true, ImGuiWindowFlags_HorizontalScrollbar);
     static _int iCur;
 
-    _uint iIndex = m_vecPoints.size();
+    _uint iIndex = m_pTerrain->Get_Navigation()->Get_NumCells();
 
     if (0 < iIndex)
     {
@@ -226,7 +226,7 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
 
         string* pstrTags = New string[iIndex];
 
-        for (_uint iCellIndex = 0; iCellIndex < m_vecPoints.size(); ++iCellIndex)
+        for (_uint iCellIndex = 0; iCellIndex < iIndex; ++iCellIndex)
         {
             _char szId[16] = { "" };
             _itoa_s(iCellIndex, szId, 10);
@@ -246,14 +246,6 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
         if (ImGui::Button("Sort Navigation Cells"))
         {
             m_pTerrain->Get_Navigation()->Sort();
-            _uint iCellidx = { 0 };
-            for (auto& Points : m_vecPoints)
-            {
-                for (_uint i = 0; i < 3; ++i)
-                    Points.vDot[i] = m_pTerrain->Get_Navigation()->Get_CellPoint(iCellidx, i);
-
-                ++iCellidx;
-            }
         }
 
         Safe_Delete_Array(pstrTags);
@@ -274,6 +266,7 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
                 m_pTerrain->Get_Navigation()->Set_CellPosition(m_iPickCell, iPointIndex, vPosition);
             }
         }
+
         else if (0 < m_vecPickSphereInfo.size())
         {
             _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(m_vecPickSphereInfo[0].first, m_vecPickSphereInfo[0].second);
@@ -281,7 +274,9 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
             ImGui::DragFloat3("Picking Points", arrData, 0.01f, 0.01f, 1000.f, "%.2f");
             vPosition = _float3(arrData[0], arrData[1], arrData[2]);
             for (auto& SphereInfo : m_vecPickSphereInfo)
+            {
                 m_pTerrain->Get_Navigation()->Set_CellPosition(SphereInfo.first, SphereInfo.second, vPosition);
+            }
         }
     }
 
@@ -299,12 +294,7 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
     /* Remove Cell */
     if (ImGui::Button("Delete Cell##Navigation"))
     {
-        auto iter = m_vecPoints.begin();
-
-        for (_uint i = 0; i < m_iPickCell; ++i) ++iter;
-
         m_pTerrain->Get_Navigation()->Remove_Cell(m_iPickCell);
-        m_vecPoints.erase(iter);
 
         m_iPickCell = 0 > --m_iPickCell ? 0 : m_iPickCell;
         m_pTerrain->Get_Navigation()->Set_CurrentIndex(m_iPickCell);
@@ -336,8 +326,6 @@ void CTool_HeightMap::Pick_Navigation(CGameInstance* pGameInstance)
             if (3 == m_iCount)
             {
                 m_pTerrain->Get_Navigation()->Add_Cell(m_Triangle);
-
-                m_vecPoints.push_back(m_Triangle);
                 ZeroMemory(&m_Triangle, sizeof(TRIANGLE));
                 m_iCount = 0;
             }
@@ -366,8 +354,14 @@ void CTool_HeightMap::Export_Navigation()
 
     _ulong dwByte = { 0 };
 
-    for (auto& Position : m_vecPoints)
-        WriteFile(hFile, Position.vDot, sizeof(_float3) * 3, &dwByte, nullptr);
+    for (_uint iCellIndex = 0; iCellIndex < m_pTerrain->Get_Navigation()->Get_NumCells(); ++iCellIndex)
+    {
+        for (_uint i = 0; i < 3; ++i)
+        {
+            _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(iCellIndex, i);
+            WriteFile(hFile, &vPosition, sizeof(_float3), &dwByte, nullptr);
+        }
+    }
 
     CloseHandle(hFile);
 
@@ -395,7 +389,6 @@ void CTool_HeightMap::Load_Navigation()
             m_pTerrain->Get_Navigation()->Remove_All_Cell();
 
             m_vecPickSphereInfo.clear();
-            m_vecPoints.clear();
             
             HANDLE hFile = CreateFileA(filePathName.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -405,18 +398,17 @@ void CTool_HeightMap::Load_Navigation()
             {
                 TRIANGLE Triangle;
 
-                ReadFile(hFile, Triangle.vDot, sizeof(_float3) * 3, &dwByte, nullptr);
+                for (_uint i = 0; i < 3; ++i)
+                    ReadFile(hFile, &Triangle.vDot[i], sizeof(_float3), &dwByte, nullptr);
 
                 if (0 == dwByte)
                     break;
 
-                m_vecPoints.push_back(Triangle);
+                m_pTerrain->Get_Navigation()->Add_Cell(Triangle);
             }
 
             CloseHandle(hFile);
 
-            for (auto& Points : m_vecPoints)
-                m_pTerrain->Get_Navigation()->Add_Cell(Points);
 
             MSG_BOX("Success to Load Navigation");
         }

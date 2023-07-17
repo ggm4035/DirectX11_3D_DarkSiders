@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "CMonster.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CCollider;

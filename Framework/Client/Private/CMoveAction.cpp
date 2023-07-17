@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CMoveAction.h"
 
 #include "CPlayerAction.h"

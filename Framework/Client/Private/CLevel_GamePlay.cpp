@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CLevel_GamePlay.h"
 
 #include "CGameInstance.h"
@@ -49,16 +49,15 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	Safe_AddRef(pGameInstance);
 
 	CLight::LIGHTDESC LightDesc;
+	ZeroMemory(&LightDesc, sizeof LightDesc);
 
-	LightDesc.vPosition = _float4(500.f, 50.f, 500.f, 1.f);
+	LightDesc.eType = CLight::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(-1.f, -1.f, -1.f, 0.f);
-	LightDesc.fRange = 100.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.eType = CLight::TYPE_DIRECTIONAL;
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
 
-	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	if (FAILED(pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -71,7 +70,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FILEDATA FileData;
-	if (FAILED(pGameInstance->Load("../../ModelDatas/testmap.dat", FileData)))
+	if (FAILED(pGameInstance->Load("../../Data/testmap.dat", FileData)))
 		return E_FAIL;
 
 	CTerrain::TERRAINDESC TerrainDesc;
@@ -165,6 +164,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 		MonsterDesc.vAngle = Data.vAngle;
 		MonsterDesc.SpeedPerSec = 3.f;
 		MonsterDesc.RotationPerSec = XMConvertToRadians(90.f);
+		MonsterDesc.iNavigationIndex = Data.iNavigationIndex;
 		
 		wstring wstrObjTag = Data.BinaryData.szTag;
 

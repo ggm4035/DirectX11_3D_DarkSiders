@@ -50,7 +50,7 @@ HRESULT CLevel_Tool::Ready_Layer(wstring LayerTag)
     CameraDesc.fFov = XMConvertToRadians(60.f);
     CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
     CameraDesc.fNear = 0.3f;
-    CameraDesc.fFar = 300.f;
+    CameraDesc.fFar = 500.f;
 
     CameraDesc.TransformDesc.SpeedPerSec = 10.f;
     CameraDesc.TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
@@ -79,7 +79,7 @@ HRESULT CLevel_Tool::Ready_Lights()
     LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
     LightDesc.eType = CLight::TYPE_DIRECTIONAL;
 
-    if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+    if (FAILED(pGameInstance->Add_Light(LightDesc)))
         return E_FAIL;
 
     Safe_Release(pGameInstance);

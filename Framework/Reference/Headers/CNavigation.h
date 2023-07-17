@@ -58,6 +58,9 @@ public:
 	}
 	void Remove_Cell(const _uint& iCellIndex);
 	void Remove_All_Cell();
+	_uint Get_NumCells() const {
+		return m_vecCells.size();
+	}
 	_float3& Get_CellPoint(const _uint& iCellIndex, const _uint& iPointIndex);
 	void Set_CellPosition(const _uint& iCellIndex, const _uint& iPointIndex, const _float3& vPosition);
 	void Add_Cell(const TRIANGLE& Triangle);

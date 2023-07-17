@@ -70,8 +70,6 @@ HRESULT CNavigation::Initialize_Prototype(const wstring& wstrCellFilePath)
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 
-
- 
 	m_pSpherePrototype = CBounding_Sphere::Create(m_pDevice, m_pContext);
 
 	_float3 Data{};
@@ -397,6 +395,9 @@ HRESULT CNavigation::Render_Navigation()
 
 	for (auto& pCell : m_vecCells)
 		pCell->Render_Sphere();
+
+	/*for (auto& pCell : m_vecCells)
+		pCell->Render_Font();*/
 
 	return S_OK;
 }

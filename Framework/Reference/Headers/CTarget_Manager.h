@@ -20,6 +20,7 @@ public:
 	HRESULT Begin_MRT(ID3D11DeviceContext* pContext, wstring wstrMRTTag);
 	/* 원래상태로 복구한다. (0번째에 백버퍼가 바인딩 된 상태로 돌려준다. */
 	HRESULT End_MRT(ID3D11DeviceContext* pContext);
+	HRESULT Bind_ShaderResourceView(const wstring& wstrTargetTag, class CShader* pShader, const string& wstrConstantName);
 
 #ifdef _DEBUG
 public:

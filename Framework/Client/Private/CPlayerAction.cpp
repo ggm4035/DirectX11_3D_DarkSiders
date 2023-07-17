@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CPlayerAction.h"
 
 #include "CGameInstance.h"

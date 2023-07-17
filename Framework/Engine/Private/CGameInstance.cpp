@@ -57,8 +57,8 @@ HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICD
 		return E_FAIL;
 
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(
-		GraphicDesc.hWnd, 
-		GraphicDesc.eWinMode, 
+		GraphicDesc.hWnd,
+		GraphicDesc.eWinMode,
 		GraphicDesc.iViewportSizeX,
 		GraphicDesc.iViewportSizeY,
 		ppDevice, ppContext)))
@@ -486,12 +486,12 @@ const CLight::LIGHTDESC* CGameInstance::Get_LightDesc(const _uint& iIndex)
 	return m_pLight_Manager->Get_LightDesc(iIndex);
 }
 
-HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CLight::LIGHTDESC& LightDesc)
+HRESULT CGameInstance::Add_Light(const CLight::LIGHTDESC& LightDesc)
 {
 	if (nullptr == m_pLight_Manager)
 		return E_FAIL;
 
-	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
+	return m_pLight_Manager->Add_Light(LightDesc);
 }
 
 _vector CGameInstance::Picking_On_Triangle(const POINT& ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform)

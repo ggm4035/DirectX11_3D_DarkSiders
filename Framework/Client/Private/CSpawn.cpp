@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CSpawn.h"
 
 #include "CGameObject3D.h"

@@ -1,3 +1,4 @@
+#include "Shader_Imgui_Defines.hlsli"
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
@@ -14,13 +15,6 @@ texture2D g_DiffuseTexture;
 texture2D g_BrushTexture;
 float4 g_vBrushPos;
 float g_fBrushRadius;
-
-sampler LinearSampler = sampler_state
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = WRAP;
-    AddressV = WRAP;
-};
 
 struct VS_IN
 {
@@ -60,45 +54,42 @@ struct PS_IN
     float4 vWorldPos : TEXCOORD1;
 };
 
-float4 PS_MAIN(PS_IN In) : SV_TARGET0
+struct PS_OUT
 {
-    float4 vColor = (float4) 0;
-    float4 vBrush = (float4) 0;
-    
-    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f);
-    
-    if (g_vBrushPos.x > 0 &&
-        g_vBrushPos.x - g_fBrushRadius < In.vWorldPos.x && In.vWorldPos.x <= g_vBrushPos.x + g_fBrushRadius &&
-		g_vBrushPos.z - g_fBrushRadius < In.vWorldPos.z && In.vWorldPos.z <= g_vBrushPos.z + g_fBrushRadius)
-    {
-        float2 vTexUV;
-        
-        vTexUV.x = (In.vWorldPos.x - (g_vBrushPos.x - g_fBrushRadius)) / (2.f * g_fBrushRadius);
-        vTexUV.y = ((g_vBrushPos.z - g_fBrushRadius) - In.vWorldPos.z) / (2.f * g_fBrushRadius);
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
+};
 
-        vBrush = g_BrushTexture.Sample(LinearSampler, vTexUV);
-        vDiffuse += vBrush * 0.2f;
-    }
-
-    float4 vAmbient = float4(0.4f, 0.4f, 0.4f, 1.f);
-    float fShade = max(dot(-normalize(g_LightDirection), In.vNormal), 0.f);
-    fShade = saturate(fShade + vAmbient * g_LightAmbient);
+PS_OUT PS_MAIN(PS_IN In) : SV_TARGET0
+{
+    PS_OUT Out = (PS_OUT) 0;
+	
+    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30);
     
-    float4 vReflect = normalize(reflect(normalize(g_LightDirection), normalize(In.vNormal)));
+    float4 vAmbient = float4(0.2f, 0.2f, 0.2f, 0.2f);
+    float fShade = max(dot(normalize(In.vNormal), -normalize(g_LightDirection)), 0.f);
+    fShade = saturate(fShade + g_LightAmbient * vAmbient);
+    
+    float4 vReflect = normalize(reflect(g_LightDirection, In.vNormal));
     float4 vLook = normalize(In.vWorldPos - g_CameraPosition);
     
     vDiffuse = vDiffuse * g_LightDiffuse * fShade;
-    float4 vSpecular = pow(max(dot(-vReflect, vLook), 0.f), 30.f) * g_LightSpecular;
+    float4 vSpecular = pow(max(dot(-vLook, vReflect), 0.f), 40.f) * g_LightSpecular;
     
-    vColor = vDiffuse + vSpecular;
+    Out.vDiffuse = vDiffuse;
+    Out.vDiffuse.a = 1.f;
     
-    return vColor;
+    return Out;
 }
 
 technique11 DefaultTechnique
 {
 	pass Terrain
-	{
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL/*compile gs_5_0 GS_MAIN()*/;
 		HullShader = NULL/*compile hs_5_0 HS_MAIN()*/;

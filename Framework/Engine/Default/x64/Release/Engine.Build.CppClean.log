@@ -19,13 +19,12 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbone.o
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbase.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\capplication.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\canimation.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctransform.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctexture.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cshader.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\crendertarget.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\crenderer.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cquardtree.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cpipeline.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cpublisher_animation.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cnavigation.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cmodel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cmesh.obj
@@ -50,6 +49,8 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuff
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_cube.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_coordnate.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctransform.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctarget_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csequence.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cselector.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\croot.obj
@@ -65,6 +66,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cblackb
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbehavior.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
+c:\users\joo\documents\github\jusin\framework\engine\bin\shader_deferred.cso
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_navigation.cso
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.dll
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.ipdb
@@ -78,5 +80,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\fxc.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\fxc.write.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.command.1.tlog
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.delete.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.write.1.tlog

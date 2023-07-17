@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CRandomLook.h"
 
 #include "CBlackBoard.h"

@@ -39,6 +39,20 @@ void CImWindow_Inspector::Refresh()
     CImWindow::Refresh();
 }
 
+void CImWindow_Inspector::Show_ObjectInfo(CGameInstance* pGameInstance)
+{
+    if (ImGui::CollapsingHeader("ObjectInfo", ImGuiTreeNodeFlags_None))
+    {
+        ImGui::Text("Navigation Index##ObjInfo");
+        _int iNaviIndex = TOOL->m_pCurrentObject->m_iNavigationIndex;
+
+        ImGui::InputInt("##navigation_index_objInfo", &iNaviIndex);
+        TOOL->m_pCurrentObject->m_iNavigationIndex = iNaviIndex;
+
+        ImGui::Separator();
+    }
+}
+
 void CImWindow_Inspector::Show_Components()
 {
     if (nullptr == TOOL->m_pCurrentObject)
@@ -56,6 +70,8 @@ void CImWindow_Inspector::Show_Components()
         string strTag = m_szTag;
         TOOL->m_pCurrentObject->Set_Tag(pGameInstance->strToWStr(strTag));
     }
+
+    Show_ObjectInfo(pGameInstance);
 
     Show_Transform();
 

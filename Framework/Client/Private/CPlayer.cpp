@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CPlayer.h"
 
 #include "CGameInstance.h"
@@ -105,6 +105,7 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, TYPE_NORMALS);
 
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;
@@ -128,7 +129,7 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		cout << "데미지" << endl;
+		//cout << "데미지" << endl;
 		Collision.pOther->Get_Damaged();
 	}
 }
@@ -229,42 +230,43 @@ HRESULT CPlayer::Set_Shader_Resources()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&m_pTransformCom->Get_WorldFloat4x4())))
+	_float4x4 InputMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW))))
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
-		&pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ))))
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition",
-		&LightDesc.vPosition, sizeof(_float4))))
+		&(LightDesc.vPosition), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",
-		&LightDesc.vDirection, sizeof(_float4))))
+		&(LightDesc.vDirection), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse",
-		&LightDesc.vDiffuse, sizeof(_float4))))
+		&(LightDesc.vDiffuse), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular",
-		&LightDesc.vSpecular, sizeof(_float4))))
+		&(LightDesc.vSpecular), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightAmbient",
-		&LightDesc.vAmbient, sizeof(_float4))))
+		&(LightDesc.vAmbient), sizeof(_float4))))
 		return E_FAIL;
 
+	_float4 InputData = pGameInstance->Get_Camera_Position();
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-		&pGameInstance->Get_Camera_Position(), sizeof(_float4))))
+		&InputData, sizeof(_float4))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

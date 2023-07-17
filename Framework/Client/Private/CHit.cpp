@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CHit.h"
 
 #include "CBlackBoard.h"
@@ -41,26 +41,18 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 {
 	CGameObject3D* pTarget = { nullptr };
 	CGameObject3D::HITSTATE* pCurState = { nullptr };
-	CGameObject3D::HITSTATE* pPreState = { nullptr };
 
 	m_pBlackBoard->Get_Type(L"eCurHitState", pCurState);
-	m_pBlackBoard->Get_Type(L"ePreHitState", pPreState);
 	m_pBlackBoard->Get_Type(L"pTarget", pTarget);
 
 	switch (*pCurState)
 	{
 	case CGameObject3D::NONE:
-		if (*pPreState != *pCurState)
-		{
-			m_pModel->Change_Animation("Idle");
-			*pPreState = *pCurState;
-		}
 		return BEHAVIOR_FAIL;
 
 	case CGameObject3D::HIT:
 		m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		m_pModel->Change_Animation("Impact");
-		*pPreState = *pCurState;
 		*pCurState = CGameObject3D::HITTING;
 		return BEHAVIOR_SUCCESS;
 

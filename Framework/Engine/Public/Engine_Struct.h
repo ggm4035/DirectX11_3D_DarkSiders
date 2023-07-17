@@ -230,6 +230,7 @@ namespace Engine
 		_tchar szObjectTag[MAX_PATH] = { L"" };
 		_float4x4 TransformMatrix;
 		_float3 vAngle;
+		_uint iNavigationIndex = { 0 };
 		MODEL_BINARYDATA BinaryData;
 	}MODELDATA;
 

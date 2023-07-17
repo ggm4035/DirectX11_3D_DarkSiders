@@ -17,7 +17,7 @@ HRESULT CObject_Manager::Reserve_Containers(const _uint& iNumLevels)
 		return E_FAIL;
 
 	m_pLayers = new LAYERS[iNumLevels];
-
+	 
 	m_iNumLevels = iNumLevels;
 
 	return S_OK;

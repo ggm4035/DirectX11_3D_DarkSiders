@@ -67,6 +67,7 @@ public:
 	HRESULT Initialize(const _float3* pPoints, const _int& iIndex, class CBounding_Sphere* pPrototype);
 	HRESULT Render();
 	HRESULT Render_Sphere();
+	HRESULT Render_Font();
 	_bool Picking_Spheres(_fvector vOrigin, _fvector vDirection, OUT _float3& vPosition, OUT _int& iSphereIndex);
 	void Sort();
 

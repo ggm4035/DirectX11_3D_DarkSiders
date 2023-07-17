@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CWalk.h"
 
 #include "CGameObject3D.h"

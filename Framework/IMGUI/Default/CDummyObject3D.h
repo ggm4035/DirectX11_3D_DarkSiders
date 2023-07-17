@@ -46,8 +46,9 @@ public:
 public:
     _uint m_iPassNum = { 0 };
     _float m_fDetail = { 1.f };
+    _uint m_iNavigationIndex = { 0 };
     ID3D11RasterizerState* m_pRasterizer = { nullptr };
-    CRenderer::RENDERGROUP m_eRenderGroup = { CRenderer::RENDER_PRIORITY };
+    CRenderer::RENDERGROUP m_eRenderGroup = { CRenderer::RENDER_NONBLEND };
 
 public:
     HRESULT Add_Texture(const wstring PrototypeTag);

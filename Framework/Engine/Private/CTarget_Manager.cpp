@@ -49,7 +49,7 @@ HRESULT CTarget_Manager::Begin_MRT(ID3D11DeviceContext* pContext, wstring wstrMR
 		return E_FAIL;
 	}
 
-	pContext->OMGetRenderTargets(0, &m_pBackBufferView, &m_pDepthStencilView);
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 
 	ID3D11RenderTargetView* pRTVs[8] = { nullptr };
 
@@ -70,12 +70,21 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext)
 {
 	ID3D11RenderTargetView* pRTVs[8] = { m_pBackBufferView };
 
-	pContext->OMSetRenderTargets(0, pRTVs, m_pDepthStencilView);
+	pContext->OMSetRenderTargets(8, pRTVs, m_pDepthStencilView);
 
 	Safe_Release(m_pBackBufferView);
 	Safe_Release(m_pDepthStencilView);
 
 	return S_OK;
+}
+
+HRESULT CTarget_Manager::Bind_ShaderResourceView(const wstring& wstrTargetTag, CShader* pShader, const string& wstrConstantName)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(wstrTargetTag);
+	if (nullptr == pRenderTarget)
+		return E_FAIL;
+
+	return pRenderTarget->Bind_ShaderResourceView(pShader, wstrConstantName);
 }
 
 #ifdef _DEBUG
@@ -87,7 +96,6 @@ HRESULT CTarget_Manager::Ready_Debug(const wstring& wstrTargetTag, const _float&
 
 	return pRenderTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);
 }
-#endif
 
 HRESULT CTarget_Manager::Render(const wstring& wstrMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
@@ -102,6 +110,7 @@ HRESULT CTarget_Manager::Render(const wstring& wstrMRTTag, CShader* pShader, CVI
 
 	return S_OK;
 }
+#endif
 
 CRenderTarget* CTarget_Manager::Find_RenderTarget(const wstring& wstrTargetTag)
 {

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CLevel_Loading.h"
 #include "CLoader.h"
 #include "CLevel_Logo.h"

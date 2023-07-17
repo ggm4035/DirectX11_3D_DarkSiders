@@ -47,9 +47,9 @@ public:
 
 protected:
 	STATUS m_Status;
+	_bool m_isDead = { false };
 
 	HITSTATE m_eCurHitState = { NONE };
-	HITSTATE m_ePreHitState = { NONE };
 
 	CTransform* m_pTransformCom = { nullptr };
 	unordered_map<wstring, CCollider*> m_umapColliders;

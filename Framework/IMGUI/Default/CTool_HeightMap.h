@@ -44,7 +44,6 @@ private: /* For. Navigation Map */
     _int m_iSelectOption = { 0 };
     _int m_iPickCell = { 0 };
     vector<pair<_uint, _int>> m_vecPickSphereInfo;/* first : CellIndex, second : Sphere Index */
-    vector<TRIANGLE> m_vecPoints; /* ÀúÀå¿ë */
 
 public:
     _int m_iXCount = { 257 };

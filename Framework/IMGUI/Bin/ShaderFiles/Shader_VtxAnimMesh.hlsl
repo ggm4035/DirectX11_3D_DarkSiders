@@ -1,3 +1,5 @@
+#include "Shader_Imgui_Defines.hlsli"
+
 RasterizerState g_Rasterizer;
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_BoneMatrices[256]; /* 이 메쉬를 그리기위해 사용되는 뼈들의 행렬 VTF */
@@ -8,11 +10,6 @@ float4 g_LightDiffuse, g_LightSpecular, g_LightAmbient;
 float4 g_CameraPosition;
 
 texture2D g_DiffuseTexture, g_NormalTexture;
-
-sampler LinearSampler = sampler_state
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-};
 
 struct VS_IN
 {
@@ -69,7 +66,8 @@ struct PS_IN
 
 struct PS_OUT
 {
-    float4 vColor : SV_TARGET0;
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -77,23 +75,14 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 	
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-
+    vector vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+    
     if (vDiffuse.a < 0.1f)
         discard;
-
-    float4 vAmbient = float4(0.3f, 0.3f, 0.3f, 1.f);
-    float fShade = max(dot(normalize(g_LightDirection) * -1.f, In.vNormal), 0.f);
-    fShade = fShade + vAmbient;
-
-    vector vReflect = reflect(normalize(g_LightDirection), normalize(In.vNormal));
     
-    vector vLook = In.vWorldPos - g_CameraPosition;
-
-    float fSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f);
-
-    Out.vColor = (g_LightDiffuse * vDiffuse) * fShade
-		+ g_LightSpecular * fSpecular;
-	
+    Out.vDiffuse = vDiffuse;
+    Out.vNormal = vNormal; // * vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    
     return Out;
 }
 
@@ -101,6 +90,10 @@ technique11 DefaultTechnique
 {
     pass Terrain
     {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;

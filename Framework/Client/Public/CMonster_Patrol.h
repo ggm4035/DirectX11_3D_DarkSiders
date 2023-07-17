@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "CSequence.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CTransform;

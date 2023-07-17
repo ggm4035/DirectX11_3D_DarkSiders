@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CAttack_1.h"
 
 #include "CGameObject3D.h"
@@ -48,11 +48,11 @@ HRESULT CAttack_1::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			_bool* isRangeInPlayer = { false };
+			_bool* isAbleAttack = { nullptr };
 
-			pBlackBoard->Get_Type<_bool*>(L"isRangeInPlayer", isRangeInPlayer);
+			pBlackBoard->Get_Type<_bool*>(L"isAbleAttack", isAbleAttack);
 
-			return *isRangeInPlayer;
+			return *isAbleAttack;
 		});
 
 	return S_OK;

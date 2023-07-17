@@ -104,10 +104,7 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 		_float fNaviY = m_pNavigation->is_OnNavigation(vPosition);
 
 		if (vPosition.m128_f32[1] != fNaviY)
-		{
 			vPosition.m128_f32[1] = fNaviY;
-			Set_State(STATE_POSITION, vPosition);
-		}
 	}
 
 	XMStoreFloat3(&m_vMoveDir, vLook);
@@ -165,7 +162,14 @@ void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
 		return;
 
-	//XMStoreFloat3(&m_vMoveDir, vDirection);
+	if (nullptr != m_pNavigation)
+	{
+		_float fNaviY = m_pNavigation->is_OnNavigation(vPosition);
+
+		if (vPosition.m128_f32[1] != fNaviY)
+			vPosition.m128_f32[1] = fNaviY;
+	}
+
 	Set_State(STATE_POSITION, vPosition);
 }
 

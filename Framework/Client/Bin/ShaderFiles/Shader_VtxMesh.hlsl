@@ -44,37 +44,30 @@ VS_OUT VS_MAIN(VS_IN In)
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
-    float4 vNoraml : NORAML;
+    float4 vNormal : NORAML;
     float2 vTexUV : TEXCOORD0;
     float4 vWorldPosition : TEXCOORD1;
 };
 
 struct PS_OUT
 {
-    float4 vColor : SV_TARGET0;
+    float4 vDiffuse : SV_TARGET0;
+    float4 vNormal : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 	
-    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+    vector vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
     
     if (vDiffuse.a < 0.1f)
         discard;
     
-    float4 vAmbient = float4(0.3f, 0.3f, 0.3f, 1.f);
-    float fShade = max(dot(normalize(In.vNoraml), -normalize(g_LightDirection)), 0.f);
-    fShade = saturate(fShade + g_LightAmbient * vAmbient);
+    Out.vDiffuse = vDiffuse;
+    Out.vNormal = vNormal; //vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     
-    float4 vReflect = normalize(reflect(g_LightDirection, In.vNoraml));
-    float4 vLook = normalize(In.vWorldPosition - g_CameraPosition);
-    
-    vDiffuse = vDiffuse * g_LightDiffuse * fShade;
-    float4 vSpecular = pow(max(dot(-vLook, vReflect), 0.f), 40.f) * g_LightSpecular;
-    
-    Out.vColor = vDiffuse + vSpecular;
-	
     return Out;
 }
 

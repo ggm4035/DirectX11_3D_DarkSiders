@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CUI_Rect.h"
 
 #include "CGameInstance.h"
@@ -87,10 +87,12 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &pGameInstance->Get_UI_View_Float4x4())))
+	_float4x4 InputMatrix = pGameInstance->Get_UI_View_Float4x4();
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &pGameInstance->Get_UI_Proj_Float4x4(g_iWinSizeX, g_iWinSizeY))))
+	InputMatrix = pGameInstance->Get_UI_Proj_Float4x4(g_iWinSizeX, g_iWinSizeY);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_Texture")))

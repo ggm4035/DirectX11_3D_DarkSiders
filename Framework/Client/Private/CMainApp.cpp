@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "CMainApp.h"
 
 #include "MonoBehavior_Defines.h"

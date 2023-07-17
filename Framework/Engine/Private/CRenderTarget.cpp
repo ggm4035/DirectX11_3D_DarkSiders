@@ -1,8 +1,14 @@
 #include "CRenderTarget.h"
 
+#include "CShader.h"
+
+#ifdef _DEBUG
+#include "CVIBuffer_Rect.h"
+#endif
+
 CRenderTarget::CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
-	, m_pContext(m_pContext)
+	, m_pContext(pContext)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
@@ -45,6 +51,14 @@ void CRenderTarget::Clear()
 	m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
 }
 
+HRESULT CRenderTarget::Bind_ShaderResourceView(CShader* pShader, const string& wstrConstantName)
+{
+	if (nullptr == m_pSRV)
+		return E_FAIL;
+
+	return pShader->Bind_ShaderResource(wstrConstantName, m_pSRV);
+}
+
 #ifdef _DEBUG
 HRESULT CRenderTarget::Ready_Debug(const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY)
 {
@@ -66,7 +80,16 @@ HRESULT CRenderTarget::Ready_Debug(const _float& fX, const _float& fY, const _fl
 
 HRESULT CRenderTarget::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
-	return S_OK;
+	if (FAILED(pShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_ShaderResource("g_Texture", m_pSRV)))
+		return E_FAIL;
+
+	if (FAILED(pShader->Begin(0)))
+		return E_FAIL;
+
+	return pVIBuffer->Render();
 }
 #endif
 
