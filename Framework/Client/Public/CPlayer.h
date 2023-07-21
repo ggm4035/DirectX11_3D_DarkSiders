@@ -22,6 +22,14 @@ public:
 		_float3 vAngle;
 	}PLAYERDESC;
 
+public:
+	HITSTATE Get_CurHitState() const {
+		return m_eCurHitState;
+	}
+	void Set_CurHitState(HITSTATE eState) {
+		m_eCurHitState = eState;
+	}
+
 private:
 	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CPlayer(const CPlayer& rhs);

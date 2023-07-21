@@ -19,6 +19,7 @@ public:
 	HRESULT Initialize(_uint iLT, _uint iRT, _uint iRB, _uint iLB);
 	HRESULT Make_Neighbors();
 	void Culling(class CFrustum* pFrustum, const _float3* pVerticesPos, OUT _ulong* pIndices, OUT _uint* pNumIndices);
+	void Culling_LOD(class CFrustum* pFrustum, const _float3* pVerticesPos, OUT _ulong* pIndices, OUT _uint* pNumIndices);
 	_bool isDraw(const _float3* pVerticesPos);
 
 private:

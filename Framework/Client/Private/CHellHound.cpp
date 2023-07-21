@@ -3,6 +3,7 @@
 
 #include "MonoBehavior_Defines.h"
 #include "CGameInstance.h"
+#include "CBlackBoard.h"
 #include "CPlayer.h"
 
 CHellHound::CHellHound(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -23,20 +24,17 @@ HRESULT CHellHound::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_Status.iHP = 3;
+	m_Status.iMaxHP = 3;
+
 	return S_OK;
 }
 
 void CHellHound::Tick(const _double& TimeDelta)
 {
+	CGameObject3D::Tick(TimeDelta);
+
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (pGameInstance->Key_Down(DIK_4))
-		m_pModelCom->Change_Animation("Knockback");
-
-	Safe_Release(pGameInstance);
 
 	m_pRoot->Tick(TimeDelta);
 
@@ -61,6 +59,11 @@ void CHellHound::AfterFrustumTick(const _double& TimeDelta)
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+#ifdef _DEBUG
+		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+			return;
+#endif
 	}
 
 	Safe_Release(pGameInstance);
@@ -77,13 +80,6 @@ HRESULT CHellHound::Render()
 	if (FAILED(CMonster::Render(0)))
 		return E_FAIL;
 
-#ifdef _DEBUG
-
-	if (FAILED(Render_Colliders()))
-		return E_FAIL;
-
-#endif
-
 	return S_OK;
 }
 
@@ -91,26 +87,23 @@ void CHellHound::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	CCollider* pColRange = Find_Collider(L"Col_Range");
-	if (nullptr == pColRange)
-		return;
-
-	if (Collision.pMyCollider == pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
-		m_isRangeInPlayer = true;
 		m_isSpawn = true;
 	}
 }
 
 void CHellHound::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CCollider* pColRange = Find_Collider(L"Col_Range");
-	if (nullptr == pColRange)
-		return;
-
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider == pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = true;
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
@@ -119,11 +112,13 @@ void CHellHound::OnCollisionStay(CCollider::COLLISION Collision, const _double& 
 
 void CHellHound::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CCollider* pColRange = Find_Collider(L"Col_Range");
-	if (nullptr == pColRange)
-		return;
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = false;
+	}
 
-	if (Collision.pMyCollider == pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = false;
@@ -137,10 +132,17 @@ HRESULT CHellHound::Add_Components()
 		return E_FAIL;
 
 	CBounding_Sphere::SPHEREDESC SphereDesc;
+
 	SphereDesc.fRadius = 1.f;
 	SphereDesc.vPosition = _float3(0.f, 1.f, 0.f);
 	SphereDesc.eGroup = CCollider::COL_ENEMY;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body", &SphereDesc)))
+		return E_FAIL;
+
+	/* Col_Attack_Range */
+	SphereDesc.fRadius = 5.f;
+	SphereDesc.eGroup = CCollider::COL_ENEMY_MELEE_RANGE;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
 		return E_FAIL;
 
 	SphereDesc.fRadius = 10.f;
@@ -157,6 +159,7 @@ HRESULT CHellHound::Add_Components()
 
 HRESULT CHellHound::Make_AI()
 {
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -167,11 +170,16 @@ HRESULT CHellHound::Make_AI()
 
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
+
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
+
+	m_pRoot->Add_Type(L"isDead", &m_isDead);
 	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
+	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
 	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
+	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
+
 	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
 
 	/* Behaviors */
@@ -179,31 +187,53 @@ HRESULT CHellHound::Make_AI()
 	if (nullptr == pSelector)
 		return E_FAIL;
 
-	/*CSpawn* pSpawn = dynamic_cast<CSpawn*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Spawn", this));
-	if (nullptr == pSpawn)
-		return E_FAIL;*/
-
-	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
+	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
 	if (nullptr == pHit)
 		return E_FAIL;
 
-	CMonster_Patrol* pPatrol = dynamic_cast<CMonster_Patrol*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Patrol", this));
+	CAction_Patrol* pPatrol = dynamic_cast<CAction_Patrol*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Patrol", this));
 	if (nullptr == pPatrol)
 		return E_FAIL;
+
+	CAction_Attack* pAttack = dynamic_cast<CAction_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector_Attack", this));
+	if (nullptr == pAttack)
+		return E_FAIL;
+
+	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
+	if (nullptr == pWait)
+		return E_FAIL;
+
+	pWait->Set_LimitTime(1.f);
+
+	pWait->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			CGameObject3D::HITSTATE* pCurState = { nullptr };
+			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
+
+			if (CGameObject3D::NONE == *pCurState)
+				return true;
+			else
+				return false;
+		});
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	/*if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
-		return E_FAIL;*/
-
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pHit)))
 		return E_FAIL;
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Patrol", pPatrol)))
 		return E_FAIL;
 
+	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Attack", pAttack)))
+		return E_FAIL;
+
+	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
+		return E_FAIL;
+
+	pHit->Assemble_Childs();
+	pAttack->Assemble_Childs();
 	pPatrol->Assemble_Childs();
 
 	Safe_Release(pGameInstance);

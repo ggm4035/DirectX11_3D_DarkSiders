@@ -5,6 +5,7 @@
 #include "MonoBehavior_Defines.h"
 #include "CGameInstance.h"
 #include "CPlayer.h"
+#include "CWeapon.h"
 
 CLegion_Melee::CLegion_Melee(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -24,22 +25,22 @@ HRESULT CLegion_Melee::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (FAILED(Add_Parts()))
+		return E_FAIL;
+
+	m_Status.iHP = 3;
+	m_Status.iMaxHP = 3;
+
 	return S_OK;
 }
 
 void CLegion_Melee::Tick(const _double& TimeDelta)
 {
-	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (pGameInstance->Key_Down(DIK_4))
-		m_pModelCom->Change_Animation("Knockback");
-
-	Safe_Release(pGameInstance);
+	CGameObject3D::Tick(TimeDelta);
 
 	m_pRoot->Tick(TimeDelta);
+
+	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
@@ -60,8 +61,16 @@ void CLegion_Melee::AfterFrustumTick(const _double& TimeDelta)
 			return;
 		}
 
+		for (auto Pair : m_Parts)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
+
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+		
+#ifdef _DEBUG
+		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+			return;
+#endif
 	}
 
 	Safe_Release(pGameInstance);
@@ -78,13 +87,6 @@ HRESULT CLegion_Melee::Render()
 	if (FAILED(CMonster::Render(0)))
 		return E_FAIL;
 
-#ifdef _DEBUG
-
-	if (FAILED(Render_Colliders()))
-		return E_FAIL;
-
-#endif
-
 	return S_OK;
 }
 
@@ -92,26 +94,30 @@ void CLegion_Melee::OnCollisionEnter(CCollider::COLLISION Collision, const _doub
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	CCollider* pColRange = Find_Collider(L"Col_Range");
-	if (nullptr == pColRange)
-		return;
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		//cout << "µ¥¹ÌÁö" << endl;
+		Collision.pOther->Get_Damaged();
+	}
 
-	if (Collision.pMyCollider == pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
-		m_isRangeInPlayer = true;
 		m_isSpawn = true;
 	}
 }
 
 void CLegion_Melee::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CCollider* pColRange = Find_Collider(L"Col_Range");
-	if (nullptr == pColRange)
-		return;
-
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider == pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = true;
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = true;
@@ -120,11 +126,13 @@ void CLegion_Melee::OnCollisionStay(CCollider::COLLISION Collision, const _doubl
 
 void CLegion_Melee::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CCollider* pColRange = Find_Collider(L"Col_Range");
-	if (nullptr == pColRange)
-		return;
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = false;
+	}
 
-	if (Collision.pMyCollider == pColRange &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isRangeInPlayer = false;
@@ -137,7 +145,9 @@ HRESULT CLegion_Melee::Add_Components()
 		L"Com_Model", (CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
+	CBounding_AABB::AABBDESC AABBDesc;
 	CBounding_Sphere::SPHEREDESC SphereDesc;
+
 	SphereDesc.fRadius = 1.f;
 	SphereDesc.vPosition = _float3(0.f, 1.f, 0.f);
 	SphereDesc.eGroup = CCollider::COL_ENEMY;
@@ -150,7 +160,12 @@ HRESULT CLegion_Melee::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range", &SphereDesc)))
 		return E_FAIL;
 
-	CBounding_AABB::AABBDESC AABBDesc;
+	/* Col_Attack_Range */
+	SphereDesc.fRadius = 5.f;
+	SphereDesc.eGroup = CCollider::COL_ENEMY_MELEE_RANGE;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
+		return E_FAIL;
+
 	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
 	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	AABBDesc.eGroup = CCollider::COL_ENEMY_ATK;
@@ -160,6 +175,34 @@ HRESULT CLegion_Melee::Add_Components()
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
+		return E_FAIL;
+
+	/* Setup Notify */
+	if (FAILED(m_pModelCom->Setup_Notifys()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLegion_Melee::Add_Parts()
+{
+	CWeapon::WEAPONDESC Desc;
+	const CBone* pBone = m_pModelCom->Get_Bone("Bone_LE_Weapon");
+	if (nullptr == pBone)
+		return E_FAIL;
+
+	XMStoreFloat4x4(&Desc.OffsetMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&Desc.PivotMatrix, m_pModelCom->Get_PivotMatrix());
+	Desc.pCombinedTransformationMatrix = pBone->Get_CombinedTransformationMatrixPtr();
+	Desc.pNotMoveCombinedTransformationMatrix = pBone->Get_NotMoveCombinedTransformationMatrixPtr();
+	Desc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4Ptr();
+
+	Desc.SpeedPerSec = 7.0;
+	Desc.RotationPerSec = XMConvertToRadians(90.0);
+
+	Desc.wstrModelTag = L"Model_Legion_Weapon";
+
+	if (FAILED(CGameObject::Add_Parts(LEVEL_GAMEPLAY, L"Weapon", L"Weapon_Legion", this, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -177,25 +220,29 @@ HRESULT CLegion_Melee::Make_AI()
 
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
+
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
+
+	m_pRoot->Add_Type(L"isDead", &m_isDead);
 	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
+	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
 	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
+	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
+
 	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
-	m_pRoot->Add_Type(L"pModel", m_pModelCom);
 
 	/* Behaviors */
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
 
-	/*CSpawn* pSpawn = dynamic_cast<CSpawn*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Spawn", this));
-	if (nullptr == pSpawn)
-		return E_FAIL;*/
-
-	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
+	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
 	if (nullptr == pHit)
+		return E_FAIL;
+
+	CAction_Attack* pAttack = dynamic_cast<CAction_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector_Attack", this));
+	if (nullptr == pAttack)
 		return E_FAIL;
 
 	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
@@ -219,14 +266,17 @@ HRESULT CLegion_Melee::Make_AI()
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	/*if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
-		return E_FAIL;*/
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pHit)))
+		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Attack", pAttack)))
 		return E_FAIL;
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
 		return E_FAIL;
+
+	pHit->Assemble_Childs();
+	pAttack->Assemble_Childs();
 
 	Safe_Release(pGameInstance);
 

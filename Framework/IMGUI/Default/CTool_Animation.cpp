@@ -354,6 +354,20 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
             m_pModel->Get_Model()->Set_Translation(i, vTranslation);
         }
     }
+    _float arrPer[3] = { 1.f, 1.f, 1.f };
+
+    if (ImGui::DragFloat3("Persentage##Translation", arrPer, 0.01f, -100.f, 100.f, "%.2f"))
+    {
+        for (_uint i = 0; i < m_pModel->Get_Model()->Get_MaxRootKeyFrame(); ++i)
+        {
+            vTranslation = m_pModel->Get_Model()->Get_Translation(i);
+            vTranslation.x *= arrPer[0];
+            vTranslation.y *= arrPer[1];
+            vTranslation.z *= arrPer[2];
+
+            m_pModel->Get_Model()->Set_Translation(i, vTranslation);
+        }
+    }
 
     else
     {

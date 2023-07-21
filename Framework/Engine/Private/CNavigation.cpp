@@ -255,29 +255,6 @@ void CNavigation::Free()
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 
-void CNavigation::Remove_Cell(const _uint& iCellIndex)
-{
-	if (m_vecCells.size() <= iCellIndex)
-		return;
-
-	auto iter = m_vecCells.begin();
-
-	for (_uint i = 0; i < iCellIndex; ++i)
-		++iter;
-
-	Safe_Release(m_vecCells[iCellIndex]);
-	m_vecCells.erase(iter);
-
-}
-
-void CNavigation::Remove_All_Cell()
-{
-	for (auto& pCell : m_vecCells)
-		Safe_Release(pCell);
-
-	m_vecCells.clear();
-}
-
 _float3& CNavigation::Get_CellPoint(const _uint& iCellIndex, const _uint& iPointIndex)
 {
 	return m_vecCells[iCellIndex]->Get_Point_Tool(CCell::POINT(iPointIndex));
@@ -286,6 +263,72 @@ _float3& CNavigation::Get_CellPoint(const _uint& iCellIndex, const _uint& iPoint
 void CNavigation::Set_CellPosition(const _uint& iCellIndex, const _uint& iPointIndex, const _float3& vPosition)
 {
 	m_vecCells[iCellIndex]->Set_Position((CCell::POINT)iPointIndex, vPosition);
+}
+
+HRESULT CNavigation::Render()
+{
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	_float4x4 WorldMatrix, ViewMatrix, ProjMatrix;
+
+	XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
+
+	CPipeLine* pPipeLine = CPipeLine::GetInstance();
+	Safe_AddRef(pPipeLine);
+
+	XMStoreFloat4x4(&ViewMatrix, pPipeLine->Get_Transform_Matrix(CPipeLine::STATE_VIEW));
+	XMStoreFloat4x4(&ProjMatrix, pPipeLine->Get_Transform_Matrix(CPipeLine::STATE_PROJ));
+
+	Safe_Release(pPipeLine);
+
+	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &ProjMatrix)))
+		return E_FAIL;
+
+	_float4		vColor = _float4(0.f, 1.f, 0.f, 1.f);
+
+	if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4))))
+		return E_FAIL;
+
+	m_pShader->Begin(0);
+
+	for (auto& pCell : m_vecCells)
+		pCell->Render();
+
+	if (-1 != m_NavigationDesc.iCurrentIndex)
+	{
+		vColor = _float4(1.f, 0.f, 0.f, 1.f);
+
+		WorldMatrix._42 = 0.01f;
+		if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &WorldMatrix)))
+			return E_FAIL;
+
+		if (FAILED(m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4))))
+			return E_FAIL;
+
+		m_pShader->Begin(0);
+
+		for (_uint i = 0; i < 3; ++i)
+		{
+			_float3 vPosition = m_vecCells[m_NavigationDesc.iCurrentIndex]->Get_Point_Tool(CCell::POINT(i));
+			m_pCurrentCell->Set_Position(CCell::POINT(i), vPosition);
+		}
+		m_pCurrentCell->Render();
+	}
+
+	for (auto& pCell : m_vecCells)
+		pCell->Render_Sphere();
+
+	/*for (auto& pCell : m_vecCells)
+		pCell->Render_Font();*/
+
+	return S_OK;
 }
 
 void CNavigation::Add_Cell(const TRIANGLE& Triangle)
@@ -336,70 +379,27 @@ vector<pair<_uint, _int>> CNavigation::Pick_Spheres(_fvector vOrigin, _fvector v
 	return RetData;
 }
 
-HRESULT CNavigation::Render_Navigation()
+void CNavigation::Remove_Cell(const _uint& iCellIndex)
 {
-	if (nullptr == m_pShader)
-		return E_FAIL;
+	if (m_vecCells.size() <= iCellIndex)
+		return;
 
-	_float4x4 WorldMatrix, ViewMatrix, ProjMatrix;
+	auto iter = m_vecCells.begin();
 
-	XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
+	for (_uint i = 0; i < iCellIndex; ++i)
+		++iter;
 
-	CPipeLine* pPipeLine = CPipeLine::GetInstance();
-	Safe_AddRef(pPipeLine);
+	Safe_Release(m_vecCells[iCellIndex]);
+	m_vecCells.erase(iter);
 
-	XMStoreFloat4x4(&ViewMatrix, pPipeLine->Get_Transform_Matrix(CPipeLine::STATE_VIEW));
-	XMStoreFloat4x4(&ProjMatrix, pPipeLine->Get_Transform_Matrix(CPipeLine::STATE_PROJ));
+}
 
-	Safe_Release(pPipeLine);
-
-	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &ViewMatrix)))
-		return E_FAIL;
-
-	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &ProjMatrix)))
-		return E_FAIL;
-
-	_float4		vColor = _float4(0.f, 1.f, 0.f, 1.f);
-
-		if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &WorldMatrix)))
-			return E_FAIL;
-
-		if (FAILED(m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4))))
-			return E_FAIL;
-
-		m_pShader->Begin(0);
-
-		for (auto& pCell : m_vecCells)
-			pCell->Render();
-
-	if(-1 != m_NavigationDesc.iCurrentIndex)
-	{
-		vColor = _float4(1.f, 0.f, 0.f, 1.f);
-
-		WorldMatrix._42 = 0.01f;
-		if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &WorldMatrix)))
-			return E_FAIL;
-
-		if (FAILED(m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4))))
-			return E_FAIL;
-
-		m_pShader->Begin(0);
-
-		for (_uint i = 0; i < 3; ++i)
-		{
-			_float3 vPosition = m_vecCells[m_NavigationDesc.iCurrentIndex]->Get_Point_Tool(CCell::POINT(i));
-			m_pCurrentCell->Set_Position(CCell::POINT(i), vPosition);
-		}
-		m_pCurrentCell->Render();
-	}
-
+void CNavigation::Remove_All_Cell()
+{
 	for (auto& pCell : m_vecCells)
-		pCell->Render_Sphere();
+		Safe_Release(pCell);
 
-	/*for (auto& pCell : m_vecCells)
-		pCell->Render_Font();*/
-
-	return S_OK;
+	m_vecCells.clear();
 }
 
 #endif // _USE_IMGUI

@@ -31,6 +31,7 @@ public:
 
 private:
 	virtual HRESULT Add_Components() override;
+	HRESULT Add_Parts();
 	HRESULT Make_AI();
 
 public:

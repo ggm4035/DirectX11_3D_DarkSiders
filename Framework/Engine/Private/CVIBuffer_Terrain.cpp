@@ -340,6 +340,31 @@ void CVIBuffer_Terrain::Culling(_fmatrix WorldMatrix)
 	Safe_Release(pFrustum);
 }
 
+void CVIBuffer_Terrain::Culling_LOD(_fmatrix WorldMatrix)
+{
+	CFrustum* pFrustum = CFrustum::GetInstance();
+	Safe_AddRef(pFrustum);
+
+	pFrustum->Transform_To_LocalSpace(WorldMatrix);
+
+	_uint iNumIndices = { 0 };
+
+	m_pQuadTree->Culling_LOD(pFrustum, m_pVerticesPos, m_pIndices, &iNumIndices);
+
+	D3D11_MAPPED_SUBRESOURCE SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	memcpy(SubResource.pData, m_pIndices, sizeof(_ulong) * iNumIndices);
+
+	m_pContext->Unmap(m_pIB, 0);
+
+	m_iNumIndices = iNumIndices;
+
+	Safe_Release(pFrustum);
+}
+
 CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	const _uint& iXCount, const _uint& iZCount, const _float& fInterval)
 {

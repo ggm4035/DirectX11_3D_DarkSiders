@@ -63,8 +63,24 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In) : SV_TARGET0
 {
     PS_OUT Out = (PS_OUT) 0;
-	
-    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30);
+    
+    float4 vColor = (float4) 0;
+    float4 vBrush = (float4) 0;
+    
+    float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f);
+    
+    if (g_vBrushPos.x > 0 &&
+        g_vBrushPos.x - g_fBrushRadius < In.vWorldPos.x && In.vWorldPos.x <= g_vBrushPos.x + g_fBrushRadius &&
+		g_vBrushPos.z - g_fBrushRadius < In.vWorldPos.z && In.vWorldPos.z <= g_vBrushPos.z + g_fBrushRadius)
+    {
+        float2 vTexUV;
+        
+        vTexUV.x = (In.vWorldPos.x - (g_vBrushPos.x - g_fBrushRadius)) / (2.f * g_fBrushRadius);
+        vTexUV.y = ((g_vBrushPos.z - g_fBrushRadius) - In.vWorldPos.z) / (2.f * g_fBrushRadius);
+
+        vBrush = g_BrushTexture.Sample(LinearSampler, vTexUV);
+        vDiffuse += vBrush * 0.2f;
+    }
     
     float4 vAmbient = float4(0.2f, 0.2f, 0.2f, 0.2f);
     float fShade = max(dot(normalize(In.vNormal), -normalize(g_LightDirection)), 0.f);

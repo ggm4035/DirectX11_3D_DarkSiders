@@ -27,9 +27,7 @@ public:
 	CTransform* Get_Transform() const {
 		return m_pTransformCom;
 	}
-	void Get_Damaged() {
-		m_eCurHitState = HIT;
-	}
+	void Get_Damaged();
 
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
@@ -41,6 +39,8 @@ public:
 
 public:
 	CCollider* Find_Collider(const wstring& wstrColliderTag);
+
+	virtual void Dead_Motion() {}
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) {}
@@ -59,8 +59,9 @@ protected:
 	HRESULT Add_Colliders_To_Manager();
 	void Tick_Colliders(_fmatrix WorldMatrix);
 	void On_Colisions(const _double& TimeDelta);
+
 #ifdef _DEBUG
-	HRESULT Render_Colliders();
+	HRESULT Add_Colliders_Debug_Render_Group(class CRenderer* pRenderer);
 #endif // _DEBUG
 
 protected:

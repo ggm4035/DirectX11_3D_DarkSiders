@@ -7,6 +7,9 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_Deferred.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_Vtx.cso</FullPath>
     </ContentFile>
     <ContentFile>

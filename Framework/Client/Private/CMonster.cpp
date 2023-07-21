@@ -50,6 +50,7 @@ HRESULT CMonster::Render(const _uint& iPassIndex)
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, TYPE_NORMALS);
 
 		if (FAILED(m_pShaderCom->Begin(iPassIndex)))
 			return E_FAIL;
@@ -115,33 +116,6 @@ HRESULT CMonster::Set_Shader_Resources()
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
-		return E_FAIL;
-
-	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition",
-		&LightDesc.vPosition, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",
-		&LightDesc.vDirection, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse",
-		&LightDesc.vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular",
-		&LightDesc.vSpecular, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightAmbient",
-		&LightDesc.vAmbient, sizeof(_float4))))
-		return E_FAIL;
-
-	_float4 InputData = pGameInstance->Get_Camera_Position();
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-		&InputData, sizeof(_float4))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

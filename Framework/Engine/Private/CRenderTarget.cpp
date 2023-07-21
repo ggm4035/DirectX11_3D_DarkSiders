@@ -1,10 +1,9 @@
 #include "CRenderTarget.h"
-
 #include "CShader.h"
 
 #ifdef _DEBUG
 #include "CVIBuffer_Rect.h"
-#endif
+#endif // _DEBUG
 
 CRenderTarget::CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -16,7 +15,8 @@ CRenderTarget::CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CRenderTarget::Initialize(const _uint& iSizeX, const _uint& iSizeY, DXGI_FORMAT eFormat, const _float4& vClearColor)
 {
-	D3D11_TEXTURE2D_DESC TextureDesc;
+	D3D11_TEXTURE2D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
 	TextureDesc.Width = iSizeX;
 	TextureDesc.Height = iSizeY;
@@ -46,26 +46,13 @@ HRESULT CRenderTarget::Initialize(const _uint& iSizeX, const _uint& iSizeY, DXGI
 	return S_OK;
 }
 
-void CRenderTarget::Clear()
-{
-	m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
-}
-
-HRESULT CRenderTarget::Bind_ShaderResourceView(CShader* pShader, const string& wstrConstantName)
-{
-	if (nullptr == m_pSRV)
-		return E_FAIL;
-
-	return pShader->Bind_ShaderResource(wstrConstantName, m_pSRV);
-}
-
 #ifdef _DEBUG
 HRESULT CRenderTarget::Ready_Debug(const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY)
 {
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
 
-	_uint iNumViews = { 1 };
-	D3D11_VIEWPORT ViewportDesc;
+	_uint		iNumViews = { 1 };
+	D3D11_VIEWPORT		ViewportDesc;
 
 	m_pContext->RSGetViewports(&iNumViews, &ViewportDesc);
 
@@ -91,7 +78,20 @@ HRESULT CRenderTarget::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	return pVIBuffer->Render();
 }
-#endif
+#endif // _DEBUG
+
+void CRenderTarget::Clear()
+{
+	m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
+}
+
+HRESULT CRenderTarget::Bind_ShaderResourceView(class CShader* pShader, const string& wstrConstantName)
+{
+	if (nullptr == m_pSRV)
+		return E_FAIL;
+
+	return pShader->Bind_ShaderResource(wstrConstantName, m_pSRV);
+}
 
 CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	const _uint& iSizeX, const _uint& iSizeY, DXGI_FORMAT eFormat, const _float4& vClearColor)
@@ -108,10 +108,13 @@ CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 void CRenderTarget::Free()
 {
+
+	SaveDDSTextureToFile(m_pContext, m_pTexture2D, TEXT("../Bin/Diffuse.dds"));
+
 	Safe_Release(m_pRTV);
 	Safe_Release(m_pSRV);
 	Safe_Release(m_pTexture2D);
-
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
+
 }

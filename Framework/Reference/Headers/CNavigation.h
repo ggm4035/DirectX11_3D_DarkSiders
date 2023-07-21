@@ -53,22 +53,24 @@ public:
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 
 public:
-	void Set_CurrentIndex(const _uint& iIndex) {
-		m_NavigationDesc.iCurrentIndex = iIndex;
-	}
-	void Remove_Cell(const _uint& iCellIndex);
-	void Remove_All_Cell();
 	_uint Get_NumCells() const {
 		return m_vecCells.size();
 	}
+	void Set_CurrentIndex(const _uint& iIndex) {
+		m_NavigationDesc.iCurrentIndex = iIndex;
+	}
 	_float3& Get_CellPoint(const _uint& iCellIndex, const _uint& iPointIndex);
 	void Set_CellPosition(const _uint& iCellIndex, const _uint& iPointIndex, const _float3& vPosition);
+
+	virtual HRESULT Render() override;
+
 	void Add_Cell(const TRIANGLE& Triangle);
 	void Sort();
 	_float3 Pick_Sphere(_fvector vOrigin, _fvector vDirection);
 	vector<pair<_uint, _int>> Pick_Spheres(_fvector vOrigin, _fvector vDirection);
 
-	HRESULT Render_Navigation();
+	void Remove_Cell(const _uint& iCellIndex);
+	void Remove_All_Cell();
 
 private:
 	class CBounding_Sphere* m_pSpherePrototype = { nullptr };

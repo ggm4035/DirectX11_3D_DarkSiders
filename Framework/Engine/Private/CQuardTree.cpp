@@ -82,6 +82,58 @@ HRESULT CQuadTree::Make_Neighbors()
 
 void CQuadTree::Culling(CFrustum* pFrustum, const _float3* pVerticesPos, OUT _ulong* pIndices, OUT _uint* pNumIndices)
 {
+	if (nullptr == m_pChilds[CHILD_LT])
+	{
+		_uint		iIndices[4] = {
+			m_iCorners[CORNER_LT],
+			m_iCorners[CORNER_RT],
+			m_iCorners[CORNER_RB],
+			m_iCorners[CORNER_LB],
+		};
+
+		_bool		isIn[4] = {
+			pFrustum->isIn_LocalSpace(XMLoadFloat3(&pVerticesPos[iIndices[0]]), 0.0f),
+			pFrustum->isIn_LocalSpace(XMLoadFloat3(&pVerticesPos[iIndices[1]]), 0.0f),
+			pFrustum->isIn_LocalSpace(XMLoadFloat3(&pVerticesPos[iIndices[2]]), 0.0f),
+			pFrustum->isIn_LocalSpace(XMLoadFloat3(&pVerticesPos[iIndices[3]]), 0.0f),
+		};
+
+		/* 오른쪽 위 삼각형을 구성하는 정점 중, 최소 하나라도 절두체 안에 있다. */
+		if (true == isIn[0] &&
+			true == isIn[1] &&
+			true == isIn[2])
+		{
+			pIndices[(*pNumIndices)++] = iIndices[0];
+			pIndices[(*pNumIndices)++] = iIndices[1];
+			pIndices[(*pNumIndices)++] = iIndices[2];
+		}
+
+		/* 왼쪽 아래 삼각형을 구성하는 정점 중, 최소 하나라도 절두체 안에 있다. */
+		if (true == isIn[0] &&
+			true == isIn[2] &&
+			true == isIn[3])
+		{
+			pIndices[(*pNumIndices)++] = iIndices[0];
+			pIndices[(*pNumIndices)++] = iIndices[2];
+			pIndices[(*pNumIndices)++] = iIndices[3];
+		}
+		return;
+	}
+
+	_float		fRadius = XMVectorGetX(XMVector3Length(XMLoadFloat3(&pVerticesPos[m_iCorners[CORNER_LT]]) - XMLoadFloat3(&pVerticesPos[m_iCenter])));
+
+	if (true == pFrustum->isIn_LocalSpace(XMLoadFloat3(&pVerticesPos[m_iCenter]), fRadius))
+	{
+		for (size_t i = 0; i < CHILD_END; i++)
+		{
+			if (nullptr != m_pChilds[i])
+				m_pChilds[i]->Culling(pFrustum, pVerticesPos, pIndices, pNumIndices);
+		}
+	}
+}
+
+void CQuadTree::Culling_LOD(CFrustum* pFrustum, const _float3* pVerticesPos, OUT _ulong* pIndices, OUT _uint* pNumIndices)
+{
 	if (nullptr == m_pChilds[CHILD_LT] ||
 		true == isDraw(pVerticesPos))
 	{

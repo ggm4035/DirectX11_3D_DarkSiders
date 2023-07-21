@@ -1,32 +1,7 @@
-﻿  CAttackAction.cpp
-  CCamera_Free.cpp
-  CGoblin.cpp
-  CHellHound.cpp
-  CJumpAction.cpp
-  CLegion_Melee.cpp
-  CLevel_GamePlay.cpp
-  CLevel_Loading.cpp
-  CLevel_Logo.cpp
-  CLoader.cpp
-  CMainApp.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(57,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CMonster.cpp
-  CMonster_Attacks.cpp
-  CMonster_Patrol.cpp
-  CPlayer.cpp
-  CPlayerAction.cpp
-  CSky.cpp
-  CStatic_Object.cpp
-  CTerrain.cpp
-  CUI_Rect.cpp
-  컴파일하고 있습니다...
-  CWeapon.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(66,92): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(70,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Client.cpp
+﻿  CAttack.cpp
   코드를 생성하고 있습니다.
-  0 of 1690 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  1 of 1954 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

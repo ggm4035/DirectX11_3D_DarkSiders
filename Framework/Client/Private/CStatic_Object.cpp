@@ -117,33 +117,6 @@ HRESULT CStatic_Object::Bind_ShaderResources()
 		&InputMatrix)))
 		return E_FAIL;
 
-	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition",
-		&LightDesc.vPosition, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",
-		&LightDesc.vDirection, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse",
-		&LightDesc.vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular",
-		&LightDesc.vSpecular, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightAmbient",
-		&LightDesc.vAmbient, sizeof(_float4))))
-		return E_FAIL;
-
-	_float4 vCameraPosition = pGameInstance->Get_Camera_Position();
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition", 
-		&vCameraPosition, sizeof(_float4))))
-		return E_FAIL;
-
 	Safe_Release(pGameInstance);
 
 	return S_OK;

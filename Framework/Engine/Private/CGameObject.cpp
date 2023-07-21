@@ -1,5 +1,6 @@
 #include "CGameObject.h"
 
+#include "CGameInstance.h"
 #include "CObject_Manager.h"
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -14,6 +15,16 @@ CGameObject::CGameObject(const CGameObject& rhs)
 
 void CGameObject::Tick(const _double& TimeDelta)
 {
+#ifdef _DEBUG
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Key_Down(DIK_F1))
+		Togle_Render_Debug();
+
+	Safe_Release(pGameInstance);
+#endif
+
 	for (auto& Pair : m_Parts)
 		Pair.second->Tick(TimeDelta);
 }

@@ -45,8 +45,17 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
-	CGameObject3D::Tick(TimeDelta);
+#ifdef _DEBUG
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
+	if (pGameInstance->Key_Down(DIK_F12))
+		Togle_Render_Debug();
+
+	Safe_Release(pGameInstance);
+#endif
+	CGameObject3D::Tick(TimeDelta);
+	
 	m_pActionCom->Tick(TimeDelta);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
@@ -75,6 +84,11 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+#ifdef _DEBUG
+		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+			return;
+#endif
 	}
 
 	Safe_Release(pGameInstance);
@@ -113,13 +127,6 @@ HRESULT CPlayer::Render()
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
 	}
-
-#ifdef _DEBUG
-
-	if (FAILED(Render_Colliders()))
-		return E_FAIL;
-
-#endif
 
 	return S_OK;
 }
@@ -219,7 +226,7 @@ HRESULT CPlayer::Add_Parts()
 
 	Desc.wstrModelTag = L"Model_PlayerWeapon";
 
-	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon", this, &Desc)))
+	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon_Player", this, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -240,33 +247,6 @@ HRESULT CPlayer::Set_Shader_Resources()
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
-		return E_FAIL;
-
-	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition",
-		&(LightDesc.vPosition), sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",
-		&(LightDesc.vDirection), sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse",
-		&(LightDesc.vDiffuse), sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular",
-		&(LightDesc.vSpecular), sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightAmbient",
-		&(LightDesc.vAmbient), sizeof(_float4))))
-		return E_FAIL;
-
-	_float4 InputData = pGameInstance->Get_Camera_Position();
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-		&InputData, sizeof(_float4))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

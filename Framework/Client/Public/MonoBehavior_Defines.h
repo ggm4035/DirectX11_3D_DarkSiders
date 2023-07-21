@@ -6,21 +6,25 @@
 
 /* Player Actions */
 #include "CPlayerAction.h"
-#include "CMoveAction.h"
-#include "CJumpAction.h"
-#include "CAttackAction.h"
+
+#include "CPlayerHit.h"
+#include "CPlayerMove.h"
+#include "CPlayerJump.h"
+#include "CPlayerAttack.h"
 
 /* Behaviors */
-#include "CRandomLook.h"
-#include "CRun.h"
+#include "CHit.h"
 #include "CWait.h"
 #include "CWalk.h"
+#include "CRest.h"
+#include "CDead.h"
 #include "CSpawn.h"
-#include "CAttack_1.h"
-#include "CAttack_2.h"
-#include "CAttack_3.h"
-#include "CHit.h"
+#include "CDetect.h"
+#include "CFollow.h"
+#include "CAttack.h"
+#include "CRandomLook.h"
 
 /* Monster Actions */
-#include "CMonster_Patrol.h"
-#include "CMonster_Attacks.h"
+#include "CAction_Hit.h"
+#include "CAction_Patrol.h"
+#include "CAction_Attack.h"

@@ -49,7 +49,6 @@ void CTerrain::Tick(const _double& TimeDelta)
 
 void CTerrain::Late_Tick(const _double& TimeDelta)
 {
-
 	//m_pBufferCom->Culling(m_pTransformCom->Get_WorldMatrix());
 
 	if (nullptr != m_pRendererCom)
@@ -61,15 +60,12 @@ HRESULT CTerrain::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 	
-	if (FAILED(m_pNmTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture")))
-		return E_FAIL;
-
 	m_pShaderCom->Begin(0);
 
 	m_pBufferCom->Render();
 
 #ifdef _DEBUG
-	m_pNavigationCom->Render_Navigation();
+	m_pNavigationCom->Render();
 #endif
 
 	return S_OK;
@@ -120,34 +116,10 @@ HRESULT CTerrain::SetUp_ShaderResources()
 		&InputMatrix)))
 		return E_FAIL;
 
-	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition", 
-		&LightDesc.vPosition, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection", 
-		&LightDesc.vDirection, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse", 
-		&LightDesc.vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular", 
-		&LightDesc.vSpecular, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightAmbient",
-		&LightDesc.vAmbient, sizeof(_float4))))
-		return E_FAIL;
-
-	_float4 vCameraPosition = pGameInstance->Get_Camera_Position();
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition", 
-		&vCameraPosition, sizeof(_float4))))
-		return E_FAIL;
-
 	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pNmTextureCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture")))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

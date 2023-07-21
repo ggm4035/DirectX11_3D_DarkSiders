@@ -8,8 +8,12 @@
 #include "CSky.h"
 #include "CCamera_Free.h"
 #include "CGoblin.h"
+#include "CGoblin_Armor.h"
 #include "CHellHound.h"
 #include "CLegion_Melee.h"
+#include "CLegion_Champion.h"
+#include "CSteamRoller.h"
+#include "CWeapon.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -125,7 +129,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	/* For. Texture_NMTerrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_NMTerrain",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain3_nm.png"))))
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain2_nm.png"))))
 
 	m_szLoading = TEXT("¸ðµ¨ ·Îµù Áß.");
 
@@ -157,16 +161,34 @@ HRESULT CLoader::Load_Level_GamePlay()
 		}
 	}
 
-	/* For. Monster Models  */
+	/* =====Monster Models=====  */
 	string FilePath;
 	MODEL_BINARYDATA Data;
 
 	/* Goblin Model */
+	m_pGameInstance->ReadModel("../../Data/SteamRoller.dat", FilePath, Data);
+
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_SteamRoller",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Goblin Model */
 	m_pGameInstance->ReadModel("../../Data/Goblin.dat", FilePath, Data);
 
-	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Goblin_Armor Model */
+	m_pGameInstance->ReadModel("../../Data/GoblinArmor.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin_Armor",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
 		return E_FAIL;
 	Safe_Delete_BinaryData(Data);
@@ -185,6 +207,72 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Legion_Champion Model */
+	m_pGameInstance->ReadModel("../../Data/LegionChampion.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion_Champion",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* =====Monster Weapon Models===== */
+
+	/* Goblin_Sword Model */
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Goblin_Sword.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin_Sword",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Goblin_Quiver Model */
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Goblin_Quiver.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin_Quiver",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Goblin_Spear Model */
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Goblin_Spear.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin_Spear",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Legion_Weapon Model */
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Legion_Weapon.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion_Weapon",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Legion_Spear Model */
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Legion_Spear.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion_Spear",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Legion_Champion_Weapon_A Model */
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Legion_Champion_Weapon_A.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion_Champion_Weapon_A",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Legion_Champion_Weapon_B Model */
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Legion_Champion_Weapon_B.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion_Champion_Weapon_B",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
 		return E_FAIL;
 	Safe_Delete_BinaryData(Data);
 
@@ -210,9 +298,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CStatic_Object::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For. Monster_SteamRoller */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_SteamRoller",
+		CSteamRoller::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For. Monster_Goblin */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Goblin",
 		CGoblin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Monster_Goblin_Armor */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Goblin_Armor",
+		CGoblin_Armor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Monster_HellHound */
@@ -223,6 +321,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Monster_Legion_Melee */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Legion_Melee",
 		CLegion_Melee::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Monster_Legion_Champion */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Legion_Champion",
+		CLegion_Champion::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Terrain */

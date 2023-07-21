@@ -41,7 +41,6 @@ HRESULT CCamera::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 	else if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vEye));
 	m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));
 

@@ -53,6 +53,9 @@ void CCollider_Manager::Collision(CCollider::COLLIDERGROUP SrcGroup, CCollider::
 
 			if (true == pSrcCollider->Intersect(pDestCollider))
 			{
+				if (pSrcCollider->Get_Tag() == L"Col_Attack")
+					;//cout << "ÁøÀÔ" << endl;
+
 				pSrcCollider->Push_Collision_Message(pDestCollider);
 			}
 		}

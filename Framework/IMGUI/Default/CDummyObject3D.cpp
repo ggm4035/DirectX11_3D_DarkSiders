@@ -128,7 +128,7 @@ HRESULT CDummyObject3D::Render()
     }
 
     if (nullptr != dynamic_cast<CVIBuffer_Terrain*>(m_pBufferCom))
-        m_pNavigationCom->Render_Navigation();
+        m_pNavigationCom->Render();
 
     if (nullptr != m_pColliderCom)
         m_pColliderCom->Render();

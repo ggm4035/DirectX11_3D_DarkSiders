@@ -20,14 +20,14 @@ HRESULT CWeapon::Initialize_Prototype()
 
 HRESULT CWeapon::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CParts::Initialize(iLevelIndex, pOwner, pArg)))
+	if (FAILED(CParts::Initialize(LEVEL_STATIC, pOwner, pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
 	{
 		WEAPONDESC Desc = *reinterpret_cast<WEAPONDESC*>(pArg);
 
-		if (FAILED(Add_Component(LEVEL_STATIC, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
+		if (FAILED(Add_Component(iLevelIndex, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
 			(CComponent**)&m_pModelCom, this)))
 			return E_FAIL;
 	}
@@ -54,6 +54,10 @@ void CWeapon::Tick(const _double& TimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * BoneMatrix * XMLoadFloat4x4(m_pParentWorldMatrix));
 }
 
+void CWeapon::Late_Tick(const _double& TimeDelta)
+{
+}
+
 HRESULT CWeapon::Render()
 {
 	if (FAILED(Set_Shader_Resources()))
@@ -63,7 +67,8 @@ HRESULT CWeapon::Render()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TEXTURETYPE::TYPE_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, TYPE_NORMALS);
 
 		m_pShaderCom->Begin(0);
 
@@ -105,33 +110,6 @@ HRESULT CWeapon::Set_Shader_Resources()
 		&InputMatrix)))
 		return E_FAIL;
 
-	CLight::LIGHTDESC LightDesc = *pGameInstance->Get_LightDesc(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightPosition",
-		&LightDesc.vPosition, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDirection",
-		&LightDesc.vDirection, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightDiffuse",
-		&LightDesc.vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightSpecular",
-		&LightDesc.vSpecular, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_LightAmbient",
-		&LightDesc.vAmbient, sizeof(_float4))))
-		return E_FAIL;
-
-	_float4 vCameraPosition = pGameInstance->Get_Camera_Position();
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_CameraPosition",
-		&vCameraPosition, sizeof(_float4))))
-		return E_FAIL;
-
 	Safe_Release(pGameInstance);
 
 	return S_OK;
@@ -166,7 +144,6 @@ void CWeapon::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pColliderCom);
 
 	CParts::Free();
 }

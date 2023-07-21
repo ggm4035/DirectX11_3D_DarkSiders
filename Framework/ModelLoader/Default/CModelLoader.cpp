@@ -685,7 +685,12 @@ HRESULT CModelLoader::Ready_Meshes_AnimModel(vector<BONEDATA>& Bones, OUT MESHDA
 			
 			for (auto& Data : Bones)
 			{
-				if (0 != strcmp(pData[iMeshIndex].szName, Data.szName))
+				string SrcName = Data.szName;
+				string DstName = pData[iMeshIndex].szName;
+
+				SrcName = SrcName.substr(0, SrcName.find("."));
+
+				if (string::npos == DstName.find(SrcName))
 					++iBoneIndex;
 				else
 					break;
@@ -740,7 +745,10 @@ HRESULT CModelLoader::Ready_Meshes_NonAnimModel(_fmatrix PivotMatrix, OUT MESHDA
 				XMVector3TransformCoord(XMLoadFloat3(&pData[i].pNonAnimVertices[j].vNormal), PivotMatrix));
 
 			memcpy(&pData[i].pNonAnimVertices[j].vTexCoord, &pAIMesh->mTextureCoords[0][j], sizeof(_float2));
+
 			memcpy(&pData[i].pNonAnimVertices[j].vTangent, &pAIMesh->mTangents[j], sizeof(_float3));
+			XMStoreFloat3(&pData[i].pNonAnimVertices[j].vTangent,
+				XMVector3TransformNormal(XMLoadFloat3(&pData[i].pNonAnimVertices[j].vTangent), PivotMatrix));
 		}
 
 		_uint iNumIndices = { 0 };

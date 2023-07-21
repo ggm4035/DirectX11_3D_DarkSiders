@@ -2,6 +2,7 @@
 #include "CLevel_GamePlay.h"
 
 #include "CGameInstance.h"
+#include "CWeapon.h"
 
 #include "CPlayer.h"
 #include "CTerrain.h"
@@ -52,10 +53,10 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 
 	LightDesc.eType = CLight::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(-1.f, -1.f, -1.f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 0.75f, 0.75f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 0.75f, 0.75f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
@@ -138,12 +139,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	CPlayer::PLAYERDESC PlayerDesc;
+
 	PlayerDesc.WorldMatrix = m_PlayerWorldMatrix;
 	PlayerDesc.vAngle = m_vPlayerAngle;
-	PlayerDesc.SpeedPerSec = 5.f; // °È±â = 1.5, ¶Ù±â 3
+	PlayerDesc.SpeedPerSec = 4.f; // °È±â = 1.5, ¶Ù±â 3
 	PlayerDesc.RotationPerSec = XMConvertToRadians(90.f);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, L"Player",
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Player",
 		L"Player", pLayerTag, &PlayerDesc)))
 		return E_FAIL;
 
@@ -168,17 +170,37 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 		
 		wstring wstrObjTag = Data.BinaryData.szTag;
 
-		if (wstring::npos != wstrObjTag.find(L"Goblin"))
+		if (wstring::npos != wstrObjTag.find(L"GoblinArmor"))
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Goblin_Armor",
+				L"Monster_Goblin_Armor", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
+
+		else if (wstring::npos != wstrObjTag.find(L"Goblin"))
 		{
 			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Goblin",
 				L"Monster_Goblin", pLayerTag, &MonsterDesc)))
 				return E_FAIL;
 		}
 
-		if (wstring::npos != wstrObjTag.find(L"Legion"))
+		if (wstring::npos != wstrObjTag.find(L"LegionChampion"))
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Legion_Champion",
+				L"Monster_Legion_Champion", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
+		else if (wstring::npos != wstrObjTag.find(L"Legion"))
 		{
 			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Legion_Melee",
 				L"Monster_Legion_Melee", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
+
+		if (wstring::npos != wstrObjTag.find(L"SteamRoller"))
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_SteamRoller",
+				L"Monster_SteamRoller", pLayerTag, &MonsterDesc)))
 				return E_FAIL;
 		}
 

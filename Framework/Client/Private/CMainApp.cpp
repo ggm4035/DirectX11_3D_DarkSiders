@@ -177,16 +177,11 @@ HRESULT CMainApp::Ready_Behaviors()
 		CSequence::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* ==== Behaviors ==== */
+	/* ==== Monster Behaviors ==== */
 
 	/* Tsk_RandomLook */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_RandomLook",
 		CRandomLook::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* Tsk_Run */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Run",
-		CRun::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* Tsk_Walk */
@@ -209,31 +204,46 @@ HRESULT CMainApp::Ready_Behaviors()
 		CHit::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Tsk_Attack_1 */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack_1",
-		CAttack_1::Create(m_pDevice, m_pContext))))
+	/* Tsk_Attack */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack",
+		CAttack::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Tsk_Attack_2 */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack_2",
-		CAttack_2::Create(m_pDevice, m_pContext))))
+	/* Tsk_Dead */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Dead",
+		CDead::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Tsk_Attack_3 */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack_3",
-		CAttack_3::Create(m_pDevice, m_pContext))))
+	/* Tsk_Follow */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Follow",
+		CFollow::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Rest */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Rest",
+		CRest::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Detect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Detect",
+		CDetect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* ==== Monster Actions ==== */
 
 	/* Sequence_Patrol */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Sequence_Patrol",
-		CMonster_Patrol::Create(m_pDevice, m_pContext))))
+		CAction_Patrol::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Selector_Attacks */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Selector_Attacks",
-		CMonster_Attacks::Create(m_pDevice, m_pContext))))
+	/* Sequence_Hit */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Sequence_Hit",
+		CAction_Hit::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Selector_Attack */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Selector_Attack",
+		CAction_Attack::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;
@@ -258,7 +268,7 @@ HRESULT CMainApp::Ready_Player()
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Player", CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	m_pGameInstance->ReadModel("../../Data/Chaoseater.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Chaoseater.dat", FilePath, Data);
 
 	m_vecModelDatas.push_back(Data);
 
@@ -272,19 +282,24 @@ HRESULT CMainApp::Ready_Player()
 		CPlayerAction::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For. Player_HitAction */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerHit",
+		CPlayerHit::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For. Player_MoveAction */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"MoveAction",
-		CMoveAction::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerMove",
+		CPlayerMove::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Player_JumpAction */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"JumpAction",
-		CJumpAction::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerJump",
+		CPlayerJump::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Player_AttackAction */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"AttackAction",
-		CAttackAction::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerAttack",
+		CPlayerAttack::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

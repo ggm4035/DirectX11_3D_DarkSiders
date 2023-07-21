@@ -1,9 +1,10 @@
 #include "CRenderer.h"
 #include "CGameObject.h"
-
 #include "CTarget_Manager.h"
 #include "CLight_Manager.h"
+
 #include "CShader.h"
+#include "CPipeLine.h"
 #include "CVIBuffer_Rect.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -11,8 +12,8 @@ CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_pTarget_Manager(CTarget_Manager::GetInstance())
 	, m_pLight_Manager(CLight_Manager::GetInstance())
 {
-	Safe_AddRef(m_pTarget_Manager);
 	Safe_AddRef(m_pLight_Manager);
+	Safe_AddRef(m_pTarget_Manager);
 }
 
 HRESULT CRenderer::Initialize_Prototype()
@@ -20,30 +21,41 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
-	_uint iNumViews = { 1 };
-	D3D11_VIEWPORT ViewportDesc;
+	_uint		iNumViews = { 1 };
+	D3D11_VIEWPORT		ViewportDesc;
 
 	m_pContext->RSGetViewports(&iNumViews, &ViewportDesc);
 
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(L"Target_Diffuse", m_pDevice, m_pContext,
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Diffuse"), m_pDevice, m_pContext,
+		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(L"Target_Normal", m_pDevice, m_pContext,
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Normal"), m_pDevice, m_pContext,
+		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(L"Target_Shade", m_pDevice, m_pContext,
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
-		return E_FAIL;
-
-	if (FAILED(m_pTarget_Manager->Add_MRT(L"MRT_GameObjects", L"Target_Diffuse")))
-		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_MRT(L"MRT_GameObjects", L"Target_Normal")))
-		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_MRT(L"MRT_Lights", L"Target_Shade")))
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Depth"), m_pDevice, m_pContext,
+		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	m_pShader = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Deferred.hlsl",
-		VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements);
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Shade"), m_pDevice, m_pContext,
+		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Specular"), m_pDevice, m_pContext,
+		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Shade"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Specular"))))
+		return E_FAIL;
+
+	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements);
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
@@ -54,36 +66,37 @@ HRESULT CRenderer::Initialize_Prototype()
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
 	m_WorldMatrix._11 = ViewportDesc.Width;
 	m_WorldMatrix._22 = ViewportDesc.Height;
-	/* View, Proj는 직교투영 행렬을 사용 할 것이기 때문에 초기에 한번만 세팅해주면 된다. */
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
 
+
+
+
 #ifdef _DEBUG
-	if (FAILED(m_pTarget_Manager->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.f, 100.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(L"Target_Normal", 100.f, 300.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
-#endif
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
+		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }
 
 HRESULT CRenderer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CComponent::Initialize(iLevelIndex, pOwner, pArg)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 void CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameObject)
 {
-	if (eRenderGroup >= RENDER_END || 0 > eRenderGroup)
-		return;
-
 	m_RenderObjects[eRenderGroup].push_back(pGameObject);
+
 	Safe_AddRef(pGameObject);
 }
 
@@ -106,8 +119,10 @@ HRESULT CRenderer::Draw_RenderGroup()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
+#ifdef _DEBUG
 	if (FAILED(Render_Debug()))
 		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }
@@ -121,6 +136,7 @@ HRESULT CRenderer::Render_Priority()
 
 		Safe_Release(pGameObject);
 	}
+
 	m_RenderObjects[RENDER_PRIORITY].clear();
 
 	return S_OK;
@@ -131,10 +147,10 @@ HRESULT CRenderer::Render_NonBlend()
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
-#ifdef _USE_IMGUI
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_GameObjects")))
+	/* Diffuse(0) + Normal(1) */
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_GameObjects"))))
 		return E_FAIL;
-#endif
+
 	for (auto& pGameObject : m_RenderObjects[RENDER_NONBLEND])
 	{
 		if (nullptr != pGameObject)
@@ -142,12 +158,12 @@ HRESULT CRenderer::Render_NonBlend()
 
 		Safe_Release(pGameObject);
 	}
+
 	m_RenderObjects[RENDER_NONBLEND].clear();
 
-#ifdef _USE_IMGUI
 	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
 		return E_FAIL;
-#endif
+
 	return S_OK;
 }
 
@@ -156,10 +172,10 @@ HRESULT CRenderer::Render_Light()
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
-#ifdef _USE_IMGUI
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Lights")))
+	/* Shade(0) + Specular(1) */
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Lights"))))
 		return E_FAIL;
-#endif
+
 	if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
@@ -167,27 +183,50 @@ HRESULT CRenderer::Render_Light()
 	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	/* Normal 렌더타겟을 던진다. (노말을 한번 던지고 여러 Light들이 공통으로 사용하는 형태) */
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(L"Target_Normal", m_pShader, "g_NormalTexture")))
+	CPipeLine* pPipeLine = CPipeLine::GetInstance();
+	Safe_AddRef(pPipeLine);
+
+	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrixInv",
+		&pPipeLine->Get_Trasnform_Inverse_Float4x4(CPipeLine::STATE_VIEW))))
 		return E_FAIL;
 
-#ifdef _USE_IMGUI
-	///* 빛 정보를 던진다. */
-	if (FAILED(m_pLight_Manager->Render_Lights(m_pShader, m_pVIBuffer)))
+	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrixInv",
+		&pPipeLine->Get_Trasnform_Inverse_Float4x4(CPipeLine::STATE_PROJ))))
 		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition",
+		&pPipeLine->Get_Camera_Position(), sizeof(_float4))))
+		return E_FAIL;
+
+	Safe_Release(pPipeLine);
+
+	/* 노멀 렌더타겟을 셰이더 전역으로 던진다.*/
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+		return E_FAIL;
+
+	/* 빛 정보를 던진다. */
+	m_pLight_Manager->Render_Lights(m_pShader, m_pVIBuffer);
 
 	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
 		return E_FAIL;
-#endif
+
 	return S_OK;
 }
 
 HRESULT CRenderer::Render_Deferred()
 {
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(L"Target_Diffuse", m_pShader, "g_DiffuseTexture")))
-		return E_FAIL;
+	/* 백버퍼에 최종적으로 그려낸다.  */
 
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(L"Target_Shade", m_pShader, "g_ShadeTexture")))
+	/* Diffuse * Shader */
+	/* 디퓨즈 렌더타겟을 셰이더 전역으로 던진다.*/
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+		return E_FAIL;
+	/* 셰이드 렌더타겟을 셰이더 전역으로 던진다.*/
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
@@ -197,11 +236,10 @@ HRESULT CRenderer::Render_Deferred()
 	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->Begin(3)))
-		return E_FAIL;
+	m_pShader->Begin(3);
 
-	if (FAILED(m_pVIBuffer->Render()))
-		return E_FAIL;
+	m_pVIBuffer->Render();
+
 
 	return S_OK;
 }
@@ -216,7 +254,7 @@ HRESULT CRenderer::Render_NonLight()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RENDER_NONLIGHT].clear();
-	
+
 	return S_OK;
 }
 
@@ -248,26 +286,6 @@ HRESULT CRenderer::Render_UI()
 	return S_OK;
 }
 
-#ifdef _DEBUG
-HRESULT CRenderer::Render_Debug()
-{
-	if (nullptr == m_pTarget_Manager)
-		return E_FAIL;
-
-	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-
-	if (FAILED(m_pTarget_Manager->Render(L"MRT_GameObjects", m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Render(L"MRT_Lights", m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-
-	return S_OK;
-}
-#endif
-
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CRenderer* pInstance = new CRenderer(pDevice, pContext);
@@ -277,30 +295,70 @@ CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 		MSG_BOX("Failed to Created CRenderer");
 		Safe_Release(pInstance);
 	}
-
 	return pInstance;
 }
 
 CComponent* CRenderer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	AddRef();
+
 	return this;
 }
 
 void CRenderer::Free()
 {
-	CComponent::Free();
+	__super::Free();
 
-	for (_uint i = 0; i < RENDER_END; ++i)
+	for (auto& RenderList : m_RenderObjects)
 	{
-		for (auto& pGameObject : m_RenderObjects[i])
+		for (auto& pGameObject : RenderList)
 			Safe_Release(pGameObject);
-
-		m_RenderObjects[i].clear();
+		RenderList.clear();
 	}
 
-	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pLight_Manager);
+	Safe_Release(m_pTarget_Manager);
+
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
 }
+
+#ifdef _DEBUG
+HRESULT CRenderer::Add_DebugGroup(CComponent* pDebugCom)
+{
+	if (nullptr == pDebugCom)
+		return E_FAIL;
+
+	m_DebugObject.push_back(pDebugCom);
+	Safe_AddRef(pDebugCom);
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Debug()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	for (auto& pDebugCom : m_DebugObject)
+	{
+		if (nullptr != pDebugCom)
+			pDebugCom->Render();
+
+		Safe_Release(pDebugCom);
+	}
+	m_DebugObject.clear();
+
+	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+
+	return S_OK;
+}
+#endif // _DEBUG

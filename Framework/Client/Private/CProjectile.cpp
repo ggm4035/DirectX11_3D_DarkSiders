@@ -1,0 +1,146 @@
+
+#include "CProjectile.h"
+
+#include "CGameInstance.h"
+
+CProjectile::CProjectile(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	:CParts(pDevice, pContext)
+{
+}
+
+CProjectile::CProjectile(const CProjectile& rhs)
+	: CParts(rhs)
+{
+}
+
+HRESULT CProjectile::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CProjectile::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
+{
+	if (FAILED(CParts::Initialize(iLevelIndex, pOwner, pArg)))
+		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		WEAPONDESC Desc = *reinterpret_cast<WEAPONDESC*>(pArg);
+
+		if (FAILED(Add_Component(LEVEL_STATIC, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
+			(CComponent**)&m_pModelCom, this)))
+			return E_FAIL;
+	}
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CProjectile::Tick(const _double& TimeDelta)
+{
+	_matrix BoneMatrix;
+	CModel* pModel = dynamic_cast<CModel*>(dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Component(L"Com_Model"));
+
+	if (false == pModel->isLoopAnimation())
+		BoneMatrix = XMLoadFloat4x4(&m_OffsetMatrix) * XMLoadFloat4x4(m_pNotMoveCombinedTransformationMatrix) * XMLoadFloat4x4(&m_PivotMatrix);
+	else
+		BoneMatrix = XMLoadFloat4x4(&m_OffsetMatrix) * XMLoadFloat4x4(m_pCombinedTransformationMatrix) * XMLoadFloat4x4(&m_PivotMatrix);
+
+	for (_uint i = 0; i < 3; ++i)
+		BoneMatrix.r[i] = XMVector3Normalize(BoneMatrix.r[i]);
+
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * BoneMatrix * XMLoadFloat4x4(m_pParentWorldMatrix));
+}
+
+HRESULT CProjectile::Render()
+{
+	if (FAILED(Set_Shader_Resources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, TYPE_NORMALS);
+
+		m_pShaderCom->Begin(0);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CProjectile::Add_Components()
+{
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer", L"Com_Renderer",
+		(CComponent**)&m_pRendererCom, this)))
+		return E_FAIL;
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_Mesh", L"Com_Shader_Mesh",
+		(CComponent**)&m_pShaderCom, this)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CProjectile::Set_Shader_Resources()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
+		&m_WorldMatrix)))
+		return E_FAIL;
+
+	_float4x4 InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
+		&InputMatrix)))
+		return E_FAIL;
+
+	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
+		&InputMatrix)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+CProjectile* CProjectile::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CProjectile* pInstance = new CProjectile(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Created CProjectile");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+CProjectile* CProjectile::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
+{
+	CProjectile* pInstance = new CProjectile(*this);
+
+	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
+	{
+		MSG_BOX("Failed to Cloned CProjectile");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CProjectile::Free()
+{
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pColliderCom);
+
+	CParts::Free();
+}

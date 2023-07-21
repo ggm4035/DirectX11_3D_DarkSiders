@@ -20,6 +20,7 @@ public:
 	HRESULT Load_Terrain(const _uint iXCount, const _uint iZCount, const _float3 * pPositions);
 	HRESULT Load_Terrain();
 	void Culling(_fmatrix WorldMatrix);
+	void Culling_LOD(_fmatrix WorldMatrix);
 
 private:
 	_uint m_iXCount = { 0 };

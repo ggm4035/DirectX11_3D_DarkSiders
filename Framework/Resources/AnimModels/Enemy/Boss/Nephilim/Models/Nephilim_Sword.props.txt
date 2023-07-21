@@ -1,0 +1,26 @@
+Materials[1] =
+{
+    Materials[0] = MaterialInstanceConstant'/Game/Characters/Creatures/Nephilim/Materials/Nephilim_Axe_Sword_Inst_A.Nephilim_Axe_Sword_Inst_A'
+}
+SourceModels[0] = {}
+StaticMaterials[1] =
+{
+    StaticMaterials[0] =
+    {
+        MaterialInterface = MaterialInstanceConstant'/Game/Characters/Creatures/Nephilim/Materials/Nephilim_Axe_Sword_Inst_A.Nephilim_Axe_Sword_Inst_A'
+        MaterialSlotName = Nephilim_Axe_Sword_LR_Weapon_MAT
+        UVChannelData =
+        {
+            bInitialized = true
+            bOverrideDensities = false
+            LocalUVDensities[4] = { 141.265, 108.809, 0, 0 }
+        }
+    }
+}
+Sockets[0] = {}
+ExtendedBounds =
+{
+    Origin = { X=-20.2482, Y=0.101283, Z=-27.7988 }
+    BoxExtent = { X=37.5652, Y=8.02271, Z=69.4306 }
+    SphereRadius = 72.3987
+}

@@ -14,6 +14,15 @@ CGameObject3D::CGameObject3D(const CGameObject3D& rhs)
 {
 }
 
+void CGameObject3D::Get_Damaged()
+{
+	m_eCurHitState = HIT;
+	m_Status.iHP -= 1;
+
+	if (m_Status.iHP <= 0)
+		m_isDead = true;
+}
+
 HRESULT CGameObject3D::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	if (FAILED(CComposite::Initialize(iLevelIndex, pOwner, pArg)))
@@ -100,11 +109,11 @@ void CGameObject3D::On_Colisions(const _double& TimeDelta)
 }
 
 #ifdef _DEBUG
-HRESULT CGameObject3D::Render_Colliders()
+HRESULT CGameObject3D::Add_Colliders_Debug_Render_Group(CRenderer* pRenderer)
 {
-	for (auto Pair : m_umapColliders)
+	for (auto& Pair : m_umapColliders)
 	{
-		if (FAILED(Pair.second->Render()))
+		if (FAILED(pRenderer->Add_DebugGroup(Pair.second)))
 			return E_FAIL;
 	}
 	return S_OK;

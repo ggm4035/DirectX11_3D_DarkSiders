@@ -15,7 +15,7 @@ class CPlayerAction final : public CBehavior
 	friend class CPlayerController;
 
 public:
-	enum STATE { STATE_IDLE, STATE_RUN, STATE_DASH,
+	enum STATE { STATE_IDLE, STATE_RUN, STATE_DASH, STATE_HIT, 
 		STATE_LATK_1, STATE_LATK_2, STATE_LATK_3, STATE_LATK_4,
 		STATE_HATK_1, STATE_HATK_2, STATE_HATK_3, 
 		STATE_JUMP, STATE_DOUBLE_JUMP, STATE_JUMP_LAND, STATE_END };
@@ -42,11 +42,13 @@ private:
 	STATE m_ePreState = { STATE_END };
 
 private:
+	class CPlayer* m_pPlayer = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
-	class CMoveAction* m_pMoveAction = { nullptr };
-	class CJumpAction* m_pJumpAction = { nullptr };
-	class CAttackAction* m_pAttackAction = { nullptr };
+	class CPlayerHit* m_pHitAction = { nullptr };
+	class CPlayerMove* m_pMoveAction = { nullptr };
+	class CPlayerJump* m_pJumpAction = { nullptr };
+	class CPlayerAttack* m_pAttackAction = { nullptr };
 
 private:
 	HRESULT AssembleBehaviors();

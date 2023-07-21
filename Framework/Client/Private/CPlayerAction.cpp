@@ -3,9 +3,10 @@
 
 #include "CGameInstance.h"
 #include "CPlayer.h"
-#include "CMoveAction.h"
-#include "CJumpAction.h"
-#include "CAttackAction.h"
+#include "CPlayerHit.h"
+#include "CPlayerMove.h"
+#include "CPlayerJump.h"
+#include "CPlayerAttack.h"
 
 CPlayerAction::CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBehavior(pDevice, pContext)
@@ -76,6 +77,10 @@ void CPlayerAction::Set_State(STATE eState)
 		case Client::CPlayerAction::STATE_JUMP_LAND:
 			m_pModelCom->Change_Animation("Jump_Land");
 			break;
+
+		case Client::CPlayerAction::STATE_HIT:
+			m_pModelCom->Change_Animation("Impact");
+			break;
 		}
 
 		m_ePreState = m_eCurState;
@@ -89,7 +94,8 @@ HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 	m_eCurState = STATE_IDLE;
 
-	m_pModelCom = dynamic_cast<CModel*>(dynamic_cast<CPlayer*>(pOwner)->Get_Component(L"Com_Model"));
+	m_pPlayer = dynamic_cast<CPlayer*>(pOwner);
+	m_pModelCom = dynamic_cast<CModel*>(m_pPlayer->Get_Component(L"Com_Model"));
 	Safe_AddRef(m_pModelCom);
 
 	if (FAILED(AssembleBehaviors()))
@@ -100,6 +106,13 @@ HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 {
+	CPlayer::HITSTATE eHitState = m_pPlayer->Get_CurHitState();
+	if (eHitState != CPlayer::NONE)
+	{
+		m_pHitAction->Tick(TimeDelta);
+		return S_OK;
+	}
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -129,7 +142,7 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 		case CInput_Device::DIM_RB:
 			m_pAttackAction->Push_Move_Message(Input);
 			break;
-
+			
 		case DIK_W:
 		case DIK_S:
 		case DIK_D:
@@ -148,9 +161,8 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 		Input = pGameInstance->Pop_Message();
 	}
 
-	m_pMoveAction->Tick(TimeDelta);
-	m_pAttackAction->Tick(TimeDelta);
-	m_pJumpAction->Tick(TimeDelta);
+	for (auto& pBehavior : m_BehaviorList)
+		pBehavior.pBehavior->Tick(TimeDelta);
 
 	Safe_Release(pGameInstance);
 
@@ -162,23 +174,29 @@ HRESULT CPlayerAction::AssembleBehaviors()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	CBehavior* pAction = dynamic_cast<CMoveAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"MoveAction", m_pOwner));
+	CBehavior* pAction = dynamic_cast<CPlayerHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerHit", m_pOwner));
 	if (nullptr == pAction)
 		return E_FAIL;
-	Assemble_Behavior(L"MoveAction", pAction);
-	m_pMoveAction = dynamic_cast<CMoveAction*>(pAction);
+	Assemble_Behavior(L"PlayerHit", pAction);
+	m_pHitAction = dynamic_cast<CPlayerHit*>(pAction);
+	
+	pAction = dynamic_cast<CPlayerMove*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerMove", m_pOwner));
+	if (nullptr == pAction)
+		return E_FAIL;
+	Assemble_Behavior(L"PlayerMove", pAction);
+	m_pMoveAction = dynamic_cast<CPlayerMove*>(pAction);
 
-	pAction = dynamic_cast<CJumpAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"JumpAction", m_pOwner));
+	pAction = dynamic_cast<CPlayerJump*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerJump", m_pOwner));
 	if (nullptr == pAction)
 		return E_FAIL;
-	Assemble_Behavior(L"JumpAction", pAction);
-	m_pJumpAction = dynamic_cast<CJumpAction*>(pAction);
+	Assemble_Behavior(L"PlayerJump", pAction);
+	m_pJumpAction = dynamic_cast<CPlayerJump*>(pAction);
 
-	pAction = dynamic_cast<CAttackAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"AttackAction", m_pOwner));
+	pAction = dynamic_cast<CPlayerAttack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerAttack", m_pOwner));
 	if (nullptr == pAction)
 		return E_FAIL;
-	Assemble_Behavior(L"AttackAction", pAction);
-	m_pAttackAction = dynamic_cast<CAttackAction*>(pAction);
+	Assemble_Behavior(L"PlayerAttack", pAction);
+	m_pAttackAction = dynamic_cast<CPlayerAttack*>(pAction);
 
 	Safe_Release(pGameInstance);
 
@@ -211,9 +229,12 @@ CPlayerAction* CPlayerAction::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CPlayerAction::Free()
 {
+	Safe_Release(m_pPlayer);
+
 	if(true == m_isCloned)
 		Safe_Release(m_pModelCom);
 
+	Safe_Release(m_pHitAction);
 	Safe_Release(m_pMoveAction);
 	Safe_Release(m_pJumpAction);
 	Safe_Release(m_pAttackAction);

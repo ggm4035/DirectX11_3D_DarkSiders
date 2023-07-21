@@ -18,6 +18,7 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype() { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
+	virtual HRESULT Render() { return S_OK; }
 
 protected:
 	_uint m_iLevelIndex = { 0 };

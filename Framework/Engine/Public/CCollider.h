@@ -49,8 +49,9 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, class CBounding* pBounding, void* pArg);
+	virtual HRESULT Render() override;
+
 	void Tick(_fmatrix WorldMatrix);
-	HRESULT Render();
 
 public:
 	_bool Intersect(const CCollider* pCollider);

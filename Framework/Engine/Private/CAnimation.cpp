@@ -153,6 +153,7 @@ HRESULT CAnimation::Bind_Notifys(class CGameObject3D* pGameObject)
 
 	wstring wstrName = pGameInstance->strToWStr(m_strName);
 
+	//wcout << wstrName << endl;
 	for (auto& Observer : m_vecObservers)
 	{
 		for (auto& NotifyTag : Observer.NotifyDesc.vecNotifyTags)

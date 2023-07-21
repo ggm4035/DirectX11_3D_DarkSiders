@@ -280,7 +280,7 @@ void CTransform::LeapJump(const _float& fForce, const _double& TimeDelta)
 	if (nullptr == m_pNavigation)
 		return;
 
-	m_fTimeAcc += TimeDelta;;
+	m_fTimeAcc += TimeDelta;
 	_float fY = fForce * m_fTimeAcc - 0.8f * m_fTimeAcc * m_fTimeAcc;
 
 	_vector vPosition = Get_State(STATE_POSITION);

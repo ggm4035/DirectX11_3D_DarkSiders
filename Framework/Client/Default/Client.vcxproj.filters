@@ -94,6 +94,21 @@
     <Filter Include="02. GameObject\01. Monster\03. Legion\Legion_Melee">
       <UniqueIdentifier>{24bf42fc-ed64-4a97-a9d5-cc8a8e6bd961}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\03. Parts\01. Projectile">
+      <UniqueIdentifier>{3565f326-cd94-4eb8-8786-ce27692d7774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\03. Legion\Legion_Champion">
+      <UniqueIdentifier>{d19a6948-3fda-4dd6-a072-a54e30879fae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\03. HitAction">
+      <UniqueIdentifier>{5a212178-0942-4351-a11b-1dec202ef8ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\01. Goblin\Goblin_Armor">
+      <UniqueIdentifier>{99f4260a-d930-416b-be43-c1b793aa05d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\04. Tusker">
+      <UniqueIdentifier>{3a69def9-e47d-4cc8-9a55-157295d9d094}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -117,13 +132,7 @@
     <ClInclude Include="..\Public\CMainApp.h">
       <Filter>00. MainApp</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CAttack_1.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CAttack_2.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CAttack_3.h">
+    <ClInclude Include="..\Public\CAttack.h">
       <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CWalk.h">
@@ -139,9 +148,6 @@
       <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CHit.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CRun.h">
       <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLoader.h">
@@ -168,19 +174,16 @@
     <ClInclude Include="..\Public\CMonster.h">
       <Filter>02. GameObject\01. Monster</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CMonster_Patrol.h">
-      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CPlayerAction.h">
       <Filter>02. GameObject\00. Player\PlayerActions</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CJumpAction.h">
+    <ClInclude Include="..\Public\CPlayerJump.h">
       <Filter>02. GameObject\00. Player\PlayerActions\01. JumpAction</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CMoveAction.h">
+    <ClInclude Include="..\Public\CPlayerMove.h">
       <Filter>02. GameObject\00. Player\PlayerActions\02. MoveAction</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CAttackAction.h">
+    <ClInclude Include="..\Public\CPlayerAttack.h">
       <Filter>02. GameObject\00. Player\PlayerActions\00. AttackAction</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CPlayer.h">
@@ -204,8 +207,41 @@
     <ClInclude Include="..\Public\CCamera_Free.h">
       <Filter>02. GameObject\05. Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CMonster_Hit.h">
+    <ClInclude Include="..\Public\CAction_Hit.h">
       <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CDead.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAction_Attack.h">
+      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CFollow.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAction_Patrol.h">
+      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CProjectile.h">
+      <Filter>02. GameObject\03. Parts\01. Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLegion_Champion.h">
+      <Filter>02. GameObject\01. Monster\03. Legion\Legion_Champion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPlayerHit.h">
+      <Filter>02. GameObject\00. Player\PlayerActions\03. HitAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CGoblin_Armor.h">
+      <Filter>02. GameObject\01. Monster\01. Goblin\Goblin_Armor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRest.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CDetect.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSteamRoller.h">
+      <Filter>02. GameObject\01. Monster\04. Tusker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -223,13 +259,7 @@
     <ClCompile Include="..\Private\CMainApp.cpp">
       <Filter>00. MainApp</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CAttack_1.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CAttack_2.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CAttack_3.cpp">
+    <ClCompile Include="..\Private\CAttack.cpp">
       <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CWalk.cpp">
@@ -245,9 +275,6 @@
       <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CHit.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CRun.cpp">
       <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLoader.cpp">
@@ -274,19 +301,19 @@
     <ClCompile Include="..\Private\CLegion_Melee.cpp">
       <Filter>02. GameObject\01. Monster\03. Legion\Legion_Melee</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CMonster_Patrol.cpp">
+    <ClCompile Include="..\Private\CAction_Patrol.cpp">
       <Filter>02. GameObject\01. Monster\00. Actions</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CAttackAction.cpp">
+    <ClCompile Include="..\Private\CPlayerAttack.cpp">
       <Filter>02. GameObject\00. Player\PlayerActions\00. AttackAction</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CMoveAction.cpp">
+    <ClCompile Include="..\Private\CPlayerMove.cpp">
       <Filter>02. GameObject\00. Player\PlayerActions\02. MoveAction</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CPlayerAction.cpp">
       <Filter>02. GameObject\00. Player\PlayerActions</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CJumpAction.cpp">
+    <ClCompile Include="..\Private\CPlayerJump.cpp">
       <Filter>02. GameObject\00. Player\PlayerActions\01. JumpAction</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CPlayer.cpp">
@@ -310,8 +337,38 @@
     <ClCompile Include="..\Private\CCamera_Free.cpp">
       <Filter>02. GameObject\05. Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CMonster_Hit.cpp">
+    <ClCompile Include="..\Private\CAction_Hit.cpp">
       <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CDead.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAction_Attack.cpp">
+      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFollow.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CProjectile.cpp">
+      <Filter>02. GameObject\03. Parts\01. Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLegion_Champion.cpp">
+      <Filter>02. GameObject\01. Monster\03. Legion\Legion_Champion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPlayerHit.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions\03. HitAction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CGoblin_Armor.cpp">
+      <Filter>02. GameObject\01. Monster\01. Goblin\Goblin_Armor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRest.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CDetect.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSteamRoller.cpp">
+      <Filter>02. GameObject\01. Monster\04. Tusker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

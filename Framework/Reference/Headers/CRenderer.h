@@ -30,10 +30,6 @@ private:
 	HRESULT Render_Blend();
 	HRESULT Render_UI();
 
-#ifdef _DEBUG
-	HRESULT Render_Debug();
-#endif
-
 private:
 	class CTarget_Manager* m_pTarget_Manager = { nullptr };
 	class CLight_Manager* m_pLight_Manager = { nullptr };
@@ -50,6 +46,15 @@ public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
+
+#ifdef _DEBUG
+public:
+	HRESULT Add_DebugGroup(CComponent* pDebugCom);
+	HRESULT Render_Debug();
+
+private:
+	list<class CComponent*>	m_DebugObject;
+#endif
 };
 
 END

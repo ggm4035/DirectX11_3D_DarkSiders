@@ -18,8 +18,18 @@ HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 
 void CLayer::Tick(const _double& TimeDelta)
 {
-	for (auto& iter : m_pGameObjects)
-		iter->Tick(TimeDelta);
+	for (auto& iter = m_pGameObjects.begin(); iter != m_pGameObjects.end();)
+	{
+		(*iter)->Tick(TimeDelta);
+
+		if (true == (*iter)->is_Remove())
+		{
+			Safe_Release(*iter);
+			iter = m_pGameObjects.erase(iter);
+		}
+		else
+			++iter;
+	}
 }
 
 void CLayer::AfterFrustumTick(const _double& TimeDelta)

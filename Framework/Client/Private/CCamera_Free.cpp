@@ -21,8 +21,8 @@ HRESULT CCamera_Free::Initialize_Prototype()
 HRESULT CCamera_Free::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CCamera::CAMERADESC CameraDesc;
-	CameraDesc.vEye = _float4(90.f, 55.f, 10.f, 1.f);
-	CameraDesc.vAt = _float4(95.f, 35.f, 15.f, 1.f);
+	CameraDesc.vEye = _float4(150.f, 55.f, 70.f, 1.f);
+	CameraDesc.vAt = _float4(155.f, 35.f, 75.f, 1.f);
 	CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
 
 	CameraDesc.fFov = XMConvertToRadians(60.f);
@@ -43,28 +43,28 @@ HRESULT CCamera_Free::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 void CCamera_Free::Tick(const _double& TimeDelta)
 {
-	Key_Input(TimeDelta);
+	//Key_Input(TimeDelta);
 
-	//CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	//Safe_AddRef(pGameInstance);
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
-	//CTransform* pPlayerTransform = pGameInstance->Get_Player()->Get_Transform();
+	CTransform* pPlayerTransform = pGameInstance->Get_Player()->Get_Transform();
 
-	//_matrix ParentMatrix = pPlayerTransform->Get_WorldMatrix();
+	_matrix ParentMatrix = pPlayerTransform->Get_WorldMatrix();
 
-	//ParentMatrix.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	//ParentMatrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	//ParentMatrix.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+	ParentMatrix.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	ParentMatrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	ParentMatrix.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f);
 
-	//_matrix WorldMatrix = /* XMMatrixRotationY */XMMatrixTranslation(m_vOffsets.x, m_vOffsets.y, m_vOffsets.z) * ParentMatrix;
-	//_float4x4 WorldFloat4x4;
-	//XMStoreFloat4x4(&WorldFloat4x4, WorldMatrix);
-	//m_pTransformCom->Set_Matrix(WorldFloat4x4);
+	_matrix WorldMatrix = XMMatrixTranslation(m_vOffsets.x, m_vOffsets.y, m_vOffsets.z) * ParentMatrix;
+	_float4x4 WorldFloat4x4;
+	XMStoreFloat4x4(&WorldFloat4x4, WorldMatrix);
+	m_pTransformCom->Set_Matrix(WorldFloat4x4);
 
-	//XMStoreFloat4(&m_vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-	//m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));
+	XMStoreFloat4(&m_vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));
 
-	//Safe_Release(pGameInstance);
+	Safe_Release(pGameInstance);
 
 	CCamera::Tick(TimeDelta);
 }

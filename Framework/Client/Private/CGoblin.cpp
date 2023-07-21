@@ -26,11 +26,16 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	m_Status.iHP = 3;
+	m_Status.iMaxHP = 3;
+
 	return S_OK;
 }
 
 void CGoblin::Tick(const _double& TimeDelta)
 {
+	CGameObject3D::Tick(TimeDelta);
+
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
 	if (false == m_isSpawn)
@@ -40,14 +45,6 @@ void CGoblin::Tick(const _double& TimeDelta)
 		vPosition.m128_f32[1] = vPosition.m128_f32[1] - 3.f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	}
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (pGameInstance->Key_Down(DIK_4))
-		m_pModelCom->Change_Animation("Knockback");
-
-	Safe_Release(pGameInstance);
 
 	m_pRoot->Tick(TimeDelta);
 
@@ -72,6 +69,13 @@ void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+#ifdef _DEBUG
+
+		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+			return;
+
+#endif
 	}
 
 	Safe_Release(pGameInstance);
@@ -87,13 +91,6 @@ HRESULT CGoblin::Render()
 {
 	if (FAILED(CMonster::Render(0)))
 		return E_FAIL;
-
-#ifdef _DEBUG
-
-	if (FAILED(Render_Colliders()))
-		return E_FAIL;
-
-#endif
 
 	return S_OK;
 }
@@ -185,6 +182,7 @@ HRESULT CGoblin::Add_Components()
 	return S_OK;
 }
 
+/* 평소에는 근접공격, 일정 체력 이하로 떨어지면 자폭돌진 */
 HRESULT CGoblin::Make_AI()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -200,10 +198,13 @@ HRESULT CGoblin::Make_AI()
 
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
 
-	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
-	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
+	m_pRoot->Add_Type(L"isDead", &m_isDead);
 	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
+	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
+	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
+	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
+
 	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
 
 	/* Behaviors */
@@ -215,12 +216,12 @@ HRESULT CGoblin::Make_AI()
 	if (nullptr == pSpawn)
 		return E_FAIL;
 
-	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
+	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
 	if (nullptr == pHit)
 		return E_FAIL;
 
-	CAttack_1* pAttack_1 = dynamic_cast<CAttack_1*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Attack_1", this));
-	if (nullptr == pAttack_1)
+	CAction_Attack* pAttack = dynamic_cast<CAction_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector_Attack", this));
+	if (nullptr == pAttack)
 		return E_FAIL;
 
 	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
@@ -244,17 +245,20 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
-		return E_FAIL;
-
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Attack_1", pAttack_1)))
-		return E_FAIL;
-
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
+		return E_FAIL;
+
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pHit)))
+		return E_FAIL;
+
+	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Attack", pAttack)))
 		return E_FAIL;
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
 		return E_FAIL;
+
+	pHit->Assemble_Childs();
+	pAttack->Assemble_Childs();
 
 	Safe_Release(pGameInstance);
 
