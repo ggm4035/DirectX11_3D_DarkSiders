@@ -138,6 +138,9 @@
     <ClInclude Include="CImWindow_Animation.h">
       <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Animation</Filter>
     </ClInclude>
+    <ClInclude Include="CDummyUI.h">
+      <Filter>02. GameObject\00. Dummy\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -211,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="CImWindow_Animation.cpp">
       <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CDummyUI.cpp">
+      <Filter>02. GameObject\00. Dummy\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

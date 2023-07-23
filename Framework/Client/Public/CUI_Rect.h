@@ -15,6 +15,13 @@ BEGIN(Client)
 
 class CUI_Rect final : public CGameObjectUI
 {
+public:
+	typedef struct tagUIRectDesc : public CGameObjectUI::UIDESC
+	{
+		_uint iTextureLevelIndex = { 0 };
+		wstring wstrTextureTag = { L"" };
+	}UIRECTDESC;
+
 protected:
 	explicit CUI_Rect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CUI_Rect(const CUI_Rect& rhs);

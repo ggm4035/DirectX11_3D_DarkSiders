@@ -15,7 +15,6 @@ CGameObject::CGameObject(const CGameObject& rhs)
 
 void CGameObject::Tick(const _double& TimeDelta)
 {
-#ifdef _DEBUG
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -23,6 +22,7 @@ void CGameObject::Tick(const _double& TimeDelta)
 		Togle_Render_Debug();
 
 	Safe_Release(pGameInstance);
+#ifdef _DEBUG
 #endif
 
 	for (auto& Pair : m_Parts)

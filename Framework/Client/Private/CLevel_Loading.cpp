@@ -4,9 +4,11 @@
 #include "CLevel_Logo.h"
 #include "CLevel_GamePlay.h"
 #include "CGameInstance.h"
+#include "CUI_Rect.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice, pContext)
+
 {
 }
 
@@ -15,6 +17,34 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID)
 	m_eNextLevelID = eNextLevelID;
 
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevelID);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CUI_Rect::UIRECTDESC UIDesc;
+	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
+	UIDesc.m_fY = _float(g_iWinSizeY >> 1);
+	UIDesc.m_fSizeX = g_iWinSizeX;
+	UIDesc.m_fSizeY = g_iWinSizeY;
+	UIDesc.m_fDepth = 0.01f;
+	UIDesc.wstrTextureTag = L"Texture_BackGround";
+	UIDesc.iTextureLevelIndex = LEVEL_STATIC;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, L"UI_Rect", L"UI_BackGround", L"Layer_Loading", &UIDesc)))
+		return E_FAIL;
+
+	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
+	UIDesc.m_fY = _float(g_iWinSizeY >> 1);
+	UIDesc.m_fSizeX = 600.f;
+	UIDesc.m_fSizeY = 600.f;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_Loading";
+	UIDesc.iTextureLevelIndex = LEVEL_STATIC;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, L"UI_Rect", L"UI_Loading", L"Layer_Loading", &UIDesc)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

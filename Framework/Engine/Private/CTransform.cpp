@@ -111,19 +111,19 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go(_fvector vDirection, const _double& TimeDelta)
+void CTransform::Go(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed)
 {
-	Turn_Axis(vDirection, TimeDelta);
+	Turn_Axis(vDirection, TimeDelta, fTurnSpeed);
 
 	Move_Stop_Sliding(TimeDelta);
 }
 
-void CTransform::Go_OnNavigation(_fvector vDirection, const _double& TimeDelta)
+void CTransform::Go_OnNavigation(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed)
 {
 	if (nullptr == m_pNavigation)
 		return;
 
-	Turn_Axis(vDirection, TimeDelta);
+	Turn_Axis(vDirection, TimeDelta, fTurnSpeed);
 
 	Move_Stop_Sliding(TimeDelta);
 
@@ -362,13 +362,13 @@ void CTransform::Cam_Up(const _double& TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Turn_Axis(_fvector Dir, const _double& TimeDelta)
+void CTransform::Turn_Axis(_fvector Dir, const _double& TimeDelta, const _float& fSpeed)
 {
 	_vector vDir = XMVector3Normalize(Dir);
 	_vector vLook = Get_State(STATE_LOOK);
 
 	_float fDegree = acosf(XMVector3Dot(vDir, vLook).m128_f32[0]);
-	_float fForce = 5.f * fDegree * TimeDelta ;
+	_float fForce = fSpeed * fDegree * TimeDelta ;
 
 	fDegree = XMConvertToDegrees(fDegree);
 

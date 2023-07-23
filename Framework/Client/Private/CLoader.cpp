@@ -5,6 +5,7 @@
 #include "CUI_Rect.h"
 #include "CStatic_Object.h"
 #include "CTerrain.h"
+#include "CLava.h"
 #include "CSky.h"
 #include "CCamera_Free.h"
 #include "CGoblin.h"
@@ -29,7 +30,7 @@ _uint WINAPI ThreadMain(void* pArg)
 {
 	CLoader* pLoader = static_cast<CLoader*>(pArg);
 
-	if(FAILED(pLoader->Loading()))
+	if (FAILED(pLoader->Loading()))
 		return 0;
 
 	return 0;
@@ -87,20 +88,14 @@ HRESULT CLoader::Load_Level_Logo()
 
 	/* For. Prototype_Component_Texture_Test */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_LOGO, L"Texture_Logo",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Default0.dds"))))
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Title.png"))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
 
-	/* For. Models */
 	m_szLoading = TEXT("셰이더 로딩 중.");
-		
-	m_szLoading = TEXT("객체 로딩 중.");
 
-	/* For. Prototype_GameObject_BackGround */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"BackGround",
-		CUI_Rect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	m_szLoading = TEXT("객체 로딩 중.");
 
 	m_szLoading = TEXT("로딩 완료.");
 
@@ -119,7 +114,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	/* For. Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Terrain",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain%d.png", 5))))
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain%d.dds", 4))))
 		return E_FAIL;
 
 	/* For. Texture_SkyBox */
@@ -129,7 +124,13 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	/* For. Texture_NMTerrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_NMTerrain",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain2_nm.png"))))
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Terrain/Terrain2_nm.dds"))))
+		return E_FAIL;
+
+	/* For. Texture_Lava */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Lava",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Lava/Lava_Lake_e.dds"))))
+		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
 
@@ -168,7 +169,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* Goblin Model */
 	m_pGameInstance->ReadModel("../../Data/SteamRoller.dat", FilePath, Data);
 
-	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_SteamRoller",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
@@ -333,6 +334,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For. Lava */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Lava",
+		CLava::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For. Camera_Free */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Camera_Free",
 		CCamera_Free::Create(m_pDevice, m_pContext))))
@@ -344,7 +350,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	for (auto& Data : FileData.vecModelData)
 		Safe_Delete_BinaryData(Data.BinaryData);
 
-	for(auto& Data : FileData.vecMonsterData)
+	for (auto& Data : FileData.vecMonsterData)
 		Safe_Delete_BinaryData(Data.BinaryData);
 
 	Safe_Delete_Array(FileData.pPositions);

@@ -120,11 +120,11 @@ void CGameInstance::Clear_LevelResources(const _uint& iLevelIndex)
 		nullptr == m_pComponent_Manager)
 		return;
 
-	// 삭제할 레벨의 게임 오브젝트의 리소스 삭제.
-	m_pObject_Manager->Clear_LevelResources(iLevelIndex);
-
 	// 삭제할 레벨의 컴포넌트 삭제.
 	m_pComponent_Manager->Clear_LevelResources(iLevelIndex);
+
+	// 삭제할 레벨의 게임 오브젝트의 리소스 삭제.
+	m_pObject_Manager->Clear_LevelResources(iLevelIndex);
 
 	// 삭제할 레벨의 카메라 삭제.
 	m_pCamera_Manager->Clear_LevelResources(iLevelIndex);

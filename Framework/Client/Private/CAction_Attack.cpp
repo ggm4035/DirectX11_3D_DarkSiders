@@ -87,13 +87,9 @@ HRESULT CAction_Attack::Assemble_Childs()
 			return false;
 		});
 
-	pAttack->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			if (false == m_pModel->isFinishedAnimation())
-				return true;
-			else
-				return false;
-		});
+	pFollow->Bind_AnimationTag("Walk_F");
+	pFollow->Bind_Move_Speed(0.9f);
+	pFollow->Bind_Turn_Speed(5.f);
 
 	if (FAILED(Assemble_Behavior(L"Tsk_Follow", pFollow)))
 		return E_FAIL;

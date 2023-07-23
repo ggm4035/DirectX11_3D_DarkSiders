@@ -20,13 +20,18 @@ HRESULT CUI_Rect::Initialize_Prototype()
 
 HRESULT CUI_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	CGameObjectUI::UIDESC UIDesc;
-	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
-	UIDesc.m_fY = _float(g_iWinSizeY >> 1);
-	UIDesc.m_fSizeX = (_float)g_iWinSizeX;
-	UIDesc.m_fSizeY = (_float)g_iWinSizeY;
+	if (nullptr == pArg)
+		return E_FAIL;
 
-	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, &UIDesc)))
+	UIRECTDESC Desc;
+	Desc.iTextureLevelIndex = reinterpret_cast<UIRECTDESC*>(pArg)->iTextureLevelIndex;
+	Desc.wstrTextureTag = reinterpret_cast<UIRECTDESC*>(pArg)->wstrTextureTag;
+
+	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, pArg)))
+		return E_FAIL;
+
+	if (FAILED(Add_Component(Desc.iTextureLevelIndex, Desc.wstrTextureTag.c_str(),
+		L"Com_Texture", (CComponent**)&m_pTextureCom, this)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -42,7 +47,7 @@ void CUI_Rect::Tick(const _double& TimeDelta)
 void CUI_Rect::Late_Tick(const _double& TimeDelta)
 {
 	if(nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CUI_Rect::Render()
@@ -50,7 +55,7 @@ HRESULT CUI_Rect::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(2);
 
 	m_pBufferCom->Render();
 
@@ -69,11 +74,6 @@ HRESULT CUI_Rect::Add_Components()
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_VtxTex",
 		L"Com_Shader_VtxTex", (CComponent**)&m_pShaderCom, this)))
-		return E_FAIL;
-
-	// 텍스처만 바뀌면 나머지 사용가능할지도?
-	if (FAILED(Add_Component(LEVEL_LOGO, L"Texture_Logo",
-		L"Com_Texture_Logo", (CComponent**)&m_pTextureCom, this)))
 		return E_FAIL;
 
 	return S_OK;

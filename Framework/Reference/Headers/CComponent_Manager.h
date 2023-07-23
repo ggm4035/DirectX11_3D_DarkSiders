@@ -9,6 +9,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CNavigation.h"
+#include "CBehavior.h"
 #include "CShader.h"
 #include "CCamera.h"
 #include "CModel.h"

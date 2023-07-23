@@ -31,6 +31,8 @@ public:
 
 private:
 	_float4 m_vResponPosition;
+	_float m_fCoolTime = { 30.f };
+	_float m_fTimeAcc = { 0.f };
 
 private:
 	virtual HRESULT Add_Components() override;

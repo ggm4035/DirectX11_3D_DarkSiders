@@ -40,6 +40,7 @@ HRESULT CObject_Manager::Add_GameObject(const _uint& iLevelIndex, const wstring&
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
+	/* 게임오브젝트에서 iLevelIndex는 오브젝트의 레이어 레벨로 사용 */
 	CGameObject* pGameObject = pPrototype->Clone(iLevelIndex, nullptr, pArg);
 	if (nullptr == pGameObject)
 		return E_FAIL;

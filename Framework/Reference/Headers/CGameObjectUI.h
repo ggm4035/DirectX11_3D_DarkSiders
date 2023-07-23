@@ -14,6 +14,7 @@ public:
 			:m_fX(_fX), m_fY(_fY), m_fSizeX(_fSizeX), m_fSizeY(_fSizeY) { }
 		_float m_fX = { 0.f };
 		_float m_fY = { 0.f };
+		_float m_fDepth = { 0.f };
 		_float m_fSizeX = { 0.f };
 		_float m_fSizeY = { 0.f };
 	}UIDESC;
@@ -26,7 +27,7 @@ protected:
 public:
 	_float2 Get_Scale();
 	void Set_Scale(const _float2& _vScale);
-	void Set_Position(const _float2& _vPosition);
+	void Set_Position(const _float3& _vPosition);
 
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }

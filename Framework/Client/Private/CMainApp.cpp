@@ -6,6 +6,7 @@
 #include "CLevel_Loading.h"
 #include "CPlayer.h"
 #include "CWeapon.h"
+#include "CUI_Rect.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -34,6 +35,9 @@ HRESULT Client::CMainApp::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component_For_Static()))
+		return E_FAIL;
+
+	if (FAILED(Ready_UI_Objects()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Behaviors()))
@@ -91,6 +95,18 @@ HRESULT CMainApp::Open_Level(LEVELID eLevelIndex)
 	return m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelIndex));
 }
 
+HRESULT CMainApp::Ready_UI_Objects()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	if(FAILED(m_pGameInstance->Add_Prototype(L"UI_Rect", 
+		CUI_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	return S_OK;
+}
+
 HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 {
 	if (nullptr == m_pGameInstance)
@@ -101,6 +117,16 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	Safe_AddRef(m_pRenderer);
+
+	/* Texture_Loding */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Texture_Loading",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Loading.png"))))
+		return E_FAIL;
+
+	/* Texture_BackGround */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Texture_BackGround",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/emberBW.png"))))
+		return E_FAIL;
 
 	/* VIBuffer_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Rect",
@@ -227,6 +253,11 @@ HRESULT CMainApp::Ready_Behaviors()
 	/* Tsk_Detect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Detect",
 		CDetect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Pattern */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Pattern",
+		CPattern::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* ==== Monster Actions ==== */

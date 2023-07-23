@@ -61,8 +61,8 @@ protected:
 	void On_Colisions(const _double& TimeDelta);
 
 #ifdef _DEBUG
-	HRESULT Add_Colliders_Debug_Render_Group(class CRenderer* pRenderer);
 #endif // _DEBUG
+	HRESULT Add_Colliders_Debug_Render_Group(class CRenderer* pRenderer);
 
 protected:
 	virtual HRESULT Add_Components() = 0;

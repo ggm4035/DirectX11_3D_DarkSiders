@@ -1,3 +1,6 @@
-﻿  CCamera_Free.cpp
+﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_VtxTex.cso
+  CLevel_Loading.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

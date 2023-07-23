@@ -45,15 +45,6 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
-#ifdef _DEBUG
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (pGameInstance->Key_Down(DIK_F12))
-		Togle_Render_Debug();
-
-	Safe_Release(pGameInstance);
-#endif
 	CGameObject3D::Tick(TimeDelta);
 	
 	m_pActionCom->Tick(TimeDelta);
@@ -85,9 +76,9 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
-#ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
 			return;
+#ifdef _DEBUG
 #endif
 	}
 

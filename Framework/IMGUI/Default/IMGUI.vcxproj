@@ -172,6 +172,7 @@
     <ClInclude Include="..\backends\imgui_impl_win32.h" />
     <ClInclude Include="CCoordnate_Axis.h" />
     <ClInclude Include="CDummyObject3D.h" />
+    <ClInclude Include="CDummyUI.h" />
     <ClInclude Include="CImWindow_Animation.h" />
     <ClInclude Include="CImWindow_Base.h" />
     <ClInclude Include="CImWindow_Create.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="..\imgui_widgets.cpp" />
     <ClCompile Include="CCoordnate_Axis.cpp" />
     <ClCompile Include="CDummyObject3D.cpp" />
+    <ClCompile Include="CDummyUI.cpp" />
     <ClCompile Include="CImWindow_Animation.cpp" />
     <ClCompile Include="CImWindow_Base.cpp" />
     <ClCompile Include="CImWindow_Create.cpp" />

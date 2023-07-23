@@ -9,6 +9,7 @@ class CVIBuffer_Instancing abstract : public CVIBuffer
 public:
 	typedef struct tagInstanceDesc
 	{
+		vector<_float4x4> vecWorldMatrix;
 		_uint iNumInstance;
 	}INSTANCEDESC;
 
@@ -33,6 +34,7 @@ protected:
 
 protected: /* INSTANCE DESC */
 	_uint m_iNumInstance = { 0 };
+	_float4x4* m_pInstance_WorldMatrix = { nullptr };
 
 public:
 	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;

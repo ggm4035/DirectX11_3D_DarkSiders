@@ -47,13 +47,13 @@ public:
 	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 
-#ifdef _DEBUG
 public:
 	HRESULT Add_DebugGroup(CComponent* pDebugCom);
 	HRESULT Render_Debug();
 
 private:
 	list<class CComponent*>	m_DebugObject;
+#ifdef _DEBUG
 #endif
 };
 

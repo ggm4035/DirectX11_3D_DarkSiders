@@ -50,10 +50,10 @@ protected:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 protected:
-	_bool m_isAbleAttack = { false };
-	_bool m_isRangeInPlayer = { false };
 	_bool m_isSpawn = { false };
 	_bool m_isSpawnEnd = { false };
+	_bool m_isAbleAttack = { false };
+	_bool m_isRangeInPlayer = { false };
 
 protected:
 	virtual HRESULT Add_Components() override;

@@ -8,6 +8,7 @@
 #include "CCoordnate_Axis.h"
 #include "CMainCamera.h"
 #include "CDummyObject3D.h"
+#include "CDummyUI.h"
 
 #include "CImWindow_Top.h"
 #include "CImWindow_Base.h"
@@ -134,6 +135,10 @@ HRESULT CToolMainApp::Ready_Prototype_GameObject_For_Tool()
 
     if (FAILED(pGameInstance->Add_Prototype(L"Prototype_GameObject_Dummy3D",
         CDummyObject3D::Create(m_pDevice, m_pContext))))
+        return E_FAIL;
+
+    if (FAILED(pGameInstance->Add_Prototype(L"Prototype_GameObject_DummyUI",
+        CDummyUI::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
     Safe_Release(pGameInstance);

@@ -13,6 +13,12 @@ CVIBuffer_Instancing::CVIBuffer_Instancing(const CVIBuffer_Instancing& rhs)
 HRESULT CVIBuffer_Instancing::Initialize_Prototype(const INSTANCEDESC* pInstanceDesc)
 {
 	m_iNumInstance = pInstanceDesc->iNumInstance;
+	m_pInstance_WorldMatrix = new _float4x4[m_iNumInstance];
+
+	_uint iMatrixIndex = { 0 };
+	for (auto& WorldMatrix : pInstanceDesc->vecWorldMatrix)
+		m_pInstance_WorldMatrix[iMatrixIndex++] = WorldMatrix;
+
 	return S_OK;
 }
 
@@ -39,10 +45,10 @@ HRESULT CVIBuffer_Instancing::Initialize(const _uint& iLevelIndex, CComponent* p
 
 	for (_uint i = 0; i < m_iNumInstance; ++i)
 	{
-		pVertices[i].vRight =		_float4(1.f, 0.f, 0.f, 0.f);
-		pVertices[i].vUp =			_float4(0.f, 1.f, 0.f, 0.f);
-		pVertices[i].vLook =		_float4(0.f, 0.f, 1.f, 0.f);
-		pVertices[i].vTranslation = _float4(0.f, 0.f, 0.f, 1.f);
+		memcpy(&pVertices[i].vRight, (_float4*)&m_pInstance_WorldMatrix[i]._11, sizeof(_float4));
+		memcpy(&pVertices[i].vUp, (_float4*)&m_pInstance_WorldMatrix[i]._21, sizeof(_float4));
+		memcpy(&pVertices[i].vLook, (_float4*)&m_pInstance_WorldMatrix[i]._31, sizeof(_float4));
+		memcpy(&pVertices[i].vTranslation, (_float4*)&m_pInstance_WorldMatrix[i]._41, sizeof(_float4));
 	}
 
 	D3D11_SUBRESOURCE_DATA SubResourceData;

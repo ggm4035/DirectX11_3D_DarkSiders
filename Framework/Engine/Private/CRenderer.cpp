@@ -119,9 +119,9 @@ HRESULT CRenderer::Draw_RenderGroup()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
-#ifdef _DEBUG
 	if (FAILED(Render_Debug()))
 		return E_FAIL;
+#ifdef _DEBUG
 #endif // _DEBUG
 
 	return S_OK;
@@ -323,7 +323,6 @@ void CRenderer::Free()
 	Safe_Release(m_pVIBuffer);
 }
 
-#ifdef _DEBUG
 HRESULT CRenderer::Add_DebugGroup(CComponent* pDebugCom)
 {
 	if (nullptr == pDebugCom)
@@ -349,6 +348,7 @@ HRESULT CRenderer::Render_Debug()
 	}
 	m_DebugObject.clear();
 
+#ifdef _DEBUG
 	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
@@ -358,7 +358,6 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
-
+#endif // _DEBUG
 	return S_OK;
 }
-#endif // _DEBUG

@@ -106,8 +106,14 @@
     <Filter Include="02. GameObject\01. Monster\01. Goblin\Goblin_Armor">
       <UniqueIdentifier>{99f4260a-d930-416b-be43-c1b793aa05d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. Monster\04. Tusker">
+    <Filter Include="02. GameObject\01. Monster\04. SteamRoller">
       <UniqueIdentifier>{3a69def9-e47d-4cc8-9a55-157295d9d094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. MonoBehaviors\SteamRoller">
+      <UniqueIdentifier>{2c55d1c6-afec-4af9-a62c-9b0a40247a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. Environment\04. Lava">
+      <UniqueIdentifier>{69537671-87a9-4da2-b70b-03052dc03423}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -241,7 +247,13 @@
       <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CSteamRoller.h">
-      <Filter>02. GameObject\01. Monster\04. Tusker</Filter>
+      <Filter>02. GameObject\01. Monster\04. SteamRoller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPattern.h">
+      <Filter>03. MonoBehaviors\SteamRoller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLava.h">
+      <Filter>02. GameObject\02. Environment\04. Lava</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -368,7 +380,13 @@
       <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CSteamRoller.cpp">
-      <Filter>02. GameObject\01. Monster\04. Tusker</Filter>
+      <Filter>02. GameObject\01. Monster\04. SteamRoller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPattern.cpp">
+      <Filter>03. MonoBehaviors\SteamRoller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLava.cpp">
+      <Filter>02. GameObject\02. Environment\04. Lava</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

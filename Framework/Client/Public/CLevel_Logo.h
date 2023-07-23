@@ -17,7 +17,6 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Prototype_Component_For_Logo();
 	HRESULT Ready_Layer_BackGround(wstring pLayerTag);
 
 public:

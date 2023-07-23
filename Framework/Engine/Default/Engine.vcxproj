@@ -211,6 +211,7 @@
     <ClInclude Include="..\Public\CGameObject3D.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\CInstance_Mesh.h" />
     <ClInclude Include="..\Public\CInstance_Point.h" />
     <ClInclude Include="..\Public\CInstance_Rect.h" />
     <ClInclude Include="..\Public\CLayer.h">
@@ -312,6 +313,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\CGraphic_Device.cpp" />
     <ClCompile Include="..\Private\CInput_Device.cpp" />
+    <ClCompile Include="..\Private\CInstance_Mesh.cpp" />
     <ClCompile Include="..\Private\CInstance_Point.cpp" />
     <ClCompile Include="..\Private\CInstance_Rect.cpp" />
     <ClCompile Include="..\Private\CLayer.cpp">

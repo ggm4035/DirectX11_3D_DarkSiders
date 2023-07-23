@@ -16,7 +16,7 @@ public:
 	virtual	HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 
 public:
-	virtual CInstance_Point* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override = 0;
+	virtual CInstance_Point* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

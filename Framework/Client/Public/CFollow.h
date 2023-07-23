@@ -22,7 +22,29 @@ public:
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual HRESULT Tick(const _double& TimeDelta);
 
+public:
+	void Bind_AnimationTag(const string& strAnimTag) {
+		m_strAnimTag = strAnimTag;
+	}
+	void Bind_Move_Speed(const _float& fMoveSpeed) {
+		m_fMoveSpeed = fMoveSpeed;
+	}
+	void Bind_Turn_Speed(const _float& fTurnSpeed) {
+		m_fTurnSpeed = fTurnSpeed;
+	}
+	void Set_Timer(const _float& fLimit) {
+		m_fLimit = fLimit;
+		m_isUseTimer = true;
+	}
+
 private:
+	string m_strAnimTag = { "" };
+	_float m_fMoveSpeed = { 0.f };
+	_float m_fTurnSpeed = { 0.f };
+	_float m_fTimeAcc = { 0.f };
+	_float m_fLimit = { 0.f };
+	_bool m_isUseTimer = { false };
+
 	CTransform* m_pTransform = { nullptr };
 	CModel* m_pModel = { nullptr };
 

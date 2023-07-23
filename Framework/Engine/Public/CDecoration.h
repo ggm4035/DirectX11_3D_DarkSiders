@@ -4,9 +4,9 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CDecoration final : public CBase
+class ENGINE_DLL CDecoration : public CBase
 {
-private:
+protected:
 	explicit CDecoration() = default;
 	virtual ~CDecoration() = default;
 
@@ -18,7 +18,7 @@ public:
 	HRESULT Bind_Decoration(function<_bool(class CBlackBoard*)> Func);
 	_bool Is_Execute(class CBlackBoard* pBlackBoard);
 
-private:
+protected:
 	function<_bool(class CBlackBoard*)> m_Function = { nullptr };
 
 public:

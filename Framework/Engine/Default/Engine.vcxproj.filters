@@ -214,6 +214,9 @@
     <Filter Include="01. Utility\07. RenderTarget\Manager">
       <UniqueIdentifier>{36374a33-57b7-4d45-94ec-cb7cc7934014}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\02. Component\Components\01. VIBuffer\Instancing\Mesh">
+      <UniqueIdentifier>{0f8a970f-5b25-4cfa-b30c-c3e33336e709}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -429,6 +432,9 @@
     <ClInclude Include="..\Public\CTarget_Manager.h">
       <Filter>01. Utility\07. RenderTarget\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CInstance_Mesh.h">
+      <Filter>01. Utility\02. Component\Components\01. VIBuffer\Instancing\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -625,6 +631,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CTarget_Manager.cpp">
       <Filter>01. Utility\07. RenderTarget\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CInstance_Mesh.cpp">
+      <Filter>01. Utility\02. Component\Components\01. VIBuffer\Instancing\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

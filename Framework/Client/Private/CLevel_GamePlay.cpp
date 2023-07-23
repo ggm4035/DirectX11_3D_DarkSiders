@@ -53,7 +53,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 
 	LightDesc.eType = CLight::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDirection = _float4(1.5f, -1.f, 0.8f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 0.75f, 0.75f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 0.75f, 0.75f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
@@ -84,6 +84,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	/* Load Terrain */
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Terrain",
 		L"Terrain", pLayerTag, &TerrainDesc)))
+		return E_FAIL;
+
+	/* Make Lava */
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Lava",
+		L"Lava", pLayerTag)))
 		return E_FAIL;
 
 	/* Load Static Models */

@@ -40,6 +40,7 @@ private:
 	_uint m_iRanderCount = { 0 };
 
 private:
+	HRESULT Ready_UI_Objects();
 	HRESULT Ready_Prototype_Component_For_Static();
 	HRESULT Ready_Behaviors();
 	HRESULT Ready_Player();

@@ -3,6 +3,7 @@
 
 #include "CGameInstance.h"
 #include "CLevel_Loading.h"
+#include "CUI_Rect.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice, pContext)
@@ -11,9 +12,6 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	if (FAILED(Ready_Prototype_Component_For_Logo()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
 		return E_FAIL;
 
@@ -41,18 +39,21 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Prototype_Component_For_Logo()
-{
-	return S_OK;
-}
-
 HRESULT CLevel_Logo::Ready_Layer_BackGround(wstring pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, L"BackGround",
-		L"BackGround", pLayerTag)))
+	CUI_Rect::UIRECTDESC UIDesc;
+	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
+	UIDesc.m_fY = _float(g_iWinSizeY >> 1);
+	UIDesc.m_fSizeX = (_float)g_iWinSizeX;
+	UIDesc.m_fSizeY = (_float)g_iWinSizeY;
+	UIDesc.wstrTextureTag = L"Texture_Logo";
+	UIDesc.iTextureLevelIndex = LEVEL_LOGO;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOGO, L"UI_Rect",
+		L"BackGround", pLayerTag, &UIDesc)))
 	{
 		Safe_Release(pGameInstance);
 		return E_FAIL;

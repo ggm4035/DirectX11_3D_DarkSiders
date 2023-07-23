@@ -22,6 +22,7 @@
 #include "CDetect.h"
 #include "CFollow.h"
 #include "CAttack.h"
+#include "CPattern.h"
 #include "CRandomLook.h"
 
 /* Monster Actions */

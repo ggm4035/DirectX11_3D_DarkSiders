@@ -43,6 +43,17 @@ HRESULT CFollow::Tick(const _double& TimeDelta)
 	if (false == Check_Decorations())
 		return BEHAVIOR_FAIL;
 
+	if (true == m_isUseTimer)
+	{
+		m_fTimeAcc += TimeDelta;
+
+		if (m_fLimit <= m_fTimeAcc)
+		{
+			m_fTimeAcc = 0.f;
+			return BEHAVIOR_FAIL;
+		}
+	}
+
 	CGameObject3D* pTarget = { nullptr };
 	m_pBlackBoard->Get_Type(L"pTarget", pTarget);
 	if (nullptr == pTarget)
@@ -53,8 +64,8 @@ HRESULT CFollow::Tick(const _double& TimeDelta)
 
 	_vector vDirection = XMVector3Normalize(vTargetPosition - vPosition);
 
-	m_pTransform->Go_OnNavigation(vDirection, TimeDelta * 0.9f);
-	m_pModel->Change_Animation("Run");
+	m_pTransform->Go_OnNavigation(vDirection, TimeDelta * m_fMoveSpeed, m_fTurnSpeed);
+	m_pModel->Change_Animation(m_strAnimTag);
 
 	return BEHAVIOR_RUNNING;
 }
