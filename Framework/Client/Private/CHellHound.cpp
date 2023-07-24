@@ -40,10 +40,9 @@ void CHellHound::AfterFrustumTick(const _double& TimeDelta)
 	CMonster::AfterFrustumTick(TimeDelta);
 }
 
-/* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
+/* On_Collision(Enter, Stay, Exit)가 진행된 이후 */
 void CHellHound::Late_Tick(const _double& TimeDelta)
 {
-	CMonster::Late_Tick(TimeDelta);
 }
 
 HRESULT CHellHound::Render()
@@ -139,7 +138,7 @@ HRESULT CHellHound::Add_Components()
 	if (FAILED(Make_AI()))
 		return E_FAIL;
 
-	if (FAILED(m_pModelCom->Setup_Notifys()))
+	if (FAILED(m_pModelCom->Setup_Notifys(L"../../Data/Objects/HellHound_Notify.dat")))
 		return E_FAIL;
 
 	return S_OK;

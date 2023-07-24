@@ -285,7 +285,7 @@ HRESULT CMainApp::Ready_Player()
 	string FilePath;
 	MODEL_BINARYDATA Data;
 
-	m_pGameInstance->ReadModel("../../Data/Warrior.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Objects/Warrior.dat", FilePath, Data);
 	m_vecModelDatas.push_back(Data);
 
 	/* Player Model */

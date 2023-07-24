@@ -13,8 +13,8 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	, m_strName(rhs.m_strName)
 	, m_Duration(rhs.m_Duration)
 	, m_TickPerSec(rhs.m_TickPerSec)
+	, m_vecNotifys(rhs.m_vecNotifys)
 	, m_vecChannels(rhs.m_vecChannels)
-	, m_vecObservers(rhs.m_vecObservers)
 	, m_iNumChannels(rhs.m_iNumChannels)
 	, m_iRootBoneIndex(rhs.m_iRootBoneIndex)
 	, m_isFollowAnimation(rhs.m_isFollowAnimation)
@@ -44,9 +44,6 @@ HRESULT CAnimation::Initialize(const ANIMATIONDATA& AnimationData, const CModel:
 	m_Duration = AnimationData.Duration;
 	m_TickPerSec = AnimationData.TickPerSec;
 	m_isFollowAnimation = AnimationData.bIsFollowAnimation;
-
-	if (FAILED(Ready_TimeRanges(AnimationData)))
-		return E_FAIL;
 
 	if (FAILED(Ready_Channels(AnimationData, Bones)))
 		return E_FAIL;
@@ -105,13 +102,14 @@ void CAnimation::Invalidate_TransformationMatrix(CModel::BONES& Bones, const _do
 		pChannel->Invalidate_TransformationMatrix(Bones, m_TimeAcc, &m_vecChannelCurrentKeyFrames[iChannelIndex++]);
 	}
 
-	for (auto& Observer : m_vecObservers)
+	for (auto& NotifyDesc : m_vecNotifys)
 	{
-		if (false == Observer.isNotify &&
-			m_TimeAcc >= Observer.NotifyDesc.fPoint)
+		if (false == NotifyDesc.isNotify)
 		{
-			Notify(Observer.NotifyDesc.fPoint);
-			Observer.isNotify = true;
+			if (m_TimeAcc >= NotifyDesc.fAnimTime)
+			{
+				Notify(NotifyDesc.fAnimTime);
+			}
 		}
 	}
 }
@@ -130,44 +128,71 @@ void CAnimation::Reset_Animation()
 
 void CAnimation::Reset_Notifys()
 {
-	for (auto& Observer : m_vecObservers)
+	for (auto& Notify : m_vecNotifys)
 	{
-		Observer.isNotify = false;
-		for (auto pObserver : Observer.ObserverList)
+		Notify.isNotify = false;
+		for (auto ObserverDesc : Notify.vecObserver)
 		{
-			if (nullptr != dynamic_cast<CAnimation*>(pObserver))
+			switch (ObserverDesc.eType)
 			{
-				dynamic_cast<CAnimation*>(pObserver)->m_isAbleChange = false;
-			}
+			case ANIMATION:
+				reinterpret_cast<CAnimation*>(ObserverDesc.pObserver)->m_isAbleChange = false;
+				break;
 
-			if (nullptr != dynamic_cast<CCollider*>(pObserver))
-				dynamic_cast<CCollider*>(pObserver)->Switch_Off();
+			case COLLIDER:
+				reinterpret_cast<CCollider*>(ObserverDesc.pObserver);
+				break;
+			}
 		}
 	}
 }
 
-HRESULT CAnimation::Bind_Notifys(class CGameObject3D* pGameObject)
+HRESULT CAnimation::Bind_Notifys(class CGameObject3D* pGameObject, vector<NOTIFYDATA>& vecNotifyData)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
 	wstring wstrName = pGameInstance->strToWStr(m_strName);
 
-	//wcout << wstrName << endl;
-	for (auto& Observer : m_vecObservers)
+	for (auto& NotifyData : vecNotifyData)
 	{
-		for (auto& NotifyTag : Observer.NotifyDesc.vecNotifyTags)
-		{
-			if (NotifyTag == wstrName)
-				Observer.ObserverList.push_back(this);
+		NOTIFYDESC NotifyDesc;
+		
+		NotifyDesc.fAnimTime = NotifyData.fPoint;
 
-			else
+		for (auto& ObserverData : NotifyData.vecObservers)
+		{
+			OBSERVERDESC ObserverDesc;
+
+			switch (ObserverData.iObserverType)
 			{
-				CCollider* pCollider = dynamic_cast<CCollider*>(pGameObject->Find_Collider(NotifyTag));
-				if (nullptr != pCollider)
-					Observer.ObserverList.push_back((IObserver_Animation*)pCollider);
+			case ANIMATION:
+				ObserverDesc.pObserver = this;
+				ObserverDesc.pParam = nullptr;
+				ObserverDesc.wstrObserverTag = wstrName;
+				ObserverDesc.eType = ANIMATION;
+				break;
+
+			case COLLIDER:
+				CCollider* pCollider = dynamic_cast<CCollider*>(pGameObject->Find_Collider(ObserverData.wstrNotifyTag));
+				if (nullptr == pCollider)
+				{
+					pCollider = dynamic_cast<CCollider*>(pGameObject->Find_Collider_For_Parts(ObserverData.wstrNotifyTag));
+					if (nullptr == pCollider)
+						continue;
+				}
+				ObserverDesc.pObserver = reinterpret_cast<IObserver_Animation*>(pCollider);
+
+				CCollider::OBVCOLPARAMS ObserverParams;
+				ObserverParams.isEnable = ObserverData.isEnable;
+				ObserverDesc.pParam = &ObserverParams;
+				ObserverDesc.wstrObserverTag = wstrName;
+				ObserverDesc.eType = COLLIDER;
+				break;
 			}
+			NotifyDesc.vecObserver.push_back(ObserverDesc);
 		}
+		m_vecNotifys.push_back(NotifyDesc);
 	}
 
 	Safe_Release(pGameInstance);
@@ -175,64 +200,26 @@ HRESULT CAnimation::Bind_Notifys(class CGameObject3D* pGameObject)
 	return S_OK;
 }
 
-void CAnimation::Attach(const _float& fPoint, IObserver_Animation* pObserver)
-{
-	auto pObserverList = Find_Observer(fPoint);
-
-	if (nullptr != dynamic_cast<CCollider*>(pObserver))
-		dynamic_cast<CCollider*>(pObserver)->Switch_Off();
-
-	if (nullptr == pObserverList)
-	{
-		OBSERVERDESC ObserverDesc;
-		list<IObserver_Animation*> ObserverList;
-
-		ObserverList.push_back(pObserver);
-
-		ObserverDesc.NotifyDesc.fPoint = fPoint;
-		ObserverDesc.ObserverList = ObserverList;
-
-		m_vecObservers.push_back(ObserverDesc);
-		return;
-	}
-
-	pObserverList->push_back(pObserver);
-}
-
-void CAnimation::Detach(const _float& fPoint, IObserver_Animation* pObserver)
-{
-	auto pObserverList = Find_Observer(fPoint);
-
-	if (nullptr != pObserverList)
-		pObserverList->remove(pObserver);
-}
-
 void CAnimation::Notify(const float& fPoint)
 {
-	auto pObserverList = Find_Observer(fPoint);
-	
+	auto pObserverList = Find_ObserverList(fPoint);
+
 	if (nullptr != pObserverList)
 	{
-		for (auto& Observer : *pObserverList)
-			Observer->Update_Observer();
+		for (auto& ObserverDesc : *pObserverList)
+		{
+			switch (ObserverDesc.eType)
+			{
+			case ANIMATION:
+				reinterpret_cast<CAnimation*>(ObserverDesc.pObserver)->Update_Observer(ObserverDesc.pParam);
+				break;
+
+			case COLLIDER:
+				reinterpret_cast<CCollider*>(ObserverDesc.pObserver)->Update_Observer(ObserverDesc.pParam);
+				break;
+			}
+		}
 	}
-}
-
-HRESULT CAnimation::Ready_TimeRanges(const ANIMATIONDATA& AnimationData)
-{
-	for (_uint i = 0; i < AnimationData.iNumPoints; ++i)
-	{
-		OBSERVERDESC ObserverDesc;
-
-		list<IObserver_Animation*> ObserverList;
-
-		ObserverDesc.NotifyDesc = AnimationData.vecNotifyDesc[i];
-		ObserverDesc.ObserverList = ObserverList;
-
-		m_vecObservers.push_back(ObserverDesc);
-	}
-
-	return S_OK;
 }
 
 HRESULT CAnimation::Ready_Channels(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones)
@@ -301,20 +288,20 @@ _bool CAnimation::Lerp_Animation(CModel::BONES& Bones, const _double& TimeDelta)
 	return false;
 }
 
-list<IObserver_Animation*>* CAnimation::Find_Observer(const _float& fPoint)
+vector<CAnimation::OBSERVERDESC>* CAnimation::Find_ObserverList(const _float& fPoint)
 {
-	auto iter = find_if(m_vecObservers.begin(), m_vecObservers.end(), [&](auto ObserverDesc)
+	auto iter = find_if(m_vecNotifys.begin(), m_vecNotifys.end(), [&](const NOTIFYDESC& NotifyDesc)
 		{
-			if (ObserverDesc.NotifyDesc.fPoint == fPoint)
+			if (NotifyDesc.fAnimTime == fPoint)
 				return true;
 			else
 				return false;
 		});
 
-	if (iter == m_vecObservers.end())
+	if (iter == m_vecNotifys.end())
 		return nullptr;
 
-	return &iter->ObserverList;
+	return &iter->vecObserver;
 }
 
 CAnimation* CAnimation::Create(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones)

@@ -76,7 +76,6 @@ void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CSteamRoller::Late_Tick(const _double& TimeDelta)
 {
-	On_Colisions(TimeDelta);
 }
 
 HRESULT CSteamRoller::Render()
@@ -169,7 +168,7 @@ HRESULT CSteamRoller::Add_Components()
 	if (FAILED(Make_AI()))
 		return E_FAIL;
 
-	if (FAILED(m_pModelCom->Setup_Notifys()))
+	if (FAILED(m_pModelCom->Setup_Notifys(L"../../Data/Objects/SteamRoller_Notify.dat")))
 		return E_FAIL;
 
 	return S_OK;
@@ -189,6 +188,7 @@ HRESULT CSteamRoller::Make_AI()
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
 
+	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
 
 	m_pRoot->Add_Type(L"isDead", &m_isDead);

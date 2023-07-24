@@ -92,7 +92,7 @@ _bool CCollider::Intersect(const CCollider* pCollider)
 	return m_pBounding->Intersect(pCollider->m_eColliderType, pCollider->m_pBounding);
 }
 
-void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
+void CCollider::On_Collision(const _double& TimeDelta)
 {
 	/* 충돌체크 검사 전에 리스트의 모든 콜리전을 충돌하지 않은상태로 초기화 */
 	for (auto& Pair : m_umapCollisions)
@@ -111,16 +111,16 @@ void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 		{
 		case STATE_NONE:
 			pCollision->eState = STATE_ENTER;
-			pOnwer->OnCollisionEnter(*pCollision, TimeDelta);
+			pCollision->pOwner->OnCollisionEnter(*pCollision, TimeDelta);
 			break;
 
 		case STATE_ENTER:
 			pCollision->eState = STATE_STAY;
-			pOnwer->OnCollisionStay(*pCollision, TimeDelta);
+			pCollision->pOwner->OnCollisionStay(*pCollision, TimeDelta);
 			break;
 
 		case STATE_STAY:
-			pOnwer->OnCollisionStay(*pCollision, TimeDelta);
+			pCollision->pOwner->OnCollisionStay(*pCollision, TimeDelta);
 			break;
 		}
 
@@ -132,7 +132,7 @@ void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 	{
 		if (false == iter->second->isCollision)
 		{
-			pOnwer->OnCollisionExit(*iter->second, TimeDelta);
+			iter->second->pOwner->OnCollisionExit(*iter->second, TimeDelta);
 
 			Safe_Release(iter->second->pOther);
 			Safe_Release(iter->second->pOtherCollider);
@@ -146,6 +146,15 @@ void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 	}
 }
 
+void CCollider::Update_Observer(BASEPARAM* pParamDesc)
+{
+	OBVCOLPARAMS* pDesc = reinterpret_cast<OBVCOLPARAMS*>(pParamDesc);
+	if (nullptr == pDesc)
+		return;
+
+	m_isEnable = pDesc->isEnable;
+}
+
 void CCollider::Find_Collision(CCollider* pCollider, COLLISION** pCollision)
 {
 	auto iter = find_if(m_umapCollisions.begin(), m_umapCollisions.end(), [&](auto Pair)
@@ -156,11 +165,13 @@ void CCollider::Find_Collision(CCollider* pCollider, COLLISION** pCollision)
 				return false;
 		});
 
+	/* 새로운 콜라이더인 경우 콜리전 목록에 추가한다 */
 	if (iter == m_umapCollisions.end())
 	{
 		*pCollision = new COLLISION;
 		(*pCollision)->pOtherCollider = pCollider;
 		Safe_AddRef(pCollider);
+		(*pCollision)->pOwner = static_cast<CGameObject3D*>(m_pOwner);
 		(*pCollision)->pOther = static_cast<CGameObject3D*>(pCollider->m_pOwner);
 		Safe_AddRef(pCollider->m_pOwner);
 		(*pCollision)->pMyCollider = this;

@@ -47,7 +47,6 @@ void CLegion_Champion::AfterFrustumTick(const _double& TimeDelta)
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CLegion_Champion::Late_Tick(const _double& TimeDelta)
 {
-	CMonster::Late_Tick(TimeDelta);
 }
 
 HRESULT CLegion_Champion::Render()
@@ -144,7 +143,7 @@ HRESULT CLegion_Champion::Add_Components()
 	if (FAILED(Make_AI()))
 		return E_FAIL;
 
-	if (FAILED(m_pModelCom->Setup_Notifys()))
+	if (FAILED(m_pModelCom->Setup_Notifys(L"../../Data/Objects/LegionChampion_Notify.dat")))
 		return E_FAIL;
 
 	return S_OK;
@@ -250,6 +249,7 @@ HRESULT CLegion_Champion::Add_Parts()
 	Desc.RotationPerSec = XMConvertToRadians(90.0);
 
 	Desc.wstrModelTag = L"Model_Legion_Champion_Weapon_A";
+	Desc.iModelLevel = LEVEL_GAMEPLAY;
 
 	if (FAILED(CGameObject::Add_Parts(LEVEL_GAMEPLAY, L"Weapon", L"Weapon_Legion_Champion_A", this, &Desc)))
 		return E_FAIL;

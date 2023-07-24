@@ -20,7 +20,7 @@ HRESULT CCollider_Manager::Add_Collider(CCollider* pCollider)
 	return S_OK;
 }
 
-void CCollider_Manager::Tick()
+void CCollider_Manager::Tick(const _double& TimeDelta)
 {
 	/* 콜라이더 충돌 체크 */
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_ENEMY);
@@ -29,6 +29,9 @@ void CCollider_Manager::Tick()
 	Collision(CCollider::COL_ENEMY_ATK, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY_RANGE, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY_MELEE_RANGE, CCollider::COL_PLAYER);
+
+	/* 리스트에 추가한 콜리전을 전체 체크 */
+	On_Collisions(TimeDelta);
 }
 
 void CCollider_Manager::Clear_ColliderList()
@@ -59,6 +62,15 @@ void CCollider_Manager::Collision(CCollider::COLLIDERGROUP SrcGroup, CCollider::
 				pSrcCollider->Push_Collision_Message(pDestCollider);
 			}
 		}
+	}
+}
+
+void CCollider_Manager::On_Collisions(const _double& TimeDelta)
+{
+	for (_uint i = 0; i < CCollider::COL_END; ++i)
+	{
+		for (auto& pCollider : m_ColliderList[i])
+			pCollider->On_Collision(TimeDelta);
 	}
 }
 

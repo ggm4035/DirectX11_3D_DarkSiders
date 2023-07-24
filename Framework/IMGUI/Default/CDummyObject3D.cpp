@@ -20,7 +20,6 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
 
     MODEL_BINARYDATA retData;
 
-    
     for (auto& Data : *pModels)
     {
         wstring wstrTag = { L"Model_" };
@@ -50,7 +49,7 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
         }
     }
 
-    return MODEL_BINARYDATA();
+    return retData;
 }
 
 HRESULT CDummyObject3D::Initialize_Prototype()

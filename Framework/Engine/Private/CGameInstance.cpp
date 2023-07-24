@@ -105,7 +105,7 @@ void CGameInstance::Tick_Engine(const _double& TimeDelta)
 
 	m_pObject_Manager->AfterFrustumTick(TimeDelta);
 
-	m_pCollider_Manager->Tick();
+	m_pCollider_Manager->Tick(TimeDelta);
 
 	m_pObject_Manager->Late_Tick(TimeDelta);
 
@@ -484,6 +484,22 @@ HRESULT CGameInstance::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		return E_FAIL;
 
 	return m_pFileInfo->Load(strFilePath, OutData);
+}
+
+void CGameInstance::Write_Notify_Data(const wstring& wstrFilePath, vector<ANIMATIONDATA>& OutData)
+{
+	if (nullptr == m_pFileInfo)
+		return;
+
+	return m_pFileInfo->Write_Notify_Data(wstrFilePath, OutData);
+}
+
+void CGameInstance::Read_Notify_Data(const wstring& wstrFilePath, OUT vector<ANIMATIONDATA>& OutData)
+{
+	if (nullptr == m_pFileInfo)
+		return;
+
+	return m_pFileInfo->Read_Notify_Data(wstrFilePath, OutData);
 }
 
 const CLight::LIGHTDESC* CGameInstance::Get_LightDesc(const _uint& iIndex)

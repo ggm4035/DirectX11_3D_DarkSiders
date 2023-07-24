@@ -24,12 +24,24 @@ namespace Engine
 
 	/* ========= OBSERVER DESC ========= */
 
+	typedef struct tagObserverData
+	{
+		_uint iObserverType = { 0 };
+		wstring wstrNotifyTag;
+
+		/* Collider Parameter */
+		_bool isEnable = { false };
+
+		/* Sound Parameter */
+
+	}OBSERVERDATA;
+
 	/* Notify Datas */
 	typedef struct tagNotifyDesc
 	{
 		_float fPoint = { 0.f };
-		vector<wstring> vecNotifyTags;
-	}NOTIFYDESC;
+		vector<OBSERVERDATA> vecObservers;
+	}NOTIFYDATA;
 
 	/* ========= VERTEX DESC ========= */
 
@@ -206,8 +218,7 @@ namespace Engine
 		_uint iNumChannels = { 0 };
 		_bool bIsLoop = { true };
 		_bool bIsFollowAnimation = { true };
-		_uint iNumPoints = { 0 };
-		vector<NOTIFYDESC> vecNotifyDesc;
+		vector<NOTIFYDATA> vecNotifyDesc;
 		vector<CHANNELDATA> vecChannels;
 	}ANIMATIONDATA;
 

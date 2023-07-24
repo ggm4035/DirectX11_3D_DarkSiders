@@ -40,6 +40,10 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 	CGameInstance::GetInstance()->Set_Player(this);
 
+	/* Setup Notify */
+	if (FAILED(m_pModelCom->Setup_Notifys(L"../../Data/Objects/Warrior_Notify.dat")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -72,7 +76,10 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 		}
 
 		for (auto Pair : m_Parts)
+		{
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
+			Pair.second->AfterFrustumTick(TimeDelta);
+		}
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
@@ -85,15 +92,12 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 	Safe_Release(pGameInstance);
 }
 
-/* 이후 게임 인스턴스에서 콜라이더들의 충돌을 진행 */
+/* 콜라이더 매니저에서 콜라이더들의 충돌을 진행 하고 메시지 받은거 처리 */
 
+/* 충돌 이후 작업을 진행  */
 void CPlayer::Late_Tick(const _double& TimeDelta)
 {
 	CGameObject3D::Late_Tick(TimeDelta);
-
-	/* 충돌 이후 작업을 진행 (메시지 받은거 처리하는 구간임) */
-
-	On_Colisions(TimeDelta);
 }
 
 /* 모든 게임오브젝트의 latetick이 끝나면 게임 인스턴스에서 콜라이더의 모든 리스트를 비움 */
@@ -124,12 +128,6 @@ HRESULT CPlayer::Render()
 
 void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
-		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
-	{
-		//cout << "데미지" << endl;
-		Collision.pOther->Get_Damaged();
-	}
 }
 
 void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -177,22 +175,9 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Body", &AABBDesc)))
 		return E_FAIL;
 
-	CBounding_OBB::OBBDESC OBBDesc;
-	OBBDesc.vExtents = _float3(1.5f, 0.5f, 1.f);
-	OBBDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	OBBDesc.eGroup = CCollider::COL_PLAYER_ATK;
-	OBBDesc.vOffset = _float3(0.f, 1.f, 1.f);
-	OBBDesc.isEnable = false;
-	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack", &OBBDesc)))
-		return E_FAIL;
-
 	/* Actions */
 	if (FAILED(Add_Component(LEVEL_STATIC, L"PlayerAction", L"Com_Action",
 		(CComponent**)&m_pActionCom, this)))
-		return E_FAIL;
-
-	/* Setup Notify */
-	if (FAILED(m_pModelCom->Setup_Notifys()))
 		return E_FAIL;
 
 	return S_OK;
@@ -216,9 +201,19 @@ HRESULT CPlayer::Add_Parts()
 	Desc.RotationPerSec = XMConvertToRadians(90.0);
 
 	Desc.wstrModelTag = L"Model_PlayerWeapon";
+	Desc.iModelLevel = LEVEL_STATIC;
 
 	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon_Player", this, &Desc)))
 		return E_FAIL;
+
+	CBounding_Sphere::SPHEREDESC SphereDesc;
+	SphereDesc.eGroup = CCollider::COL_PLAYER_ATK;
+	SphereDesc.fRadius = 0.5f;
+	SphereDesc.isEnable = false;
+	SphereDesc.vOffset = _float3(0.f, 0.f, 2.f);
+	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
+
+	dynamic_cast<CWeapon*>(Find_Parts(L"Weapon_Player"))->Bind_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack", &SphereDesc);
 
 	return S_OK;
 }

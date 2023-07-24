@@ -21,6 +21,8 @@ public:
 	void WriteModels(const string & strFilePath, const list<string>& FilePathList, const vector<MODEL_BINARYDATA>& vecData);
 	void ReadModel(const string & strFilePath, OUT string& FilePath, OUT MODEL_BINARYDATA& Data);
 	HRESULT Load(const string& strFilePath, OUT FILEDATA& OutData);
+	void Write_Notify_Data(const wstring & wstrFilePath, vector<ANIMATIONDATA>& OutData);
+	void Read_Notify_Data(const wstring & wstrFilePath, OUT vector<ANIMATIONDATA>& OutData);
 
 private:
 	void Read_BinData(HANDLE hFile, MODEL_BINARYDATA & Data, _ulong dwByte);

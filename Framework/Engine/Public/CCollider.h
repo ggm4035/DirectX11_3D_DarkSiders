@@ -14,6 +14,11 @@ public:
 		COL_ENEMY, COL_ENEMY_ATK, COL_ENEMY_MELEE_RANGE, COL_ENEMY_RANGE, 
 		COL_END };
 
+	typedef struct tagObvColliderParams : public BASEPARAM
+	{
+		_bool isEnable = true;
+	}OBVCOLPARAMS;
+
 	typedef struct tagColliderDesc
 	{
 		COLLIDERGROUP eGroup;
@@ -23,6 +28,7 @@ public:
 
 	typedef struct tagCollision
 	{
+		class CGameObject3D* pOwner = { nullptr };
 		class CGameObject3D* pOther = { nullptr };
 		CCollider* pMyCollider = { nullptr };
 		CCollider* pOtherCollider = { nullptr };
@@ -31,9 +37,6 @@ public:
 	}COLLISION;
 
 public:
-	void Switch_Off() {
-		m_isEnable = false;
-	}
 	COLLIDERGROUP Get_Collider_Group() {
 		return m_eColGroup;
 	}
@@ -55,13 +58,11 @@ public:
 
 public:
 	_bool Intersect(const CCollider* pCollider);
-	void On_Collision(class CGameObject3D* pOnwer, const _double& TimeDelta);
+	void On_Collision(const _double& TimeDelta);
 	void Push_Collision_Message(CCollider* pMessage) {
 		m_Qmessage.push(pMessage);
 	}
-	virtual void Update_Observer() override {
-		m_isEnable = !m_isEnable;
-	}
+	virtual void Update_Observer(BASEPARAM* pParamDesc) override;
 
 private:
 	class CBounding* m_pBounding = { nullptr };
@@ -75,7 +76,7 @@ private:
 	queue<CCollider*> m_Qmessage;
 	unordered_map<CCollider*, COLLISION*> m_umapCollisions; /* 실시간으로 해당 콜라이더와 충돌중인 얘들을 저장 */
 	
-	_bool m_isEnable;
+	_bool m_isEnable = { true };
 
 private:
 	void Find_Collision(CCollider* pCollider, COLLISION** pCollision);

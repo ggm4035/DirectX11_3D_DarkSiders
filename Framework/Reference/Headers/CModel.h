@@ -48,7 +48,7 @@ public:
 	void Play_Animation(const _double& TimeDelta, class CNavigation* pNavigation);
 	void Pause_Animation();
 	void RePlay_Animation();
-	HRESULT Setup_Notifys();
+	HRESULT Setup_Notifys(const wstring& wstrFilePath);
 
 public:
 	HRESULT Bind_Material(class CShader* pShader, const string& strTypename, const _uint & iMeshIndex, TEXTURETYPE eTextureType);

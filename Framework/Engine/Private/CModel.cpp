@@ -5,6 +5,7 @@
 #include "CChannel.h"
 
 #include "CGameInstance.h"
+#include "CFileInfo.h"
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CComponent(pDevice, pContext)
@@ -89,9 +90,9 @@ void CModel::Change_Animation(const string& strTag)
 	if (false == m_pCurrentAnimation->isLerped())
 		m_pCurrentAnimation->Reset_Animation();
 
-	m_pCurrentAnimation->Reset_Notifys();
-
 	pAnimation->Bind_LerpAnimation(m_pCurrentAnimation);
+
+	m_pCurrentAnimation->Reset_Notifys();
 
 	m_pCurrentAnimation = pAnimation;
 
@@ -210,15 +211,20 @@ void CModel::RePlay_Animation()
 	m_pCurrentAnimation->Play_Animation();
 }
 
-HRESULT CModel::Setup_Notifys()
+HRESULT CModel::Setup_Notifys(const wstring& wstrFilePath)
 {
+	vector<ANIMATIONDATA> vecAnimation;
+
+	CFileInfo::GetInstance()->Read_Notify_Data(wstrFilePath, vecAnimation);
+
 	CGameObject3D* pOwner = dynamic_cast<CGameObject3D*>(m_pOwner);
 	if (nullptr == m_pOwner)
 		return E_FAIL;
 
+	_uint iAnimIndex = { 0 };
 	for (auto& pAnimation : m_vecAnimations)
 	{
-		if (FAILED(pAnimation->Bind_Notifys(pOwner)))
+		if (FAILED(pAnimation->Bind_Notifys(pOwner, vecAnimation[iAnimIndex++].vecNotifyDesc)))
 			return E_FAIL;
 	}
 
@@ -418,13 +424,31 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 		Data.iNumChannels = Animation->m_iNumChannels;
 		Data.bIsLoop = Animation->m_isLoop;
 		Data.bIsFollowAnimation = Animation->m_isFollowAnimation;
-		Data.iNumPoints = Animation->m_vecObservers.size();
 
-		for (auto& ObserverDesc : Animation->m_vecObservers)
+		for (auto& NotifyDesc : Animation->m_vecNotifys)
 		{
-			NOTIFYDESC NotifyDesc;
-			NotifyDesc = ObserverDesc.NotifyDesc;
-			Data.vecNotifyDesc.push_back(NotifyDesc);
+			NOTIFYDATA NotifyData;
+			NotifyData.fPoint = NotifyDesc.fAnimTime;
+			for (auto& ObserverDesc : NotifyDesc.vecObserver)
+			{
+				OBSERVERDATA ObserverData;
+				ObserverData.iObserverType = ObserverDesc.eType;
+				switch (ObserverData.iObserverType)
+				{
+				case CAnimation::ANIMATION:
+					ObserverData.isEnable = true;
+					break;
+
+				case CAnimation::COLLIDER:
+					CCollider::OBVCOLPARAMS* pParams = reinterpret_cast<CCollider::OBVCOLPARAMS*>(ObserverDesc.pParam);
+					ObserverData.isEnable = pParams->isEnable;
+					break;
+				}
+				
+				ObserverData.wstrNotifyTag = ObserverDesc.wstrObserverTag;
+			}
+
+			Data.vecNotifyDesc.push_back(NotifyData);
 		}
 
 		for (_uint i = 0; i < Data.iNumChannels; ++i)

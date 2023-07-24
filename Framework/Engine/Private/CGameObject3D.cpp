@@ -60,6 +60,19 @@ CCollider* CGameObject3D::Find_Collider(const wstring& wstrColliderTag)
 	return iter->second;
 }
 
+CCollider* CGameObject3D::Find_Collider_For_Parts(const wstring& wstrColliderTag)
+{
+	CCollider* pCollider = { nullptr };
+	for (auto& Pair : m_Parts)
+	{
+		pCollider = static_cast<CGameObject3D*>(Pair.second)->Find_Collider(wstrColliderTag);
+		if (nullptr != pCollider)
+			return pCollider;
+	}
+
+	return nullptr;
+}
+
 HRESULT CGameObject3D::Add_Collider(const _uint& iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrColliderTag, void* pArg)
 {
 	if (nullptr != Find_Collider(wstrColliderTag))
@@ -100,12 +113,6 @@ void CGameObject3D::Tick_Colliders(_fmatrix WorldMatrix)
 {
 	for (auto Pair : m_umapColliders)
 		Pair.second->Tick(WorldMatrix);
-}
-
-void CGameObject3D::On_Colisions(const _double& TimeDelta)
-{
-	for (auto Pair : m_umapColliders)
-		Pair.second->On_Collision(this, TimeDelta);
 }
 
 HRESULT CGameObject3D::Add_Colliders_Debug_Render_Group(CRenderer* pRenderer)

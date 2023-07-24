@@ -1,3 +1,91 @@
-﻿  CMonster.cpp
+﻿  CAction_Attack.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CAction_Hit.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CDead.cpp
+  CDetect.cpp
+  CFollow.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CFollow.cpp(48,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGoblin_Armor.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLava.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CLava.cpp(42,35): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLegion_Champion.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPattern.cpp
+  CPlayerHit.cpp
+  CProjectile.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CProjectile.cpp(66,79): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CProjectile.cpp(67,78): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CProjectile.cpp(71,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CRest.cpp
+  CSteamRoller.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSteamRoller.cpp(41,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CUI_HpBar.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CUI_Overlay.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Client.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+  CAction_Patrol.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CAttack.cpp
+  CCamera_Free.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGoblin.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CHellHound.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CHit.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CHit.cpp(65,34): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLegion_Melee.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLevel_GamePlay.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLevel_Loading.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLevel_Logo.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLoader.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CMainApp.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(61,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CMonster.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPlayer.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPlayerAction.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayerAction.cpp(119,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPlayerAttack.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPlayerJump.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPlayerMove.cpp
+  CSky.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CSpawn.cpp
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  CStatic_Object.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTerrain.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CUI_Rect.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CWait.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWait.cpp(41,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CWalk.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWalk.cpp(43,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CWeapon.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(88,79): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(89,78): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(93,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

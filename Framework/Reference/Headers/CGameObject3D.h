@@ -39,6 +39,7 @@ public:
 
 public:
 	CCollider* Find_Collider(const wstring& wstrColliderTag);
+	CCollider* Find_Collider_For_Parts(const wstring& wstrColliderTag);
 
 	virtual void Dead_Motion() {}
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}
@@ -58,7 +59,6 @@ protected:
 	HRESULT Add_Collider(const _uint& iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrColliderTag, void* pArg);
 	HRESULT Add_Colliders_To_Manager();
 	void Tick_Colliders(_fmatrix WorldMatrix);
-	void On_Colisions(const _double& TimeDelta);
 
 #ifdef _DEBUG
 #endif // _DEBUG

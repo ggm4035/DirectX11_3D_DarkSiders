@@ -26,9 +26,9 @@ private:
 
     list<CComponent*> m_PrototypeList;
     string m_strFilePath = { "" };
-    _char m_szColliderNotifyTag[MAX_PATH] = { "" };
-    _uint m_iCurrentAnimationIndex = { 0 };
-    _uint m_iCurrentNotifyPointIndex = { 0 };
+    _char m_szNotifyTag[MAX_PATH] = { "" };
+    _uint m_iCurAnimIndex = { 0 };
+    _uint m_iCurNotifyIndex = { 0 };
     _bool m_isAddNotify = { false };
 
 private:

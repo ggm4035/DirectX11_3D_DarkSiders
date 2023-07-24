@@ -49,7 +49,6 @@ void CGoblin_Armor::AfterFrustumTick(const _double& TimeDelta)
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CGoblin_Armor::Late_Tick(const _double& TimeDelta)
 {
-	CMonster::Late_Tick(TimeDelta);
 }
 
 HRESULT CGoblin_Armor::Render()
@@ -117,7 +116,7 @@ HRESULT CGoblin_Armor::Add_Components()
 	CBounding_Sphere::SPHEREDESC SphereDesc;
 	CBounding_AABB::AABBDESC AABBDesc;
 	/* Col_Body */
-	SphereDesc.fRadius = 0.5f;
+	SphereDesc.fRadius = 0.8f;
 	SphereDesc.vPosition = _float3(0.f, 0.5f, 0.f);
 	SphereDesc.eGroup = CCollider::COL_ENEMY;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body", &SphereDesc)))
@@ -137,17 +136,18 @@ HRESULT CGoblin_Armor::Add_Components()
 		return E_FAIL;
 
 	/* Add_Col_Attack */
-	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
-	AABBDesc.eGroup = CCollider::COL_ENEMY_ATK;
-	AABBDesc.vOffset = _float3(0.f, 0.5f, 1.f);
-	AABBDesc.isEnable = false;
-	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack", &AABBDesc)))
+	SphereDesc.fRadius = 0.8f;
+	SphereDesc.vPosition = _float3(0.f, 0.5f, 0.f);
+	SphereDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	SphereDesc.vOffset = _float3(0.f, 0.5f, 1.f);
+	SphereDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack", &SphereDesc)))
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
 		return E_FAIL;
 
-	if (FAILED(m_pModelCom->Setup_Notifys()))
+	if (FAILED(m_pModelCom->Setup_Notifys(L"../../Data/Objects/GoblinArmor_Notify.dat")))
 		return E_FAIL;
 
 	return S_OK;
@@ -269,6 +269,7 @@ HRESULT CGoblin_Armor::Add_Parts()
 	Desc.RotationPerSec = XMConvertToRadians(90.0);
 
 	Desc.wstrModelTag = L"Model_Goblin_Sword";
+	Desc.iModelLevel = LEVEL_GAMEPLAY;
 
 	if (FAILED(CGameObject::Add_Parts(LEVEL_GAMEPLAY, L"Weapon", L"Weapon_Goblin", this, &Desc)))
 		return E_FAIL;
@@ -284,6 +285,7 @@ HRESULT CGoblin_Armor::Add_Parts()
 	Desc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4Ptr();
 
 	Desc.wstrModelTag = L"Model_Goblin_Quiver";
+	Desc.iModelLevel = LEVEL_GAMEPLAY;
 
 	if (FAILED(CGameObject::Add_Parts(LEVEL_GAMEPLAY, L"Weapon", L"Weapon_Goblin_Quiver", this, &Desc)))
 		return E_FAIL;

@@ -47,7 +47,6 @@ void CLegion_Melee::AfterFrustumTick(const _double& TimeDelta)
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CLegion_Melee::Late_Tick(const _double& TimeDelta)
 {
-	CMonster::Late_Tick(TimeDelta);
 }
 
 HRESULT CLegion_Melee::Render()
@@ -146,7 +145,7 @@ HRESULT CLegion_Melee::Add_Components()
 		return E_FAIL;
 
 	/* Setup Notify */
-	if (FAILED(m_pModelCom->Setup_Notifys()))
+	if (FAILED(m_pModelCom->Setup_Notifys(L"../../Data/Objects/Legion_Notify.dat")))
 		return E_FAIL;
 
 	return S_OK;
@@ -169,6 +168,7 @@ HRESULT CLegion_Melee::Add_Parts()
 	Desc.RotationPerSec = XMConvertToRadians(90.0);
 
 	Desc.wstrModelTag = L"Model_Legion_Weapon";
+	Desc.iModelLevel = LEVEL_GAMEPLAY;
 
 	if (FAILED(CGameObject::Add_Parts(LEVEL_GAMEPLAY, L"Weapon", L"Weapon_Legion", this, &Desc)))
 		return E_FAIL;

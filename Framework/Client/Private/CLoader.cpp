@@ -187,7 +187,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	MODEL_BINARYDATA Data;
 
 	/* Goblin Model */
-	m_pGameInstance->ReadModel("../../Data/SteamRoller.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Objects/SteamRoller.dat", FilePath, Data);
 
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
@@ -197,7 +197,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_BinaryData(Data);
 
 	/* Goblin Model */
-	m_pGameInstance->ReadModel("../../Data/Goblin.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Objects/Goblin.dat", FilePath, Data);
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
@@ -207,7 +207,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_BinaryData(Data);
 
 	/* Goblin_Armor Model */
-	m_pGameInstance->ReadModel("../../Data/GoblinArmor.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Objects/GoblinArmor.dat", FilePath, Data);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Goblin_Armor",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
@@ -215,7 +215,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_BinaryData(Data);
 
 	/* HellHound Model */
-	m_pGameInstance->ReadModel("../../Data/HellHound.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Objects/HellHound.dat", FilePath, Data);
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_HellHound",
@@ -224,7 +224,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_BinaryData(Data);
 
 	/* Legion Model */
-	m_pGameInstance->ReadModel("../../Data/Legion.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Objects/Legion.dat", FilePath, Data);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
@@ -232,7 +232,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	Safe_Delete_BinaryData(Data);
 
 	/* Legion_Champion Model */
-	m_pGameInstance->ReadModel("../../Data/LegionChampion.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/Objects/LegionChampion.dat", FilePath, Data);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Legion_Champion",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))

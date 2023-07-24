@@ -12,10 +12,18 @@ class CAnimation final : public CBase, IPublisher_Animation, IObserver_Animation
 public:
 	typedef struct tagObserver
 	{
-		_bool isNotify = { false };
-		NOTIFYDESC NotifyDesc;
-		list<IObserver_Animation*> ObserverList;
+		OBSERVERTYPE eType = { TYPE_END };
+		BASEPARAM* pParam = { nullptr }; /* Notify 호출 시 대입해줄 매개변수 */
+		IObserver_Animation* pObserver = { nullptr };
+		wstring wstrObserverTag = { L"" };
 	}OBSERVERDESC;
+
+	typedef struct tagNotify
+	{
+		_bool isNotify = { false };
+		_float fAnimTime = { 0.f };
+		vector<OBSERVERDESC> vecObserver;
+	}NOTIFYDESC;
 
 private:
 	explicit CAnimation();
@@ -43,15 +51,13 @@ public:
 	void Invalidate_TransformationMatrix(CModel::BONES& Bones, const _double& TimeDelta);
 	void Reset_Animation();
 	void Reset_Notifys();
-	HRESULT Bind_Notifys(class CGameObject3D* pGameObject);
+	HRESULT Bind_Notifys(class CGameObject3D* pGameObject, vector<NOTIFYDATA>& vecNotifyData);
 
 public:
 	// IPublisher_Animation을(를) 통해 상속됨
-	virtual void Attach(const _float& fPoint, IObserver_Animation* pObserver) override;
-	virtual void Detach(const _float& fPoint, IObserver_Animation* pObserver) override;
 	virtual void Notify(const float& fPoint) override;
 
-	virtual void Update_Observer() override {
+	virtual void Update_Observer(BASEPARAM* pParamDesc) override {
 		m_isAbleChange = true;
 	}
 
@@ -77,16 +83,15 @@ private:
 	CAnimation* m_pLerpAnimation = { nullptr };
 
 	_uint m_iNumChannels = { 0 };
-	vector<OBSERVERDESC> m_vecObservers;
+	vector<NOTIFYDESC> m_vecNotifys;
 	vector<class CChannel*> m_vecChannels;
 	vector<_uint> m_vecChannelBlockKeyFrames;
 	vector<_uint> m_vecChannelCurrentKeyFrames;
 
 private:
-	HRESULT Ready_TimeRanges(const ANIMATIONDATA& AnimationData);
 	HRESULT Ready_Channels(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones);
 	_bool Lerp_Animation(CModel::BONES& Bones, const _double& TimeDelta);
-	list<IObserver_Animation*>* Find_Observer(const _float& fPoint);
+	vector<OBSERVERDESC>* Find_ObserverList(const _float& fPoint);
 
 public:
 	static CAnimation* Create(const ANIMATIONDATA& AnimationData, const CModel::BONES& Bones);

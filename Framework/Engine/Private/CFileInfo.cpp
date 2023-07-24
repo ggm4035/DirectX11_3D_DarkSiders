@@ -175,27 +175,6 @@ void CFileInfo::WriteModels(const string& strFilePath, const list<string>& FileP
 			/* Write bIsFollowAnimation */
 			WriteFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
 
-			/* Write iNumPoints */
-			_uint iNumPoints = AnimationData.vecNotifyDesc.size();
-			WriteFile(hFile, &iNumPoints, sizeof(_uint), &dwByte, nullptr);
-
-			/* Write NotifyDesc */
-			for (auto& Notify : AnimationData.vecNotifyDesc)
-			{
-				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
-
-				_uint iNumTags = Notify.vecNotifyTags.size();
-				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
-				for (auto& Tags : Notify.vecNotifyTags)
-				{
-					_tchar szTag[MAX_PATH];
-					lstrcpy(szTag, Tags.c_str());
-					_uint iTagLength = Tags.size() + 1;
-					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
-					WriteFile(hFile, szTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
-				}
-			}
-
 			/*===== CHANNEL DATAS ======*/
 			for (auto& ChannelData : AnimationData.vecChannels)
 			{
@@ -365,28 +344,6 @@ void CFileInfo::ReadModel(const string& strFilePath, OUT string& FilePath, OUT M
 
 		/* Read bIsFollowAnimation */
 		ReadFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
-
-		/* Read iNumRanges */
-		ReadFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
-
-		/* Read vecNotifyDesc */
-		for (_uint iPointIndex = 0; iPointIndex < AnimationData.iNumPoints; ++iPointIndex)
-		{
-			NOTIFYDESC NotifyDesc;
-			ReadFile(hFile, &NotifyDesc.fPoint, sizeof(_float), &dwByte, nullptr);
-
-			_uint iNumTags = { 0 };
-			ReadFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
-			for (_uint iTagIndex = 0; iTagIndex < iNumTags; ++iTagIndex)
-			{
-				_tchar szTag[MAX_PATH] = { L"" };
-				_uint iTagLength = { 0 };
-				ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
-				ReadFile(hFile, szTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
-				NotifyDesc.vecNotifyTags.push_back(szTag);
-			}
-			AnimationData.vecNotifyDesc.push_back(NotifyDesc);
-		}
 
 		/*========== CHANNEL DATAS ===========*/
 		for (_uint iChannelIndex = 0; iChannelIndex < AnimationData.iNumChannels; ++iChannelIndex)
@@ -567,6 +524,101 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 	return S_OK;
 }
 
+void CFileInfo::Write_Notify_Data(const wstring& wstrFilePath, vector<ANIMATIONDATA>& OutData)
+{
+	HANDLE hFile = CreateFile(wstrFilePath.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+		return;
+
+	_ulong dwByte = { 0 };
+
+	_uint iNumAnimation = OutData.size();
+	WriteFile(hFile, &iNumAnimation, sizeof(_uint), &dwByte, nullptr);
+	for (auto& Animation : OutData)
+	{
+		_uint iNumNotifies = Animation.vecNotifyDesc.size();
+		WriteFile(hFile, &iNumNotifies, sizeof(_uint), &dwByte, nullptr);
+		for (auto& NotifyData : Animation.vecNotifyDesc)
+		{
+			/* Write fPoint */
+			WriteFile(hFile, &NotifyData.fPoint, sizeof(_float), &dwByte, nullptr);
+
+			/* Write ObserverDatas */
+			_uint iNumObservers = NotifyData.vecObservers.size();
+			WriteFile(hFile, &iNumObservers, sizeof(_uint), &dwByte, nullptr);
+			for (auto& ObserverData : NotifyData.vecObservers)
+			{
+				/* Write iObserverType */
+				WriteFile(hFile, &ObserverData.iObserverType, sizeof(_uint), &dwByte, nullptr);
+
+				/* Write wstrNotifyTag */
+				_tchar szObserverTag[MAX_PATH] = { L"" };
+				lstrcpy(szObserverTag, ObserverData.wstrNotifyTag.c_str());
+				_uint iTagLength = ObserverData.wstrNotifyTag.size() + 1;
+				WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, szObserverTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+
+				/* Write isEnable */
+				WriteFile(hFile, &ObserverData.isEnable, sizeof(_bool), &dwByte, nullptr);
+			}
+		}
+	}
+
+	CloseHandle(hFile);
+}
+
+void CFileInfo::Read_Notify_Data(const wstring& wstrFilePath, OUT vector<ANIMATIONDATA>& OutData)
+{
+	HANDLE hFile = CreateFile(wstrFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+		return;
+
+	_ulong dwByte = { 0 };
+
+	_uint iNumAnimation = { 0 };
+	ReadFile(hFile, &iNumAnimation, sizeof(_uint), &dwByte, nullptr);
+	for (_uint iAnimIndex = 0; iAnimIndex < iNumAnimation; ++iAnimIndex)
+	{
+		ANIMATIONDATA AnimationData;
+		_uint iNumNotifies = { 0 };
+		ReadFile(hFile, &iNumNotifies, sizeof(_uint), &dwByte, nullptr);
+		for (_uint iNotifyIndex = 0; iNotifyIndex < iNumNotifies; ++iNotifyIndex)
+		{
+			NOTIFYDATA NotifyData;
+			/* Read fPoint */
+			ReadFile(hFile, &NotifyData.fPoint, sizeof(_float), &dwByte, nullptr);
+
+			/* Read ObserverDatas */
+			_uint iNumObservers = { 0 };
+			ReadFile(hFile, &iNumObservers, sizeof(_uint), &dwByte, nullptr);
+			for (_uint iObserverIndex = 0; iObserverIndex < iNumObservers; ++iObserverIndex)
+			{
+				OBSERVERDATA ObserverData;
+				/* Read iObserverType */
+				ReadFile(hFile, &ObserverData.iObserverType, sizeof(_uint), &dwByte, nullptr);
+
+				/* Read wstrNotifyTag */
+				_tchar szObserverTag[MAX_PATH] = { L"" };
+				_uint iTagLength = { 0 };
+				ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+				ReadFile(hFile, szObserverTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+				ObserverData.wstrNotifyTag = szObserverTag;
+
+				/* Read isEnable */
+				ReadFile(hFile, &ObserverData.isEnable, sizeof(_bool), &dwByte, nullptr);
+
+				NotifyData.vecObservers.push_back(ObserverData);
+			}
+			AnimationData.vecNotifyDesc.push_back(NotifyData);
+		}
+		OutData.push_back(AnimationData);
+	}
+
+	CloseHandle(hFile);
+}
+
 void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte)
 {
 	_uint iPathLength = { 0 };
@@ -655,28 +707,6 @@ void CFileInfo::Read_BinData(HANDLE hFile, MODEL_BINARYDATA& Data, _ulong dwByte
 
 		/* Read bIsFollowAnimation */
 		ReadFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
-
-		/* Read iNumRanges */
-		ReadFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
-
-		/* Read vecNotifyDesc */
-		for (_uint iPointIndex = 0; iPointIndex < AnimationData.iNumPoints; ++iPointIndex)
-		{
-			NOTIFYDESC NotifyDesc;
-			ReadFile(hFile, &NotifyDesc.fPoint, sizeof(_float), &dwByte, nullptr);
-
-			_uint iNumTags = { 0 };
-			ReadFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
-			for (_uint iTagIndex = 0; iTagIndex < iNumTags; ++iTagIndex)
-			{
-				_tchar szTag[MAX_PATH] = { L"" };
-				_uint iTagLength = { 0 };
-				ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
-				ReadFile(hFile, szTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
-				NotifyDesc.vecNotifyTags.push_back(szTag);
-			}
-			AnimationData.vecNotifyDesc.push_back(NotifyDesc);
-		}
 
 		/*========== CHANNEL DATAS ===========*/
 		for (_uint iChannelIndex = 0; iChannelIndex < AnimationData.iNumChannels; ++iChannelIndex)

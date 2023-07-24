@@ -150,25 +150,7 @@ void CModelLoader::WriteAnimModels(const string& strFilePath)
 			/* Write bIsFollowAnimation */
 			WriteFile(hFile, &AnimationData.bIsFollowAnimation, sizeof(_bool), &dwByte, nullptr);
 
-			/* Write iNumRanges */
-			WriteFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
-
-			/* Write NotifyDesc */
 			std::cout << "WriteFile Channel Datas..." << endl;
-			for (auto& Notify : AnimationData.vecNotifyDesc)
-			{
-				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
-
-				_uint iNumTags = { 0 };
-				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
-				for (auto& Tags : Notify.vecNotifyTags)
-				{
-					_uint iTagLength = Tags.size() + 1;
-					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
-					WriteFile(hFile, Tags.c_str(), sizeof(_tchar) * iTagLength, &dwByte, nullptr);
-				}
-			}
-
 			/*===== CHANNEL DATAS ======*/
 			for (auto& ChannelData : AnimationData.vecChannels)
 			{
@@ -341,40 +323,6 @@ void CModelLoader::WriteNonAnimModels(const string& strFilePath)
 
 			/* Write bIsLoop */
 			WriteFile(hFile, &AnimationData.bIsLoop, sizeof(_bool), &dwByte, nullptr);
-
-			/* Write iNumRanges */
-			WriteFile(hFile, &AnimationData.iNumPoints, sizeof(_uint), &dwByte, nullptr);
-
-			/* Write NotifyDesc */
-			for (auto& Notify : AnimationData.vecNotifyDesc)
-			{
-				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
-
-				_uint iNumTags = { 0 };
-				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
-				for (auto& Tags : Notify.vecNotifyTags)
-				{
-					_uint iTagLength = Tags.size() + 1;
-					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
-					WriteFile(hFile, Tags.c_str(), sizeof(_tchar) * iTagLength, &dwByte, nullptr);
-				}
-			}
-
-			/* Write NotifyDesc */
-			std::cout << "WriteFile Channel Datas..." << endl;
-			for (auto& Notify : AnimationData.vecNotifyDesc)
-			{
-				WriteFile(hFile, &Notify.fPoint, sizeof(_float), &dwByte, nullptr);
-
-				_uint iNumTags = { 0 };
-				WriteFile(hFile, &iNumTags, sizeof(_uint), &dwByte, nullptr);
-				for (auto& Tags : Notify.vecNotifyTags)
-				{
-					_uint iTagLength = Tags.size() + 1;
-					WriteFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
-					WriteFile(hFile, Tags.c_str(), sizeof(_tchar) * iTagLength, &dwByte, nullptr);
-				}
-			}
 		}
 
 		/*===== MESH DATAS ======*/

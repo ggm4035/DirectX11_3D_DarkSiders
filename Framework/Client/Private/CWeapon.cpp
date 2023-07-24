@@ -9,7 +9,7 @@ CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CWeapon::CWeapon(const CWeapon& rhs)
-	:CParts(rhs)
+	: CParts(rhs)
 {
 }
 
@@ -27,7 +27,7 @@ HRESULT CWeapon::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 	{
 		WEAPONDESC Desc = *reinterpret_cast<WEAPONDESC*>(pArg);
 
-		if (FAILED(Add_Component(iLevelIndex, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
+		if (FAILED(Add_Component(Desc.iModelLevel, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
 			(CComponent**)&m_pModelCom, this)))
 			return E_FAIL;
 	}
@@ -40,10 +40,12 @@ HRESULT CWeapon::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CWeapon::Tick(const _double& TimeDelta)
 {
+	CGameObject3D::Tick(TimeDelta);
+
 	_matrix BoneMatrix;
 	CModel* pModel = dynamic_cast<CModel*>(dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Component(L"Com_Model"));
 
-	if(false == pModel->isLoopAnimation())
+	if (false == pModel->isLoopAnimation())
 		BoneMatrix = XMLoadFloat4x4(&m_OffsetMatrix) * XMLoadFloat4x4(m_pNotMoveCombinedTransformationMatrix) * XMLoadFloat4x4(&m_PivotMatrix);
 	else
 		BoneMatrix = XMLoadFloat4x4(&m_OffsetMatrix) * XMLoadFloat4x4(m_pCombinedTransformationMatrix) * XMLoadFloat4x4(&m_PivotMatrix);
@@ -52,6 +54,22 @@ void CWeapon::Tick(const _double& TimeDelta)
 		BoneMatrix.r[i] = XMVector3Normalize(BoneMatrix.r[i]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * BoneMatrix * XMLoadFloat4x4(m_pParentWorldMatrix));
+
+	Tick_Colliders(XMLoadFloat4x4(&m_WorldMatrix));
+}
+
+void CWeapon::AfterFrustumTick(const _double& TimeDelta)
+{
+	if (FAILED(Add_Colliders_To_Manager()))
+	{
+		MSG_BOX("Failed to Add Colliders To Manager");
+		return;
+	}
+
+	if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+		return;
+#ifdef _DEBUG
+#endif
 }
 
 void CWeapon::Late_Tick(const _double& TimeDelta)
@@ -76,6 +94,28 @@ HRESULT CWeapon::Render()
 	}
 
 	return S_OK;
+}
+
+HRESULT CWeapon::Bind_Collider(const _uint& iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrColliderTag, void* pArg)
+{
+	return Add_Collider(iLevelIndex, wstrPrototypeTag, wstrColliderTag, pArg);
+}
+
+void CWeapon::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
+{
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		Collision.pOther->Get_Damaged();
+	}
+}
+
+void CWeapon::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
+{
+}
+
+void CWeapon::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
+{
 }
 
 HRESULT CWeapon::Add_Components()
@@ -127,7 +167,7 @@ CWeapon* CWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CWeapon* CWeapon::Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pArg)
+CWeapon* CWeapon::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CWeapon* pInstance = new CWeapon(*this);
 

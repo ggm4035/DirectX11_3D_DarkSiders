@@ -17,7 +17,7 @@ private:
 
 public:
 	HRESULT Add_Collider(class CCollider* pCollider);
-	void Tick();
+	void Tick(const _double& TimeDelta);
 	void Clear_ColliderList();
 
 private:
@@ -25,6 +25,7 @@ private:
 
 private:
 	void Collision(CCollider::COLLIDERGROUP SrcGroup, CCollider::COLLIDERGROUP DestGroup);
+	void On_Collisions(const _double& TimeDelta);
 
 public:
 	virtual void Free() override;

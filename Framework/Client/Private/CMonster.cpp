@@ -73,8 +73,6 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 void CMonster::Tick(const _double& TimeDelta)
 {
-	On_Colisions(TimeDelta);
-
 	CGameObject3D::Tick(TimeDelta);
 
 	m_pRoot->Tick(TimeDelta); /* 객체가 움직여 애니메이션 변경 */
@@ -124,7 +122,8 @@ void CMonster::AfterFrustumTick(const _double& TimeDelta)
 void CMonster::Late_Tick(const _double& TimeDelta)
 {
 }
-/* PassNum
+/* 
+PassNum
 0 : Default
 1 : Hit
 */
