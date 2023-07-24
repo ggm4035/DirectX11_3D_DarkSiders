@@ -19,7 +19,7 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	HRESULT Assemble_Childs();
+	HRESULT Assemble_Childs(const string& strAnimTag);
 
 private:
 	CModel* m_pModel = { nullptr };

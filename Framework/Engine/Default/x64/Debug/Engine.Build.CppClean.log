@@ -70,8 +70,8 @@ c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_deferred.cso
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_navigation.cso
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.ilk
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.dll
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.ilk
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.pdb
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\cl.command.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\cl.read.1.tlog
@@ -80,7 +80,10 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tl
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\fxc.command.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\fxc.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\fxc.write.1.tlog
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.16784.delete.1.tlog
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.31620.delete.1.tlog
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.6364.delete.1.tlog
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.936.delete.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.command.1.tlog
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.delete.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\link.write.1.tlog

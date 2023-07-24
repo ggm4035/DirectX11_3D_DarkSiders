@@ -30,6 +30,9 @@ public:
 	STATE Get_State() const {
 		return m_eCurState;
 	}
+	void On_SuperArmor() {
+		m_isSuperArmor = true;
+	}
 
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
@@ -40,6 +43,10 @@ public:
 private:
 	STATE m_eCurState = { STATE_END };
 	STATE m_ePreState = { STATE_END };
+
+	_float m_fSuperArmor = { 3.f };
+	_float m_fTimeAcc = { 0.f };
+	_bool m_isSuperArmor = { false };
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };

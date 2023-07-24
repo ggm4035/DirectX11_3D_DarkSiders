@@ -56,6 +56,8 @@ HRESULT CRest::Tick(const _double& TimeDelta)
 		return BEHAVIOR_FAIL;
 	}
 
+	m_pTransform->Set_On_Navigation(true);
+
 	if (0 == m_AnimTagList.size())
 		return BEHAVIOR_FAIL;
 

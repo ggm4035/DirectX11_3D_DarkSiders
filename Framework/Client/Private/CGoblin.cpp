@@ -55,41 +55,18 @@ void CGoblin::Tick(const _double& TimeDelta)
 
 void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
-	{
-		if (FAILED(Add_Colliders_To_Manager()))
-		{
-			MSG_BOX("Failed to Add Colliders To Manager");
-			Safe_Release(pGameInstance);
-			return;
-		}
-
-		if (nullptr != m_pRendererCom)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-
-#ifdef _DEBUG
-
-		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
-			return;
-
-#endif
-	}
-
-	Safe_Release(pGameInstance);
+	CMonster::AfterFrustumTick(TimeDelta);
 }
 
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CGoblin::Late_Tick(const _double& TimeDelta)
 {
-	On_Colisions(TimeDelta);
+	CMonster::Late_Tick(TimeDelta);
 }
 
 HRESULT CGoblin::Render()
 {
-	if (FAILED(CMonster::Render(0)))
+	if (FAILED(CMonster::Render()))
 		return E_FAIL;
 
 	return S_OK;
@@ -98,6 +75,12 @@ HRESULT CGoblin::Render()
 void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		Collision.pOther->Get_Damaged();
+	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
@@ -196,6 +179,7 @@ HRESULT CGoblin::Make_AI()
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
 
+	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
 
 	m_pRoot->Add_Type(L"isDead", &m_isDead);
@@ -258,7 +242,7 @@ HRESULT CGoblin::Make_AI()
 		return E_FAIL;
 
 	pHit->Assemble_Childs();
-	pAttack->Assemble_Childs();
+	pAttack->Assemble_Childs("Run");
 
 	Safe_Release(pGameInstance);
 

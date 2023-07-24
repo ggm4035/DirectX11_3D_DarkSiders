@@ -7,6 +7,7 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_BoneMatrices[256]; /* 이 메시를 그리기위해 사용되는 뼈들의 행려 VTF */
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
+float g_fTimeAcc = 0.f;
 
 struct VS_IN
 {
@@ -96,7 +97,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     if (vDiffuse.a < 0.1f)
         discard;
-
+    
     Out.vDiffuse = vDiffuse;
 
 	/* Out.vNormal unorm : 0 ~ 1 */
@@ -107,8 +108,34 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_HIT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+    float3 vNormal = /*vNormalDesc.xyz;*/vNormalDesc.xyz * 2.f - 1.f; // 0 ~ 1 -> -1 ~ 1
+    
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = mul(vNormal, WorldMatrix);
+    
+    if (vDiffuse.a < 0.1f)
+        discard;
+    
+    float fData = saturate(1.f - g_fTimeAcc);
+    float3 vHitColor = float3(1.f, 0.f, 0.f) * fData;
 
+    vDiffuse.xyz += vHitColor;
+    Out.vDiffuse = vDiffuse;
+
+	/* Out.vNormal unorm : 0 ~ 1*/
+	/* In.vNormal.xyz : -1 ~ 1 */
+    Out.vNormal = vector(vNormal, 0.f); /*vector(vNormal * 0.5f + 0.5f, 0.f);*/
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -124,4 +151,16 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
+    pass Hit
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_HIT();
+    }
 }

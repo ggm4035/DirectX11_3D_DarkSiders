@@ -43,9 +43,9 @@ HRESULT CCamera_Free::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 void CCamera_Free::Tick(const _double& TimeDelta)
 {
-	Key_Input(TimeDelta);
+	//Key_Input(TimeDelta);
 
-	/*CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
 	CTransform* pPlayerTransform = pGameInstance->Get_Player()->Get_Transform();
@@ -64,7 +64,7 @@ void CCamera_Free::Tick(const _double& TimeDelta)
 	XMStoreFloat4(&m_vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 	m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));
 
-	Safe_Release(pGameInstance);*/
+	Safe_Release(pGameInstance);
 
 	CCamera::Tick(TimeDelta);
 }

@@ -325,8 +325,9 @@ HRESULT CNavigation::Render()
 	for (auto& pCell : m_vecCells)
 		pCell->Render_Sphere();
 
-	/*for (auto& pCell : m_vecCells)
-		pCell->Render_Font();*/
+	/* 볼때만 주석 해제하셈 */
+	for (auto& pCell : m_vecCells)
+		pCell->Render_Font();
 
 	return S_OK;
 }

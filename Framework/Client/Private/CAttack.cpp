@@ -57,6 +57,7 @@ HRESULT CAttack::Tick(const _double& TimeDelta)
 		_float f = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(vDirection, vLook))));
 		if (6.f < f)
 		{
+			m_pTransform->Set_On_Navigation(true);
 			m_pTransform->Go(vDirection, TimeDelta);
 			return BEHAVIOR_RUNNING;
 		}
@@ -84,6 +85,7 @@ HRESULT CAttack::Tick(const _double& TimeDelta)
 		true == m_pModel->isFinishedAnimation())
 	{
 		m_isFirst = true;
+		m_pTransform->Set_On_Navigation(true);
 		m_pModel->Change_Animation("Idle");
 		return BEHAVIOR_SUCCESS;
 	}

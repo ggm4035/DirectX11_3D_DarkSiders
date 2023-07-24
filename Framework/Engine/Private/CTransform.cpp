@@ -99,7 +99,7 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 		vPosition = Get_State(STATE_POSITION);
 
 	if (nullptr != m_pNavigation &&
-		true == pModel->isFollowAnimation())
+		true == m_isOnNavigation)
 	{
 		_float fNaviY = m_pNavigation->is_OnNavigation(vPosition);
 
@@ -113,13 +113,6 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 
 void CTransform::Go(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed)
 {
-	Turn_Axis(vDirection, TimeDelta, fTurnSpeed);
-
-	Move_Stop_Sliding(TimeDelta);
-}
-
-void CTransform::Go_OnNavigation(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed)
-{
 	if (nullptr == m_pNavigation)
 		return;
 
@@ -127,17 +120,21 @@ void CTransform::Go_OnNavigation(_fvector vDirection, const _double& TimeDelta, 
 
 	Move_Stop_Sliding(TimeDelta);
 
-	_vector vPosition = Get_State(STATE_POSITION);
-	vPosition.m128_f32[1] = m_pNavigation->is_OnNavigation(vPosition);
-	Set_State(STATE_POSITION, vPosition);
+	if (true == m_isOnNavigation)
+	{
+		_vector vPosition = Get_State(STATE_POSITION);
+		vPosition.m128_f32[1] = m_pNavigation->is_OnNavigation(vPosition);
+		Set_State(STATE_POSITION, vPosition);
+	}
 }
 
 void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION); 
 	_vector vDirection = XMVector3Normalize(vOtherDir);
+	_float fDistance = XMVectorGetX(XMVector3Length(vOtherDir));
 
-	vPosition += vDirection * m_TransformDesc.SpeedPerSec * TimeDelta;
+	vPosition += vDirection * m_TransformDesc.SpeedPerSec * TimeDelta * fDistance;
 
 	CNavigation::RETURNDESC RetDesc;
 	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
@@ -162,7 +159,8 @@ void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
 		return;
 
-	if (nullptr != m_pNavigation)
+	if (nullptr != m_pNavigation && 
+		true == m_isOnNavigation)
 	{
 		_float fNaviY = m_pNavigation->is_OnNavigation(vPosition);
 
@@ -176,8 +174,9 @@ void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
-
 	_vector vDirection = vTargetPosition - vPosition;
+
+	m_isOnNavigation = true;
 
 	if (XMVector3Length(vDirection).m128_f32[0] > fMinDistance)
 		vPosition += XMVector3Normalize(vDirection) * m_TransformDesc.SpeedPerSec * TimeDelta;
@@ -190,6 +189,7 @@ _bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
 	if (nullptr == m_pNavigation)
 		return false;
 
+	m_isOnNavigation = false;
 	m_fTimeAcc += TimeDelta;;
 
 	_float fY = fForce * m_fTimeAcc - 0.8f * m_fTimeAcc * m_fTimeAcc;
@@ -201,8 +201,9 @@ _bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
 
 	_float fPlaneY = m_pNavigation->is_OnNavigation(vPosition);
 
-	if (fPlaneY > vPosition.m128_f32[1])
+	if (0.f > fY && fPlaneY > vPosition.m128_f32[1])
 	{
+		m_isOnNavigation = true;
 		vPosition.m128_f32[1] = fPlaneY;
 		Set_State(STATE_POSITION, vPosition);
 		m_fTimeAcc = 0.f;
@@ -280,6 +281,7 @@ void CTransform::LeapJump(const _float& fForce, const _double& TimeDelta)
 	if (nullptr == m_pNavigation)
 		return;
 
+	m_isOnNavigation = false;
 	m_fTimeAcc += TimeDelta;
 	_float fY = fForce * m_fTimeAcc - 0.8f * m_fTimeAcc * m_fTimeAcc;
 
@@ -292,6 +294,7 @@ void CTransform::LeapJump(const _float& fForce, const _double& TimeDelta)
 
 	if (0.f > fY && fPlaneY > vPosition.m128_f32[1])
 	{
+		m_isOnNavigation = true;
 		vPosition.m128_f32[1] = fPlaneY;
 		Set_State(STATE_POSITION, vPosition);
 		return;
@@ -299,7 +302,6 @@ void CTransform::LeapJump(const _float& fForce, const _double& TimeDelta)
 
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
 	Set_State(STATE_POSITION, vPosition);
-
 }
 
 void CTransform::Scaled(const _float3& vScale)

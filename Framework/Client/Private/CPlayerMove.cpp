@@ -77,31 +77,37 @@ HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 	case Client::CPlayerAction::STATE_HATK_3:
 		if (true == m_pModel->isAbleChangeAnimation())
 		{
-			m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
+			m_pTransform->Set_On_Navigation(true);
+			m_pTransform->Go(vDirection, TimeDelta);
 			pAction->Set_State(CPlayerAction::STATE_RUN);
 		}
 		break;
 
 	case Client::CPlayerAction::STATE_IDLE:
-		m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
+		m_pTransform->Set_On_Navigation(true);
+		m_pTransform->Go(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_RUN:
-		m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
+		m_pTransform->Set_On_Navigation(true);
+		m_pTransform->Go(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP_LAND:
-		m_pTransform->Go_OnNavigation(vDirection, TimeDelta);
+		m_pTransform->Set_On_Navigation(true);
+		m_pTransform->Go(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP:
+		m_pTransform->Set_On_Navigation(false);
 		m_pTransform->Go(vDirection, TimeDelta);
 		break;
 
 	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
+		m_pTransform->Set_On_Navigation(false);
 		m_pTransform->Go(vDirection, TimeDelta);
 		break;
 	}

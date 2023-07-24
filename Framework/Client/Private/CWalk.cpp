@@ -45,7 +45,8 @@ HRESULT CWalk::Tick(const _double& TimeDelta)
 	_float3 vDirection;
 	m_pBlackBoard->Get_Type<_float3>(L"vDirection", vDirection);
 
-	m_pTransform->Go_OnNavigation(XMLoadFloat3(&vDirection), TimeDelta * 0.5f);
+	m_pTransform->Set_On_Navigation(true);
+	m_pTransform->Go(XMLoadFloat3(&vDirection), TimeDelta * 0.5f);
 	m_pModel->Change_Animation("Walk");
 
 	if (m_fTimeAcc >= m_fLimit)

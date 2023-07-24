@@ -255,6 +255,12 @@
     <ClInclude Include="..\Public\CLava.h">
       <Filter>02. GameObject\02. Environment\04. Lava</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CUI_Overlay.h">
+      <Filter>02. GameObject\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CUI_HpBar.h">
+      <Filter>02. GameObject\04. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -387,6 +393,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CLava.cpp">
       <Filter>02. GameObject\02. Environment\04. Lava</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CUI_Overlay.cpp">
+      <Filter>02. GameObject\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CUI_HpBar.cpp">
+      <Filter>02. GameObject\04. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

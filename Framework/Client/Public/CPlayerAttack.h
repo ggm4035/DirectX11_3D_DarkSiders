@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CModel;
+class CTransform;
 END
 
 BEGIN(Client)
@@ -36,6 +37,7 @@ private:
 
 private:
 	CModel* m_pModel = { nullptr };
+	CTransform* m_pTransform = { nullptr };
 
 private:
 	void LightAttackCombo();

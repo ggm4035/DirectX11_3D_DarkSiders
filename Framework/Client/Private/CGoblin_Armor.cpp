@@ -38,55 +38,23 @@ HRESULT CGoblin_Armor::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 void CGoblin_Armor::Tick(const _double& TimeDelta)
 {
-	CGameObject3D::Tick(TimeDelta);
-
-	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
-
-	m_pRoot->Tick(TimeDelta);
-
-	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
-
-	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
+	CMonster::Tick(TimeDelta);
 }
 
 void CGoblin_Armor::AfterFrustumTick(const _double& TimeDelta)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
-	{
-		if (FAILED(Add_Colliders_To_Manager()))
-		{
-			MSG_BOX("Failed to Add Colliders To Manager");
-			Safe_Release(pGameInstance);
-			return;
-		}
-
-		for (auto Pair : m_Parts)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
-
-		if (nullptr != m_pRendererCom)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-
-#ifdef _DEBUG
-		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
-			return;
-#endif
-	}
-
-	Safe_Release(pGameInstance);
+	CMonster::AfterFrustumTick(TimeDelta);
 }
 
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CGoblin_Armor::Late_Tick(const _double& TimeDelta)
 {
-	On_Colisions(TimeDelta);
+	CMonster::Late_Tick(TimeDelta);
 }
 
 HRESULT CGoblin_Armor::Render()
 {
-	if (FAILED(CMonster::Render(0)))
+	if (FAILED(CMonster::Render()))
 		return E_FAIL;
 
 	return S_OK;
@@ -95,6 +63,12 @@ HRESULT CGoblin_Armor::Render()
 void CGoblin_Armor::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		Collision.pOther->Get_Damaged();
+	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
@@ -193,6 +167,7 @@ HRESULT CGoblin_Armor::Make_AI()
 	/* BlackBoard */
 	m_pRoot->Add_Type(L"vDirection", _float3());
 
+	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
 	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
 
 	m_pRoot->Add_Type(L"isDead", &m_isDead);
@@ -270,7 +245,7 @@ HRESULT CGoblin_Armor::Make_AI()
 
 	pSequence_Hit->Assemble_Childs();
 	pSequence_Patrol->Assemble_Childs();
-	pSelector_Attack->Assemble_Childs();
+	pSelector_Attack->Assemble_Childs("Run");
 
 	Safe_Release(pGameInstance);
 

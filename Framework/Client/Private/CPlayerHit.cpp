@@ -40,7 +40,7 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
 	
 	CPlayer::HITSTATE eCurHitState = m_pPlayer->Get_CurHitState();
-	
+
 	switch (eCurHitState)
 	{
 	case CGameObject3D::HIT:
@@ -53,6 +53,7 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 			true == m_pModel->isFinishedAnimation())
 		{
 			pAction->Set_State(CPlayerAction::STATE_IDLE);
+			pAction->On_SuperArmor();
 			m_pPlayer->Set_CurHitState(CPlayer::NONE);
 		}
 		break;

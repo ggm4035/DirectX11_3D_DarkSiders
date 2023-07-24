@@ -52,6 +52,9 @@ public:
 	void Set_Angle(const _float3& vAngle) {
 		m_vAngle = vAngle;
 	}
+	void Set_On_Navigation(_bool bSwitch) {
+		m_isOnNavigation = bSwitch;
+	}
 
 public:
 	/* Imgui Tool Only*/
@@ -68,7 +71,6 @@ public:
 public:
 	void Animation_Movement(class CModel* pModel, const _double& TimeDelta);
 	void Go(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed = 5.f);
-	void Go_OnNavigation(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed = 5.f);
 	void Repersive(_fvector vOtherDir, const _double& TimeDelta);
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
 	_bool Jump(const _float& fForce, const _double& TimeDelta);
@@ -99,6 +101,7 @@ private:
 
 private: /* For. Jump */
 	_float m_fTimeAcc = { 0.f };
+	_bool m_isOnNavigation = { true };
 
 private:
 	void Turn_Axis(_fvector Dir, const _double& TimeDelta, const _float& fSpeed);

@@ -107,10 +107,22 @@ HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 {
 	CPlayer::HITSTATE eHitState = m_pPlayer->Get_CurHitState();
-	if (eHitState != CPlayer::NONE)
+	if (eHitState != CPlayer::NONE &&
+		false == m_isSuperArmor)
 	{
 		m_pHitAction->Tick(TimeDelta);
 		return S_OK;
+	}
+	else if (true == m_isSuperArmor)
+	{
+		m_pPlayer->Set_CurHitState(CPlayer::NONE);
+		m_fTimeAcc += TimeDelta;
+
+		if (m_fSuperArmor <= m_fTimeAcc)
+		{
+			m_isSuperArmor = false;
+			m_fTimeAcc = 0.f;
+		}
 	}
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();

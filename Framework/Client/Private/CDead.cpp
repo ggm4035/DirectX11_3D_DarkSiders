@@ -52,6 +52,8 @@ HRESULT CDead::Tick(const _double& TimeDelta)
 	if (false == Check_Decorations())
 		return BEHAVIOR_FAIL;
 
+	m_pTransform->Set_On_Navigation(true);
+
 	if (true == m_isFirst)
 	{
 		m_pModel->Change_Animation("Dead");

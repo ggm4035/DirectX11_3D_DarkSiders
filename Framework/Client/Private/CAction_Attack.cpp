@@ -54,7 +54,7 @@ HRESULT CAction_Attack::Initialize(const _uint& iLevelIndex, CComponent* pOwner,
 	return S_OK;
 }
 
-HRESULT CAction_Attack::Assemble_Childs()
+HRESULT CAction_Attack::Assemble_Childs(const string& strAnimTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -87,7 +87,7 @@ HRESULT CAction_Attack::Assemble_Childs()
 			return false;
 		});
 
-	pFollow->Bind_AnimationTag("Walk_F");
+	pFollow->Bind_AnimationTag(strAnimTag);
 	pFollow->Bind_Move_Speed(0.9f);
 	pFollow->Bind_Turn_Speed(5.f);
 

@@ -26,6 +26,11 @@ HRESULT CPlayerAttack::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 		return E_FAIL;
 	Safe_AddRef(m_pModel);
 
+	m_pTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Transform());
+	if (nullptr == m_pTransform)
+		return E_FAIL;
+	Safe_AddRef(m_pTransform);
+
 	return S_OK;
 }
 
@@ -158,6 +163,7 @@ void CPlayerAttack::HeavyAttackCombo()
 			pAction->Set_State(CPlayerAction::STATE_HATK_2);
 			break;
 		case 2:
+			m_pTransform->Set_On_Navigation(false);
 			pAction->Set_State(CPlayerAction::STATE_HATK_3);
 			m_iCombo = -1;
 			break;
@@ -180,6 +186,7 @@ void CPlayerAttack::HeavyAttackCombo()
 		pAction->Set_State(CPlayerAction::STATE_HATK_2);
 		break;
 	case Client::CPlayerAction::STATE_HATK_2:
+		m_pTransform->Set_On_Navigation(false);
 		pAction->Set_State(CPlayerAction::STATE_HATK_3);
 		break;
 	case Client::CPlayerAction::STATE_HATK_3:
@@ -215,7 +222,10 @@ CPlayerAttack* CPlayerAttack::Clone(const _uint& iLevelIndex, CComponent* pOwner
 void CPlayerAttack::Free()
 {
 	if (true == m_isCloned)
+	{
 		Safe_Release(m_pModel);
+		Safe_Release(m_pTransform);
+	}
 
 	CBehavior::Free();
 }

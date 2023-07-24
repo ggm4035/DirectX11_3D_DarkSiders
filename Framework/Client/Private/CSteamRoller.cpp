@@ -81,7 +81,7 @@ void CSteamRoller::Late_Tick(const _double& TimeDelta)
 
 HRESULT CSteamRoller::Render()
 {
-	if (FAILED(CMonster::Render(0)))
+	if (FAILED(CMonster::Render()))
 		return E_FAIL;
 
 	return S_OK;
@@ -282,7 +282,7 @@ HRESULT CSteamRoller::Make_AI()
 	
 	if (FAILED(pSequence_Hit->Assemble_Childs()))
 		return E_FAIL;
-	if (FAILED(pSelector_Attack->Assemble_Childs()))
+	if (FAILED(pSelector_Attack->Assemble_Childs("Walk_F")))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

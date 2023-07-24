@@ -16,6 +16,9 @@
 #include "CSteamRoller.h"
 #include "CWeapon.h"
 
+#include "CUI_Overlay.h"
+#include "CUI_HpBar.h"
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -132,6 +135,23 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Lava/Lava_Lake_e.dds"))))
 		return E_FAIL;
 
+	/* For. Texture_UI_HpBar_Monster */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_HpBar_Monster",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Health_Monster.png"))))
+		return E_FAIL;
+
+	m_szLoading = TEXT("UI 로딩 중.");
+
+	/* For. UI_Overlay */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Overlay",
+		CUI_Overlay::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. UI_HpBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_HpBar",
+		CUI_HpBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	m_szLoading = TEXT("모델 로딩 중.");
 
 	FILEDATA FileData;
@@ -219,7 +239,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	Safe_Delete_BinaryData(Data);
 
-	/* =====Monster Weapon Models===== */
+	/* ===== Monster Weapon Models ===== */
 
 	/* Goblin_Sword Model */
 	m_pGameInstance->ReadModel("../../ModelDatas/Weapon/Goblin_Sword.dat", FilePath, Data);
@@ -284,8 +304,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Navigation",
 		CNavigation::Create(m_pDevice, m_pContext, L"../../Data/Navigation.dat")))) // 네비게이션 저장한 경로가 있어야 쓸 수 있음
 		return E_FAIL;
-
-	m_szLoading = TEXT("충돌체 로딩 중.");
 
 	m_szLoading = TEXT("객체 로딩 중.");
 

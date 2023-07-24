@@ -246,6 +246,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CSteamRoller.h" />
+    <ClInclude Include="..\Public\CUI_HpBar.h" />
+    <ClInclude Include="..\Public\CUI_Overlay.h" />
     <ClInclude Include="..\Public\CUI_Rect.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -347,6 +349,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CSteamRoller.cpp" />
+    <ClCompile Include="..\Private\CUI_HpBar.cpp" />
+    <ClCompile Include="..\Private\CUI_Overlay.cpp" />
     <ClCompile Include="..\Private\CUI_Rect.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

@@ -110,8 +110,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 
 	m_vecMonsterDatas = FileData.vecMonsterData;
 
-	if (pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"SkyBox",
-		L"SkyBox", pLayerTag))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"SkyBox",
+		L"SkyBox", pLayerTag)))
 		return E_FAIL;
 		
 	Safe_Release(pGameInstance);

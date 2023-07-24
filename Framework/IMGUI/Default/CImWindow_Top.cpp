@@ -366,7 +366,7 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
             {
                 _char szNum[8] = { "" };
                 _char szObjName[256] = { "" };
-                string strObjName = pGameInstance->wstrToStr(wstring(Data.szObjectTag));
+                string strObjName = "Monster";
                 strcpy_s(szObjName, strObjName.c_str());
                 _itoa_s(idx, szNum, 10);
                 strcat_s(szObjName, szNum);

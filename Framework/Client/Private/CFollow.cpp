@@ -64,7 +64,8 @@ HRESULT CFollow::Tick(const _double& TimeDelta)
 
 	_vector vDirection = XMVector3Normalize(vTargetPosition - vPosition);
 
-	m_pTransform->Go_OnNavigation(vDirection, TimeDelta * m_fMoveSpeed, m_fTurnSpeed);
+	m_pTransform->Set_On_Navigation(true);
+	m_pTransform->Go(vDirection, TimeDelta * m_fMoveSpeed, m_fTurnSpeed);
 	m_pModel->Change_Animation(m_strAnimTag);
 
 	return BEHAVIOR_RUNNING;

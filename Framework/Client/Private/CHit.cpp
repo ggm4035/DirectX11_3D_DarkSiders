@@ -41,22 +41,29 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 {
 	CGameObject3D* pTarget = { nullptr };
 	CGameObject3D::HITSTATE* pCurState = { nullptr };
+	_float* pHitTimeAcc = { nullptr };
 
 	m_pBlackBoard->Get_Type(L"eCurHitState", pCurState);
 	m_pBlackBoard->Get_Type(L"pTarget", pTarget);
+	m_pBlackBoard->Get_Type(L"fHitTimeAcc", pHitTimeAcc);
 
 	switch (*pCurState)
 	{
 	case CGameObject3D::NONE:
+		*pHitTimeAcc = 0.f;
 		return BEHAVIOR_FAIL;
 
 	case CGameObject3D::HIT:
+		m_pTransform->Set_On_Navigation(true);
 		m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		m_pModel->Change_Animation("Impact");
 		*pCurState = CGameObject3D::HITTING;
+		*pHitTimeAcc = 0.f;
 		return BEHAVIOR_SUCCESS;
 
 	case CGameObject3D::HITTING:
+		*pHitTimeAcc += TimeDelta * 3.f;
+
 		if (true == m_pModel->isFinishedAnimation())
 		{
 			*pCurState = CGameObject3D::NONE;

@@ -32,10 +32,10 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() = 0;
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	virtual void Tick(const _double& TimeDelta) = 0;
-	virtual void AfterFrustumTick(const _double& TimeDelta) = 0;
-	virtual void Late_Tick(const _double& TimeDelta) = 0;
-	virtual HRESULT Render(const _uint& iPassIndex);
+	virtual void Tick(const _double& TimeDelta);
+	virtual void AfterFrustumTick(const _double& TimeDelta);
+	virtual void Late_Tick(const _double& TimeDelta);
+	virtual HRESULT Render(/*const _uint& iPassIndex = 0*/);
 
 public:
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
@@ -49,11 +49,15 @@ protected:
 	CRenderer* m_pRendererCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 
+	class CUI_HpBar* m_pHealthBar = { nullptr };
+
 protected:
 	_bool m_isSpawn = { false };
 	_bool m_isSpawnEnd = { false };
 	_bool m_isAbleAttack = { false };
 	_bool m_isRangeInPlayer = { false };
+
+	_float m_fHitTimeAcc = { 0.f };
 
 protected:
 	virtual HRESULT Add_Components() override;

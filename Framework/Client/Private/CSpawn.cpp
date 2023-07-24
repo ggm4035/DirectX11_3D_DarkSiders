@@ -66,6 +66,7 @@ HRESULT CSpawn::Tick(const _double& TimeDelta)
 	if (true == m_isFirst)
 	{
 		m_isFirst = false;
+		m_pTransform->Set_On_Navigation(false);
 		m_pModel->Change_Animation("Spawn");
 	}
 
@@ -75,6 +76,7 @@ HRESULT CSpawn::Tick(const _double& TimeDelta)
 	{
 		_bool* pIsSpawnEnd = { nullptr };
 
+		m_pTransform->Set_On_Navigation(true);
 		m_pBlackBoard->Get_Type(L"isSpawnEnd", pIsSpawnEnd);
 		m_pModel->Change_Animation("Idle");
 

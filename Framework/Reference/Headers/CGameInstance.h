@@ -48,6 +48,7 @@ public: /* For.Level_Manager */
 
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring pPrototypeTag, class CGameObject* pPrototype);
+	class CGameObject* Clone_GameObject(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, class CComponent* pOwner, void* pArg);
 
 	/* 게임오브젝트에서 iLevelIndex는 오브젝트의 레이어 레벨로 사용 */
 	HRESULT Add_GameObject(const _uint& iNumLayer, const wstring PrototypeTag, const wstring GameObjectTag, const wstring LayerTag, void* pArg = nullptr);
