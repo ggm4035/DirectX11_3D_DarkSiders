@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CComponent.h"
+#include "CCell.h"
 
 BEGIN(Engine)
 
@@ -56,6 +57,12 @@ public:
 	_uint Get_NumCells() const {
 		return m_vecCells.size();
 	}
+	CCell::OPTION Get_Option(const _uint& iIndex) {
+		return m_vecCells[iIndex]->Get_Optioin();
+	}
+	void Set_Option(const _uint& iIndex, CCell::OPTION eOption) {
+		m_vecCells[iIndex]->Set_Option(eOption);
+	}
 	void Set_CurrentIndex(const _uint& iIndex) {
 		m_NavigationDesc.iCurrentIndex = iIndex;
 	}
@@ -64,7 +71,7 @@ public:
 
 	virtual HRESULT Render() override;
 
-	void Add_Cell(const TRIANGLE& Triangle);
+	void Add_Cell(const TRIANGLE& Triangle, CCell::OPTION eOption);
 	void Sort();
 	_float3 Pick_Sphere(_fvector vOrigin, _fvector vDirection);
 	vector<pair<_uint, _int>> Pick_Spheres(_fvector vOrigin, _fvector vDirection);

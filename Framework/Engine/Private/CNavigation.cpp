@@ -1,7 +1,5 @@
 #include "CNavigation.h"
-
-#include "CCell.h"
-
+\
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 #include "CShader.h"
 #include "CBounding_Sphere.h"
@@ -50,7 +48,7 @@ HRESULT CNavigation::Initialize_Prototype(const wstring& wstrCellFilePath)
 				break;
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
-			CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_vecCells.size(), m_pSpherePrototype);
+			CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_vecCells.size(), CCell::OPT_NORMAL, m_pSpherePrototype);
 			if (nullptr == pCell)
 				return E_FAIL;
 #else
@@ -73,7 +71,7 @@ HRESULT CNavigation::Initialize_Prototype(const wstring& wstrCellFilePath)
 	m_pSpherePrototype = CBounding_Sphere::Create(m_pDevice, m_pContext);
 
 	_float3 Data{};
-	m_pCurrentCell = CCell::Create(m_pDevice, m_pContext, &Data, m_vecCells.size(), m_pSpherePrototype);
+	m_pCurrentCell = CCell::Create(m_pDevice, m_pContext, &Data, m_vecCells.size(), CCell::OPT_NORMAL, m_pSpherePrototype);
 
 	m_pShader = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Navigation.hlsl",
 		VTXPOS_DECL::Elements, VTXPOS_DECL::iNumElements);
@@ -332,9 +330,9 @@ HRESULT CNavigation::Render()
 	return S_OK;
 }
 
-void CNavigation::Add_Cell(const TRIANGLE& Triangle)
+void CNavigation::Add_Cell(const TRIANGLE& Triangle, CCell::OPTION eOption)
 {
-	CCell* pCell = CCell::Create(m_pDevice, m_pContext, Triangle.vDot, m_vecCells.size(), m_pSpherePrototype);
+	CCell* pCell = CCell::Create(m_pDevice, m_pContext, Triangle.vDot, m_vecCells.size(), eOption, m_pSpherePrototype);
 	if (nullptr == pCell)
 		return;
 

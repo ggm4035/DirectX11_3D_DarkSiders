@@ -9,7 +9,7 @@ class CCell final : public CBase
 public:
 	enum POINT { POINT_A, POINT_B, POINT_C, POINT_END };
 	enum NEIGHBOR { NEIGHBOR_AB, NEIGHBOR_BC, NEIGHBOR_CA, NEIGHBOR_END };
-	enum OPTION { OPT_NORMAL, OPT_CLIFF, OPT_END };
+	enum OPTION { OPT_NORMAL, OPT_LAVA, OPT_END };
 
 	typedef struct tagReturnDesc
 	{
@@ -31,9 +31,12 @@ public:
 	OPTION Get_Optioin() const {
 		return m_eOption;
 	}
+	void Set_Option(OPTION eOption) {
+		m_eOption = eOption;
+	}
 
 public:
-	HRESULT Initialize(const _float3* pPoints, const _int& iIndex);
+	HRESULT Initialize(const _float3* pPoints, const _int& iIndex, OPTION eOption);
 	_bool Compare_Points(_fvector vSourPoint, _fvector vDestPoint);
 	RETURNDESC is_In(_fvector vPosition);
 	_float is_On(_fvector vPosition);
@@ -53,7 +56,7 @@ private:
 	_bool isEqual(_fvector vSourPoint, _fvector vDestPoint);
 
 public:
-	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex);
+	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex, OPTION eOption);
 	virtual void Free() override;
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
@@ -64,7 +67,7 @@ public:
 	void Set_Position(POINT ePoint, const _float3& vPosition);
 	
 public:
-	HRESULT Initialize(const _float3* pPoints, const _int& iIndex, class CBounding_Sphere* pPrototype);
+	HRESULT Initialize(const _float3* pPoints, const _int& iIndex, OPTION eOption, class CBounding_Sphere* pPrototype);
 	HRESULT Render();
 	HRESULT Render_Sphere();
 	HRESULT Render_Font();
@@ -72,7 +75,7 @@ public:
 	void Sort();
 
 public:
-	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex, class CBounding_Sphere* pPrototype);
+	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex, OPTION eOption, class CBounding_Sphere* pPrototype);
 
 private:
 	class CVIBuffer_Cell* m_pBuffer = { nullptr };

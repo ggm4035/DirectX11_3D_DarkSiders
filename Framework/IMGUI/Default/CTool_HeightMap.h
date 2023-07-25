@@ -2,6 +2,7 @@
 
 #include "IMGUI_Defines.h"
 #include "CBase.h"
+#include "CCell.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -43,6 +44,7 @@ private: /* For. Navigation Map */
     _uint m_iCount = { 0 };
     _int m_iSelectOption = { 0 };
     _int m_iPickCell = { 0 };
+    _int m_iOption = { 0 };
     vector<pair<_uint, _int>> m_vecPickSphereInfo;/* first : CellIndex, second : Sphere Index */
 
 public:

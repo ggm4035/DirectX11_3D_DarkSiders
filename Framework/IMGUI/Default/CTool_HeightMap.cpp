@@ -59,7 +59,7 @@ void CTool_HeightMap::Tick(CGameInstance* pGameInstance)
 
         if (1 == iSelected)
             Control_Height(pGameInstance);
-        if(2 == iSelected)
+        if (2 == iSelected)
             Draw_Filter(pGameInstance);
 
         /* Bind Shader Resources */
@@ -94,7 +94,7 @@ void CTool_HeightMap::Setting_Terrain(CGameInstance* pGameInstance)
     if (ImGui::Button("Apply##ReMakeTerrain"))
     {
         dynamic_cast<CVIBuffer_Terrain*>(m_pTerrain->Get_Buffer())->Initialize_Prototype(m_iXCount, m_iZCount, m_fInterval);
-        
+
     }
 }
 
@@ -214,14 +214,24 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
     ImGui::RadioButton("Make Navi", &m_iSelectOption, 1); ImGui::SameLine();
     ImGui::RadioButton("Pick Navi", &m_iSelectOption, 2);
 
+    const char* pItems[2] = { "Normal", "Lava" };
+    /* 네비게이션 옵션 적용 */
+    ImGui::SetNextItemWidth(100.f);
+    if (ImGui::Combo("Option##Navigation", &m_iOption, pItems, 2))
+    {
+        if(0 < m_pTerrain->Get_Navigation()->Get_NumCells())
+            m_pTerrain->Get_Navigation()->Set_Option(m_iPickCell, (CCell::OPTION)m_iOption);
+    }
+
     /* Navigation List */
     ImGui::BeginChild("Navigations", ImVec2(330, 550), true, ImGuiWindowFlags_HorizontalScrollbar);
-    static _int iCur;
 
     _uint iIndex = m_pTerrain->Get_Navigation()->Get_NumCells();
 
     if (0 < iIndex)
     {
+        m_iOption = m_pTerrain->Get_Navigation()->Get_Option(m_iPickCell);
+
         const _char** ppiTems = New const _char * [iIndex];
 
         string* pstrTags = New string[iIndex];
@@ -325,7 +335,7 @@ void CTool_HeightMap::Pick_Navigation(CGameInstance* pGameInstance)
 
             if (3 == m_iCount)
             {
-                m_pTerrain->Get_Navigation()->Add_Cell(m_Triangle);
+                m_pTerrain->Get_Navigation()->Add_Cell(m_Triangle, (CCell::OPTION)m_iOption);
                 ZeroMemory(&m_Triangle, sizeof(TRIANGLE));
                 m_iCount = 0;
             }
@@ -361,6 +371,8 @@ void CTool_HeightMap::Export_Navigation()
             _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(iCellIndex, i);
             WriteFile(hFile, &vPosition, sizeof(_float3), &dwByte, nullptr);
         }
+        CCell::OPTION eOption = m_pTerrain->Get_Navigation()->Get_Option(iCellIndex);
+        WriteFile(hFile, &eOption, sizeof eOption, &dwByte, nullptr);
     }
 
     CloseHandle(hFile);
@@ -389,7 +401,7 @@ void CTool_HeightMap::Load_Navigation()
             m_pTerrain->Get_Navigation()->Remove_All_Cell();
 
             m_vecPickSphereInfo.clear();
-            
+
             HANDLE hFile = CreateFileA(filePathName.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
             _ulong dwByte = { 0 };
@@ -401,10 +413,13 @@ void CTool_HeightMap::Load_Navigation()
                 for (_uint i = 0; i < 3; ++i)
                     ReadFile(hFile, &Triangle.vDot[i], sizeof(_float3), &dwByte, nullptr);
 
+                CCell::OPTION eOption;
+                ReadFile(hFile, &eOption, sizeof eOption, &dwByte, nullptr);
+
                 if (0 == dwByte)
                     break;
 
-                m_pTerrain->Get_Navigation()->Add_Cell(Triangle);
+                m_pTerrain->Get_Navigation()->Add_Cell(Triangle, eOption);
             }
 
             CloseHandle(hFile);

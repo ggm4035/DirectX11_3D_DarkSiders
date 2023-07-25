@@ -17,11 +17,12 @@ CCell::CCell(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	ZeroMemory(m_arrPoints, sizeof(_float3) * 3);
 }
 
-HRESULT CCell::Initialize(const _float3* pPoints, const _int& iIndex)
+HRESULT CCell::Initialize(const _float3* pPoints, const _int& iIndex, OPTION eOption)
 {
 	memcpy(m_arrPoints, pPoints, sizeof(_float3) * POINT_END);
 
 	m_iIndex = iIndex;
+	m_eOption = eOption;
 
 	_vector vLine;
 
@@ -122,11 +123,11 @@ _bool CCell::isEqual(_fvector vSourPoint, _fvector vDestPoint)
 	return true;
 }
 
-CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex)
+CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex, OPTION eOption)
 {
 	CCell* pInstance = new CCell(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(pPoints, iIndex)))
+	if (FAILED(pInstance->Initialize(pPoints, iIndex, eOption)))
 	{
 		MSG_BOX("Failed to Create CCell");
 		Safe_Release(pInstance);
@@ -164,9 +165,9 @@ void CCell::Set_Position(POINT ePoint, const _float3& vPosition)
 	m_pBuffer->Set_SpherePosition((_uint)ePoint, vPosition);
 }
 
-HRESULT CCell::Initialize(const _float3* pPoints, const _int& iIndex, CBounding_Sphere* pPrototype)
+HRESULT CCell::Initialize(const _float3* pPoints, const _int& iIndex, OPTION eOption, CBounding_Sphere* pPrototype)
 {
-	Initialize(pPoints, iIndex);
+	Initialize(pPoints, iIndex, eOption);
 
 	m_pBuffer = CVIBuffer_Cell::Create(m_pDevice, m_pContext, m_arrPoints, pPrototype);
 	if (nullptr == m_pBuffer)
@@ -247,11 +248,11 @@ void CCell::Sort()
 	}
 }
 
-CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex, class CBounding_Sphere* pPrototype)
+CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, const _int& iIndex, OPTION eOption, class CBounding_Sphere* pPrototype)
 {
 	CCell* pInstance = new CCell(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(pPoints, iIndex, pPrototype)))
+	if (FAILED(pInstance->Initialize(pPoints, iIndex, eOption, pPrototype)))
 	{
 		MSG_BOX("Failed to Create CCell");
 		Safe_Release(pInstance);
