@@ -40,6 +40,9 @@ public:
 	vector<KEYFRAME>& Get_KeyFrames() {
 		return m_vecKeyFrames;
 	}
+	void Set_KeyFrames(const vector<KEYFRAME>& vecKeyFrame) {
+		m_vecKeyFrames = vecKeyFrame;
+	}
 
 #endif
 };

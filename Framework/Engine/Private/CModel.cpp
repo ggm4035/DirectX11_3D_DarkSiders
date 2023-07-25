@@ -92,8 +92,6 @@ void CModel::Change_Animation(const string& strTag)
 
 	pAnimation->Bind_LerpAnimation(m_pCurrentAnimation);
 
-	m_pCurrentAnimation->Reset_Notifys();
-
 	m_pCurrentAnimation = pAnimation;
 
 	m_pCurrentAnimation->m_isAbleChange = false;
@@ -211,25 +209,25 @@ void CModel::RePlay_Animation()
 	m_pCurrentAnimation->Play_Animation();
 }
 
-HRESULT CModel::Setup_Notifys(const wstring& wstrFilePath)
-{
-	vector<ANIMATIONDATA> vecAnimation;
-
-	CFileInfo::GetInstance()->Read_Notify_Data(wstrFilePath, vecAnimation);
-
-	CGameObject3D* pOwner = dynamic_cast<CGameObject3D*>(m_pOwner);
-	if (nullptr == m_pOwner)
-		return E_FAIL;
-
-	_uint iAnimIndex = { 0 };
-	for (auto& pAnimation : m_vecAnimations)
-	{
-		if (FAILED(pAnimation->Bind_Notifys(pOwner, vecAnimation[iAnimIndex++].vecNotifyDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
+//HRESULT CModel::Setup_Notifys(const wstring& wstrFilePath)
+//{
+//	vector<ANIMATIONDATA> vecAnimation;
+//
+//	CFileInfo::GetInstance()->Read_Notify_Data(wstrFilePath, vecAnimation);
+//
+//	CGameObject3D* pOwner = dynamic_cast<CGameObject3D*>(m_pOwner);
+//	if (nullptr == m_pOwner)
+//		return E_FAIL;
+//
+//	_uint iAnimIndex = { 0 };
+//	for (auto& pAnimation : m_vecAnimations)
+//	{
+//		if (FAILED(pAnimation->Bind_Notifys(pOwner, vecAnimation[iAnimIndex++].vecNotifyDesc)))
+//			return E_FAIL;
+//	}
+//
+//	return S_OK;
+//}
 
 HRESULT CModel::Bind_Material(CShader* pShader, const string& strTypename, const _uint& iMeshIndex, TEXTURETYPE eTextureType)
 {
@@ -411,6 +409,16 @@ void CModel::Free()
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 
+vector<KEYFRAME>& CModel::Get_MaxKeyFrames(const _uint iAnimIndex)
+{
+	return m_vecAnimations[iAnimIndex]->Get_MaxKeyFrames();
+}
+
+void CModel::Set_MaxKeyFrames(const vector<KEYFRAME>& vecKeyFrame)
+{
+	m_pCurrentAnimation->Set_MaxKeyFrames(vecKeyFrame);
+}
+
 vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 {
 	vector<ANIMATIONDATA> vecRet;
@@ -425,32 +433,6 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 		Data.bIsLoop = Animation->m_isLoop;
 		Data.bIsFollowAnimation = Animation->m_isFollowAnimation;
 
-		for (auto& NotifyDesc : Animation->m_vecNotifys)
-		{
-			NOTIFYDATA NotifyData;
-			NotifyData.fPoint = NotifyDesc.fAnimTime;
-			for (auto& ObserverDesc : NotifyDesc.vecObserver)
-			{
-				OBSERVERDATA ObserverData;
-				ObserverData.iObserverType = ObserverDesc.eType;
-				switch (ObserverData.iObserverType)
-				{
-				case CAnimation::ANIMATION:
-					ObserverData.isEnable = true;
-					break;
-
-				case CAnimation::COLLIDER:
-					CCollider::OBVCOLPARAMS* pParams = reinterpret_cast<CCollider::OBVCOLPARAMS*>(ObserverDesc.pParam);
-					ObserverData.isEnable = pParams->isEnable;
-					break;
-				}
-				
-				ObserverData.wstrNotifyTag = ObserverDesc.wstrObserverTag;
-			}
-
-			Data.vecNotifyDesc.push_back(NotifyData);
-		}
-
 		for (_uint i = 0; i < Data.iNumChannels; ++i)
 		{
 			CHANNELDATA ChannelData;
@@ -464,6 +446,8 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 				KeyFrame.vRotation = Animation->m_vecChannels[i]->m_vecKeyFrames[j].vRotation;
 				KeyFrame.vTranslation = Animation->m_vecChannels[i]->m_vecKeyFrames[j].vTranslation;
 				KeyFrame.Time = Animation->m_vecChannels[i]->m_vecKeyFrames[j].Time;
+				KeyFrame.isChangeAnim = Animation->m_vecChannels[i]->m_vecKeyFrames[j].isChangeAnim;
+				KeyFrame.isEnable = Animation->m_vecChannels[i]->m_vecKeyFrames[j].isEnable;
 
 				ChannelData.vecKeyFrames.push_back(KeyFrame);
 			}
@@ -475,9 +459,9 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 	return vecRet;
 }
 
-const _uint& CModel::Get_MaxKeyFrame() const
+const _uint& CModel::Get_MaxNumKeyFrame() const
 {
-	return m_pCurrentAnimation->Get_MaxKeyFrames();
+	return m_pCurrentAnimation->Get_MaxNumKeyFrame();
 }
 
 const _uint& CModel::Get_MaxRootKeyFrame() const
@@ -514,7 +498,7 @@ void CModel::Set_Translation(const _uint& iIndex, const _float3& vTranslation)
 
 void CModel::Set_KeyFrameTime(const _uint& iIndex, const _float& fTime)
 {
-	vector<KEYFRAME>& KeyFrames = m_pCurrentAnimation->Get_KeyFrames();
+	vector<KEYFRAME>& KeyFrames = m_pCurrentAnimation->Get_MaxKeyFrames();
 
 	KeyFrames[iIndex].Time = fTime;
 }
@@ -537,7 +521,7 @@ _float3 CModel::Get_Translation(const _uint& iIndex)
 
 _float CModel::Get_KeyFrameTime(const _uint& iIndex)
 {
-	vector<KEYFRAME> Data = m_pCurrentAnimation->Get_KeyFrames();
+	vector<KEYFRAME> Data = m_pCurrentAnimation->Get_MaxKeyFrames();
 	return Data[iIndex].Time;
 }
 

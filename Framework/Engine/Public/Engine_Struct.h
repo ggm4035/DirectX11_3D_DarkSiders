@@ -22,27 +22,6 @@ namespace Engine
 		XMFLOAT3 vDot[3];
 	}TRIANGLE;
 
-	/* ========= OBSERVER DESC ========= */
-
-	typedef struct tagObserverData
-	{
-		_uint iObserverType = { 0 };
-		wstring wstrNotifyTag;
-
-		/* Collider Parameter */
-		_bool isEnable = { false };
-
-		/* Sound Parameter */
-
-	}OBSERVERDATA;
-
-	/* Notify Datas */
-	typedef struct tagNotifyDesc
-	{
-		_float fPoint = { 0.f };
-		vector<OBSERVERDATA> vecObservers;
-	}NOTIFYDATA;
-
 	/* ========= VERTEX DESC ========= */
 
 	typedef struct tagVertex_Position
@@ -201,6 +180,9 @@ namespace Engine
 		_float4 vRotation;
 		_float3 vTranslation;
 		_double Time;
+
+		_bool isChangeAnim = { false };
+		_bool isEnable = { false };
 	}KEYFRAME;
 
 	typedef struct tagChannelData
@@ -218,7 +200,6 @@ namespace Engine
 		_uint iNumChannels = { 0 };
 		_bool bIsLoop = { true };
 		_bool bIsFollowAnimation = { true };
-		vector<NOTIFYDATA> vecNotifyDesc;
 		vector<CHANNELDATA> vecChannels;
 	}ANIMATIONDATA;
 

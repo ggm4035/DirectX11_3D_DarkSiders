@@ -1,26 +1,21 @@
 ﻿  CAnimation.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(348,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(243,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
           with
           [
               _Ty=Engine::_uint
           ]
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(359,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(254,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
           with
           [
               _Ty=Engine::_uint
           ]
-  CBounding.cpp
-  CBounding_AABB.cpp
-  CBounding_OBB.cpp
-  CBounding_Sphere.cpp
-  CCamera.cpp
-  CCamera_Manager.cpp
+  CBone.cpp
+  CCalculator.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CCell.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CCollider.cpp
-  CCollider_Manager.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CCollider_Manager.cpp(60,6): warning C4390: ';': 제어된 빈 문이 있습니다. 이 문이 필요합니까?
+  CChannel.cpp
   CComponent.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CComponent_Manager.cpp
@@ -33,15 +28,10 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1):
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CLevel_Manager.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CMesh.cpp
   CModel.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CModel.cpp(541,21): warning C4244: 'return': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CNavigation.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(53,102): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(76,100): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(337,106): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CParts.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CModel.cpp(525,21): warning C4244: 'return': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CTransform.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(93,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -72,9 +62,6 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(389,
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(389,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(409,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(409,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
-  컴파일하고 있습니다...
-  CVIBuffer_Cell.cpp
   CGameInstance.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(57,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다...

@@ -423,9 +423,6 @@
     <ClInclude Include="..\Public\CDecoration.h">
       <Filter>01. Utility\02. Component\Components\08. Behavior\03. Decoration</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Observer_Interfaces.h">
-      <Filter>99. Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CRenderTarget.h">
       <Filter>01. Utility\07. RenderTarget</Filter>
     </ClInclude>

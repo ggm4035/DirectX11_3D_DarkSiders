@@ -26,10 +26,8 @@ private:
 
     list<CComponent*> m_PrototypeList;
     string m_strFilePath = { "" };
-    _char m_szNotifyTag[MAX_PATH] = { "" };
     _uint m_iCurAnimIndex = { 0 };
     _uint m_iCurNotifyIndex = { 0 };
-    _bool m_isAddNotify = { false };
 
 private:
     void Make_New_Model(CGameInstance* pGameInstance, list<class CDummyObject3D*>* pObjectList);
@@ -37,10 +35,6 @@ private:
     void Export_Animation(CGameInstance* pGameInstance);
     void KeyFrameSetting(CGameInstance* pGameInstance);
     void NotifySetting(CGameInstance* pGameInstance);
-    void Add_Notify(CGameInstance* pGameInstance);
-
-private:
-    wstring* Find_NotifyTag(const wstring& wstrTag);
 
 public:
     virtual void Free() override;

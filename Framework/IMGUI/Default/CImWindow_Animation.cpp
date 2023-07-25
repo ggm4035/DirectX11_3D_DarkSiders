@@ -19,7 +19,7 @@ void CImWindow_Animation::Set_Model(CDummyObject3D* pModel)
 
 void CImWindow_Animation::Refresh_Animation()
 {
-    m_iMaxKeyFrames = m_pModelCom->Get_MaxKeyFrame();
+    m_iMaxKeyFrames = m_pModelCom->Get_MaxNumKeyFrame();
     m_iMaxRootKeyFrames = m_pModelCom->Get_MaxRootKeyFrame();
     m_iCurrentFrame = 0;
     m_iCurrentRootFrame = 0;

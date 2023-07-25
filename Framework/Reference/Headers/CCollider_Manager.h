@@ -2,7 +2,6 @@
 
 /* Renderer같은 느낌으로*/
 
-#include "Observer_Interfaces.h"
 #include "CCollider.h"
 
 BEGIN(Engine)

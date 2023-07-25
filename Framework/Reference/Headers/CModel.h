@@ -48,7 +48,7 @@ public:
 	void Play_Animation(const _double& TimeDelta, class CNavigation* pNavigation);
 	void Pause_Animation();
 	void RePlay_Animation();
-	HRESULT Setup_Notifys(const wstring& wstrFilePath);
+	//HRESULT Setup_Notifys(const wstring& wstrFilePath);
 
 public:
 	HRESULT Bind_Material(class CShader* pShader, const string& strTypename, const _uint & iMeshIndex, TEXTURETYPE eTextureType);
@@ -97,7 +97,7 @@ public: /* !!! Warrning !!! Only Tool */
 	const vector<class CMesh*>& Get_Meshes() const {
 		return m_vecMeshes;
 	}
-	const _uint& Get_MaxKeyFrame() const;
+	const _uint& Get_MaxNumKeyFrame() const;
 	const _uint& Get_MaxRootKeyFrame() const;
 	const _uint& Get_CurrentKeyFrameIndex() const;
 	const _uint& Get_CurrentRootKeyFrameIndex() const;
@@ -113,6 +113,8 @@ public: /* !!! Warrning !!! Only Tool */
 	_float Get_TickPerSec();
 	_bool isPause() const;
 
+	vector<KEYFRAME>& Get_MaxKeyFrames(const _uint iAnimIndex);
+	void Set_MaxKeyFrames(const vector<KEYFRAME>& vecKeyFrame);
 	vector<ANIMATIONDATA> Get_AnimationDatas();
 	HRESULT Set_Animation(const string& wstrTag, const ANIMATIONDATA& AnimData);
 	HRESULT Add_Animation(const ANIMATIONDATA& AnimData);

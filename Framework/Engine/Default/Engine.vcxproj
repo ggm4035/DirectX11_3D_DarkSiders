@@ -263,7 +263,6 @@
     <ClInclude Include="..\Public\Engine_Typedef.h" />
     <ClInclude Include="..\public\CGameInstance.h" />
     <ClInclude Include="..\Public\CGraphic_Device.h" />
-    <ClInclude Include="..\Public\Observer_Interfaces.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
   </ItemGroup>

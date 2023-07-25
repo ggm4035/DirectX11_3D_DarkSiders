@@ -146,15 +146,6 @@ void CCollider::On_Collision(const _double& TimeDelta)
 	}
 }
 
-void CCollider::Update_Observer(BASEPARAM* pParamDesc)
-{
-	OBVCOLPARAMS* pDesc = reinterpret_cast<OBVCOLPARAMS*>(pParamDesc);
-	if (nullptr == pDesc)
-		return;
-
-	m_isEnable = pDesc->isEnable;
-}
-
 void CCollider::Find_Collision(CCollider* pCollider, COLLISION** pCollision)
 {
 	auto iter = find_if(m_umapCollisions.begin(), m_umapCollisions.end(), [&](auto Pair)

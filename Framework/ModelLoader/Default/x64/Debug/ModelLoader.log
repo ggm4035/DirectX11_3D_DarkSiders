@@ -12,6 +12,9 @@ C:\Users\joo\Documents\GitHub\Jusin\Framework\ModelLoader\Default\CModelLoader.c
 C:\Users\joo\Documents\GitHub\Jusin\Framework\ModelLoader\Default\CModelLoader.cpp(333,88): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\ModelLoader\Default\CModelLoader.cpp(417,39): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\ModelLoader\Default\CModelLoader.cpp(520,32): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  ModelLoader.cpp
+  The contents of <any> are available only with C++17 or later.
+  코드를 생성하고 있습니다...
 C:\Users\joo\Documents\GitHub\Jusin\Framework\ModelLoader\Default\CModelLoader.cpp(454): warning C4715: 'CModelLoader::ConvertBinary_AnimModel': 모든 제어 경로에서 값을 반환하지는 않습니다.
 C:\Users\joo\Documents\GitHub\Jusin\Framework\ModelLoader\Default\CModelLoader.cpp(509): warning C4715: 'CModelLoader::ConvertBinary_NonAnimModel': 모든 제어 경로에서 값을 반환하지는 않습니다.
   ModelLoader.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\ModelLoader\Bin\ModelLoader.exe

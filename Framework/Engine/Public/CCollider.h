@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Observer_Interfaces.h"
 #include "CComponent.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL CCollider final : public CComponent, IObserver_Animation
+class ENGINE_DLL CCollider final : public CComponent
 {
 public:
 	enum TYPE { TYPE_SPHERE, TYPE_AABB, TYPE_OBB, TYPE_END };
@@ -13,11 +12,6 @@ public:
 	enum COLLIDERGROUP { COL_PLAYER, COL_PLAYER_ATK, 
 		COL_ENEMY, COL_ENEMY_ATK, COL_ENEMY_MELEE_RANGE, COL_ENEMY_RANGE, 
 		COL_END };
-
-	typedef struct tagObvColliderParams : public BASEPARAM
-	{
-		_bool isEnable = true;
-	}OBVCOLPARAMS;
 
 	typedef struct tagColliderDesc
 	{
@@ -62,7 +56,6 @@ public:
 	void Push_Collision_Message(CCollider* pMessage) {
 		m_Qmessage.push(pMessage);
 	}
-	virtual void Update_Observer(BASEPARAM* pParamDesc) override;
 
 private:
 	class CBounding* m_pBounding = { nullptr };
