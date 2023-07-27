@@ -80,7 +80,8 @@ public:
 	void LookAt(_fvector vTargetPosition);
 	void Rotation(_fvector vAxis, const _float& fRadian);
 	void Rotation(const _float3& rDegrees);
-	void Turn(_fvector vAxis, const _double& TimeDelta);
+	void Turn_Axis(_fvector vAxis, const _double& TimeDelta);
+	void Turn(_fvector vDir, const _double& TimeDelta, const _float& fSpeed);
 	void LeapJump(const _float& fForce, const _double& TimeDelta);
 
 	void Scaled(const _float3& vScale);
@@ -104,7 +105,6 @@ private: /* For. Jump */
 	_bool m_isOnNavigation = { true };
 
 private:
-	void Turn_Axis(_fvector Dir, const _double& TimeDelta, const _float& fSpeed);
 	void Move_Stop_Sliding(const _double& TimeDelta);
 
 public:

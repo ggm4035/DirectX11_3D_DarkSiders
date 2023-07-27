@@ -34,6 +34,16 @@ HRESULT CHit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pAr
 		return E_FAIL;
 	Safe_AddRef(m_pModel);
 
+	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_bool* pIsDead = { nullptr };
+			pBlackBoard->Get_Type(L"isDead", pIsDead);
+			if (nullptr == pIsDead)
+				return false;
+
+			return !(*pIsDead);
+		});
+
 	return S_OK;
 }
 
@@ -62,7 +72,7 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 		return BEHAVIOR_SUCCESS;
 
 	case CGameObject3D::HITTING:
-		*pHitTimeAcc += TimeDelta * 3.f;
+		*pHitTimeAcc += TimeDelta * 4.f;
 
 		if (true == m_pModel->isFinishedAnimation())
 		{

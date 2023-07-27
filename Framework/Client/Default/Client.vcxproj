@@ -163,24 +163,26 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Public\CAction_Attack.h" />
-    <ClInclude Include="..\Public\CAction_Patrol.h" />
+    <ClInclude Include="..\Public\CDead.h" />
+    <ClInclude Include="..\Public\CFallenDog.h" />
+    <ClInclude Include="..\Public\CJump.h" />
+    <ClInclude Include="..\Public\CMove.h" />
+    <ClInclude Include="..\Public\CPattern_Attack.h" />
+    <ClInclude Include="..\Public\CPattern_BackDash.h" />
+    <ClInclude Include="..\Public\CPattern_Patrol.h" />
     <ClInclude Include="..\Public\CLava.h" />
-    <ClInclude Include="..\Public\CPattern.h" />
-    <ClInclude Include="..\Public\CDetect.h" />
+    <ClInclude Include="..\Public\CAction.h" />
     <ClInclude Include="..\Public\CFollow.h" />
     <ClInclude Include="..\Public\CGoblin_Armor.h" />
     <ClInclude Include="..\Public\CLegion_Champion.h" />
+    <ClInclude Include="..\Public\CLookAtTarget.h" />
+    <ClInclude Include="..\Public\CPattern_Roll.h" />
     <ClInclude Include="..\Public\CPlayerAttack.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\Public\CAttack.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CCamera_Free.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\CDead.h" />
     <ClInclude Include="..\Public\CGoblin.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -232,11 +234,8 @@
     <ClInclude Include="..\Public\CRandomLook.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\CRest.h" />
+    <ClInclude Include="..\Public\CRandomSelector.h" />
     <ClInclude Include="..\Public\CSky.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\Public\CSpawn.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CStatic_Object.h">
@@ -254,9 +253,6 @@
     <ClInclude Include="..\Public\CWait.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\CWalk.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\Public\CWeapon.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -267,23 +263,25 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Private\CAction_Attack.cpp" />
+    <ClCompile Include="..\Private\CDead.cpp" />
+    <ClCompile Include="..\Private\CFallenDog.cpp" />
+    <ClCompile Include="..\Private\CJump.cpp" />
+    <ClCompile Include="..\Private\CMove.cpp" />
+    <ClCompile Include="..\Private\CPattern_Attack.cpp" />
     <ClCompile Include="..\Private\CLava.cpp" />
-    <ClCompile Include="..\Private\CPattern.cpp" />
-    <ClCompile Include="..\Private\CDetect.cpp" />
+    <ClCompile Include="..\Private\CAction.cpp" />
     <ClCompile Include="..\Private\CFollow.cpp" />
     <ClCompile Include="..\Private\CGoblin_Armor.cpp" />
     <ClCompile Include="..\Private\CLegion_Champion.cpp" />
+    <ClCompile Include="..\Private\CLookAtTarget.cpp" />
+    <ClCompile Include="..\Private\CPattern_BackDash.cpp" />
+    <ClCompile Include="..\Private\CPattern_Roll.cpp" />
     <ClCompile Include="..\Private\CPlayerAttack.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\Private\CAttack.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CCamera_Free.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\CDead.cpp" />
     <ClCompile Include="..\Private\CGoblin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -319,7 +317,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CAction_Hit.cpp" />
-    <ClCompile Include="..\Private\CAction_Patrol.cpp">
+    <ClCompile Include="..\Private\CPattern_Patrol.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CPlayerMove.cpp">
@@ -335,11 +333,8 @@
     <ClCompile Include="..\Private\CRandomLook.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\CRest.cpp" />
+    <ClCompile Include="..\Private\CRandomSelector.cpp" />
     <ClCompile Include="..\Private\CSky.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\Private\CSpawn.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CStatic_Object.cpp">
@@ -355,9 +350,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CWait.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\Private\CWalk.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CWeapon.cpp">

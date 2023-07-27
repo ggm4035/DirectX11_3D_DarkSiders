@@ -40,7 +40,7 @@ public:
 public:
 	CCollider* Find_Collider(const wstring& wstrColliderTag);
 
-	virtual void Dead_Motion() {}
+	virtual void Dead_Motion(const _double& TimeDelta) {}
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) {}

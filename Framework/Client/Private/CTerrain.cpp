@@ -45,6 +45,7 @@ HRESULT CTerrain::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 void CTerrain::Tick(const _double& TimeDelta)
 {
+	m_fTimeAcc += TimeDelta;
 }
 
 void CTerrain::Late_Tick(const _double& TimeDelta)
@@ -102,18 +103,31 @@ HRESULT CTerrain::SetUp_ShaderResources()
 	Safe_AddRef(pGameInstance);
 
 	_float4x4 InputMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&InputMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
-		&InputMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
-		&InputMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
+		return E_FAIL;
+
+	_float4 InputFloat4 = pGameInstance->Get_Camera_Position();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &InputFloat4, sizeof(_float4))))
+		return E_FAIL;
+
+	_float3 InputFloat3 = _float3(1.f, 0.3f, 0.3f);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vFogColor", &InputFloat3, sizeof(_float3))))
+		return E_FAIL;
+
+	_float InputFloat = 250.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFogRange", &InputFloat, sizeof(_float))))
+		return E_FAIL;
+
+	InputFloat = 0.5f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFogDensity", &InputFloat, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))

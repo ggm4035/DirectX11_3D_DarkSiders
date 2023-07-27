@@ -4,7 +4,6 @@
 #include "CBlackBoard.h"
 #include "CGameInstance.h"
 #include "CPlayer.h"
-#include "CWeapon.h"
 
 CSteamRoller::CSteamRoller(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -34,17 +33,7 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 void CSteamRoller::Tick(const _double& TimeDelta)
 {
-	CGameObject3D::Tick(TimeDelta);
-
-	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
-
-	m_fTimeAcc += TimeDelta;
-
-	m_pRoot->Tick(TimeDelta);
-
-	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
-
-	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
+	CMonster::Tick(TimeDelta);
 }
 
 void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
@@ -181,108 +170,50 @@ HRESULT CSteamRoller::Make_AI()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	/* Root */
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
-		(CComponent**)&m_pRoot, this)))
-		return E_FAIL;
-
-	/* BlackBoard */
-	m_pRoot->Add_Type(L"vDirection", _float3());
-
-	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-
-	m_pRoot->Add_Type(L"isDead", &m_isDead);
-	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
-	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
-	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
-	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
-	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-
-	m_pRoot->Add_Type(L"fCoolTime", &m_fCoolTime);
-	m_pRoot->Add_Type(L"fTimeAcc", &m_fTimeAcc);
-
-	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
-
 	/* Behaviors */
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
 
-	CDetect* pDetect = dynamic_cast<CDetect*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Detect", this));
-	if (nullptr == pDetect)
+	CAction* pAction_Detect = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Detect)
 		return E_FAIL;
 	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
 	if (nullptr == pSequence_Hit)
 		return E_FAIL;
-	CPattern* pPattern = dynamic_cast<CPattern*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Pattern", this));
-	if (nullptr == pPattern)
+	CPattern_Roll* pPattern_Roll = dynamic_cast<CPattern_Roll*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Roll", this));
+	if (nullptr == pPattern_Roll)
 		return E_FAIL;
-	CFollow* pFollow = dynamic_cast<CFollow*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Follow", this));
-	if (nullptr == pFollow)
-		return E_FAIL;
-	CAction_Attack* pSelector_Attack = dynamic_cast<CAction_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector_Attack", this));
-	if (nullptr == pSelector_Attack)
-		return E_FAIL;
-	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
-	if (nullptr == pWait)
+	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
+	if (nullptr == pPattern_Attack)
 		return E_FAIL;
 
-	pWait->Set_LimitTime(1.f);
+	pAction_Detect->Bind_AnimationTag("Enrage");
+	pAction_Detect->Just_One_Time_Action();
 
-	pWait->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			CGameObject3D::HITSTATE* pCurState = { nullptr };
-			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
+	pPattern_Attack->Bind_FollowAnimTag("Walk_F");
+	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
+	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
+	pPattern_Attack->Add_Attack_AnimTag("Attack_3");
 
-			if (CGameObject3D::NONE == *pCurState)
-				return true;
-			else
-				return false;
-		});
-
-	pPattern->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			_float* pTimeAcc = { nullptr };
-			_float* pCoolTime = { nullptr };
-
-			pBlackBoard->Get_Type(L"fTimeAcc", pTimeAcc);
-			pBlackBoard->Get_Type(L"fCoolTime", pCoolTime);
-
-			if (*pTimeAcc < *pCoolTime)
-				return false;
-			else
-				return true;
-		});
-
-	pDetect->Bind_AnimTag("Enrage");
-
-	pFollow->Bind_AnimationTag("Rolling");
-	pFollow->Bind_Move_Speed(2.f);
-	pFollow->Bind_Turn_Speed(0.5f);
-	pFollow->Set_Timer(12.f);
-	pPattern->Bind_AnimationTag("Roll_Start", "Rolling", "Roll_Stop");
-	
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Detect", pDetect)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Action_Detect", pAction_Detect)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Test", pPattern)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Roll", pPattern_Roll)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pSequence_Hit)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Attack", pSelector_Attack)))
-		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;
 
-	if (FAILED(pPattern->Assemble_Behavior(L"Tsk_Pattern_Roll", pFollow)))
+	if (FAILED(pPattern_Roll->Assemble_Childs()))
 		return E_FAIL;
-	
 	if (FAILED(pSequence_Hit->Assemble_Childs()))
 		return E_FAIL;
-	if (FAILED(pSelector_Attack->Assemble_Childs("Walk_F")))
+	if (FAILED(pPattern_Attack->Assemble_Childs()))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

@@ -29,6 +29,7 @@ class ENGINE_DLL CBehavior abstract : public CComponent
 public:
 	typedef struct tagBehavior
 	{
+		HRESULT result = { S_OK };
 		wstring wstrBehaviorTag;
 		CBehavior* pBehavior = { nullptr };
 	}BEHAVIOR;

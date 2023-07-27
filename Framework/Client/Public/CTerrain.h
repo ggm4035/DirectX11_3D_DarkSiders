@@ -45,6 +45,9 @@ private:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 private:
+	_float m_fTimeAcc = { 0.f };
+
+private:
 	virtual HRESULT Add_Components() override;
 	HRESULT SetUp_ShaderResources();
 

@@ -68,12 +68,32 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 		m_pTransformCom->Bind_Navigation(m_pNavigationCom);
 	}
 
+	/* Root */
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
+		(CComponent**)&m_pRoot, this)))
+		return E_FAIL;
+
+	/* BlackBoard */
+	m_pRoot->Add_Type(L"vDirection", _float3());
+	m_pRoot->Add_Type(L"fTimeAcc", &m_fTimeAcc);
+
+	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
+	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
+
+	m_pRoot->Add_Type(L"isDead", &m_isDead);
+	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
+	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
+	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
+
+	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
+
 	return S_OK;
 }
 
 void CMonster::Tick(const _double& TimeDelta)
 {
-	On_Colisions(TimeDelta);
+	m_fTimeAcc += TimeDelta;
 
 	CGameObject3D::Tick(TimeDelta);
 
@@ -123,6 +143,7 @@ void CMonster::AfterFrustumTick(const _double& TimeDelta)
 
 void CMonster::Late_Tick(const _double& TimeDelta)
 {
+	On_Colisions(TimeDelta);
 }
 /* PassNum
 0 : Default
@@ -155,6 +176,14 @@ HRESULT CMonster::Render(/*const _uint& iPassIndex*/)
 	}
 
 	return S_OK;
+}
+
+void CMonster::Dead_Motion(const _double& TimeDelta)
+{
+	m_fHitTimeAcc += TimeDelta;
+
+	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRemove = true;
 }
 
 void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)

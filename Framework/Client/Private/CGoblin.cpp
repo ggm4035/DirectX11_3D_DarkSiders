@@ -34,23 +34,7 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CGoblin::Tick(const _double& TimeDelta)
 {
-	CGameObject3D::Tick(TimeDelta);
-
-	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
-
-	if (false == m_isSpawn)
-	{
-		_vector vPosition = XMLoadFloat4(&m_vResponPosition);
-
-		vPosition.m128_f32[1] = vPosition.m128_f32[1] - 3.f;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	}
-
-	m_pRoot->Tick(TimeDelta);
-
-	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
-	
-	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
+	CMonster::Tick(TimeDelta);
 }
 
 void CGoblin::AfterFrustumTick(const _double& TimeDelta)
@@ -171,78 +155,115 @@ HRESULT CGoblin::Make_AI()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	/* Root */
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
-		(CComponent**)&m_pRoot, this)))
-		return E_FAIL;
-
-	/* BlackBoard */
-	m_pRoot->Add_Type(L"vDirection", _float3());
-
-	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
-	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-
-	m_pRoot->Add_Type(L"isDead", &m_isDead);
-	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
-	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
-	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
-	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
-	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-
-	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
-
 	/* Behaviors */
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
-
-	CSpawn* pSpawn = dynamic_cast<CSpawn*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Spawn", this));
-	if (nullptr == pSpawn)
+	CSequence* pSequence_Explosion = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
+	if (nullptr == pSequence_Explosion)
 		return E_FAIL;
 
-	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
+	CAction* pAction_Spawn = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Spawn)
+		return E_FAIL;
+
+	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
 	if (nullptr == pHit)
 		return E_FAIL;
 
-	CAction_Attack* pAttack = dynamic_cast<CAction_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector_Attack", this));
-	if (nullptr == pAttack)
+	CAction* pAction_Explosion_Start = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Explosion_Start)
+		return E_FAIL;
+	CAction* pAction_Explosion_Run = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Explosion_Run)
+		return E_FAIL;
+	CAction* pAction_Explosion = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Explosion)
 		return E_FAIL;
 
-	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
-	if (nullptr == pWait)
+	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
+	if (nullptr == pPattern_Attack)
 		return E_FAIL;
 
-	pWait->Set_LimitTime(1.f);
+	CJump* pJump = dynamic_cast<CJump*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Jump", this));
+	if (nullptr == pJump)
+		return E_FAIL;
+	CMove* pMove = dynamic_cast<CMove*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Move", this));
+	if (nullptr == pMove)
+		return E_FAIL;
+	CFollow* pFollow = dynamic_cast<CFollow*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Follow", this));
+	if (nullptr == pFollow)
+		return E_FAIL;
+	CDead* pDead = dynamic_cast<CDead*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Dead", this));
+	if (nullptr == pDead)
+		return E_FAIL;
 
-	pWait->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+	pAction_Spawn->Bind_AnimationTag("Spawn");
+	pAction_Spawn->Just_One_Time_Action();
+	pAction_Explosion_Start->Bind_AnimationTag("Explosion_Start");
+	pAction_Explosion_Run->Bind_AnimationTag("Explosion_Run");
+	pAction_Explosion->Bind_AnimationTag("Explosion");
+	pPattern_Attack->Bind_FollowAnimTag("Run");
+	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
+	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
+	pJump->Bind_Jump_Force(0.7f);
+	pMove->Bind_Move_Force(1.f);
+	_float3 vDirection;
+	XMStoreFloat3(&vDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	pMove->Bind_Direction(vDirection);
+	pFollow->Set_Timer(5.f);
+	pFollow->Bind_Move_Speed(2.f);
+
+	pAction_Spawn->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			CGameObject3D::HITSTATE* pCurState = { nullptr };
-			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
-
-			if (CGameObject3D::NONE == *pCurState)
-				return true;
-			else
+			_bool* pIsSpawn = { nullptr };
+			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
+			if (nullptr == pIsSpawn)
 				return false;
+
+			return *pIsSpawn;
+		});
+	
+	pAction_Explosion_Start->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_bool* pIsDead = { nullptr };
+			pBlackBoard->Get_Type(L"isDead", pIsDead);
+			if (nullptr == pIsDead)
+				return false;
+
+			return *pIsDead;
 		});
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Spawn", pSpawn)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Spawn", pAction_Spawn)))
+		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
+		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Explosion", pSequence_Explosion)))
+		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pHit)))
+	if (FAILED(pSequence_Explosion->Assemble_Behavior(L"Action_Explosion_Start", pAction_Explosion_Start)))
+		return E_FAIL;
+	if (FAILED(pSequence_Explosion->Assemble_Behavior(L"Action_Explosion_Run", pAction_Explosion_Run)))
+		return E_FAIL;
+	if (FAILED(pSequence_Explosion->Assemble_Behavior(L"Action_Explosion", pAction_Explosion)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Attack", pAttack)))
+	if (FAILED(pAction_Spawn->Assemble_Behavior(L"Tsk_Jump", pJump)))
+		return E_FAIL;
+	if (FAILED(pAction_Spawn->Assemble_Behavior(L"Tsk_Move", pMove)))
+		return E_FAIL;
+	if (FAILED(pAction_Explosion_Run->Assemble_Behavior(L"Tsk_Follow", pFollow)))
+		return E_FAIL;
+	if (FAILED(pAction_Explosion->Assemble_Behavior(L"Tsk_Dead", pDead)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
-		return E_FAIL;
-
-	pHit->Assemble_Childs();
-	pAttack->Assemble_Childs("Run");
+	pPattern_Attack->Assemble_Childs();
 
 	Safe_Release(pGameInstance);
 

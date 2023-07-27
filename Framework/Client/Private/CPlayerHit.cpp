@@ -4,6 +4,7 @@
 #include "CPlayerAction.h"
 #include "CPlayer.h"
 #include "CModel.h"
+#include "CCollider.h"
 
 CPlayerHit::CPlayerHit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBehavior(pDevice, pContext)
@@ -46,6 +47,7 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 	case CGameObject3D::HIT:
 		pAction->Set_State(CPlayerAction::STATE_HIT);
 		m_pPlayer->Set_CurHitState(CPlayer::HITTING);
+		m_pPlayer->Get_Collider(L"Col_Attack")->Switch_Off();
 		break;
 
 	case CGameObject3D::HITTING:

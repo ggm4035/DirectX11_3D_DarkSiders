@@ -20,30 +20,6 @@ HRESULT CDead::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pA
 	if (FAILED(CBehavior::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-	CGameObject3D* pGameObject = dynamic_cast<CGameObject3D*>(m_pOwner);
-	if (nullptr == pGameObject)
-		return E_FAIL;
-
-	m_pTransform = pGameObject->Get_Transform();
-	if (nullptr == m_pTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pTransform);
-
-	m_pModel = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Model"));
-	if (nullptr == m_pModel)
-		return E_FAIL;
-	Safe_AddRef(m_pModel);
-
-	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			_bool* pIsDead = { nullptr };
-			pBlackBoard->Get_Type(L"isDead", pIsDead);
-			if (nullptr == pIsDead)
-				return false;
-
-			return *pIsDead;
-		});
-
 	return S_OK;
 }
 
@@ -52,24 +28,7 @@ HRESULT CDead::Tick(const _double& TimeDelta)
 	if (false == Check_Decorations())
 		return BEHAVIOR_FAIL;
 
-	m_pTransform->Set_On_Navigation(true);
-
-	if (true == m_isFirst)
-	{
-		m_pModel->Change_Animation("Dead");
-		m_isFirst = false;
-	}
-
-	static_cast<CGameObject3D*>(m_pOwner)->Dead_Motion();
-
-	if(true == m_pModel->isFinishedAnimation())
-	{
-		m_isFirst = true;
-		_bool* pIsRemove = { nullptr };
-		m_pBlackBoard->Get_Type(L"isRemove", pIsRemove);
-		*pIsRemove = true;
-		return BEHAVIOR_SUCCESS;
-	}
+	static_cast<CGameObject3D*>(m_pOwner)->Dead_Motion(TimeDelta);
 
 	return BEHAVIOR_RUNNING;
 }
@@ -102,11 +61,5 @@ CDead* CDead::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 
 void CDead::Free()
 {
-	if (true == m_isCloned)
-	{
-		Safe_Release(m_pTransform);
-		Safe_Release(m_pModel);
-	}
-
 	CBehavior::Free();
 }

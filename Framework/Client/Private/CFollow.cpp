@@ -66,7 +66,6 @@ HRESULT CFollow::Tick(const _double& TimeDelta)
 
 	m_pTransform->Set_On_Navigation(true);
 	m_pTransform->Go(vDirection, TimeDelta * m_fMoveSpeed, m_fTurnSpeed);
-	m_pModel->Change_Animation(m_strAnimTag);
 
 	return BEHAVIOR_RUNNING;
 }

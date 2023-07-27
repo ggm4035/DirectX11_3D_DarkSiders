@@ -40,19 +40,22 @@ HRESULT CNavigation::Initialize_Prototype(const wstring& wstrCellFilePath)
 
 		_ulong dwByte = { 0 };
 		_float3 vPoints[CCell::POINT_END];
+		CCell::OPTION eOption;
 
 		while (true)
 		{
 			ReadFile(hFile, vPoints, sizeof(_float3) * CCell::POINT_END, &dwByte, nullptr);
+
+			ReadFile(hFile, &eOption, sizeof eOption, &dwByte, nullptr);
 			if (0 == dwByte)
 				break;
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
-			CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_vecCells.size(), CCell::OPT_NORMAL, m_pSpherePrototype);
+			CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_vecCells.size(), eOption, m_pSpherePrototype);
 			if (nullptr == pCell)
 				return E_FAIL;
 #else
-			CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_vecCells.size());
+			CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_vecCells.size(), eOption);
 			if (nullptr == pCell)
 				return E_FAIL;
 #endif
@@ -98,6 +101,7 @@ CNavigation::RETURNDESC CNavigation::is_Move(_fvector vPosition)
 {
 	RETURNDESC NaviRetDesc;
 	NaviRetDesc.eMoveType = TYPE_MOVE;
+	NaviRetDesc.eOption = m_vecCells[m_NavigationDesc.iCurrentIndex]->Get_Optioin();
 
 	CCell::RETURNDESC CellRetDesc = m_vecCells[m_NavigationDesc.iCurrentIndex]->is_In(vPosition);
 
@@ -118,6 +122,7 @@ CNavigation::RETURNDESC CNavigation::is_Move(_fvector vPosition)
 			}
 
 			m_NavigationDesc.iCurrentIndex = CellRetDesc.vecNeighborIndex.front();
+			NaviRetDesc.eOption = m_vecCells[m_NavigationDesc.iCurrentIndex]->Get_Optioin();
 
 			CellRetDesc = m_vecCells[CellRetDesc.vecNeighborIndex.front()]->is_In(vPosition);
 

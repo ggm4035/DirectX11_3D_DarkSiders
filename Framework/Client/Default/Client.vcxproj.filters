@@ -34,9 +34,6 @@
     <Filter Include="02. GameObject\01. Monster">
       <UniqueIdentifier>{60686553-c835-48e3-9f9d-bf46657e5fc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. Monster\00. Actions">
-      <UniqueIdentifier>{fa67aaea-8c69-4855-8a46-5295ba1d3cca}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\01. Monster\01. Goblin">
       <UniqueIdentifier>{5ff86110-2e8e-42c6-b3b2-dbb0462cf3be}</UniqueIdentifier>
     </Filter>
@@ -109,11 +106,26 @@
     <Filter Include="02. GameObject\01. Monster\04. SteamRoller">
       <UniqueIdentifier>{3a69def9-e47d-4cc8-9a55-157295d9d094}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. MonoBehaviors\SteamRoller">
-      <UniqueIdentifier>{2c55d1c6-afec-4af9-a62c-9b0a40247a5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\02. Environment\04. Lava">
       <UniqueIdentifier>{69537671-87a9-4da2-b70b-03052dc03423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. MonoBehaviors\Movement">
+      <UniqueIdentifier>{fbcd3817-9ec8-4298-ba4f-d58e3678b44d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns">
+      <UniqueIdentifier>{fa67aaea-8c69-4855-8a46-5295ba1d3cca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\SteamRoller">
+      <UniqueIdentifier>{2c55d1c6-afec-4af9-a62c-9b0a40247a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. MonoBehaviors\Actions">
+      <UniqueIdentifier>{84cf9661-a84d-4f89-8741-b78f0791aa6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\05. FallenDog">
+      <UniqueIdentifier>{ec586f5d-837c-4586-9099-30e7db991efc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\FallenDog">
+      <UniqueIdentifier>{d5fe91f7-7693-428b-b16b-8262591b83ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -137,24 +149,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\CMainApp.h">
       <Filter>00. MainApp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CAttack.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CWalk.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CWait.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CSpawn.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CRandomLook.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CHit.h">
-      <Filter>03. MonoBehaviors</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLoader.h">
       <Filter>01. Level\99. Level_Loading\Loader</Filter>
@@ -214,19 +208,13 @@
       <Filter>02. GameObject\05. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CAction_Hit.h">
-      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CDead.h">
-      <Filter>03. MonoBehaviors</Filter>
+    <ClInclude Include="..\Public\CPattern_Attack.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CAction_Attack.h">
-      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CFollow.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CAction_Patrol.h">
-      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    <ClInclude Include="..\Public\CPattern_Patrol.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CProjectile.h">
       <Filter>02. GameObject\03. Parts\01. Projectile</Filter>
@@ -240,17 +228,8 @@
     <ClInclude Include="..\Public\CGoblin_Armor.h">
       <Filter>02. GameObject\01. Monster\01. Goblin\Goblin_Armor</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CRest.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CDetect.h">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CSteamRoller.h">
       <Filter>02. GameObject\01. Monster\04. SteamRoller</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CPattern.h">
-      <Filter>03. MonoBehaviors\SteamRoller</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLava.h">
       <Filter>02. GameObject\02. Environment\04. Lava</Filter>
@@ -260,6 +239,45 @@
     </ClInclude>
     <ClInclude Include="..\Public\CUI_HpBar.h">
       <Filter>02. GameObject\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPattern_Roll.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\SteamRoller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CFollow.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLookAtTarget.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRandomLook.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CJump.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMove.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAction.h">
+      <Filter>03. MonoBehaviors\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHit.h">
+      <Filter>03. MonoBehaviors\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CWait.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPattern_BackDash.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRandomSelector.h">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CFallenDog.h">
+      <Filter>02. GameObject\01. Monster\05. FallenDog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CDead.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -276,24 +294,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CMainApp.cpp">
       <Filter>00. MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CAttack.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CWalk.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CWait.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CSpawn.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CRandomLook.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CHit.cpp">
-      <Filter>03. MonoBehaviors</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLoader.cpp">
       <Filter>01. Level\99. Level_Loading\Loader</Filter>
@@ -319,8 +319,8 @@
     <ClCompile Include="..\Private\CLegion_Melee.cpp">
       <Filter>02. GameObject\01. Monster\03. Legion\Legion_Melee</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CAction_Patrol.cpp">
-      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+    <ClCompile Include="..\Private\CPattern_Patrol.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CPlayerAttack.cpp">
       <Filter>02. GameObject\00. Player\PlayerActions\00. AttackAction</Filter>
@@ -356,16 +356,10 @@
       <Filter>02. GameObject\05. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CAction_Hit.cpp">
-      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CDead.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CAction_Attack.cpp">
-      <Filter>02. GameObject\01. Monster\00. Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CFollow.cpp">
-      <Filter>03. MonoBehaviors</Filter>
+    <ClCompile Include="..\Private\CPattern_Attack.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CProjectile.cpp">
       <Filter>02. GameObject\03. Parts\01. Projectile</Filter>
@@ -379,17 +373,8 @@
     <ClCompile Include="..\Private\CGoblin_Armor.cpp">
       <Filter>02. GameObject\01. Monster\01. Goblin\Goblin_Armor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CRest.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CDetect.cpp">
-      <Filter>03. MonoBehaviors</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CSteamRoller.cpp">
       <Filter>02. GameObject\01. Monster\04. SteamRoller</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CPattern.cpp">
-      <Filter>03. MonoBehaviors\SteamRoller</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLava.cpp">
       <Filter>02. GameObject\02. Environment\04. Lava</Filter>
@@ -399,6 +384,45 @@
     </ClCompile>
     <ClCompile Include="..\Private\CUI_HpBar.cpp">
       <Filter>02. GameObject\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPattern_Roll.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\SteamRoller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFollow.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLookAtTarget.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRandomLook.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CJump.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMove.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAction.cpp">
+      <Filter>03. MonoBehaviors\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHit.cpp">
+      <Filter>03. MonoBehaviors\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CWait.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPattern_BackDash.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRandomSelector.cpp">
+      <Filter>03. MonoBehaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFallenDog.cpp">
+      <Filter>02. GameObject\01. Monster\05. FallenDog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CDead.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

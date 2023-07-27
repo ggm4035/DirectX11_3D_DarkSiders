@@ -116,7 +116,7 @@ void CTransform::Go(_fvector vDirection, const _double& TimeDelta, const _float&
 	if (nullptr == m_pNavigation)
 		return;
 
-	Turn_Axis(vDirection, TimeDelta, fTurnSpeed);
+	Turn(vDirection, TimeDelta, fTurnSpeed);
 
 	Move_Stop_Sliding(TimeDelta);
 
@@ -215,11 +215,13 @@ _bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
 
 void CTransform::LookAt(_fvector vTargetPosition)
 {
+	_float3 Scales = Get_Scaled();
+
 	_vector vPosition = Get_State(STATE_POSITION);
 
-	_vector vLook = XMVector3Normalize(vTargetPosition - vPosition);
-	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
-	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	_vector vLook = XMVector3Normalize(vTargetPosition - vPosition) * Scales.z;
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * Scales.x;
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * Scales.y;
 
 	Set_State(STATE_RIGHT, vRight);
 	Set_State(STATE_UP, vUp);
@@ -263,7 +265,7 @@ void CTransform::Rotation(const _float3& rDegrees)
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
 }
 
-void CTransform::Turn(_fvector vAxis, const _double& TimeDelta)
+void CTransform::Turn_Axis(_fvector vAxis, const _double& TimeDelta)
 {
 	_vector vRight = Get_State(STATE_RIGHT);
 	_vector vUp = Get_State(STATE_UP);
@@ -364,7 +366,7 @@ void CTransform::Cam_Up(const _double& TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Turn_Axis(_fvector Dir, const _double& TimeDelta, const _float& fSpeed)
+void CTransform::Turn(_fvector Dir, const _double& TimeDelta, const _float& fSpeed)
 {
 	_vector vDir = XMVector3Normalize(Dir);
 	_vector vLook = Get_State(STATE_LOOK);
@@ -378,7 +380,7 @@ void CTransform::Turn_Axis(_fvector Dir, const _double& TimeDelta, const _float&
 		fForce = -fForce;
 
 	if (-0.0f < fDegree && 0.5f > fabs(fForce))
-		Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
+		Turn_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
 }
 
 void CTransform::Move_Stop_Sliding(const _double& TimeDelta)

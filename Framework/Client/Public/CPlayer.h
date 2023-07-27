@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CShader;
 class CModel;
+class CCollider;
 class CNavigation;
 END
 
@@ -23,6 +24,7 @@ public:
 	}PLAYERDESC;
 
 public:
+	CCollider* Get_Collider(const wstring& wstrColliderTag);
 	HITSTATE Get_CurHitState() const {
 		return m_eCurHitState;
 	}

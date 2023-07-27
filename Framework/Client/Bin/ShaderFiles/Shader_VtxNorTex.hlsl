@@ -5,6 +5,12 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_DiffuseTexture[10];
 texture2D g_NormalTexture;
 
+vector g_vCamPosition;
+float g_fFogRange;
+float g_fFogDensity;
+float3 g_vFogColor;
+float3 g_vLavaColor = float3(0.8, 0.4, 0.2);
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -84,6 +90,27 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     
     vNormal = mul(vNormal, WorldMatrix);
+    
+    float distance = length(g_vCamPosition - In.vWorldPos);
+    
+    // 픽셀과 용암의 거리 계산
+    float lavaDistance = In.vWorldPos.y - 2.f;
+    
+    // 용암 근처의 물체는 빛나도록 빛의 강도 계산
+    float lavaIntensity = 1.0f - saturate(lavaDistance * 0.4f);
+     
+    
+    // 용암 빛 효과를 곱하여 최종 용암 빛 색상 계산
+    float3 lavaColor = g_vLavaColor * lavaIntensity;
+    
+    // 포그 적용을 위한 계산
+    float fogFactor = saturate(distance / g_fFogRange); // 포그가 적용되는 정도 계산
+    float fogAmount = 1.0f - exp(-fogFactor * fogFactor * g_fFogDensity); // 포그의 강도 계산
+    
+    // 최종 색상 계산
+    vDiffuse += float4(lavaColor.xyz, 1.f);
+    vDiffuse = lerp(vDiffuse, float4(g_vFogColor, 1.0f), fogAmount);
+    vNormal = lerp(vNormal, float3(0.0f, 0.0f, 1.0f), fogAmount);
     
     Out.vDiffuse = vDiffuse;
     Out.vDiffuse.a = 1.f;

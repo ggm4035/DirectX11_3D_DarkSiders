@@ -18,7 +18,7 @@ private:
 	virtual ~CWait() = default;
 
 public:
-	void Set_LimitTime(const _float& fTime) {
+	void Set_Timer(const _float& fTime) {
 		m_fLimit = fTime;
 	}
 

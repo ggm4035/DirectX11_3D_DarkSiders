@@ -3,6 +3,7 @@
 #include "CRoot.h"
 #include "CSelector.h"
 #include "CSequence.h"
+#include "CRandomSelector.h"
 
 /* Player Actions */
 #include "CPlayerAction.h"
@@ -15,17 +16,17 @@
 /* Behaviors */
 #include "CHit.h"
 #include "CWait.h"
-#include "CWalk.h"
-#include "CRest.h"
+#include "CMove.h"
+#include "CJump.h"
 #include "CDead.h"
-#include "CSpawn.h"
-#include "CDetect.h"
 #include "CFollow.h"
-#include "CAttack.h"
-#include "CPattern.h"
+#include "CAction.h"
 #include "CRandomLook.h"
+#include "CLookAtTarget.h"
 
-/* Monster Actions */
+/* Monster Patterns */
 #include "CAction_Hit.h"
-#include "CAction_Patrol.h"
-#include "CAction_Attack.h"
+#include "CPattern_Roll.h"
+#include "CPattern_Patrol.h"
+#include "CPattern_Attack.h"
+#include "CPattern_BackDash.h"

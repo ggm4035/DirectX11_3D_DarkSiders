@@ -39,7 +39,6 @@ HRESULT CWait::Tick(const _double& TimeDelta)
 		return BEHAVIOR_FAIL;
 
 	m_fTimeAcc += TimeDelta;
-	m_pModel->Change_Animation("Idle");
 
 	if (m_fTimeAcc >= m_fLimit)
 	{

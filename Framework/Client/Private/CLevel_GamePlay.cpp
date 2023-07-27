@@ -54,8 +54,8 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 
 	LightDesc.eType = CLight::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.5f, -1.f, 0.8f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 0.75f, 0.75f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 0.75f, 0.75f, 1.f);
+	LightDesc.vDiffuse = _float4(1.f, 0.7f, 0.7f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 0.7f, 0.7f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(LightDesc)))
@@ -71,7 +71,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FILEDATA FileData;
-	if (FAILED(pGameInstance->Load("../../Data/testmap.dat", FileData)))
+	if (FAILED(pGameInstance->Load("../../Data/Monstertest.dat", FileData)))
 		return E_FAIL;
 
 	CTerrain::TERRAINDESC TerrainDesc;
@@ -206,6 +206,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 		{
 			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_SteamRoller",
 				L"Monster_SteamRoller", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
+
+		if (wstring::npos != wstrObjTag.find(L"FallenDog"))
+		{
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_FallenDog",
+				L"Monster_FallenDog", pLayerTag, &MonsterDesc)))
 				return E_FAIL;
 		}
 

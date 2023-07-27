@@ -38,6 +38,7 @@ public:
 	virtual HRESULT Render(/*const _uint& iPassIndex = 0*/);
 
 public:
+	virtual void Dead_Motion(const _double& TimeDelta) override;
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
@@ -53,15 +54,17 @@ protected:
 
 protected:
 	_bool m_isSpawn = { false };
-	_bool m_isSpawnEnd = { false };
 	_bool m_isAbleAttack = { false };
 	_bool m_isRangeInPlayer = { false };
 
-	_float m_fHitTimeAcc = { 0.f };
+	_float m_fTimeAcc = { 0.f };
 
 protected:
 	virtual HRESULT Add_Components() override;
 	HRESULT Set_Shader_Resources();
+
+private:
+	_float m_fHitTimeAcc = { 0.f };
 
 public:
 	virtual void Free() override;

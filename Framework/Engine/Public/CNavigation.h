@@ -23,6 +23,7 @@ public:
 	{
 		MOVETYPE eMoveType;
 		_float3 vSlide;
+		CCell::OPTION eOption;
 	}RETURNDESC;
 
 private:
@@ -40,7 +41,7 @@ public:
 
 private:
 	NAVIGATIONDESC m_NavigationDesc;
-	vector<class CCell*> m_vecCells;
+	vector<CCell*> m_vecCells;
 
 private:
 	HRESULT SetUp_Neighbors();

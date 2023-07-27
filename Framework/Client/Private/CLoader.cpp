@@ -14,6 +14,7 @@
 #include "CLegion_Melee.h"
 #include "CLegion_Champion.h"
 #include "CSteamRoller.h"
+#include "CFallenDog.h"
 #include "CWeapon.h"
 
 #include "CUI_Overlay.h"
@@ -155,7 +156,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("¸ðµ¨ ·Îµù Áß.");
 
 	FILEDATA FileData;
-	m_pGameInstance->Load("../../Data/testmap.dat", FileData);
+	m_pGameInstance->Load("../../Data/Monstertest.dat", FileData);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"VIBuffer_Terrain",
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
@@ -186,12 +187,22 @@ HRESULT CLoader::Load_Level_GamePlay()
 	string FilePath;
 	MODEL_BINARYDATA Data;
 
-	/* Goblin Model */
+	/* SteamRoller Model */
 	m_pGameInstance->ReadModel("../../Data/SteamRoller.dat", FilePath, Data);
 
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_SteamRoller",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* SteamRoller Model */
+	m_pGameInstance->ReadModel("../../Data/FallenDog.dat", FilePath, Data);
+
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_FallenDog",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
 		return E_FAIL;
 	Safe_Delete_BinaryData(Data);
@@ -320,6 +331,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Monster_SteamRoller */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_SteamRoller",
 		CSteamRoller::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Monster_FallenDog */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_FallenDog",
+		CFallenDog::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Monster_Goblin */

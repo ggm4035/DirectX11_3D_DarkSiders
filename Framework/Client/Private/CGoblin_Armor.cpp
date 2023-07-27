@@ -131,7 +131,7 @@ HRESULT CGoblin_Armor::Add_Components()
 		return E_FAIL;
 
 	/* Col_Attack_Range */
-	SphereDesc.fRadius = 5.f;
+	SphereDesc.fRadius = 2.f;
 	SphereDesc.eGroup = CCollider::COL_ENEMY_MELEE_RANGE;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
 		return E_FAIL;
@@ -159,93 +159,80 @@ HRESULT CGoblin_Armor::Make_AI()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	/* Root */
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
-		(CComponent**)&m_pRoot, this)))
-		return E_FAIL;
-
-	/* BlackBoard */
-	m_pRoot->Add_Type(L"vDirection", _float3());
-
-	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
-	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-
-	m_pRoot->Add_Type(L"isDead", &m_isDead);
-	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
-	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
-	m_pRoot->Add_Type(L"isSpawnEnd", &m_isSpawnEnd);
-	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
-	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-
-	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
-
 	/* Behaviors */
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
 
-	CRest* pRest = dynamic_cast<CRest*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Rest", this));
-	if (nullptr == pRest)
+	CAction* pAction_Rest = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Rest)
 		return E_FAIL;
 	CSelector* pSelector_Alert = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector_Alert)
 		return E_FAIL;
 
-	CDetect* pDetect = dynamic_cast<CDetect*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Detect", this));
-	if (nullptr == pDetect)
+	CAction* pAction_Detect = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Detect)
 		return E_FAIL;
 	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
 	if (nullptr == pSequence_Hit)
 		return E_FAIL;
-	CAction_Patrol* pSequence_Patrol = dynamic_cast<CAction_Patrol*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Patrol", this));
+	CPattern_Patrol* pSequence_Patrol = dynamic_cast<CPattern_Patrol*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Patrol", this));
 	if (nullptr == pSequence_Patrol)
 		return E_FAIL;
-	CAction_Attack* pSelector_Attack = dynamic_cast<CAction_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector_Attack", this));
-	if (nullptr == pSelector_Attack)
+	CPattern_BackDash* pPattern_BackDash = dynamic_cast<CPattern_BackDash*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_BackDash", this));
+	if (nullptr == pPattern_BackDash)
 		return E_FAIL;
-	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
-	if (nullptr == pWait)
+	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
+	if (nullptr == pPattern_Attack)
 		return E_FAIL;
 
-	pWait->Set_LimitTime(1.f);
-
-	pWait->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			CGameObject3D::HITSTATE* pCurState = { nullptr };
-			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
-
-			if (CGameObject3D::NONE == *pCurState)
-				return true;
-			else
+			_bool* pIsSpawn = { nullptr };
+			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
+			if (nullptr == pIsSpawn)
 				return false;
+
+			if (true == *pIsSpawn)
+				cout << "True" << endl;
+			else
+				cout << "False" << endl;
+
+			return !(*pIsSpawn);
 		});
 
-	pRest->Add_AnimTag("Sit");
-	pDetect->Bind_AnimTag("Sit_End");
+	pAction_Rest->Bind_AnimationTag("Sit");
+	pAction_Detect->Bind_AnimationTag("Sit_End");
+	pAction_Detect->Just_One_Time_Action();
+	pPattern_Attack->Bind_FollowAnimTag("Run");
+	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
+	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Rest", pRest)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Rest", pAction_Rest)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Alert", pSelector_Alert)))
 		return E_FAIL;
 
-	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Tsk_Detect", pDetect)))
+	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Action_Detect", pAction_Detect)))
 		return E_FAIL;
 	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Sequence_Hit", pSequence_Hit)))
 		return E_FAIL;
 	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Sequence_Patrol", pSequence_Patrol)))
 		return E_FAIL;
-	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Selector_Attack", pSelector_Attack)))
+	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Pattern_BackDash", pPattern_BackDash)))
 		return E_FAIL;
-	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Tsk_Wait", pWait)))
+	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;
 
 	pSequence_Hit->Assemble_Childs();
 	pSequence_Patrol->Assemble_Childs();
-	pSelector_Attack->Assemble_Childs("Run");
+	pPattern_BackDash->Assemble_Childs();
+	pPattern_Attack->Assemble_Childs();
 
 	Safe_Release(pGameInstance);
 

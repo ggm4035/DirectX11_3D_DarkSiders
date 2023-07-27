@@ -6,8 +6,18 @@
 #include "CPlayerAction.h"
 #include "CWeapon.h"
 
+CCollider* CPlayer::Get_Collider(const wstring& wstrColliderTag)
+{
+	auto iter = m_umapColliders.find(wstrColliderTag);
+
+	if (iter == m_umapColliders.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CGameObject3D(pDevice, pContext)
+	: CGameObject3D(pDevice, pContext)
 {
 }
 
@@ -162,7 +172,7 @@ HRESULT CPlayer::Add_Components()
 
 	/* Navigation */
 	CNavigation::NAVIGATIONDESC NaviDesc;
-	NaviDesc.iCurrentIndex = 0;
+	NaviDesc.iCurrentIndex = 290;
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
 		(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
 		return E_FAIL;

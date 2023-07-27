@@ -203,6 +203,11 @@ HRESULT CMainApp::Ready_Behaviors()
 		CSequence::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* RandomSelector */
+	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"RandomSelector",
+		CRandomSelector::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* ==== Monster Behaviors ==== */
 
 	/* Tsk_RandomLook */
@@ -210,29 +215,14 @@ HRESULT CMainApp::Ready_Behaviors()
 		CRandomLook::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Tsk_Walk */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Walk",
-		CWalk::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* Tsk_Wait */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Wait",
 		CWait::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Tsk_Spawn */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Spawn",
-		CSpawn::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* Tsk_Hit */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Hit",
 		CHit::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* Tsk_Attack */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Attack",
-		CAttack::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* Tsk_Dead */
@@ -245,26 +235,31 @@ HRESULT CMainApp::Ready_Behaviors()
 		CFollow::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Tsk_Rest */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Rest",
-		CRest::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* Tsk_Detect */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Detect",
-		CDetect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* Tsk_Pattern */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Pattern",
-		CPattern::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Action",
+		CAction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_LookAtTarget */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_LookAtTarget",
+		CLookAtTarget::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Jump */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Jump",
+		CJump::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Move */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Move",
+		CMove::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* ==== Monster Actions ==== */
 
 	/* Sequence_Patrol */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Sequence_Patrol",
-		CAction_Patrol::Create(m_pDevice, m_pContext))))
+		CPattern_Patrol::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* Sequence_Hit */
@@ -273,8 +268,18 @@ HRESULT CMainApp::Ready_Behaviors()
 		return E_FAIL;
 
 	/* Selector_Attack */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Selector_Attack",
-		CAction_Attack::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Pattern_Attack",
+		CPattern_Attack::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Pattern_Roll */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Pattern_Roll",
+		CPattern_Roll::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Pattern_BackDash */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Pattern_BackDash",
+		CPattern_BackDash::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

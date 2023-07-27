@@ -165,7 +165,9 @@ HRESULT CAnimation::Bind_Notifys(class CGameObject3D* pGameObject)
 			{
 				CCollider* pCollider = dynamic_cast<CCollider*>(pGameObject->Find_Collider(NotifyTag));
 				if (nullptr != pCollider)
+				{
 					Observer.ObserverList.push_back((IObserver_Animation*)pCollider);
+				}
 			}
 		}
 	}

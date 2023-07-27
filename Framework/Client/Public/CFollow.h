@@ -23,9 +23,6 @@ public:
 	virtual HRESULT Tick(const _double& TimeDelta);
 
 public:
-	void Bind_AnimationTag(const string& strAnimTag) {
-		m_strAnimTag = strAnimTag;
-	}
 	void Bind_Move_Speed(const _float& fMoveSpeed) {
 		m_fMoveSpeed = fMoveSpeed;
 	}
@@ -38,12 +35,12 @@ public:
 	}
 
 private:
-	string m_strAnimTag = { "" };
-	_float m_fMoveSpeed = { 0.f };
-	_float m_fTurnSpeed = { 0.f };
+	_float m_fMoveSpeed = { 1.f };
+	_float m_fTurnSpeed = { 5.f };
+
+	_bool m_isUseTimer = { false };
 	_float m_fTimeAcc = { 0.f };
 	_float m_fLimit = { 0.f };
-	_bool m_isUseTimer = { false };
 
 	CTransform* m_pTransform = { nullptr };
 	CModel* m_pModel = { nullptr };

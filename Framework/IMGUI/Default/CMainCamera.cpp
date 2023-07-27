@@ -96,12 +96,12 @@ void CMainCamera::KeyInput(const _double& TimeDelta)
 
         if (dwMouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
         {
-            m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (dwMouseMove)*TimeDelta / 10.f);
+            m_pTransformCom->Turn_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (dwMouseMove)*TimeDelta / 10.f);
         }
 
         if (dwMouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
         {
-            m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), (dwMouseMove)*TimeDelta / 10.f);
+            m_pTransformCom->Turn_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (dwMouseMove)*TimeDelta / 10.f);
         }
     }
 
