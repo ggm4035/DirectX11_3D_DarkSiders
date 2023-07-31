@@ -83,8 +83,8 @@ PS_OUT PS_MAIN_PHONG(PS_IN_PHONG In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    vector vDiffuse = g_DiffuseTexture[2].Sample(PointSampler, In.vTexUV * 10.f);
-    vector vNormalDesc = g_NormalTexture.Sample(PointSampler, In.vTexUV * 10.f);
+    vector vDiffuse = g_DiffuseTexture[2].Sample(PointSampler, In.vTexUV * 40.f);
+    vector vNormalDesc = g_NormalTexture.Sample(PointSampler, In.vTexUV * 40.f);
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);

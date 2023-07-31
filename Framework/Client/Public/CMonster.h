@@ -65,6 +65,8 @@ protected:
 
 private:
 	_float m_fHitTimeAcc = { 0.f };
+	_bool m_isSuperArmor = { false };
+
 
 public:
 	virtual void Free() override;

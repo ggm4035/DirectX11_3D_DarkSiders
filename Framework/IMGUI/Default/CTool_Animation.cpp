@@ -238,7 +238,6 @@ void CTool_Animation::Make_New_Model(CGameInstance* pGameInstance, list<class CD
             m_pModel = pObject;
 
             TOOL->m_pCamera->Set_AnimationView();
-            TOOL->m_pAnimationWindow->Set_Model(pObject);
 
             /* Add Animation */
             for (_uint i = 1; i < Data.iNumAnimations; ++i)
@@ -246,6 +245,9 @@ void CTool_Animation::Make_New_Model(CGameInstance* pGameInstance, list<class CD
                 m_pModel->Get_Model()->Add_Animation(Data.vecAnimations[i]);
             }
             m_vecAnimationDatas = m_pModel->Get_Model()->Get_AnimationDatas();
+
+            WINDOWMGR->Refresh_All_Window();
+            TOOL->m_pAnimationWindow->Set_Model(pObject);
 
             Safe_Delete_BinaryData(Data);
         }
@@ -332,8 +334,8 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
     _float fTime = { 0.f };
     _float fOffset = { 0 };
 
-    _uint iRootFrameIndex = TOOL->m_pAnimationWindow->m_iCurrentRootFrame;
-    _uint iMaxFrameIndex = TOOL->m_pAnimationWindow->m_iCurrentFrame;
+    _uint iRootFrameIndex = m_pModel->Get_Model()->Get_iCurrentRootKeyFrameIndex();
+    _uint iMaxFrameIndex = m_pModel->Get_Model()->Get_iCurrentKeyFrameIndex();
     vTranslation = m_pModel->Get_Model()->Get_Translation(iRootFrameIndex);
     fTime = m_pModel->Get_Model()->Get_KeyFrameTime(iMaxFrameIndex);
 
@@ -342,9 +344,10 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
     _float arrOffsets[3] = { 0.f, 0.f, 0.f };
 
     ImGui::DragFloat3("Translation", arr, 0.01f, -100.f, 100.f, "%.2f");
+
     if (ImGui::DragFloat3("Offsets##Translation", arrOffsets, 0.01f, -100.f, 100.f, "%.2f"))
     {
-        for (_uint i = 0; i < m_pModel->Get_Model()->Get_MaxRootKeyFrame(); ++i)
+        for (_uint i = 0; i < m_pModel->Get_Model()->Get_iNumRootBoneKeyFrame(); ++i)
         {
             vTranslation = m_pModel->Get_Model()->Get_Translation(i);
             vTranslation.x += arrOffsets[0];
@@ -354,11 +357,17 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
             m_pModel->Get_Model()->Set_Translation(i, vTranslation);
         }
     }
+    else
+    {
+        vTranslation = _float3(arr[0], arr[1], arr[2]);
+        m_pModel->Get_Model()->Set_Translation(iRootFrameIndex, vTranslation);
+    }
+
     _float arrPer[3] = { 1.f, 1.f, 1.f };
 
     if (ImGui::DragFloat3("Persentage##Translation", arrPer, 0.01f, -100.f, 100.f, "%.2f"))
     {
-        for (_uint i = 0; i < m_pModel->Get_Model()->Get_MaxRootKeyFrame(); ++i)
+        for (_uint i = 0; i < m_pModel->Get_Model()->Get_iNumRootBoneKeyFrame(); ++i)
         {
             vTranslation = m_pModel->Get_Model()->Get_Translation(i);
             vTranslation.x *= arrPer[0];
@@ -369,17 +378,11 @@ void CTool_Animation::KeyFrameSetting(CGameInstance* pGameInstance)
         }
     }
 
-    else
-    {
-        vTranslation = _float3(arr[0], arr[1], arr[2]);
-        m_pModel->Get_Model()->Set_Translation(iRootFrameIndex, vTranslation);
-    }
-
     ImGui::DragFloat("Time", &fTime, 0.001f, 0.f, 500.f);
 
     if (ImGui::DragFloat("Offset", &fOffset, 0.001f, -1.f, 1.f))
     {
-        for (_uint i = 0; i < m_pModel->Get_Model()->Get_MaxKeyFrame(); ++i)
+        for (_uint i = 0; i < m_pModel->Get_Model()->Get_iMaxKeyFrame(); ++i)
         {
             fTime = m_pModel->Get_Model()->Get_KeyFrameTime(i);
 

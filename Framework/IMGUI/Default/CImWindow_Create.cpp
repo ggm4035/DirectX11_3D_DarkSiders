@@ -4,6 +4,7 @@
 #include "CToolInstance.h"
 #include "CImWindow_Manager.h"
 #include "CDummyObject3D.h"
+#include "CDummyTrigger.h"
 
 #include "CImWindow_Top.h"
 
@@ -32,7 +33,14 @@ void CImWindow_Create::Tick(const _double& TimeDelta)
 
     ImGui::Begin("Create");
 
-    Create_Object();
+    static _int iOption = { 0 };
+    ImGui::RadioButton("Object##CreateObjectOption", &iOption, 0); ImGui::SameLine();
+    ImGui::RadioButton("Trigger##CreateTriggerOption", &iOption, 1);
+
+    if (0 == iOption)
+        Create_Object();
+    else
+        Create_Trigger();
 
     ImGui::End();
 }
@@ -74,8 +82,8 @@ void CImWindow_Create::Create_Object()
                 /* string 소문자로 변환 */
                 string strSearchTag = m_szSearchTag;
                 transform(strSearchTag.begin(), strSearchTag.end(), strSearchTag.begin(), [](_char c) {
-                        return tolower(c);
-                });
+                    return tolower(c);
+                    });
 
                 list<CComponent*> PrototypeList = pGameInstance->Get_All_Prototypes();
                 _uint iNumPrototypes = PrototypeList.size();
@@ -92,7 +100,7 @@ void CImWindow_Create::Create_Object()
                     string strTemp = pstrTags[iIndex];
                     transform(strTemp.begin(), strTemp.end(), strTemp.begin(), [](_char c) {
                         return tolower(c);
-                    });
+                        });
 
                     if (string::npos != pstrTags[iIndex].find(m_Types[i]) &&
                         ((0 == strSearchTag.size()) || (string::npos != strTemp.find(strSearchTag))))
@@ -135,7 +143,7 @@ void CImWindow_Create::Create_Object()
     ImGui::RadioButton("Monster", &iSelectLayer, 1);
 
     m_eCurLayer = (LAYERTYPE)iSelectLayer;
-    
+
     static _int clicked = 0;
 
     if (ImGui::Button("Create Object"))
@@ -176,13 +184,13 @@ void CImWindow_Create::Create_Object()
 
         TOOL->m_pCurrentObject = pObject;
 
+        m_bIsOpen = false;
         ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * TYPE_END);
         ZeroMemory(m_szObjectName, sizeof(_char) * 256);
-        m_bIsOpen = false;
-        clicked = { 0 };
         for (_uint i = 0; i < TYPE_END; ++i)
             m_bTypes[i] = false;
 
+        clicked = { 0 };
         m_bIsPicking = false;
     }
 
@@ -207,11 +215,83 @@ void CImWindow_Create::Create_Object()
     if (ImGui::Button("Exit"))
     {
         m_bIsOpen = false;
-        ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * 3);
-        ZeroMemory(m_szObjectName, sizeof(_char) * TYPE_END);
+        ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * TYPE_END);
+        ZeroMemory(m_szObjectName, sizeof(_char) * 256);
         for (_uint i = 0; i < TYPE_END; ++i)
             m_bTypes[i] = false;
+
         clicked = { 0 };
+        m_iCloneNum = { 0 };
+
+        m_bIsPicking = false;
+    }
+
+    Safe_Release(pGameInstance);
+}
+
+void CImWindow_Create::Create_Trigger()
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    ImGui::Text("Object Name");
+    ImGui::Separator();
+    ImGui::SetNextItemWidth(300.f);
+    ImGui::InputText("##TriggerName", m_szObjectName, 256);
+
+    ImGui::DragFloat3("Extents", m_arrExtents, 0.01f, 0.f, 600.f, "%.2f");
+    ImGui::DragFloat3("Position##TriggerPosition", m_arrPosition, 0.01f, 0.f, 600.f, "%.2f");
+
+    static _bool isPick = { false };
+
+    if (ImGui::Button("Pick Position##Trigger"))
+        isPick = true;
+
+    if(true == isPick)
+    {
+        _float3 vPos;
+        _vector vCheckPos = Get_PickPos(pGameInstance);
+
+        if (false == XMVector4Equal(vCheckPos, XMVectorZero()))
+        {
+            XMStoreFloat3(&vPos, vCheckPos);
+            m_arrPosition[0] = vPos.x;
+            m_arrPosition[1] = vPos.y;
+            m_arrPosition[2] = vPos.z;
+
+            isPick = false;
+        }
+    }
+
+    if (ImGui::Button("Create Object"))
+    {
+        CTrigger::TRIGGERDESC Desc;
+        
+        Desc.vExtents = _float3(m_arrExtents[0], m_arrExtents[1], m_arrExtents[2]);
+        Desc.vPosition = _float4(m_arrPosition[0], m_arrPosition[1], m_arrPosition[2], 1.f);
+
+        if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_DummyTrigger",
+            pGameInstance->strToWStr(m_szObjectName), L"Layer_Trigger", &Desc)))
+            return;
+
+        WINDOWMGR->Refresh_All_Window();
+
+        m_bIsOpen = false;
+        ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * TYPE_END);
+        ZeroMemory(m_szObjectName, sizeof(_char) * 256);
+        for (_uint i = 0; i < TYPE_END; ++i)
+            m_bTypes[i] = false;
+
+        m_bIsPicking = false;
+    }
+
+    if (ImGui::Button("Exit"))
+    {
+        m_bIsOpen = false;
+        ZeroMemory(m_szPrototypeTag, sizeof(_char) * 256 * TYPE_END);
+        ZeroMemory(m_szObjectName, sizeof(_char) * 256);
+        for (_uint i = 0; i < TYPE_END; ++i)
+            m_bTypes[i] = false;
         m_iCloneNum = { 0 };
 
         m_bIsPicking = false;
@@ -222,55 +302,76 @@ void CImWindow_Create::Create_Object()
 
 void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
 {
-    if (g_hWnd == ::GetFocus() && pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+    _vector vPickPos = Get_PickPos(pGameInstance);
+
+    if (true == XMVector4Equal(vPickPos, XMVectorZero()))
+        return;
+
+    _char szNum[8] = { "" };
+    _char szObjName[256] = { "" };
+    strcpy_s(szObjName, m_szObjectName);
+    _itoa_s(m_iCloneNum, szNum, 10);
+    strcat_s(szObjName, szNum);
+
+    while (nullptr != Find_GameObject(pGameInstance->strToWStr(szObjName), m_eCurLayer))
     {
-        _char szNum[8] = { "" };
-        _char szObjName[256] = { "" };
+        ++m_iCloneNum;
         strcpy_s(szObjName, m_szObjectName);
         _itoa_s(m_iCloneNum, szNum, 10);
         strcat_s(szObjName, szNum);
+    }
 
-        while (nullptr != Find_GameObject(pGameInstance->strToWStr(szObjName), m_eCurLayer))
-        {
-            ++m_iCloneNum;
-            strcpy_s(szObjName, m_szObjectName);
-            _itoa_s(m_iCloneNum, szNum, 10);
-            strcat_s(szObjName, szNum);
-        }
+    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
+        pGameInstance->strToWStr(szObjName), m_LayerTag[m_eCurLayer])))
+        return;
 
-        if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
-            pGameInstance->strToWStr(szObjName), m_LayerTag[m_eCurLayer])))
-            return;
+    WINDOWMGR->Refresh_All_Window();
 
+    CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(szObjName), m_eCurLayer);
+    if (nullptr == pObject)
+        return;
+
+    /* Rasterizer */
+    D3D11_RASTERIZER_DESC RasterizerDesc;
+    ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+
+    RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+    RasterizerDesc.FrontCounterClockwise = { false };
+    RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+
+    if (nullptr != TOOL->m_pCurrentObject &&
+        false == TOOL->m_pTopWindow->isSolidMode())
+        TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+
+    RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+    pObject->Set_RasterizerState(RasterizerDesc);
+
+    /* Components */
+    pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
+    pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
+    pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));
+    pObject->Add_Model(pGameInstance->strToWStr(m_szPrototypeTag[MODEL]));
+
+    pObject->Set_Tag(pGameInstance->strToWStr(szObjName));
+
+    if (0 > vPickPos.m128_f32[3])
+    {
+        pGameInstance->Remove_GameObject(pObject->Get_Tag());
         WINDOWMGR->Refresh_All_Window();
+        return;
+    }
 
-        CDummyObject3D* pObject = Find_GameObject(pGameInstance->strToWStr(szObjName), m_eCurLayer);
-        if (nullptr == pObject)
-            return;
+    pObject->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPickPos);
 
-        /* Rasterizer */
-        D3D11_RASTERIZER_DESC RasterizerDesc;
-        ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+    TOOL->m_pCurrentObject = pObject;
 
-        RasterizerDesc.CullMode = { D3D11_CULL_BACK };
-        RasterizerDesc.FrontCounterClockwise = { false };
-        RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+    ++m_iCloneNum;
+}
 
-        if (nullptr != TOOL->m_pCurrentObject &&
-            false == TOOL->m_pTopWindow->isSolidMode())
-            TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
-
-        RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
-        pObject->Set_RasterizerState(RasterizerDesc);
-
-        /* Components */
-        pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
-        pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
-        pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));
-        pObject->Add_Model(pGameInstance->strToWStr(m_szPrototypeTag[MODEL]));
-
-        pObject->Set_Tag(pGameInstance->strToWStr(szObjName));
-
+_vector CImWindow_Create::Get_PickPos(CGameInstance* pGameInstance)
+{
+    if (g_hWnd == ::GetFocus() && pGameInstance->Mouse_Down(CInput_Device::DIM_LB))
+    {
         POINT ptMouse;
         GetCursorPos(&ptMouse);
         ScreenToClient(g_hWnd, &ptMouse);
@@ -278,26 +379,13 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
         CDummyObject3D* pTerrain = Find_GameObject(L"Terrain");
         if (nullptr == pTerrain)
         {
-            pGameInstance->Remove_GameObject(pObject->Get_Tag());
-            WINDOWMGR->Refresh_All_Window();
-            return;
+            return XMVectorZero();
         }
 
-        _vector vPickPos = pGameInstance->Picking_On_Triangle(ptMouse, pTerrain->Get_Buffer(), pTerrain->Get_Transform());
-
-        if (0 > vPickPos.m128_f32[3])
-        {
-            pGameInstance->Remove_GameObject(pObject->Get_Tag());
-            WINDOWMGR->Refresh_All_Window();
-            return;
-        }
-
-        pObject->Get_Transform()->Set_State(CTransform::STATE_POSITION, vPickPos);
-
-        TOOL->m_pCurrentObject = pObject;
-
-        ++m_iCloneNum;
+        return pGameInstance->Picking_On_Triangle(ptMouse, pTerrain->Get_Buffer(), pTerrain->Get_Transform());
     }
+
+    return XMVectorZero();
 }
 
 void CImWindow_Create::Free()

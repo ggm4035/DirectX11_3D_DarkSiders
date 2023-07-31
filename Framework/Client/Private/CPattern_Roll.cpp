@@ -49,6 +49,8 @@ HRESULT CPattern_Roll::Tick(const _double& TimeDelta)
 
 	if (BEHAVIOR_SUCCESS == hr)
 		m_fPreTimeAcc = *pTimeAcc;
+
+	return hr;
 }
 
 HRESULT CPattern_Roll::Assemble_Childs()
@@ -72,6 +74,7 @@ HRESULT CPattern_Roll::Assemble_Childs()
 
 	pStart->Bind_AnimationTag("Roll_Start");
 	pRunning->Bind_AnimationTag("Rolling");
+	pRunning->NotLerp();
 	pEnd->Bind_AnimationTag("Roll_Stop");
 
 	pFollow->Bind_Move_Speed(2.f);
@@ -99,7 +102,7 @@ CPattern_Roll* CPattern_Roll::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created CMonster_Hit");
+		MSG_BOX("Failed to Created CPattern_Roll");
 		Safe_Release(pInstance);
 	}
 
@@ -112,7 +115,7 @@ CPattern_Roll* CPattern_Roll::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
-		MSG_BOX("Failed to Cloned CMonster_Hit");
+		MSG_BOX("Failed to Cloned CPattern_Roll");
 		Safe_Release(pInstance);
 	}
 

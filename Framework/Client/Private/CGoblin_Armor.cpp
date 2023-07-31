@@ -30,8 +30,8 @@ HRESULT CGoblin_Armor::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 4;
-	m_Status.iMaxHP = 4;
+	m_Status.iHP = 6;
+	m_Status.iMaxHP = 6;
 
 	return S_OK;
 }
@@ -58,6 +58,14 @@ HRESULT CGoblin_Armor::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CGoblin_Armor::Dead_Motion(const _double& TimeDelta)
+{
+	CMonster::Dead_Motion(TimeDelta);
+
+	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRemove = true;
 }
 
 void CGoblin_Armor::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -174,7 +182,7 @@ HRESULT CGoblin_Armor::Make_AI()
 	CAction* pAction_Detect = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Detect)
 		return E_FAIL;
-	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
+	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
 	if (nullptr == pSequence_Hit)
 		return E_FAIL;
 	CPattern_Patrol* pSequence_Patrol = dynamic_cast<CPattern_Patrol*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Patrol", this));
@@ -193,11 +201,6 @@ HRESULT CGoblin_Armor::Make_AI()
 			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
 			if (nullptr == pIsSpawn)
 				return false;
-
-			if (true == *pIsSpawn)
-				cout << "True" << endl;
-			else
-				cout << "False" << endl;
 
 			return !(*pIsSpawn);
 		});
@@ -220,7 +223,7 @@ HRESULT CGoblin_Armor::Make_AI()
 
 	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Action_Detect", pAction_Detect)))
 		return E_FAIL;
-	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Sequence_Hit", pSequence_Hit)))
+	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Action_Hit", pSequence_Hit)))
 		return E_FAIL;
 	if (FAILED(pSelector_Alert->Assemble_Behavior(L"Sequence_Patrol", pSequence_Patrol)))
 		return E_FAIL;

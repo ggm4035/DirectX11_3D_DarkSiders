@@ -16,12 +16,9 @@ CDummyObject3D::CDummyObject3D(const CDummyObject3D& rhs)
 
 MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
 {
-    vector<MODEL_BINARYDATA>* pModels = TOOL->m_pAnimModelDatas;
-
     MODEL_BINARYDATA retData;
 
-    
-    for (auto& Data : *pModels)
+    for (auto& Data : *TOOL->m_pAnimModelDatas)
     {
         wstring wstrTag = { L"Model_" };
         wstrTag += Data.szTag;
@@ -34,10 +31,7 @@ MODEL_BINARYDATA CDummyObject3D::Get_Model_BinaryData()
         }
     }
 
-    pModels = TOOL->m_pModelDatas;
-
-
-    for (auto& Data : *pModels)
+    for (auto& Data : *TOOL->m_pModelDatas)
     {
         wstring wstrTag = { L"Model_" };
         wstrTag += Data.szTag;

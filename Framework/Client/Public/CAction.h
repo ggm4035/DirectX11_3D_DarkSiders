@@ -30,6 +30,9 @@ public:
 	void Just_One_Time_Action() {
 		m_isOneTimeAction = true;
 	}
+	void NotLerp() {
+		m_isLerp = false;
+	}
 
 private:
 	string m_strAnimationTag = { "" };
@@ -38,6 +41,7 @@ private:
 	_bool m_isOneTimeAction = { false };
 	_bool m_isFirstAction = { true };
 	_bool m_isFirst = { true };
+	_bool m_isLerp = { true };
 
 private:
 	CModel* m_pModel = { nullptr };

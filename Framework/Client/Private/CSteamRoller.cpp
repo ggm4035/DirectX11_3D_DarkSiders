@@ -62,7 +62,6 @@ void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
 	Safe_Release(pGameInstance);
 }
 
-/* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CSteamRoller::Late_Tick(const _double& TimeDelta)
 {
 	On_Colisions(TimeDelta);
@@ -74,6 +73,14 @@ HRESULT CSteamRoller::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CSteamRoller::Dead_Motion(const _double& TimeDelta)
+{
+	CMonster::Dead_Motion(TimeDelta);
+
+	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRemove = true;
 }
 
 void CSteamRoller::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -178,7 +185,7 @@ HRESULT CSteamRoller::Make_AI()
 	CAction* pAction_Detect = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Detect)
 		return E_FAIL;
-	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
+	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
 	if (nullptr == pSequence_Hit)
 		return E_FAIL;
 	CPattern_Roll* pPattern_Roll = dynamic_cast<CPattern_Roll*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Roll", this));
@@ -191,6 +198,7 @@ HRESULT CSteamRoller::Make_AI()
 	pAction_Detect->Bind_AnimationTag("Enrage");
 	pAction_Detect->Just_One_Time_Action();
 
+	pPattern_Roll->Set_CoolTime(15.f);
 	pPattern_Attack->Bind_FollowAnimTag("Walk_F");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
@@ -204,7 +212,7 @@ HRESULT CSteamRoller::Make_AI()
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Roll", pPattern_Roll)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pSequence_Hit)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pSequence_Hit)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;

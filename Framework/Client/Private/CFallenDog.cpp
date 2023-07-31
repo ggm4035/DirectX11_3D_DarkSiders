@@ -25,8 +25,8 @@ HRESULT CFallenDog::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 30;
-	m_Status.iMaxHP = 30;
+	m_Status.iHP = 25;
+	m_Status.iMaxHP = 25;
 
 	return S_OK;
 }
@@ -76,9 +76,31 @@ HRESULT CFallenDog::Render()
 	return S_OK;
 }
 
+void CFallenDog::Dead_Motion(const _double& TimeDelta)
+{
+	CMonster::Dead_Motion(TimeDelta);
+
+	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRemove = true;
+}
+
 void CFallenDog::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		Collision.pOther->Get_Damaged();
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Huge_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		_float4 vPosition;
+		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		Collision.pOther->Get_Damaged_Knockback(vPosition);
+	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
@@ -128,7 +150,7 @@ HRESULT CFallenDog::Add_Components()
 	CBounding_AABB::AABBDESC AABBDesc;
 
 	/* Col_Body */
-	AABBDesc.vExtents = _float3(2.f, 2.f, 2.f);
+	AABBDesc.vExtents = _float3(1.5f, 1.5f, 1.5f);
 	AABBDesc.eGroup = CCollider::COL_ENEMY;
 	AABBDesc.vOffset = _float3(0.f, 2.f, 0.f);
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Body", &AABBDesc)))
@@ -142,15 +164,15 @@ HRESULT CFallenDog::Add_Components()
 		return E_FAIL;
 
 	/* Col_Attack_Range */
-	SphereDesc.fRadius = 5.f;
+	SphereDesc.fRadius = 8.f;
 	SphereDesc.eGroup = CCollider::COL_ENEMY_MELEE_RANGE;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
 		return E_FAIL;
 
 	/* Add_Col_Attack */
-	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
+	AABBDesc.vExtents = _float3(2.f, 0.5f, 2.f);
 	AABBDesc.eGroup = CCollider::COL_ENEMY_ATK;
-	AABBDesc.vOffset = _float3(0.f, 0.5f, 1.f);
+	AABBDesc.vOffset = _float3(0.f, 0.5f, 2.f);
 	AABBDesc.isEnable = false;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack", &AABBDesc)))
 		return E_FAIL;
@@ -174,40 +196,89 @@ HRESULT CFallenDog::Make_AI()
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
-
-	CAction* pAction_Detect = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
-	if (nullptr == pAction_Detect)
+	CSequence* pSequence_Spawn = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
+	if (nullptr == pSequence_Spawn)
 		return E_FAIL;
-	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
+	CSequence* pSequence_Hit = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
 	if (nullptr == pSequence_Hit)
+		return E_FAIL;
+
+	CAction* pAction_Spawn = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Spawn)
+		return E_FAIL;
+	CAction* pAction_Breath = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Breath)
+		return E_FAIL;
+	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
+	if (nullptr == pHit)
+		return E_FAIL;
+	CAction* pAction_Dead = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Dead)
 		return E_FAIL;
 	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
 	if (nullptr == pPattern_Attack)
 		return E_FAIL;
 
-	pAction_Detect->Bind_AnimationTag("Breath");
-	pAction_Detect->Just_One_Time_Action();
+	CDead* pDead = dynamic_cast<CDead*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Dead", this));
+	if (nullptr == pDead)
+		return E_FAIL;
+
+	pAction_Spawn->Bind_AnimationTag("Spawn");
+	pAction_Spawn->Just_One_Time_Action();
+	pAction_Breath->Bind_AnimationTag("Breath");
+	pHit->Not_Impact();
+	pAction_Dead->Bind_AnimationTag("Finish");
 
 	pPattern_Attack->Bind_FollowAnimTag("Walk_F");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_3");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_Head");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_Slam");
+	pPattern_Attack->Add_Attack_AnimTag("3Hit");
+
+	pSequence_Spawn->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_bool* pIsSpawn = { nullptr };
+			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
+			if (nullptr == pIsSpawn)
+				return false;
+
+			return *pIsSpawn;
+		});
+
+	pAction_Dead->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_bool* pIsDead = { nullptr };
+			pBlackBoard->Get_Type(L"isDead", pIsDead);
+			if (nullptr == pIsDead)
+				return false;
+
+			return *pIsDead;
+		});
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Action_Detect", pAction_Detect)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Spawn", pSequence_Spawn)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pSequence_Hit)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pSequence_Hit)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;
 
-	if (FAILED(pSequence_Hit->Assemble_Childs()))
+	if (FAILED(pSequence_Spawn->Assemble_Behavior(L"Action_Spawn", pAction_Spawn)))
 		return E_FAIL;
+	if (FAILED(pSequence_Spawn->Assemble_Behavior(L"Action_Breath", pAction_Breath)))
+		return E_FAIL;
+	if (FAILED(pSequence_Hit->Assemble_Behavior(L"Tsk_Hit", pHit)))
+		return E_FAIL;
+	if (FAILED(pSequence_Hit->Assemble_Behavior(L"Action_Dead", pAction_Dead)))
+		return E_FAIL;
+
+	if (FAILED(pAction_Dead->Assemble_Behavior(L"Tsk_Dead", pDead)))
+		return E_FAIL;
+
 	if (FAILED(pPattern_Attack->Assemble_Childs()))
 		return E_FAIL;
 

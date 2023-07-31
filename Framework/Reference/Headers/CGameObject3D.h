@@ -16,7 +16,7 @@ public:
 		_int iAttack = { 0 };
 	}STATUS;
 
-	enum HITSTATE { NONE, HIT, HITTING, HIT_END };
+	enum HITSTATE { NONE, HIT, HITTING, KNOCKBACK, HIT_END };
 
 protected:
 	explicit CGameObject3D(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
@@ -24,10 +24,14 @@ protected:
 	virtual ~CGameObject3D() = default;
 
 public:
+	const STATUS& Get_Status() const {
+		return m_Status;
+	}
 	CTransform* Get_Transform() const {
 		return m_pTransformCom;
 	}
 	void Get_Damaged();
+	virtual void Get_Damaged_Knockback(const _float4& vPosition) {}
 
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
@@ -60,9 +64,9 @@ protected:
 	void Tick_Colliders(_fmatrix WorldMatrix);
 	void On_Colisions(const _double& TimeDelta);
 
+	HRESULT Add_Colliders_Debug_Render_Group(class CRenderer* pRenderer);
 #ifdef _DEBUG
 #endif // _DEBUG
-	HRESULT Add_Colliders_Debug_Render_Group(class CRenderer* pRenderer);
 
 protected:
 	virtual HRESULT Add_Components() = 0;

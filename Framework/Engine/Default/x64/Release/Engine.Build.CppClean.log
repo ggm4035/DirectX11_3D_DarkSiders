@@ -1,5 +1,4 @@
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\vc142.pdb
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cfont_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cfont.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cfileinfo.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cdecoration.obj
@@ -10,6 +9,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccollid
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccollider.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cchannel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccell.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccamera.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccalculator.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbounding_sphere.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbounding_obb.obj
@@ -19,7 +19,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbone.o
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbase.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\capplication.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\canimation.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctarget_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cshader.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\crendertarget.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\crenderer.obj
@@ -39,6 +38,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinput_
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgraphic_device.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameinstance.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cfrustum.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cfont_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine_struct.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\timer_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\timer.obj
@@ -50,8 +50,10 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuff
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_cube.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_coordnate.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctrigger.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctransform.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctexture.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctarget_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csequence.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cselector.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\croot.obj
@@ -61,8 +63,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clayer.
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameobject3d.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameobjectui.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameobject.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccamera_manager.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ccamera.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cblackboard.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbehavior.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
@@ -81,5 +81,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\fxc.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\fxc.write.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.command.1.tlog
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.delete.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.read.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine.tlog\link.write.1.tlog

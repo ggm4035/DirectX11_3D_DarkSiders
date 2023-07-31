@@ -15,10 +15,11 @@ class CPlayerAction final : public CBehavior
 	friend class CPlayerController;
 
 public:
-	enum STATE { STATE_IDLE, STATE_RUN, STATE_DASH, STATE_HIT, 
+	enum STATE { STATE_IDLE, STATE_RUN, STATE_DASH, STATE_HIT, STATE_KNOCKBACK,
 		STATE_LATK_1, STATE_LATK_2, STATE_LATK_3, STATE_LATK_4,
 		STATE_HATK_1, STATE_HATK_2, STATE_HATK_3, 
-		STATE_JUMP, STATE_DOUBLE_JUMP, STATE_JUMP_LAND, STATE_END };
+		STATE_JUMP, STATE_DOUBLE_JUMP, STATE_JUMP_LAND, 
+		STATE_WHEEL, STATE_END };
 
 private:
 	explicit CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -40,6 +41,9 @@ public:
 	
 	virtual HRESULT Tick(const _double& TimeDelta);
 
+public:
+	HRESULT AssembleBehaviors();
+
 private:
 	STATE m_eCurState = { STATE_END };
 	STATE m_ePreState = { STATE_END };
@@ -56,9 +60,9 @@ private:
 	class CPlayerMove* m_pMoveAction = { nullptr };
 	class CPlayerJump* m_pJumpAction = { nullptr };
 	class CPlayerAttack* m_pAttackAction = { nullptr };
+	class CPlayerKnockback* m_pKnockbackAction = { nullptr };
 
-private:
-	HRESULT AssembleBehaviors();
+	class CWheelWind* m_pSkillWheelWind = { nullptr };
 
 public:
 	static CPlayerAction* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

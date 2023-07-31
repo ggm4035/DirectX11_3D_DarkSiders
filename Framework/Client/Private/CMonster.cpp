@@ -151,7 +151,7 @@ void CMonster::Late_Tick(const _double& TimeDelta)
 */
 HRESULT CMonster::Render(/*const _uint& iPassIndex*/)
 {
-	if (FAILED(Set_Shader_Resources()))
+	if (FAILED(CMonster::Set_Shader_Resources()))
 		return E_FAIL;
 
 	_uint iPassNum = { 0 };
@@ -181,9 +181,6 @@ HRESULT CMonster::Render(/*const _uint& iPassIndex*/)
 void CMonster::Dead_Motion(const _double& TimeDelta)
 {
 	m_fHitTimeAcc += TimeDelta;
-
-	if (true == m_pModelCom->isFinishedAnimation())
-		m_isRemove = true;
 }
 
 void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)

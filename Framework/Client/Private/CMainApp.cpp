@@ -6,6 +6,7 @@
 #include "CLevel_Loading.h"
 #include "CPlayer.h"
 #include "CWeapon.h"
+#include "CCamera_Free.h"
 #include "CUI_Rect.h"
 
 CMainApp::CMainApp()
@@ -262,8 +263,8 @@ HRESULT CMainApp::Ready_Behaviors()
 		CPattern_Patrol::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* Sequence_Hit */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Sequence_Hit",
+	/* Action_Hit */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Action_Hit",
 		CAction_Hit::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -280,6 +281,16 @@ HRESULT CMainApp::Ready_Behaviors()
 	/* Pattern_BackDash */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Pattern_BackDash",
 		CPattern_BackDash::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Pattern_Wheel */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Pattern_Wheel",
+		CPattern_Wheel::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Boss_Attack */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Boss_Attack",
+		CBoss_Attack::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;
@@ -338,6 +349,16 @@ HRESULT CMainApp::Ready_Player()
 		CPlayerAttack::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For. Player_Knockback */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerKnockback",
+		CPlayerKnockback::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Player_WheelWind */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerWheelWind",
+		CWheelWind::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -345,6 +366,10 @@ HRESULT CMainApp::Ready_Parts()
 {
 	/* For. Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Weapon", CWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Camera_Free */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Camera_Free", CCamera_Free::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

@@ -25,6 +25,7 @@ public:
 	virtual HRESULT Render();
 
 public:
+	virtual void Dead_Motion(const _double& TimeDelta) override;
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;

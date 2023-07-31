@@ -6,6 +6,7 @@
 
 #include "CGameObject3D.h"
 #include "CDummyObject3D.h"
+#include "CDummyTrigger.h"
 #include "CGameObjectUI.h"
 
 #include "CTransform.h"
@@ -29,7 +30,15 @@ void CImWindow_Inspector::Tick(const _double& TimeDelta)
     ImGui::SetNextWindowSize(ImVec2(320, 763), ImGuiCond_Always);
     ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize);
 
-    Show_Components();
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    ImGui::SeparatorText("GameObject");
+    Show_Components(pGameInstance);
+    ImGui::SeparatorText("Trigger");
+    Show_Trigger(pGameInstance);
+
+    Safe_Release(pGameInstance);
 
     ImGui::End();
 }
@@ -39,30 +48,13 @@ void CImWindow_Inspector::Refresh()
     CImWindow::Refresh();
 }
 
-void CImWindow_Inspector::Show_ObjectInfo(CGameInstance* pGameInstance)
-{
-    if (ImGui::CollapsingHeader("ObjectInfo", ImGuiTreeNodeFlags_None))
-    {
-        ImGui::Text("Navigation Index##ObjInfo");
-        _int iNaviIndex = TOOL->m_pCurrentObject->m_iNavigationIndex;
-
-        ImGui::InputInt("##navigation_index_objInfo", &iNaviIndex);
-        TOOL->m_pCurrentObject->m_iNavigationIndex = iNaviIndex;
-
-        ImGui::Separator();
-    }
-}
-
-void CImWindow_Inspector::Show_Components()
+void CImWindow_Inspector::Show_Components(CGameInstance* pGameInstance)
 {
     if (nullptr == TOOL->m_pCurrentObject)
         return;
     
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
 
-
-    ImGui::Text("Tag"); ImGui::SameLine();
+    ImGui::Text("Tag##GameObjectInsp"); ImGui::SameLine();
     strcpy_s(m_szTag, pGameInstance->wstrToStr(TOOL->m_pCurrentObject->Get_Tag()).c_str());
 
     if (ImGui::InputText(" ", m_szTag, 256))
@@ -82,7 +74,20 @@ void CImWindow_Inspector::Show_Components()
     if (TOOL->m_pCurrentObject->Get_Shader())
         Show_Shader();
 
-    Safe_Release(pGameInstance);
+}
+
+void CImWindow_Inspector::Show_ObjectInfo(CGameInstance* pGameInstance)
+{
+    if (ImGui::CollapsingHeader("ObjectInfo", ImGuiTreeNodeFlags_None))
+    {
+        ImGui::Text("Navigation Index##ObjInfo");
+        _int iNaviIndex = TOOL->m_pCurrentObject->m_iNavigationIndex;
+
+        ImGui::InputInt("##navigation_index_objInfo", &iNaviIndex);
+        TOOL->m_pCurrentObject->m_iNavigationIndex = iNaviIndex;
+
+        ImGui::Separator();
+    }
 }
 
 void CImWindow_Inspector::Show_Transform()
@@ -148,6 +153,47 @@ void CImWindow_Inspector::Show_Buffer()
     {
 
     }
+}
+
+void CImWindow_Inspector::Show_Trigger(CGameInstance* pGameInstance)
+{
+    if (nullptr == TOOL->m_pCurrentTrigger)
+        return;
+
+    ImGui::Text("Tag##TriggerInsp"); ImGui::SameLine();
+    strcpy_s(m_szTag, pGameInstance->wstrToStr(TOOL->m_pCurrentTrigger->Get_Tag()).c_str());
+
+    if (ImGui::InputText(" ", m_szTag, 256))
+    {
+        string strTag = m_szTag;
+        TOOL->m_pCurrentTrigger->Set_Tag(pGameInstance->strToWStr(strTag));
+    }
+
+    ImGui::Text("Position");
+
+    CTransform* pTransform = TOOL->m_pCurrentTrigger->Get_Transform();
+    _vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
+
+    ImGui::SetNextItemWidth(50.f);
+    ImGui::DragFloat("Pos_X", &vPos.m128_f32[0], 0.01f, -10000.f, 10000.f, "%.2f"); ImGui::SameLine();
+    ImGui::SetNextItemWidth(50.f);
+    ImGui::DragFloat("Pos_Y", &vPos.m128_f32[1], 0.01f, -10000.f, 10000.f, "%.2f"); ImGui::SameLine();
+    ImGui::SetNextItemWidth(50.f);
+    ImGui::DragFloat("Pos_Z", &vPos.m128_f32[2], 0.01f, -10000.f, 10000.f, "%.2f");
+
+    pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+
+    ImGui::Text("Extents");
+    _float3 vExtents = TOOL->m_pCurrentTrigger->Get_TriggerDesc().vExtents;
+
+    ImGui::SetNextItemWidth(50.f);
+    ImGui::DragFloat("Extent_X", &vExtents.x, 0.01f, -10000.f, 10000.f, "%.2f");
+    ImGui::SetNextItemWidth(50.f);
+    ImGui::DragFloat("Extent_Y", &vExtents.y, 0.01f, -10000.f, 10000.f, "%.2f");
+    ImGui::SetNextItemWidth(50.f);
+    ImGui::DragFloat("Extent_Z", &vExtents.z, 0.01f, -10000.f, 10000.f, "%.2f");
+
+    TOOL->m_pCurrentTrigger->Set_Extents(vExtents);
 }
 
 void CImWindow_Inspector::Show_Shader()

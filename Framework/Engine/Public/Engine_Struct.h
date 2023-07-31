@@ -234,6 +234,13 @@ namespace Engine
 		MODEL_BINARYDATA BinaryData;
 	}MODELDATA;
 
+	typedef struct tagTriggerData
+	{
+		_tchar szTriggerTag[MAX_PATH] = { L"" };
+		_float3 vExtents;
+		_float4 vPosition;
+	}TRIGGERDATA;
+
 	typedef struct tagFileData
 	{
 		/* Player */
@@ -248,5 +255,6 @@ namespace Engine
 		/* Models */
 		vector<MODELDATA> vecModelData;
 		vector<MODELDATA> vecMonsterData;
+		vector<TRIGGERDATA> vecTriggerData;
 	}FILEDATA;
 }

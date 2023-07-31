@@ -71,7 +71,7 @@ private:
 	_bool m_isFollowAnimation = { true };
 
 	_uint m_iBlockIndex = { 0 };
-	_uint m_iRootBoneIndex = { 0 };
+	_uint m_iRootBoneIndex = { 0 }; /* 루트 본의 키프레임을 찾기 위한 용도임 */
 
 private:
 	CAnimation* m_pLerpAnimation = { nullptr };
@@ -108,13 +108,6 @@ public: /* !!! Warrning !!! Only Tool */
 	vector<KEYFRAME>& Get_KeyFrames();
 	vector<KEYFRAME>& Get_RootKeyFrames();
 
-	const _uint& Get_CurrentKeyFrameIndex() const {
-		return m_vecChannelCurrentKeyFrames[m_iMaxFramesIndex];
-	}
-
-	const _uint& Get_MaxRootKeyFrames() const {
-		return m_iMaxNumRootFrames;
-	}
 	const _uint& Get_CurrentRootKeyFrameIndex() const {
 		return m_vecChannelCurrentKeyFrames[m_iRootBoneIndex];
 	}
@@ -122,7 +115,7 @@ public: /* !!! Warrning !!! Only Tool */
 	void Set_RootKeyFrame(const _uint& iIndex);
 
 private:
-	_uint m_iMaxNumRootFrames = { 0 };
+	_uint m_iNumRootBoneFrames = { 0 };
 	_uint m_iMaxFramesIndex = { 0 };
 	_uint m_iMaxNumFrames = { 0 };
 	_bool m_isPause = { false };

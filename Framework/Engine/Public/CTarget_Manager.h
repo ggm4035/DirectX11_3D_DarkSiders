@@ -22,10 +22,10 @@ public:
 	HRESULT End_MRT(ID3D11DeviceContext* pContext);
 	HRESULT Bind_ShaderResourceView(const wstring& wstrTargetTag, class CShader* pShader, const string& wstrConstantName);
 
-#ifdef _DEBUG
 public:
 	HRESULT Ready_Debug(const wstring& wstrTargetTag, const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY);
 	HRESULT Render(const wstring& wstrMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+#ifdef _DEBUG
 #endif
 
 private:

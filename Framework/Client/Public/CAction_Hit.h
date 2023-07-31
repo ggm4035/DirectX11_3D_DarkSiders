@@ -21,6 +21,18 @@ public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	HRESULT Assemble_Childs();
+	
+public:
+	void Not_Impact() {
+		m_isImpact = false;
+	}
+	void Not_Look() {
+		m_isLook = false;
+	}
+
+private:
+	_bool m_isLook = { true };
+	_bool m_isImpact = { true };
 
 public:
 	static CAction_Hit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

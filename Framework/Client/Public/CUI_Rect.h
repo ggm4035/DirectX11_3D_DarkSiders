@@ -18,8 +18,11 @@ class CUI_Rect final : public CGameObjectUI
 public:
 	typedef struct tagUIRectDesc : public CGameObjectUI::UIDESC
 	{
+		const _int* pMaxHp = { nullptr };
+		const _int* pHp = { nullptr };
 		_uint iTextureLevelIndex = { 0 };
 		wstring wstrTextureTag = { L"" };
+		_uint iPassNum = { 2 };
 	}UIRECTDESC;
 
 protected:
@@ -33,6 +36,12 @@ public:
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
+
+private:
+	_float m_fTimeAcc = { 0.f };
+	_uint m_iPassNum = { 0 };
+	const _int* m_pMaxHp = { nullptr };
+	const _int* m_pHp = { nullptr };
 
 private:
 	CRenderer* m_pRendererCom = { nullptr };

@@ -111,7 +111,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Effects11d.lib;DirectXTKd.lib;dxguid.lib;dinput8.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLib/</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -157,7 +157,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Effects11.lib;DirectXTK.lib;dxguid.lib;dinput8.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLib/</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -183,12 +183,7 @@
     <ClInclude Include="..\Public\CBounding_OBB.h" />
     <ClInclude Include="..\Public\CBounding_Sphere.h" />
     <ClInclude Include="..\Public\CCalculator.h" />
-    <ClInclude Include="..\Public\CCamera.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\Public\CCamera_Manager.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="..\Public\CCamera.h" />
     <ClInclude Include="..\Public\CCell.h" />
     <ClInclude Include="..\Public\CChannel.h" />
     <ClInclude Include="..\Public\CCollider.h" />
@@ -244,9 +239,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CShader.h" />
+    <ClInclude Include="..\Public\CSound_Manager.h" />
     <ClInclude Include="..\Public\CTarget_Manager.h" />
     <ClInclude Include="..\public\CTexture.h" />
     <ClInclude Include="..\Public\CTransform.h" />
+    <ClInclude Include="..\Public\CTrigger.h" />
     <ClInclude Include="..\Public\CVIBuffer.h" />
     <ClInclude Include="..\Public\CVIBuffer_Coordnate.h" />
     <ClInclude Include="..\Public\CVIBuffer_Cube.h" />
@@ -283,12 +280,7 @@
     <ClCompile Include="..\Private\CBounding_OBB.cpp" />
     <ClCompile Include="..\Private\CBounding_Sphere.cpp" />
     <ClCompile Include="..\Private\CCalculator.cpp" />
-    <ClCompile Include="..\Private\CCamera.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\Private\CCamera_Manager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\Private\CCamera.cpp" />
     <ClCompile Include="..\Private\CCell.cpp" />
     <ClCompile Include="..\Private\CChannel.cpp" />
     <ClCompile Include="..\Private\CCollider.cpp" />
@@ -346,9 +338,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CShader.cpp" />
+    <ClCompile Include="..\Private\CSound_Manager.cpp" />
     <ClCompile Include="..\Private\CTarget_Manager.cpp" />
     <ClCompile Include="..\private\CTexture.cpp" />
     <ClCompile Include="..\Private\CTransform.cpp" />
+    <ClCompile Include="..\Private\CTrigger.cpp" />
     <ClCompile Include="..\Private\CVIBuffer.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Coordnate.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Cube.cpp" />

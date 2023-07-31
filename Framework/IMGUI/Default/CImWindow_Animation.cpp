@@ -19,8 +19,8 @@ void CImWindow_Animation::Set_Model(CDummyObject3D* pModel)
 
 void CImWindow_Animation::Refresh_Animation()
 {
-    m_iMaxKeyFrames = m_pModelCom->Get_MaxKeyFrame();
-    m_iMaxRootKeyFrames = m_pModelCom->Get_MaxRootKeyFrame();
+    m_iMaxKeyFrames = m_pModelCom->Get_iMaxKeyFrame();
+    m_iMaxRootKeyFrames = m_pModelCom->Get_iNumRootBoneKeyFrame();
     m_iCurrentFrame = 0;
     m_iCurrentRootFrame = 0;
 }
@@ -78,8 +78,8 @@ void CImWindow_Animation::Show_Animation_KeyFrame(CGameInstance* pGameInstance)
     if (ImGui::Button("Stop", ImVec2(50, 50)))
         ;
 
-    m_iCurrentFrame = m_pModelCom->Get_CurrentKeyFrameIndex();
-    m_iCurrentRootFrame = m_pModelCom->Get_CurrentRootKeyFrameIndex();
+    m_iCurrentFrame = m_pModelCom->Get_iCurrentKeyFrameIndex();
+    m_iCurrentRootFrame = m_pModelCom->Get_iCurrentRootKeyFrameIndex();
 
     if (ImGui::SliderInt("Animation Frame", &m_iCurrentFrame, 0, m_iMaxKeyFrames - 2))
     {

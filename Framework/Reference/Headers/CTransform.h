@@ -48,6 +48,9 @@ public:
 	_vector Get_State(STATE _eState) {
 		return XMLoadFloat4x4(&m_WorldMatrix).r[_eState];
 	}
+	_bool isJump() const {
+		return m_isJump;
+	}
 	void Set_State(STATE _eState, _fvector _vState);
 	void Set_Angle(const _float3& vAngle) {
 		m_vAngle = vAngle;
@@ -73,6 +76,7 @@ public:
 	void Go(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed = 5.f);
 	void Repersive(_fvector vOtherDir, const _double& TimeDelta);
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
+	void Chase_Lerp(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance);
 	_bool Jump(const _float& fForce, const _double& TimeDelta);
 	void Reset_TimeAcc() {
 		m_fTimeAcc = 0.f;
@@ -82,7 +86,6 @@ public:
 	void Rotation(const _float3& rDegrees);
 	void Turn_Axis(_fvector vAxis, const _double& TimeDelta);
 	void Turn(_fvector vDir, const _double& TimeDelta, const _float& fSpeed);
-	void LeapJump(const _float& fForce, const _double& TimeDelta);
 
 	void Scaled(const _float3& vScale);
 
@@ -103,6 +106,7 @@ private:
 private: /* For. Jump */
 	_float m_fTimeAcc = { 0.f };
 	_bool m_isOnNavigation = { true };
+	_bool m_isJump = { false };
 
 private:
 	void Move_Stop_Sliding(const _double& TimeDelta);

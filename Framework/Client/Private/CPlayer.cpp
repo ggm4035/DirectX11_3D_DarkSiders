@@ -5,6 +5,14 @@
 
 #include "CPlayerAction.h"
 #include "CWeapon.h"
+#include "CRoot.h"
+
+void CPlayer::Get_Damaged_Knockback(const _float4& _vPosition)
+{
+	_vector vPosition = XMLoadFloat4(&_vPosition);
+	m_pTransformCom->LookAt(vPosition);
+	m_pActionCom->Set_State(CPlayerAction::STATE_KNOCKBACK);
+}
 
 CCollider* CPlayer::Get_Collider(const wstring& wstrColliderTag)
 {
@@ -14,6 +22,11 @@ CCollider* CPlayer::Get_Collider(const wstring& wstrColliderTag)
 		return nullptr;
 
 	return iter->second;
+}
+
+CGameObject* CPlayer::Get_Parts(const wstring& wstrPartsTag)
+{
+	return Find_Parts(wstrPartsTag);
 }
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -48,7 +61,20 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 		m_pTransformCom->Set_Angle(reinterpret_cast<PLAYERDESC*>(pArg)->vAngle);
 	}
 
+	if (FAILED(m_pRoot->Assemble_Behavior(L"PlayerAction", m_pActionCom)))
+		return E_FAIL;
+
+	if (FAILED(m_pActionCom->AssembleBehaviors()))
+		return E_FAIL;
+
+	/* Setup Notify */
+	if (FAILED(m_pModelCom->Setup_Notifys()))
+		return E_FAIL;
+
 	CGameInstance::GetInstance()->Set_Player(this);
+
+	m_Status.iMaxHP = 100;
+	m_Status.iHP = 100;
 
 	return S_OK;
 }
@@ -56,6 +82,17 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 void CPlayer::Tick(const _double& TimeDelta)
 {
 	CGameObject3D::Tick(TimeDelta);
+
+	m_fHitTimeAcc += TimeDelta * 2.f;
+	if (HIT == m_eCurHitState)
+		m_fHitTimeAcc = 0.f;
+
+	if (CCell::OPT_LAVA == m_pNavigationCom->Get_Cur_Cell_Option() &&
+		m_fHitTimeAcc > 1.5f && false == m_pTransformCom->isJump())
+	{
+		m_fHitTimeAcc = 0.f;
+		Get_Damaged();
+	}
 	
 	m_pActionCom->Tick(TimeDelta);
 
@@ -86,9 +123,9 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
+#ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
 			return;
-#ifdef _DEBUG
 #endif
 	}
 
@@ -113,6 +150,10 @@ HRESULT CPlayer::Render()
 	if (FAILED(Set_Shader_Resources()))
 		return E_FAIL;
 
+	_uint iPassNum = { 0 };
+
+	if (NONE != m_eCurHitState)
+		iPassNum = 1;
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
@@ -122,7 +163,7 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, TYPE_DIFFUSE);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, TYPE_NORMALS);
 
-		if (FAILED(m_pShaderCom->Begin(0)))
+		if (FAILED(m_pShaderCom->Begin(iPassNum)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
@@ -134,12 +175,15 @@ HRESULT CPlayer::Render()
 
 void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
-		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	if ((Collision.pMyCollider->Get_Tag() == L"Col_Attack" ||
+		Collision.pMyCollider->Get_Tag() == L"Col_WheelWind") &&
+		(Collision.pOtherCollider->Get_Tag() == L"Col_Body" ||
+			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS))
 	{
 		//cout << "µ¥¹ÌÁö" << endl;
 		Collision.pOther->Get_Damaged();
 	}
+
 }
 
 void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -172,7 +216,7 @@ HRESULT CPlayer::Add_Components()
 
 	/* Navigation */
 	CNavigation::NAVIGATIONDESC NaviDesc;
-	NaviDesc.iCurrentIndex = 290;
+	NaviDesc.iCurrentIndex = 0; /*290*/
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
 		(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
 		return E_FAIL;
@@ -196,14 +240,29 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack", &OBBDesc)))
 		return E_FAIL;
 
-	/* Actions */
-	if (FAILED(Add_Component(LEVEL_STATIC, L"PlayerAction", L"Com_Action",
-		(CComponent**)&m_pActionCom, this)))
+	CBounding_Sphere::SPHEREDESC SphereDesc;
+	SphereDesc.fRadius = 3.f;
+	SphereDesc.eGroup = CCollider::COL_PLAYER_ATK;
+	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	SphereDesc.vOffset = _float3(0.f, 0.f, 0.f);
+	SphereDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_WheelWind", &SphereDesc)))
 		return E_FAIL;
 
-	/* Setup Notify */
-	if (FAILED(m_pModelCom->Setup_Notifys()))
+	/* Root */
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
+		(CComponent**)&m_pRoot, this)))
 		return E_FAIL;
+
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	m_pActionCom = dynamic_cast<CPlayerAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerAction", this));
+	if (nullptr == m_pActionCom)
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -230,6 +289,22 @@ HRESULT CPlayer::Add_Parts()
 	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon_Player", this, &Desc)))
 		return E_FAIL;
 
+	CCamera::CAMERADESC CameraDesc;
+	CameraDesc.vEye = _float4(1.f, 1.f, 1.f, 1.f);
+	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
+
+	CameraDesc.fFov = XMConvertToRadians(60.f);
+	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
+	CameraDesc.fNear = 0.3f;
+	CameraDesc.fFar = 500.f;
+
+	CameraDesc.SpeedPerSec = 10.f;
+	CameraDesc.RotationPerSec = XMConvertToRadians(90.f);
+
+	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Camera_Free", L"Camera_Free", this, &CameraDesc)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -248,6 +323,9 @@ HRESULT CPlayer::Set_Shader_Resources()
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeAcc", &m_fHitTimeAcc, sizeof(_float))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -276,6 +354,7 @@ CPlayer* CPlayer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg
 		MSG_BOX("Failed to Cloned CPlayer");
 		Safe_Release(pInstance);
 	}
+
 	return pInstance;
 }
 
@@ -286,6 +365,7 @@ void CPlayer::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pActionCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pRoot);
 
 	CGameObject3D::Free();
 }

@@ -4,6 +4,7 @@
 #include "CPipeLine.h"
 #include "CInput_Device.h"
 #include "CLight_Manager.h"
+#include "CSound_Manager.h"
 
 /* 0. 클라이언트 엔진의 연결 역활한다. */
 /* 0.0 게임인스턴스라는 객체를 통해서 엔진의다양한기능을 활요앟ㄹ 수 있게 한다. */
@@ -65,11 +66,6 @@ public: /* For.Component_Manager */
 	/* For. MapEditTool */
 	list<CComponent*> Get_All_Prototypes();
 
-public: /* For.Camera_Manager */
-	HRESULT Add_Camera(const _uint& iLevelIndex, const wstring CameraTag, class CCamera* pCamera);
-	HRESULT Remove_Camera(const _uint& iLevelIndex, const wstring CameraTag);
-	HRESULT On_Camera(const _uint& iLevelIndex, const wstring CameraTag);
-
 public: /* For.Input_Manager */
 	_bool	Key_Pressing(const _ubyte& ubyKey);
 	_bool	Key_Down(const _ubyte& ubyKey);
@@ -125,6 +121,15 @@ public: /* For.Collider_Manager */
 	vector<pair<_uint, _int>> Pick_Spheres(const POINT & ptMouse, class CNavigation* pNavigation, class CTransform* pTransform);
 #endif
 
+public: /* For. Sound_Manager */
+	HRESULT Play_Sound(const _tchar* pSoundTag, CSound_Manager::SOUNDCHANNEL eChannel, _float fVolume, _bool bForcePlay = false);
+	HRESULT Play_BGM(const _tchar* pSoundTag, _float fVolume);
+	HRESULT Stop_Sound(CSound_Manager::SOUNDCHANNEL eChannel);
+	HRESULT Pause_Sound(CSound_Manager::SOUNDCHANNEL eChannel);
+	HRESULT Restart_Sound(CSound_Manager::SOUNDCHANNEL eChannel);
+	HRESULT Stop_AllSound();
+	HRESULT Set_ChannelVolume(CSound_Manager::SOUNDCHANNEL eChannel, _float fVolume);
+
 public: /* For. Imgui */
 	void ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight);
 
@@ -137,7 +142,6 @@ private:
 	class CObject_Manager* m_pObject_Manager = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CComponent_Manager* m_pComponent_Manager = { nullptr };
-	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	class CInput_Device* m_pInput_Manager = { nullptr };
 	class CPipeLine* m_pPipeLine = { nullptr };
 	class CFileInfo* m_pFileInfo = { nullptr };
@@ -147,6 +151,7 @@ private:
 	class CFrustum* m_pFrustum = { nullptr };
 	class CCollider_Manager* m_pCollider_Manager = { nullptr };
 	class CTarget_Manager* m_pTarget_Manager = { nullptr };
+	class CSound_Manager* m_pSound_Manager = { nullptr };
 	
 public:
 	static void Release_Engine();

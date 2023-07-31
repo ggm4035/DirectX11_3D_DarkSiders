@@ -6,6 +6,8 @@
 #include "CGameInstance.h"
 #include "CPlayer.h"
 
+#include "CAoE.h"
+
 CGoblin::CGoblin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
 {
@@ -26,8 +28,8 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 3;
-	m_Status.iMaxHP = 3;
+	m_Status.iHP = 4;
+	m_Status.iMaxHP = 4;
 
 	return S_OK;
 }
@@ -35,11 +37,29 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 void CGoblin::Tick(const _double& TimeDelta)
 {
 	CMonster::Tick(TimeDelta);
+
+	if (false == m_isSpawn)
+	{
+		_vector vPosition = XMLoadFloat4(&m_vResponPosition);
+
+		vPosition.m128_f32[1] = vPosition.m128_f32[1] - 2.f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	}
 }
 
 void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 {
 	CMonster::AfterFrustumTick(TimeDelta);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pAoe);
+	}
+
+	Safe_Release(pGameInstance);
 }
 
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
@@ -56,14 +76,49 @@ HRESULT CGoblin::Render()
 	return S_OK;
 }
 
+void CGoblin::Dead_Motion(const _double& TimeDelta)
+{
+	CMonster::Dead_Motion(TimeDelta);
+	m_fExplosionTimeAcc += TimeDelta;
+
+	_float fScale = m_fExplosionTimeAcc * 4.f;
+	_matrix Matrix = XMMatrixScaling(fScale, fScale, fScale) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, 0.1f, 0.f) * m_pTransformCom->Get_WorldMatrix();
+	_float4x4 WorldMatrix;
+	XMStoreFloat4x4(&WorldMatrix, Matrix);
+
+	m_pAoe->Tick(WorldMatrix);
+
+	if (1.9f <= m_fExplosionTimeAcc)
+	{
+		CCollider* pCollider = Find_Collider(L"Col_Explosion");
+		if (nullptr == pCollider)
+			return;
+
+		pCollider->Set_Enable(true);
+	}
+
+	if (2.f <= m_fExplosionTimeAcc)
+	{
+		m_isRemove = true;
+	}
+}
+
 void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack"&&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
 		Collision.pOther->Get_Damaged();
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Explosion" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		_float4 vPosition;
+		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		Collision.pOther->Get_Damaged_Knockback(vPosition);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
@@ -111,7 +166,6 @@ HRESULT CGoblin::Add_Components()
 		return E_FAIL;
 
 	CBounding_Sphere::SPHEREDESC SphereDesc;
-	CBounding_AABB::AABBDESC AABBDesc;
 	/* Col_Body */
 	SphereDesc.fRadius = 0.5f;
 	SphereDesc.vPosition = _float3(0.f, 0.5f, 0.f);
@@ -132,12 +186,20 @@ HRESULT CGoblin::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
 		return E_FAIL;
 
-	/* Add_Col_Attack */
-	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
-	AABBDesc.eGroup = CCollider::COL_ENEMY_ATK;
-	AABBDesc.vOffset = _float3(0.f, 0.5f, 1.f);
-	AABBDesc.isEnable = false;
-	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack", &AABBDesc)))
+	/* Col_Attack */
+	SphereDesc.fRadius = 1.f;
+	SphereDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	SphereDesc.vOffset = _float3(0.f, 0.f, 1.f);
+	SphereDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack", &SphereDesc)))
+		return E_FAIL;
+
+	/* Col_Explosion */
+	SphereDesc.fRadius = 4.f;
+	SphereDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	SphereDesc.vOffset = _float3(0.f, 0.f, 0.f);
+	SphereDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Explosion", &SphereDesc)))
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
@@ -145,6 +207,22 @@ HRESULT CGoblin::Add_Components()
 
 	if (FAILED(m_pModelCom->Setup_Notifys()))
 		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CAoE::AOEDESC AoeDesc;
+
+	AoeDesc.wstrTextureTag = L"Texture_UI_GenericCircle";
+	AoeDesc.iTextureLevel = LEVEL_GAMEPLAY;
+	AoeDesc.iPassNum = 4;
+	AoeDesc.strShaderResourceTag = "g_TextureCircle";
+
+	m_pAoe = dynamic_cast<CAoE*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"AOE", L"Explosion", this, &AoeDesc));
+	if (nullptr == m_pAoe)
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -159,18 +237,23 @@ HRESULT CGoblin::Make_AI()
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
+
 	CSequence* pSequence_Explosion = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
 	if (nullptr == pSequence_Explosion)
 		return E_FAIL;
+	CSequence* pSequence_Spawn = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
+	if (nullptr == pSequence_Spawn)
+		return E_FAIL;
 
+	CRandomLook* pRandomLook = dynamic_cast<CRandomLook*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_RandomLook", this));
+	if (nullptr == pRandomLook)
+		return E_FAIL;
 	CAction* pAction_Spawn = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Spawn)
 		return E_FAIL;
-
 	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", this));
 	if (nullptr == pHit)
 		return E_FAIL;
-
 	CAction* pAction_Explosion_Start = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Explosion_Start)
 		return E_FAIL;
@@ -180,7 +263,6 @@ HRESULT CGoblin::Make_AI()
 	CAction* pAction_Explosion = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Explosion)
 		return E_FAIL;
-
 	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
 	if (nullptr == pPattern_Attack)
 		return E_FAIL;
@@ -202,19 +284,16 @@ HRESULT CGoblin::Make_AI()
 	pAction_Spawn->Just_One_Time_Action();
 	pAction_Explosion_Start->Bind_AnimationTag("Explosion_Start");
 	pAction_Explosion_Run->Bind_AnimationTag("Explosion_Run");
-	pAction_Explosion->Bind_AnimationTag("Explosion");
+	pAction_Explosion->Bind_AnimationTag("Explosion_Dead");
 	pPattern_Attack->Bind_FollowAnimTag("Run");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
 	pJump->Bind_Jump_Force(0.7f);
-	pMove->Bind_Move_Force(1.f);
-	_float3 vDirection;
-	XMStoreFloat3(&vDirection, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-	pMove->Bind_Direction(vDirection);
+	pMove->Bind_Move_Force(0.5f);
 	pFollow->Set_Timer(5.f);
-	pFollow->Bind_Move_Speed(2.f);
+	pFollow->Bind_Move_Speed(1.5f);
 
-	pAction_Spawn->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+	pSequence_Spawn->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
 			_bool* pIsSpawn = { nullptr };
 			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
@@ -223,7 +302,7 @@ HRESULT CGoblin::Make_AI()
 
 			return *pIsSpawn;
 		});
-	
+
 	pAction_Explosion_Start->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
 			_bool* pIsDead = { nullptr };
@@ -238,7 +317,7 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Action_Spawn", pAction_Spawn)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Spawn", pSequence_Spawn)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Hit", pHit)))
 		return E_FAIL;
@@ -247,6 +326,10 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;
 
+	if (FAILED(pSequence_Spawn->Assemble_Behavior(L"Tsk_RandomLook", pRandomLook)))
+		return E_FAIL;
+	if (FAILED(pSequence_Spawn->Assemble_Behavior(L"Action_Spawn", pAction_Spawn)))
+		return E_FAIL;
 	if (FAILED(pSequence_Explosion->Assemble_Behavior(L"Action_Explosion_Start", pAction_Explosion_Start)))
 		return E_FAIL;
 	if (FAILED(pSequence_Explosion->Assemble_Behavior(L"Action_Explosion_Run", pAction_Explosion_Run)))
@@ -263,7 +346,8 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(pAction_Explosion->Assemble_Behavior(L"Tsk_Dead", pDead)))
 		return E_FAIL;
 
-	pPattern_Attack->Assemble_Childs();
+	if (FAILED(pPattern_Attack->Assemble_Childs()))
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 
@@ -282,7 +366,7 @@ CGoblin* CGoblin::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CGoblin* CGoblin::Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pArg)
+CGoblin* CGoblin::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CGoblin* pInstance = new CGoblin(*this);
 
@@ -296,5 +380,7 @@ CGoblin* CGoblin::Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pA
 
 void CGoblin::Free()
 {
+	Safe_Release(m_pAoe);
+
 	CMonster::Free();
 }

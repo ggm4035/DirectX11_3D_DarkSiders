@@ -20,10 +20,10 @@ public:
 	void Clear();
 	HRESULT Bind_ShaderResourceView(class CShader* pShader, const string& wstrConstantName);
 
-#ifdef _DEBUG
 public:
 	HRESULT Ready_Debug(const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY);
 	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+#ifdef _DEBUG
 #endif
 
 private:
@@ -36,9 +36,9 @@ private:
 	ID3D11ShaderResourceView* m_pSRV = { nullptr };
 	_float4 m_vClearColor;
 
-#ifdef _DEBUG
 private:
 	_float4x4 m_WorldMatrix;
+#ifdef _DEBUG
 #endif
 
 public:

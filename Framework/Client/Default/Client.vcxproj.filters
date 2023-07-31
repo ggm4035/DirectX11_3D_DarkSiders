@@ -79,9 +79,6 @@
     <Filter Include="02. GameObject\04. UI">
       <UniqueIdentifier>{a5ef5317-f793-4856-aaa8-def1f8d1b6c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\05. Camera">
-      <UniqueIdentifier>{034f9140-9994-48c1-aa49-63ad0ea4eb8e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Default">
       <UniqueIdentifier>{eb3c224c-bae0-4907-81f3-ce03694ea332}</UniqueIdentifier>
     </Filter>
@@ -127,6 +124,42 @@
     <Filter Include="02. GameObject\01. Monster\00. Patterns\FallenDog">
       <UniqueIdentifier>{d5fe91f7-7693-428b-b16b-8262591b83ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\01. Monster\01. Goblin\Goblin">
+      <UniqueIdentifier>{3004ab05-67ec-4bbe-ae8b-a5a21a81b0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. ETC">
+      <UniqueIdentifier>{0c493fd3-8a2a-440b-974e-406493ebb963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. ETC\AOE">
+      <UniqueIdentifier>{430efb46-863d-466b-bfed-4b41cc34c1ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\04. Skills">
+      <UniqueIdentifier>{cd0d5eb4-ddc1-49be-816d-0016d631dfe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\04. Skills\WheelWind">
+      <UniqueIdentifier>{70e7a8c3-f0d1-4f87-967f-7c7ceffa739b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\04. Skills\LeapAttack">
+      <UniqueIdentifier>{4cb5d671-3dab-4b3f-9b07-8c1ec135330f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\05. Knockback">
+      <UniqueIdentifier>{80abb2b4-840c-4437-9b66-06c68ccfa654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\Legion_Champion">
+      <UniqueIdentifier>{c863e395-12c7-465f-83c3-1f20058b07af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\06. HollowLord">
+      <UniqueIdentifier>{f456dcfc-e88e-43bb-b98c-254d7b113868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\HollowLord">
+      <UniqueIdentifier>{3b0ad9fd-6887-4abf-be3d-87d79cf2c55b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\03. Parts\02. Camera">
+      <UniqueIdentifier>{25c94e65-65fe-4b4a-8170-e01b1882dc34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\05. Trigger">
+      <UniqueIdentifier>{2255584d-1b7d-42dd-8db1-d8640890b3dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -168,9 +201,6 @@
     <ClInclude Include="..\Public\CHellHound.h">
       <Filter>02. GameObject\01. Monster\02. HellHound</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CGoblin.h">
-      <Filter>02. GameObject\01. Monster\01. Goblin</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CMonster.h">
       <Filter>02. GameObject\01. Monster</Filter>
     </ClInclude>
@@ -203,9 +233,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\CUI_Rect.h">
       <Filter>02. GameObject\04. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CCamera_Free.h">
-      <Filter>02. GameObject\05. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CAction_Hit.h">
       <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
@@ -279,6 +306,36 @@
     <ClInclude Include="..\Public\CDead.h">
       <Filter>03. MonoBehaviors\Movement</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CGoblin.h">
+      <Filter>02. GameObject\01. Monster\01. Goblin\Goblin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAoE.h">
+      <Filter>02. GameObject\99. ETC\AOE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CWheelWind.h">
+      <Filter>02. GameObject\00. Player\PlayerActions\04. Skills\WheelWind</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLeapAttack.h">
+      <Filter>02. GameObject\00. Player\PlayerActions\04. Skills\LeapAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPlayerKnockback.h">
+      <Filter>02. GameObject\00. Player\PlayerActions\05. Knockback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CPattern_Wheel.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\Legion_Champion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHollowLord.h">
+      <Filter>02. GameObject\01. Monster\06. HollowLord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCamera_Free.h">
+      <Filter>02. GameObject\03. Parts\02. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CTrigger_Free.h">
+      <Filter>02. GameObject\05. Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attack.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -309,9 +366,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CMonster.cpp">
       <Filter>02. GameObject\01. Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CGoblin.cpp">
-      <Filter>02. GameObject\01. Monster\01. Goblin</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CHellHound.cpp">
       <Filter>02. GameObject\01. Monster\02. HellHound</Filter>
@@ -351,9 +405,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CUI_Rect.cpp">
       <Filter>02. GameObject\04. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CCamera_Free.cpp">
-      <Filter>02. GameObject\05. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CAction_Hit.cpp">
       <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
@@ -423,6 +474,36 @@
     </ClCompile>
     <ClCompile Include="..\Private\CDead.cpp">
       <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CGoblin.cpp">
+      <Filter>02. GameObject\01. Monster\01. Goblin\Goblin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAoE.cpp">
+      <Filter>02. GameObject\99. ETC\AOE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CWheelWind.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions\04. Skills\WheelWind</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLeapAttack.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions\04. Skills\LeapAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPlayerKnockback.cpp">
+      <Filter>02. GameObject\00. Player\PlayerActions\05. Knockback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CPattern_Wheel.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\Legion_Champion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHollowLord.cpp">
+      <Filter>02. GameObject\01. Monster\06. HollowLord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCamera_Free.cpp">
+      <Filter>02. GameObject\03. Parts\02. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CTrigger_Free.cpp">
+      <Filter>02. GameObject\05. Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attack.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

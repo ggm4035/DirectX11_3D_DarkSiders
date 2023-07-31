@@ -279,7 +279,7 @@ void CTool_HeightMap::Make_Navigation(CGameInstance* pGameInstance)
 
         else if (0 < m_vecPickSphereInfo.size())
         {
-            _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(m_vecPickSphereInfo[0].first, m_vecPickSphereInfo[0].second);
+             _float3 vPosition = m_pTerrain->Get_Navigation()->Get_CellPoint(m_vecPickSphereInfo[0].first, m_vecPickSphereInfo[0].second);
             _float arrData[3] = { vPosition.x, vPosition.y, vPosition.z };
             ImGui::DragFloat3("Picking Points", arrData, 0.01f, 0.01f, 1000.f, "%.2f");
             vPosition = _float3(arrData[0], arrData[1], arrData[2]);

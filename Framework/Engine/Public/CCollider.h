@@ -12,7 +12,7 @@ public:
 	enum STATE { STATE_NONE, STATE_ENTER, STATE_STAY, STATE_END };
 	enum COLLIDERGROUP { COL_PLAYER, COL_PLAYER_ATK, 
 		COL_ENEMY, COL_ENEMY_ATK, COL_ENEMY_MELEE_RANGE, COL_ENEMY_RANGE, 
-		COL_END };
+		COL_BOSS, COL_BOSS_ATK, COL_TRIGGER, COL_END };
 
 	typedef struct tagColliderDesc
 	{
@@ -31,8 +31,8 @@ public:
 	}COLLISION;
 
 public:
-	void Switch_Off() {
-		m_isEnable = false;
+	void Set_Enable(_bool bSwitch) {
+		m_isEnable = bSwitch;
 	}
 	COLLIDERGROUP Get_Collider_Group() {
 		return m_eColGroup;
@@ -84,6 +84,9 @@ public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType);
 	virtual CCollider* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
 	virtual void Free() override;
+
+public: /* Tool */
+	void Set_Extents(const _float3& vExtents);
 };
 
 END

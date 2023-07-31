@@ -5,13 +5,13 @@
 #include "CObject_Manager.h"
 #include "Timer_Manager.h"
 #include "CComponent_Manager.h"
-#include "CCamera_Manager.h"
 #include "CFileInfo.h"
 #include "CCalculator.h"
 #include "CFont_Manager.h"
 #include "CFrustum.h"
 #include "CCollider_Manager.h"
 #include "CTarget_Manager.h"
+#include "CSound_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,7 +21,6 @@ CGameInstance::CGameInstance()
 	, m_pObject_Manager{ CObject_Manager::GetInstance() }
 	, m_pTimer_Manager{ CTimer_Manager::GetInstance() }
 	, m_pComponent_Manager{ CComponent_Manager::GetInstance() }
-	, m_pCamera_Manager{ CCamera_Manager::GetInstance() }
 	, m_pInput_Manager{ CInput_Device::GetInstance() }
 	, m_pPipeLine{ CPipeLine::GetInstance() }
 	, m_pFileInfo{ CFileInfo::GetInstance() }
@@ -31,6 +30,7 @@ CGameInstance::CGameInstance()
 	, m_pFrustum{ CFrustum::GetInstance() }
 	, m_pCollider_Manager{ CCollider_Manager::GetInstance() }
 	, m_pTarget_Manager{ CTarget_Manager::GetInstance() }
+	, m_pSound_Manager{ CSound_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pCalculator);
 	Safe_AddRef(m_pLight_Manager);
@@ -41,12 +41,12 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pComponent_Manager);
-	Safe_AddRef(m_pCamera_Manager);
 	Safe_AddRef(m_pInput_Manager);
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pFrustum);
 	Safe_AddRef(m_pCollider_Manager);
 	Safe_AddRef(m_pTarget_Manager);
+	Safe_AddRef(m_pSound_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -84,7 +84,10 @@ HRESULT CGameInstance::Initialize_Engine(const _uint& iNumLevels, const GRAPHICD
 	if (FAILED(m_pComponent_Manager->Reserve_Containers(iNumLevels, *ppDevice, *ppContext)))
 		return E_FAIL;
 
-	if (FAILED(m_pCamera_Manager->Reserve_Containers(iNumLevels)))
+	if (FAILED(m_pSound_Manager->Initialize()))
+		return E_FAIL;
+
+	if (FAILED(m_pSound_Manager->Add_Sounds(L"../../Resources/Sounds/")))
 		return E_FAIL;
 
 	return S_OK;
@@ -125,9 +128,6 @@ void CGameInstance::Clear_LevelResources(const _uint& iLevelIndex)
 
 	// 삭제할 레벨의 게임 오브젝트의 리소스 삭제.
 	m_pObject_Manager->Clear_LevelResources(iLevelIndex);
-
-	// 삭제할 레벨의 카메라 삭제.
-	m_pCamera_Manager->Clear_LevelResources(iLevelIndex);
 }
 
 HRESULT CGameInstance::Clear_BackBuffer_View(const _float4& vClearColor)
@@ -256,30 +256,6 @@ list<CComponent*> CGameInstance::Get_All_Prototypes()
 		return list<CComponent*>();
 
 	return m_pComponent_Manager->Get_All_Prototypes();
-}
-
-HRESULT CGameInstance::Add_Camera(const _uint& iLevelIndex, const wstring CameraTag, CCamera* pCamera)
-{
-	if (nullptr == m_pCamera_Manager)
-		return E_FAIL;
-
-	return m_pCamera_Manager->Add_Camera(iLevelIndex, CameraTag, pCamera);
-}
-
-HRESULT CGameInstance::Remove_Camera(const _uint& iLevelIndex, const wstring CameraTag)
-{
-	if (nullptr == m_pCamera_Manager)
-		return E_FAIL;
-
-	return m_pCamera_Manager->Remove_Camera(iLevelIndex, CameraTag);
-}
-
-HRESULT CGameInstance::On_Camera(const _uint& iLevelIndex, const wstring CameraTag)
-{
-	if (nullptr == m_pCamera_Manager)
-		return E_FAIL;
-
-	return m_pCamera_Manager->On_Camera(iLevelIndex, CameraTag);
 }
 
 _bool CGameInstance::Key_Pressing(const _ubyte& ubyKey)
@@ -575,6 +551,62 @@ vector<pair<_uint, _int>> CGameInstance::Pick_Spheres(const POINT& ptMouse, CNav
 	return m_pCalculator->Pick_Spheres(ptMouse, pNavigation, pTransform);
 }
 
+HRESULT CGameInstance::Play_Sound(const _tchar* pSoundTag, CSound_Manager::SOUNDCHANNEL eChannel, _float fVolume, _bool bForcePlay)
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->Play_Sound(pSoundTag, eChannel, fVolume, bForcePlay);
+}
+
+HRESULT CGameInstance::Play_BGM(const _tchar* pSoundTag, _float fVolume)
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->Play_BGM(pSoundTag, fVolume);
+}
+
+HRESULT CGameInstance::Stop_Sound(CSound_Manager::SOUNDCHANNEL eChannel)
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->Stop_Sound(eChannel);
+}
+
+HRESULT CGameInstance::Pause_Sound(CSound_Manager::SOUNDCHANNEL eChannel)
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->Pause_Sound(eChannel);
+}
+
+HRESULT CGameInstance::Restart_Sound(CSound_Manager::SOUNDCHANNEL eChannel)
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->Restart_Sound(eChannel);
+}
+
+HRESULT CGameInstance::Stop_AllSound()
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->Stop_AllSound();
+}
+
+HRESULT CGameInstance::Set_ChannelVolume(CSound_Manager::SOUNDCHANNEL eChannel, _float fVolume)
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->Set_ChannelVolume(eChannel, fVolume);
+}
+
 #endif
 
 void CGameInstance::ResizeBuffers(_uint& g_ResizeWidth, _uint& g_ResizeHeight)
@@ -603,8 +635,6 @@ void CGameInstance::Release_Engine()
 
 	CObject_Manager::GetInstance()->DestroyInstance();
 
-	CCamera_Manager::GetInstance()->DestroyInstance();
-
 	CComponent_Manager::GetInstance()->DestroyInstance();
 
 	CLevel_Manager::GetInstance()->DestroyInstance();
@@ -616,6 +646,8 @@ void CGameInstance::Release_Engine()
 	CTarget_Manager::GetInstance()->DestroyInstance();
 
 	CInput_Device::GetInstance()->DestroyInstance();
+
+	CSound_Manager::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
@@ -630,7 +662,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pCalculator);
 	Safe_Release(m_pFileInfo);
 	Safe_Release(m_pPipeLine);
-	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pCollider_Manager);
 	Safe_Release(m_pObject_Manager);
@@ -638,6 +669,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pInput_Manager);
+	Safe_Release(m_pSound_Manager);
 
 	Safe_Release(m_pGraphic_Device);
 }

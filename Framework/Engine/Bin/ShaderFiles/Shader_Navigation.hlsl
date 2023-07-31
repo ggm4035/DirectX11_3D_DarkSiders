@@ -41,9 +41,6 @@ float4	PS_MAIN(PS_IN In) : SV_TARGET0
 	return vColor;
 }
 
-
-
-
 technique11		DefaultTechnique
 {
 	pass Cell

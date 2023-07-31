@@ -75,7 +75,7 @@ const CBone* CModel::Get_Bone(const _char* pBoneName)
 	return (*iter);
 }
 
-void CModel::Change_Animation(const string& strTag)
+void CModel::Change_Animation(const string& strTag, _bool isLerp)
 {
 	if (string::npos == m_pCurrentAnimation->m_strName.find("Impact") &&
 		string::npos != m_pCurrentAnimation->m_strName.find(strTag))
@@ -98,6 +98,9 @@ void CModel::Change_Animation(const string& strTag)
 	m_pCurrentAnimation->m_isAbleChange = false;
 
 	m_isFirst = true;
+
+	if (false == isLerp)
+		m_pCurrentAnimation->m_isLerped = true;
 }
 
 HRESULT CModel::Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix)
@@ -315,8 +318,7 @@ HRESULT CModel::Ready_Bones(const MODEL_BINARYDATA& ModelData, class CBone* pPar
 			return E_FAIL;
 
 		strRootTag = ModelData.pBoneDatas[i].szName;
-		if (string::npos != strRootTag.find("Bone") &&
-			string::npos != strRootTag.find("Root"))
+		if (string::npos != strRootTag.find("Root"))
 			m_iRootBoneIndex = i;
 
 		m_vecBones.push_back(pBone);
@@ -405,6 +407,36 @@ void CModel::Free()
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 
+const _uint& CModel::Get_iMaxKeyFrame() const
+{
+	return m_pCurrentAnimation->m_iMaxNumFrames;
+}
+
+const _uint& CModel::Get_iRootBoneIndex() const
+{
+	return m_iRootBoneIndex;
+}
+
+const _uint& CModel::Get_iMaxKeyFrameIndex() const
+{
+	return m_pCurrentAnimation->m_iMaxFramesIndex;
+}
+
+const _uint& CModel::Get_iNumRootBoneKeyFrame() const
+{
+	return m_pCurrentAnimation->m_iNumRootBoneFrames;
+}
+
+const _uint& CModel::Get_iCurrentKeyFrameIndex() const
+{
+	return m_pCurrentAnimation->m_vecChannelCurrentKeyFrames[m_pCurrentAnimation->m_iMaxFramesIndex];
+}
+
+const _uint& CModel::Get_iCurrentRootKeyFrameIndex() const
+{
+	return m_pCurrentAnimation->m_vecChannelCurrentKeyFrames[m_pCurrentAnimation->m_iRootBoneIndex];
+}
+
 vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 {
 	vector<ANIMATIONDATA> vecRet;
@@ -451,25 +483,7 @@ vector<ANIMATIONDATA> CModel::Get_AnimationDatas()
 	return vecRet;
 }
 
-const _uint& CModel::Get_MaxKeyFrame() const
-{
-	return m_pCurrentAnimation->Get_MaxKeyFrames();
-}
 
-const _uint& CModel::Get_MaxRootKeyFrame() const
-{
-	return m_pCurrentAnimation->Get_MaxRootKeyFrames();
-}
-
-const _uint& CModel::Get_CurrentKeyFrameIndex() const
-{
-	return m_pCurrentAnimation->Get_CurrentKeyFrameIndex();
-}
-
-const _uint& CModel::Get_CurrentRootKeyFrameIndex() const
-{
-	return m_pCurrentAnimation->Get_CurrentRootKeyFrameIndex();
-}
 
 void CModel::Set_KeyFrame(const _uint& iIndex)
 {
@@ -584,3 +598,4 @@ HRESULT CModel::Delete_Animation(const string& strTag)
 }
 
 #endif
+

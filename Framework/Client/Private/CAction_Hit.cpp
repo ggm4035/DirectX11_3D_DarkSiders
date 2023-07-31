@@ -53,6 +53,11 @@ HRESULT CAction_Hit::Assemble_Childs()
 	if (nullptr == pDead)
 		return E_FAIL;
 
+	if (false == m_isImpact)
+		pHit->Not_Impact();
+	if (false == m_isLook)
+		pHit->Not_Look();
+
 	pAction_Dead->Bind_AnimationTag("Dead");
 	pAction_Dead->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{

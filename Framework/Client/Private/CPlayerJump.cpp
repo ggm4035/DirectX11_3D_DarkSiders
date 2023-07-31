@@ -40,7 +40,6 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 		if (true == m_isJump)
 			m_isDoubleJump = true;
 
-		//cout << "메시지 확인" << endl;
 		m_isJump = true;
 
 		m_Qmessage.pop();

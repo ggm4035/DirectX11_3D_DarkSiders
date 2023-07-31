@@ -33,6 +33,7 @@ public:
 
 public:
     void Create_Object();
+    void Create_Trigger();
     void Create_Object_Pick(CGameInstance* pGameInstance);
 
 private:
@@ -43,6 +44,13 @@ private:
     _bool m_bTypes[TYPE_END] = { false };
 
     LAYERTYPE m_eCurLayer = { LAYER_END };
+
+private: /* Trigger Data */
+    _float m_arrExtents[3] = { 0.f };
+    _float m_arrPosition[3] = { 0.f };
+
+private:
+    _vector Get_PickPos(CGameInstance* pGameInstance);
 
 public:
     virtual void Free() override;

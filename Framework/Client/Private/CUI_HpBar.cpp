@@ -22,14 +22,13 @@ HRESULT CUI_HpBar::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void
 	if (nullptr == pArg)
 		return E_FAIL;
 
-	UIHPBARDESC Desc;
-	Desc.iTextureLevelIndex = reinterpret_cast<UIHPBARDESC*>(pArg)->iTextureLevelIndex;
-	Desc.wstrTextureTag = reinterpret_cast<UIHPBARDESC*>(pArg)->wstrTextureTag;
+	UIHPBARDESC Desc = *reinterpret_cast<UIHPBARDESC*>(pArg);
 
-	m_pParentMatrix = reinterpret_cast<UIHPBARDESC*>(pArg)->pParentMatrix;
-	m_vOffset = reinterpret_cast<UIHPBARDESC*>(pArg)->vOffset;
-	m_pMaxHp = reinterpret_cast<UIHPBARDESC*>(pArg)->pMaxHp;
-	m_pHp = reinterpret_cast<UIHPBARDESC*>(pArg)->pHp;
+	m_pParentMatrix = Desc.pParentMatrix;
+	m_iPassNum = Desc.iPassNum;
+	m_vOffset = Desc.vOffset;
+	m_pMaxHp = Desc.pMaxHp;
+	m_pHp = Desc.pHp;
 
 	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
@@ -80,7 +79,7 @@ HRESULT CUI_HpBar::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3);
+	m_pShaderCom->Begin(m_iPassNum);
 
 	m_pBufferCom->Render();
 

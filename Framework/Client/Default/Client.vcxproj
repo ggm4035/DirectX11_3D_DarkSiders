@@ -163,9 +163,14 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\CAoE.h" />
+    <ClInclude Include="..\Public\CBoss_Attack.h" />
+    <ClInclude Include="..\Public\CCamera_Free.h" />
     <ClInclude Include="..\Public\CDead.h" />
     <ClInclude Include="..\Public\CFallenDog.h" />
+    <ClInclude Include="..\Public\CHollowLord.h" />
     <ClInclude Include="..\Public\CJump.h" />
+    <ClInclude Include="..\Public\CLeapAttack.h" />
     <ClInclude Include="..\Public\CMove.h" />
     <ClInclude Include="..\Public\CPattern_Attack.h" />
     <ClInclude Include="..\Public\CPattern_BackDash.h" />
@@ -177,10 +182,8 @@
     <ClInclude Include="..\Public\CLegion_Champion.h" />
     <ClInclude Include="..\Public\CLookAtTarget.h" />
     <ClInclude Include="..\Public\CPattern_Roll.h" />
+    <ClInclude Include="..\Public\CPattern_Wheel.h" />
     <ClInclude Include="..\Public\CPlayerAttack.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\Public\CCamera_Free.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CGoblin.h">
@@ -221,6 +224,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CAction_Hit.h" />
+    <ClInclude Include="..\Public\CPlayerKnockback.h" />
     <ClInclude Include="..\Public\CPlayerMove.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -245,6 +249,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CSteamRoller.h" />
+    <ClInclude Include="..\Public\CTrigger_Free.h" />
     <ClInclude Include="..\Public\CUI_HpBar.h" />
     <ClInclude Include="..\Public\CUI_Overlay.h" />
     <ClInclude Include="..\Public\CUI_Rect.h">
@@ -256,6 +261,7 @@
     <ClInclude Include="..\Public\CWeapon.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\CWheelWind.h" />
     <ClInclude Include="..\Public\MonoBehavior_Defines.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -263,9 +269,14 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\CAoE.cpp" />
+    <ClCompile Include="..\Private\CBoss_Attack.cpp" />
+    <ClCompile Include="..\Private\CCamera_Free.cpp" />
     <ClCompile Include="..\Private\CDead.cpp" />
     <ClCompile Include="..\Private\CFallenDog.cpp" />
+    <ClCompile Include="..\Private\CHollowLord.cpp" />
     <ClCompile Include="..\Private\CJump.cpp" />
+    <ClCompile Include="..\Private\CLeapAttack.cpp" />
     <ClCompile Include="..\Private\CMove.cpp" />
     <ClCompile Include="..\Private\CPattern_Attack.cpp" />
     <ClCompile Include="..\Private\CLava.cpp" />
@@ -276,10 +287,8 @@
     <ClCompile Include="..\Private\CLookAtTarget.cpp" />
     <ClCompile Include="..\Private\CPattern_BackDash.cpp" />
     <ClCompile Include="..\Private\CPattern_Roll.cpp" />
+    <ClCompile Include="..\Private\CPattern_Wheel.cpp" />
     <ClCompile Include="..\Private\CPlayerAttack.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\Private\CCamera_Free.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CGoblin.cpp">
@@ -320,6 +329,7 @@
     <ClCompile Include="..\Private\CPattern_Patrol.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\CPlayerKnockback.cpp" />
     <ClCompile Include="..\Private\CPlayerMove.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -344,6 +354,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CSteamRoller.cpp" />
+    <ClCompile Include="..\Private\CTrigger_Free.cpp" />
     <ClCompile Include="..\Private\CUI_HpBar.cpp" />
     <ClCompile Include="..\Private\CUI_Overlay.cpp" />
     <ClCompile Include="..\Private\CUI_Rect.cpp">
@@ -355,6 +366,7 @@
     <ClCompile Include="..\Private\CWeapon.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\CWheelWind.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -23,7 +23,6 @@ public:
 	{
 		MOVETYPE eMoveType;
 		_float3 vSlide;
-		CCell::OPTION eOption;
 	}RETURNDESC;
 
 private:
@@ -38,6 +37,9 @@ public:
 public:
 	RETURNDESC is_Move(_fvector vPosition);
 	_float is_OnNavigation(_fvector vPosition);
+	CCell::OPTION Get_Cur_Cell_Option() const {
+		return m_vecCells[m_NavigationDesc.iCurrentIndex]->Get_Optioin();
+	}
 
 private:
 	NAVIGATIONDESC m_NavigationDesc;
@@ -57,6 +59,9 @@ public:
 public:
 	_uint Get_NumCells() const {
 		return m_vecCells.size();
+	}
+	_int Get_Cur_Index() const {
+		return m_NavigationDesc.iCurrentIndex;
 	}
 	CCell::OPTION Get_Option(const _uint& iIndex) {
 		return m_vecCells[iIndex]->Get_Optioin();

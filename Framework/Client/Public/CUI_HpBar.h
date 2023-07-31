@@ -24,6 +24,7 @@ public:
 		const _float4x4* pParentMatrix = { nullptr };
 		_uint iTextureLevelIndex = { 0 };
 		wstring wstrTextureTag = { L"" };
+		_uint iPassNum = { 3 };
 	}UIHPBARDESC;
 
 protected:
@@ -49,6 +50,7 @@ private:
 	_float3 m_vOffset;
 	const _int* m_pMaxHp = { nullptr };
 	const _int* m_pHp = { nullptr };
+	_uint m_iPassNum = { 3 };
 
 private:
 	virtual HRESULT Add_Components() override;

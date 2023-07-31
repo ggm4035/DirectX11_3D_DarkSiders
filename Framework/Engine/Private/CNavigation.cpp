@@ -101,7 +101,6 @@ CNavigation::RETURNDESC CNavigation::is_Move(_fvector vPosition)
 {
 	RETURNDESC NaviRetDesc;
 	NaviRetDesc.eMoveType = TYPE_MOVE;
-	NaviRetDesc.eOption = m_vecCells[m_NavigationDesc.iCurrentIndex]->Get_Optioin();
 
 	CCell::RETURNDESC CellRetDesc = m_vecCells[m_NavigationDesc.iCurrentIndex]->is_In(vPosition);
 
@@ -122,7 +121,6 @@ CNavigation::RETURNDESC CNavigation::is_Move(_fvector vPosition)
 			}
 
 			m_NavigationDesc.iCurrentIndex = CellRetDesc.vecNeighborIndex.front();
-			NaviRetDesc.eOption = m_vecCells[m_NavigationDesc.iCurrentIndex]->Get_Optioin();
 
 			CellRetDesc = m_vecCells[CellRetDesc.vecNeighborIndex.front()]->is_In(vPosition);
 

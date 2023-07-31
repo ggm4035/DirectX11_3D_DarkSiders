@@ -52,8 +52,8 @@ HRESULT CLevel_Tool::Ready_Layer(wstring LayerTag)
     CameraDesc.fNear = 0.3f;
     CameraDesc.fFar = 500.f;
 
-    CameraDesc.TransformDesc.SpeedPerSec = 10.f;
-    CameraDesc.TransformDesc.RotationPerSec = XMConvertToRadians(90.f);
+    CameraDesc.SpeedPerSec = 10.f;
+    CameraDesc.RotationPerSec = XMConvertToRadians(90.f);
 
     if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Camera_Main",
         L"Camera_Main", LayerTag, &CameraDesc)))

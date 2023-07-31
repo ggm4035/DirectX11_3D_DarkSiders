@@ -3,10 +3,6 @@
 #include "CMonster.h"
 #include "Client_Defines.h"
 
-BEGIN(Engine)
-class CCollider;
-END
-
 BEGIN(Client)
 
 class CGoblin final : public CMonster
@@ -25,12 +21,15 @@ public:
 	virtual HRESULT Render();
 
 public:
+	virtual void Dead_Motion(const _double& TimeDelta) override;
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 private:
 	_float4 m_vResponPosition;
+	_float m_fExplosionTimeAcc = { 0.f };
+	class CAoE* m_pAoe = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

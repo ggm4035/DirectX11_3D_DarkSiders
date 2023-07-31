@@ -1,5 +1,6 @@
 #include "CCamera.h"
 
+#include "CGameInstance.h"
 #include "CPipeLine.h"
 
 CCamera::CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -21,13 +22,13 @@ CCamera::CCamera(const CCamera& rhs)
 
 HRESULT CCamera::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
+	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 	{
 		CAMERADESC CameraDesc = { };
-		CameraDesc = *static_cast<CAMERADESC*>(pArg);
-
-		if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, &CameraDesc.TransformDesc)))
-			return E_FAIL;
+		CameraDesc = *reinterpret_cast<CAMERADESC*>(pArg);
 
 		m_vEye = CameraDesc.vEye;
 		m_vAt = CameraDesc.vAt;
@@ -38,8 +39,6 @@ HRESULT CCamera::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 		m_fNear = CameraDesc.fNear;
 		m_fFar = CameraDesc.fFar;
 	}
-	else if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
-		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vEye));
 	m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));

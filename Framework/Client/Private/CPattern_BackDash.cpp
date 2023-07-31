@@ -97,7 +97,7 @@ HRESULT CPattern_BackDash::Assemble_Childs()
 
 			_vector vTargetPos = pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 			_vector vPosition = m_pTransform->Get_State(CTransform::STATE_POSITION);
-			cout << XMVectorGetX(XMVector3Length(vTargetPos - vPosition)) << endl;
+			//cout << XMVectorGetX(XMVector3Length(vTargetPos - vPosition)) << endl;
 			if (1.5f < XMVectorGetX(XMVector3Length(vTargetPos - vPosition)))
 				return false;
 

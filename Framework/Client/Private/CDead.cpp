@@ -25,9 +25,6 @@ HRESULT CDead::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pA
 
 HRESULT CDead::Tick(const _double& TimeDelta)
 {
-	if (false == Check_Decorations())
-		return BEHAVIOR_FAIL;
-
 	static_cast<CGameObject3D*>(m_pOwner)->Dead_Motion(TimeDelta);
 
 	return BEHAVIOR_RUNNING;

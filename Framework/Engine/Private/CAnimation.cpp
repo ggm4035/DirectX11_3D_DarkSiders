@@ -22,7 +22,7 @@ CAnimation::CAnimation(const CAnimation& rhs)
 #if defined(_USE_IMGUI) || defined(_DEBUG)
 	, m_iMaxNumFrames(rhs.m_iMaxNumFrames)
 	, m_iMaxFramesIndex(rhs.m_iMaxFramesIndex)
-	, m_iMaxNumRootFrames(rhs.m_iMaxNumRootFrames)
+	, m_iNumRootBoneFrames(rhs.m_iNumRootBoneFrames)
 #endif
 {
 	for (auto& Channel : m_vecChannels)
@@ -90,7 +90,10 @@ void CAnimation::Invalidate_TransformationMatrix(CModel::BONES& Bones, const _do
 	if (m_TimeAcc >= m_Duration)
 	{
 		if (true == m_isLoop)
+		{
 			m_TimeAcc = 0.0;
+			Reset_Notifys();
+		}
 		else
 			m_isFinished = true;
 	}
@@ -141,7 +144,7 @@ void CAnimation::Reset_Notifys()
 			}
 
 			if (nullptr != dynamic_cast<CCollider*>(pObserver))
-				dynamic_cast<CCollider*>(pObserver)->Switch_Off();
+				dynamic_cast<CCollider*>(pObserver)->Set_Enable(false);
 		}
 	}
 }
@@ -182,7 +185,7 @@ void CAnimation::Attach(const _float& fPoint, IObserver_Animation* pObserver)
 	auto pObserverList = Find_Observer(fPoint);
 
 	if (nullptr != dynamic_cast<CCollider*>(pObserver))
-		dynamic_cast<CCollider*>(pObserver)->Switch_Off();
+		dynamic_cast<CCollider*>(pObserver)->Set_Enable(false);
 
 	if (nullptr == pObserverList)
 	{
@@ -254,7 +257,7 @@ HRESULT CAnimation::Ready_Channels(const ANIMATIONDATA& AnimationData, const CMo
 			string::npos != strRootTag.find("Root"))
 		{
 #if defined(_USE_IMGUI) || defined(_DEBUG)
-			m_iMaxNumRootFrames = AnimationData.vecChannels[i].iNumKeyFrames;
+			m_iNumRootBoneFrames = AnimationData.vecChannels[i].iNumKeyFrames;
 #endif
 			m_iRootBoneIndex = i;
 		}

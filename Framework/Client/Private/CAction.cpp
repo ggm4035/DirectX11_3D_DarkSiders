@@ -56,7 +56,7 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
-		m_pModel->Change_Animation(m_strAnimationTag);
+		m_pModel->Change_Animation(m_strAnimationTag, m_isLerp);
 		m_isFirst = false;
 	}
 

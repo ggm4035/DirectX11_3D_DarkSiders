@@ -2,6 +2,7 @@
 
 #include "CGameInstance.h"
 #include "CDummyObject3D.h"
+#include "CDummyTrigger.h"
 
 CImWindow::CImWindow()
 {
@@ -20,6 +21,7 @@ void CImWindow::Refresh()
 
     for(_uint i = 0; i < LAYER_END; ++i)
         m_GameObjectList[i].clear();
+    m_TriggerList.clear();
 
     /* Refresh Static */
     list<CGameObject*> pObjects = pGameInstance->Get_GameObject_Layer(L"Layer_Tool");
@@ -43,6 +45,17 @@ void CImWindow::Refresh()
 
     m_iNumGameObjects[LAYER_MONSTER] = m_GameObjectList[LAYER_MONSTER].size();
 
+    /* Refresh Trigger */
+    pObjects = pGameInstance->Get_GameObject_Layer(L"Layer_Trigger");
+
+    for (auto& pTrigger : pObjects)
+    {
+        if (dynamic_cast<CDummyTrigger*>(pTrigger))
+            m_TriggerList.push_back(static_cast<CDummyTrigger*>(pTrigger));
+    }
+
+    m_iNumTriggers = m_TriggerList.size();
+
     Safe_Release(pGameInstance);
 }
 
@@ -51,6 +64,17 @@ CDummyObject3D* CImWindow::Find_GameObject(const wstring& GameObjectTag, LAYERTY
     for (auto& iter = m_GameObjectList[eType].begin(); iter != m_GameObjectList[eType].end(); ++iter)
     {
         if ((*iter)->Get_Tag() == GameObjectTag)
+            return *iter;
+    }
+
+    return nullptr;
+}
+
+CDummyTrigger* CImWindow::Find_Trigger(const wstring& TriggerTag)
+{
+    for (auto& iter = m_TriggerList.begin(); iter != m_TriggerList.end(); ++iter)
+    {
+        if ((*iter)->Get_Tag() == TriggerTag)
             return *iter;
     }
 

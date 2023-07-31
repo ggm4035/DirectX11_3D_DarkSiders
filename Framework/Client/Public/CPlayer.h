@@ -9,6 +9,7 @@ class CShader;
 class CModel;
 class CCollider;
 class CNavigation;
+class CRoot;
 END
 
 BEGIN(Client)
@@ -24,7 +25,10 @@ public:
 	}PLAYERDESC;
 
 public:
+	virtual void Get_Damaged_Knockback(const _float4& _vPosition) override;
+
 	CCollider* Get_Collider(const wstring& wstrColliderTag);
+	CGameObject* Get_Parts(const wstring& wstrPartsTag);
 	HITSTATE Get_CurHitState() const {
 		return m_eCurHitState;
 	}
@@ -51,10 +55,15 @@ public:
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 private:
+	_float m_fHitTimeAcc = { 0.f };
+
+private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
+
+	CRoot* m_pRoot = { nullptr };
 	class CPlayerAction* m_pActionCom = { nullptr };
 
 private:

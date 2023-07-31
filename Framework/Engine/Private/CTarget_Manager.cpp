@@ -87,7 +87,6 @@ HRESULT CTarget_Manager::Bind_ShaderResourceView(const wstring& wstrTargetTag, C
 	return pRenderTarget->Bind_ShaderResourceView(pShader, wstrConstantName);
 }
 
-#ifdef _DEBUG
 HRESULT CTarget_Manager::Ready_Debug(const wstring& wstrTargetTag, const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY)
 {
 	CRenderTarget* pRenderTarget = Find_RenderTarget(wstrTargetTag);
@@ -110,6 +109,7 @@ HRESULT CTarget_Manager::Render(const wstring& wstrMRTTag, CShader* pShader, CVI
 
 	return S_OK;
 }
+#ifdef _DEBUG
 #endif
 
 CRenderTarget* CTarget_Manager::Find_RenderTarget(const wstring& wstrTargetTag)

@@ -1,5 +1,6 @@
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\vc142.pdb
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\vc142.idb
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cdecoration.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccomponent_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccomponent.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccollision.obj
@@ -7,7 +8,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccollider
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccollider.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cchannel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccell.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccamera_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccamera.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ccalculator.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cbounding_sphere.obj
@@ -20,6 +20,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cbehavior
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cbase.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\capplication.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\canimation.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cmodel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cmesh.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\clight_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\clight.obj
@@ -39,12 +40,12 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cfrustum.
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cfont_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cfont.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cfileinfo.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cdecoration.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cvibuffer_instancing.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cvibuffer_cell.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cvibuffer_cube.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cvibuffer_coordnate.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cvibuffer.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ctrigger.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ctransform.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ctexture.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\ctarget_manager.obj
@@ -59,7 +60,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cpipeline
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cparts.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cobject_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cnavigation.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\cmodel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine_struct.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\timer_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\timer.obj
@@ -70,8 +70,8 @@ c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_deferred.cso
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_navigation.cso
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.ilk
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.dll
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.ilk
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.pdb
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\cl.command.1.tlog
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\debug\engine.tlog\cl.read.1.tlog

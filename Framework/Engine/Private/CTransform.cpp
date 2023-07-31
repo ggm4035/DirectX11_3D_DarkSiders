@@ -184,11 +184,24 @@ void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const
 	Set_State(STATE_POSITION, vPosition);
 }
 
+void CTransform::Chase_Lerp(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance)
+{   
+	//현재 내 위치
+	_vector        vPosition = Get_State(STATE_POSITION);
+	//거리
+	_vector        vDir = vTargetPosition - vPosition;
+	if (fMinDistance < XMVectorGetX(XMVector3Length(vDir)))
+		vPosition = XMVectorLerp(vPosition, vTargetPosition, TimeDelta * m_TransformDesc.SpeedPerSec);
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
 _bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
 {
 	if (nullptr == m_pNavigation)
 		return false;
 
+	m_isJump = true;
 	m_isOnNavigation = false;
 	m_fTimeAcc += TimeDelta;;
 
@@ -207,6 +220,7 @@ _bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
 		vPosition.m128_f32[1] = fPlaneY;
 		Set_State(STATE_POSITION, vPosition);
 		m_fTimeAcc = 0.f;
+		m_isJump = false;
 		return false;
 	}
 
@@ -276,34 +290,6 @@ void CTransform::Turn_Axis(_fvector vAxis, const _double& TimeDelta)
 	Set_State(STATE_RIGHT, XMVector3TransformNormal(vRight, RotationMatrix));
 	Set_State(STATE_UP, XMVector3TransformNormal(vUp, RotationMatrix));
 	Set_State(STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
-}
-
-void CTransform::LeapJump(const _float& fForce, const _double& TimeDelta)
-{
-	if (nullptr == m_pNavigation)
-		return;
-
-	m_isOnNavigation = false;
-	m_fTimeAcc += TimeDelta;
-	_float fY = fForce * m_fTimeAcc - 0.8f * m_fTimeAcc * m_fTimeAcc;
-
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vLook = Get_State(STATE_LOOK);
-
-	vPosition.m128_f32[1] += fY;
-
-	_float fPlaneY = m_pNavigation->is_OnNavigation(vPosition);
-
-	if (0.f > fY && fPlaneY > vPosition.m128_f32[1])
-	{
-		m_isOnNavigation = true;
-		vPosition.m128_f32[1] = fPlaneY;
-		Set_State(STATE_POSITION, vPosition);
-		return;
-	}
-
-	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
-	Set_State(STATE_POSITION, vPosition);
 }
 
 void CTransform::Scaled(const _float3& vScale)

@@ -39,7 +39,19 @@ HRESULT CPlayerHit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 {
 	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
-	
+
+	if (CPlayerAction::STATE_WHEEL == pAction->Get_State())
+	{
+		m_pPlayer->Set_CurHitState(CPlayer::NONE);
+	}
+
+	if (CPlayerAction::STATE_KNOCKBACK == pAction->Get_State())
+	{
+		m_pPlayer->Set_CurHitState(CPlayer::NONE);
+		m_pPlayer->Get_Collider(L"Col_Attack")->Set_Enable(false);
+		m_pPlayer->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
+	}
+
 	CPlayer::HITSTATE eCurHitState = m_pPlayer->Get_CurHitState();
 
 	switch (eCurHitState)
@@ -47,7 +59,8 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 	case CGameObject3D::HIT:
 		pAction->Set_State(CPlayerAction::STATE_HIT);
 		m_pPlayer->Set_CurHitState(CPlayer::HITTING);
-		m_pPlayer->Get_Collider(L"Col_Attack")->Switch_Off();
+		m_pPlayer->Get_Collider(L"Col_Attack")->Set_Enable(false);
+		m_pPlayer->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
 		break;
 
 	case CGameObject3D::HITTING:

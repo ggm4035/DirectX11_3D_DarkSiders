@@ -23,6 +23,9 @@
 #include "DirectXTK\SpriteFont.h"
 using namespace DirectX;
 
+#include "fmod\fmod.h"
+#include "fmod\fmod.hpp"
+
 #include <vector>
 #include <queue>
 #include <list>

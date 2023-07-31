@@ -26,12 +26,13 @@ private:
     _char m_szTag[MAX_PATH] = { "" };
 
 private:
+    void Show_Components(CGameInstance* pGameInstance);
     void Show_ObjectInfo(CGameInstance* pGameInstance);
-    void Show_Components();
     void Show_Transform();
     void Show_Texture();
     void Show_Shader();
     void Show_Buffer();
+    void Show_Trigger(CGameInstance* pGameInstance);
 
 public:
     virtual void Free() override;

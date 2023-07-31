@@ -23,6 +23,18 @@ public:
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual HRESULT Tick(const _double& TimeDelta);
 
+public:
+	void Not_Impact() {
+		m_isImpact = false;
+	}
+	void Not_Look() {
+		m_isLook = false;
+	}
+
+private:
+	_bool m_isLook = { true };
+	_bool m_isImpact = { true };
+
 private:
 	CModel* m_pModel = { nullptr };
 	CTransform* m_pTransform = { nullptr };

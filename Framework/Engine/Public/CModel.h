@@ -33,26 +33,26 @@ public:
 		return m_iNumMeshes;
 	}
 
-	const class CBone* Get_Bone(const _char* pBoneName);
+	const class CBone* Get_Bone(const _char * pBoneName);
 
 public:
-	void Change_Animation(const string& strTag);
+	void Change_Animation(const string & strTag, _bool isLerp = true);
 
 public:
-	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
-	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent * pOwner, void* pArg) override;
-	virtual HRESULT Render(const _uint& iMeshIndex);
+	virtual HRESULT Initialize_Prototype(TYPE eModelType, const MODEL_BINARYDATA & ModelData, _fmatrix PivotMatrix);
+	virtual HRESULT Initialize(const _uint & iLevelIndex, CComponent * pOwner, void* pArg) override;
+	virtual HRESULT Render(const _uint & iMeshIndex);
 
 public:
-	_vector ComputeAnimMovement(OUT _float3* pDirection = nullptr);
-	void Play_Animation(const _double& TimeDelta, class CNavigation* pNavigation);
+	_vector ComputeAnimMovement(OUT _float3 * pDirection = nullptr);
+	void Play_Animation(const _double & TimeDelta, class CNavigation* pNavigation);
 	void Pause_Animation();
 	void RePlay_Animation();
 	HRESULT Setup_Notifys();
 
 public:
-	HRESULT Bind_Material(class CShader* pShader, const string& strTypename, const _uint & iMeshIndex, TEXTURETYPE eTextureType);
-	HRESULT Bind_BoneMatrices(class CShader* pShader, const string& strTypename, const _uint& iMeshIndex);
+	HRESULT Bind_Material(class CShader* pShader, const string & strTypename, const _uint & iMeshIndex, TEXTURETYPE eTextureType);
+	HRESULT Bind_BoneMatrices(class CShader* pShader, const string & strTypename, const _uint & iMeshIndex);
 
 private: /* For.Mesh */
 	_uint m_iNumMeshes = { 0 };
@@ -79,16 +79,16 @@ private:
 	_float4x4 m_WorldMatrix;
 
 private:
-	HRESULT Ready_Meshes(const MODEL_BINARYDATA& ModelData, TYPE eModelType);
-	HRESULT Ready_Materials(const MODEL_BINARYDATA& ModelData);
-	HRESULT Ready_Bones(const MODEL_BINARYDATA& ModelData, class CBone* pParent);
-	HRESULT Ready_Animations(const MODEL_BINARYDATA& ModelData);
-	class CAnimation* Find_Animation(const string& strTag);
+	HRESULT Ready_Meshes(const MODEL_BINARYDATA & ModelData, TYPE eModelType);
+	HRESULT Ready_Materials(const MODEL_BINARYDATA & ModelData);
+	HRESULT Ready_Bones(const MODEL_BINARYDATA & ModelData, class CBone* pParent);
+	HRESULT Ready_Animations(const MODEL_BINARYDATA & ModelData);
+	class CAnimation* Find_Animation(const string & strTag);
 
 public:
-	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
-		TYPE eModelType, const MODEL_BINARYDATA& ModelData, _fmatrix PivotMatrix);
-	virtual CModel* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
+	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext,
+		TYPE eModelType, const MODEL_BINARYDATA & ModelData, _fmatrix PivotMatrix);
+	virtual CModel* Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pArg) override;
 	virtual void Free() override;
 
 #if defined(_USE_IMGUI) || defined(_DEBUG)
@@ -96,27 +96,35 @@ public:
 public: /* !!! Warrning !!! Only Tool */
 	const vector<class CMesh*>& Get_Meshes() const {
 		return m_vecMeshes;
-	}
-	const _uint& Get_MaxKeyFrame() const;
-	const _uint& Get_MaxRootKeyFrame() const;
-	const _uint& Get_CurrentKeyFrameIndex() const;
-	const _uint& Get_CurrentRootKeyFrameIndex() const;
-	void Set_KeyFrame(const _uint& iIndex);
-	void Set_RootKeyFrame(const _uint& iIndex);
-	void Set_Translation(const _uint& iIndex, const _float3& vTranslation);
-	void Set_KeyFrameTime(const _uint& iIndex, const _float& fTime);
-	void Set_Duration(const _float& fDuration);
-	void Set_TickPerSec(const _float& fTickPerSec);
-	_float3 Get_Translation(const _uint& iIndex);
-	_float Get_KeyFrameTime(const _uint& iIndex);
+}
+	const _uint& Get_iMaxKeyFrame() const; /* 최대 키 프레임 개수 */
+	const _uint& Get_iRootBoneIndex() const; /* 루트 본 인덱스 */
+	const _uint& Get_iMaxKeyFrameIndex() const; /* 최대 키 프레임을 가진 본의 인덱스 */
+	const _uint& Get_iNumRootBoneKeyFrame() const; /* 루트본의 키프레임 개수 */
+	const _uint& Get_iCurrentKeyFrameIndex() const; /* 현재 맥스 본의 키프레임의 인덱스 */
+	const _uint& Get_iCurrentRootKeyFrameIndex() const; /* 현재 루트 본의 키프레임의 인덱스 */
+	
+	void Set_KeyFrame(const _uint & iIndex);
+	void Set_RootKeyFrame(const _uint & iIndex);
+	void Set_Translation(const _uint & iIndex, const _float3 & vTranslation);
+	void Set_KeyFrameTime(const _uint & iIndex, const _float & fTime);
+	void Set_Duration(const _float & fDuration);
+	void Set_TickPerSec(const _float & fTickPerSec);
+	_float3 Get_Translation(const _uint & iIndex);
+	_float Get_KeyFrameTime(const _uint & iIndex);
 	_float Get_Duration();
 	_float Get_TickPerSec();
 	_bool isPause() const;
-
+	
 	vector<ANIMATIONDATA> Get_AnimationDatas();
-	HRESULT Set_Animation(const string& wstrTag, const ANIMATIONDATA& AnimData);
-	HRESULT Add_Animation(const ANIMATIONDATA& AnimData);
-	HRESULT Delete_Animation(const string& wstrTag);
+	HRESULT Set_Animation(const string & wstrTag, const ANIMATIONDATA & AnimData);
+	HRESULT Add_Animation(const ANIMATIONDATA & AnimData);
+	HRESULT Delete_Animation(const string & wstrTag);
+
+private:
+	_uint m_iNumRootBoneFrames = { 0 };
+	_uint m_iMaxFramesIndex = { 0 };
+	_uint m_iMaxNumFrames = { 0 };
 
 #endif
 };

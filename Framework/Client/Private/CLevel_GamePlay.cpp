@@ -8,6 +8,9 @@
 #include "CTerrain.h"
 #include "CGoblin.h"
 #include "CStatic_Object.h"
+#include "CTrigger_Free.h"
+#include "CUI_Rect.h"
+#include "CUI_HpBar.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice, pContext)
@@ -21,22 +24,41 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
 		return E_FAIL;
-
-	if (FAILED(Ready_Layer_Cameras(L"Layer_Cameras")))
-		return E_FAIL;
-
+	
 	if (FAILED(Ready_Layer_Player(L"Layer_Player")))
 		return E_FAIL;
-
+		
 	if (FAILED(Ready_Layer_Monster(L"Layer_Monster")))
 		return E_FAIL;
 
+	if (FAILED(Ready_HUD()))
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Stop_AllSound()))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Play_BGM(L"mus_hell_low.ogg", 0.5f)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+	
 	return S_OK;
 }
 
 void CLevel_GamePlay::Tick(const _double& TimeDelta)
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
+
+	for (auto UI : m_pPlayerUI)
+		UI->Tick(TimeDelta);
+	m_pFadeIn->Tick(TimeDelta);
+
+	for (auto UI : m_pPlayerUI)
+		UI->Late_Tick(TimeDelta);
+	m_pFadeIn->Late_Tick(TimeDelta);
 }
 
 HRESULT CLevel_GamePlay::Render()
@@ -71,7 +93,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FILEDATA FileData;
-	if (FAILED(pGameInstance->Load("../../Data/Monstertest.dat", FileData)))
+	if (FAILED(pGameInstance->Load("../../Data/testmap.dat", FileData)))
 		return E_FAIL;
 
 	CTerrain::TERRAINDESC TerrainDesc;
@@ -105,11 +127,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 			return E_FAIL;
 	}
 
+	/* Trigger_Free */
+	for (auto& Data : FileData.vecTriggerData)
+	{
+		CTrigger_Free::TRIGGERDESC Desc;
+
+		Desc.vExtents = Data.vExtents;
+		Desc.vPosition = Data.vPosition;
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Trigger_Free",
+			Data.szTriggerTag, pLayerTag, &Desc)))
+			return E_FAIL;
+	}
+
 	m_PlayerWorldMatrix = FileData.WorldMatrix;
 	m_vPlayerAngle = FileData.vAngle;
 
 	m_vecMonsterDatas = FileData.vecMonsterData;
 
+	/* SkyBox*/
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"SkyBox",
 		L"SkyBox", pLayerTag)))
 		return E_FAIL;
@@ -120,20 +156,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 		Safe_Delete_BinaryData(Data.BinaryData);
 
 	Safe_Delete_Array(FileData.pPositions);
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Cameras(wstring pLayerTag)
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Camera_Free",
-		L"Camera_Free", pLayerTag)))
-		return E_FAIL;
-
-	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -216,6 +238,16 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 				return E_FAIL;
 		}
 
+		if (wstring::npos != wstrObjTag.find(L"HollowLord"))
+		{
+			MonsterDesc.SpeedPerSec = 0.f;
+			MonsterDesc.RotationPerSec = 0.f;
+
+			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_HollowLord",
+				L"Monster_HollowLord", pLayerTag, &MonsterDesc)))
+				return E_FAIL;
+		}
+
 		if (wstring::npos != wstrObjTag.find(L"HellHound"))
 		{
 			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_HellHound",
@@ -223,6 +255,135 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 				return E_FAIL;
 		}
 	}
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_HUD()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CUI_Rect::UIRECTDESC UIDesc;
+
+	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
+	UIDesc.m_fY = _float(g_iWinSizeY >> 1);
+	UIDesc.m_fSizeX = (_float)g_iWinSizeX;
+	UIDesc.m_fSizeY = (_float)g_iWinSizeY;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_Loading";
+	UIDesc.iTextureLevelIndex = LEVEL_STATIC;
+	UIDesc.iPassNum = 5;
+
+	m_pFadeIn = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"FadeIn", nullptr, &UIDesc));
+	if (nullptr == m_pFadeIn)
+		return E_FAIL;
+
+	UIDesc.m_fX = 250;
+	UIDesc.m_fY = 110;
+	UIDesc.m_fSizeX = 220;
+	UIDesc.m_fSizeY = 40;
+	UIDesc.m_fDepth = 0.01f;
+	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_Hp";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+	m_pPlayerUI[0] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrameHp", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[0])
+		return E_FAIL;
+
+	UIDesc.m_fX = 100;
+	UIDesc.m_fY = 100;
+	UIDesc.m_fSizeX = 100;
+	UIDesc.m_fSizeY = 100;
+	UIDesc.m_fDepth = 0.01f;
+	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_2";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+	m_pPlayerUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrame2", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[1])
+		return E_FAIL;
+
+	UIDesc.m_fX = 105;
+	UIDesc.m_fY = 103;
+	UIDesc.m_fSizeX = 75;
+	UIDesc.m_fSizeY = 77;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_1";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+	m_pPlayerUI[2] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrame1", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[2])
+		return E_FAIL;
+
+	CGameObject3D* pPlayer = pGameInstance->Get_Player();
+	UIDesc.m_fX = 247;
+	UIDesc.m_fY = 106;
+	UIDesc.m_fSizeX = 185;
+	UIDesc.m_fSizeY = 14;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 6;
+	UIDesc.pMaxHp = &pPlayer->Get_Status().iMaxHP;
+	UIDesc.pHp = &pPlayer->Get_Status().iHP;
+
+	m_pPlayerUI[3] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitHpBar", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[3])
+		return E_FAIL;
+
+	UIDesc.m_fX = 150;
+	UIDesc.m_fY = 600;
+	UIDesc.m_fSizeX = 184;
+	UIDesc.m_fSizeY = 88;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_SkillFrame";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+
+	m_pPlayerUI[4] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"SkillFrame", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[4])
+		return E_FAIL;
+
+	UIDesc.m_fX = 150;
+	UIDesc.m_fY = 590;
+	UIDesc.m_fSizeX = 80;
+	UIDesc.m_fSizeY = 80;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Dash";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+
+	m_pPlayerUI[5] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Dash", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[5])
+		return E_FAIL;
+
+	UIDesc.m_fX = 90;
+	UIDesc.m_fY = 610;
+	UIDesc.m_fSizeX = 80;
+	UIDesc.m_fSizeY = 80;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Leap";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+
+	m_pPlayerUI[6] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Leap", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[6])
+		return E_FAIL;
+
+	UIDesc.m_fX = 210;
+	UIDesc.m_fY = 610;
+	UIDesc.m_fSizeX = 80;
+	UIDesc.m_fSizeY = 80;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Wheel";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+
+	m_pPlayerUI[7] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Wheel", nullptr, &UIDesc));
+	if (nullptr == m_pPlayerUI[7])
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 

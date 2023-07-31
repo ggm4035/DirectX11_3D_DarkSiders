@@ -554,7 +554,29 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		OutData.vecMonsterData.push_back(Data);
 	}
 
-	/* 4. Player 불러오기*/
+	/* 4. Trigger 불러오기 */
+	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
+
+	for (_uint i = 0; i < iNumObjects; ++i)
+	{
+		TRIGGERDATA Data;
+
+		/* Read szTriggerTag */
+		_uint iTaglength = { 0 };
+	
+		ReadFile(hFile, &iTaglength, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, Data.szTriggerTag, sizeof(_tchar) * iTaglength, &dwByte, nullptr);
+
+		/* Read vExtents */
+		ReadFile(hFile, &Data.vExtents, sizeof(_float3), &dwByte, nullptr);
+
+		/* Read vPosition */
+		ReadFile(hFile, &Data.vPosition, sizeof(_float4), &dwByte, nullptr);
+
+		OutData.vecTriggerData.push_back(Data);
+	}
+
+	/* 5. Player 불러오기*/
 	ReadFile(hFile, &OutData.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
 	ReadFile(hFile, &OutData.vAngle, sizeof(_float3), &dwByte, nullptr);
 

@@ -4,6 +4,7 @@
 #include "Client_Defines.h"
 
 BEGIN(Engine)
+class CGameObject3D;
 class CTransform;
 class CModel;
 END
@@ -30,6 +31,7 @@ private:
 	queue<_ubyte> m_Qmessage;
 
 private:
+	CGameObject3D* m_pCamera = { nullptr };
 	CTransform* m_pTransform = { nullptr };
 	CModel* m_pModel = { nullptr };
 

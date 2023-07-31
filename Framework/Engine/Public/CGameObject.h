@@ -39,7 +39,7 @@ public:
 	virtual void Free() override;
 
 protected:
-	_bool m_isRender = { false };
+	_bool m_isRender = { true };
 
 public:
 	void Togle_Render_Debug() {

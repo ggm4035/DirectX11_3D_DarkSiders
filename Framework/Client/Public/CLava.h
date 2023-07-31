@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CVIBuffer_Rect;
 class CShader;
 class CTexture;
+class CRenderer;
 END
 
 BEGIN(Client)

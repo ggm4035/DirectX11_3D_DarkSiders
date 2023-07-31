@@ -2,11 +2,15 @@
 #include "CPlayerAction.h"
 
 #include "CGameInstance.h"
+#include "CBlackBoard.h"
 #include "CPlayer.h"
 #include "CPlayerHit.h"
 #include "CPlayerMove.h"
 #include "CPlayerJump.h"
 #include "CPlayerAttack.h"
+#include "CPlayerKnockback.h"
+
+#include "CWheelWind.h"
 
 CPlayerAction::CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBehavior(pDevice, pContext)
@@ -98,14 +102,18 @@ HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	m_pModelCom = dynamic_cast<CModel*>(m_pPlayer->Get_Component(L"Com_Model"));
 	Safe_AddRef(m_pModelCom);
 
-	if (FAILED(AssembleBehaviors()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 {
+	if (STATE_KNOCKBACK == m_eCurState &&
+		false == m_isSuperArmor)
+	{
+		m_pKnockbackAction->Tick(TimeDelta);
+		return S_OK;
+	}
+
 	CPlayer::HITSTATE eHitState = m_pPlayer->Get_CurHitState();
 	if (eHitState != CPlayer::NONE &&
 		false == m_isSuperArmor)
@@ -113,9 +121,11 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 		m_pHitAction->Tick(TimeDelta);
 		return S_OK;
 	}
-	else if (true == m_isSuperArmor)
+
+	if (true == m_isSuperArmor)
 	{
 		m_pPlayer->Set_CurHitState(CPlayer::NONE);
+
 		m_fTimeAcc += TimeDelta;
 
 		if (m_fSuperArmor <= m_fTimeAcc)
@@ -138,12 +148,16 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 	pGameInstance->Mouse_Down(CInput_Device::DIM_LB);
 	pGameInstance->Mouse_Down(CInput_Device::DIM_RB);
 
+	if (pGameInstance->Key_Down(DIK_1))
+		m_pSkillWheelWind->Play();
+
 	/* 각 액션들에게 메시지를 보낸다. */
 
 	_ubyte Input = pGameInstance->Pop_Message();
 
-	if ((true == m_pModelCom->isLoopAnimation() && DIK_END == Input) ||
-		(true == m_pModelCom->isFinishedAnimation() && DIK_END == Input))
+	if (STATE_WHEEL != m_eCurState && STATE_KNOCKBACK != m_eCurState &&
+		((true == m_pModelCom->isLoopAnimation() && DIK_END == Input) ||
+		(true == m_pModelCom->isFinishedAnimation() && DIK_END == Input)))
 		Set_State(STATE_IDLE);
 
 	while (DIK_END != Input)
@@ -152,7 +166,8 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 		{
 		case CInput_Device::DIM_LB:
 		case CInput_Device::DIM_RB:
-			m_pAttackAction->Push_Move_Message(Input);
+			if(STATE_WHEEL != m_eCurState)
+				m_pAttackAction->Push_Move_Message(Input);
 			break;
 			
 		case DIK_W:
@@ -163,11 +178,17 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 			break;
 
 		case DIK_SPACE:
-			m_pJumpAction->Push_Jump_Message(Input);
+			if (STATE_WHEEL != m_eCurState)
+				m_pJumpAction->Push_Jump_Message(Input);
 			break;
 
 		case DIK_LSHIFT:
-			Set_State(STATE_DASH);
+			if ((STATE_KNOCKBACK != m_eCurState) && 
+				(STATE_DASH != m_eCurState))
+			{
+				m_pSkillWheelWind->Reset();
+				Set_State(STATE_DASH);
+			}
 			break;
 		}
 		Input = pGameInstance->Pop_Message();
@@ -209,6 +230,24 @@ HRESULT CPlayerAction::AssembleBehaviors()
 		return E_FAIL;
 	Assemble_Behavior(L"PlayerAttack", pAction);
 	m_pAttackAction = dynamic_cast<CPlayerAttack*>(pAction);
+
+	pAction = dynamic_cast<CPlayerKnockback*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerKnockback", m_pOwner));
+	if (nullptr == pAction)
+		return E_FAIL;
+	Assemble_Behavior(L"PlayerKnockback", pAction);
+	m_pKnockbackAction = dynamic_cast<CPlayerKnockback*>(pAction);
+
+	if (FAILED(m_pKnockbackAction->AssembleBehaviors()))
+		return E_FAIL;
+
+	pAction = dynamic_cast<CWheelWind*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerWheelWind", m_pOwner));
+	if (nullptr == pAction)
+		return E_FAIL;
+	Assemble_Behavior(L"PlayerWheelWind", pAction);
+	m_pSkillWheelWind = dynamic_cast<CWheelWind*>(pAction);
+
+	if (FAILED(m_pSkillWheelWind->AssembleBehaviors()))
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 

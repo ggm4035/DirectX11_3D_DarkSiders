@@ -24,11 +24,17 @@ void CCollider_Manager::Tick()
 {
 	/* 콜라이더 충돌 체크 */
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_ENEMY);
+	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_BOSS);
+
 	Collision(CCollider::COL_ENEMY, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY, CCollider::COL_ENEMY);
 	Collision(CCollider::COL_ENEMY_ATK, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY_RANGE, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY_MELEE_RANGE, CCollider::COL_PLAYER);
+
+	Collision(CCollider::COL_TRIGGER, CCollider::COL_PLAYER);
+
+	Collision(CCollider::COL_BOSS_ATK, CCollider::COL_PLAYER);
 }
 
 void CCollider_Manager::Clear_ColliderList()

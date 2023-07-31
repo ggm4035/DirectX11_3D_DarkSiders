@@ -24,8 +24,8 @@ HRESULT CHellHound::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_Status.iHP = 3;
-	m_Status.iMaxHP = 3;
+	m_Status.iHP = 5;
+	m_Status.iMaxHP = 5;
 
 	return S_OK;
 }
@@ -52,6 +52,14 @@ HRESULT CHellHound::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CHellHound::Dead_Motion(const _double& TimeDelta)
+{
+	CMonster::Dead_Motion(TimeDelta);
+
+	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRemove = true;
 }
 
 void CHellHound::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -155,7 +163,7 @@ HRESULT CHellHound::Make_AI()
 	if (nullptr == pSelector)
 		return E_FAIL;
 
-	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
+	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
 	if (nullptr == pHit)
 		return E_FAIL;
 	CPattern_Patrol* pPatrol = dynamic_cast<CPattern_Patrol*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Patrol", this));
@@ -174,7 +182,7 @@ HRESULT CHellHound::Make_AI()
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pHit)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pHit)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Patrol", pPatrol)))
 		return E_FAIL;

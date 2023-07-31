@@ -15,23 +15,33 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
 		return E_FAIL;
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Play_BGM(L"mus_mainmenu.ogg", 0.5f)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 
 void CLevel_Logo::Tick(const _double& TimeDelta)
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		CGameInstance* pGameInstance = CGameInstance::GetInstance();
-		Safe_AddRef(pGameInstance);
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 		{
 			Safe_Release(pGameInstance);
 			return;
 		}
-		Safe_Release(pGameInstance);
 	}
 	SetWindowText(g_hWnd, TEXT("로고레벨입니다."));
+
+	Safe_Release(pGameInstance);
 }
 
 HRESULT CLevel_Logo::Render()

@@ -6,6 +6,7 @@
 #include "CStatic_Object.h"
 #include "CTerrain.h"
 #include "CLava.h"
+#include "CAoE.h"
 #include "CSky.h"
 #include "CCamera_Free.h"
 #include "CGoblin.h"
@@ -14,8 +15,10 @@
 #include "CLegion_Melee.h"
 #include "CLegion_Champion.h"
 #include "CSteamRoller.h"
+#include "CHollowLord.h"
 #include "CFallenDog.h"
 #include "CWeapon.h"
+#include "CTrigger_Free.h"
 
 #include "CUI_Overlay.h"
 #include "CUI_HpBar.h"
@@ -141,6 +144,56 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Health_Monster.png"))))
 		return E_FAIL;
 
+	/* For. Texture_UI_Circle */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Circle",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Circle.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_GenericCircle */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_GenericCircle",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_GenericCircle.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_UnitFrame_1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_UnitFrame_1",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_UnitFrame_1.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_UnitFrame_2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_UnitFrame_2",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_UnitFrame_2.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_UnitFrame_Hp */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_UnitFrame_Hp",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_UnitFrameHp.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_UnitFrame_HpBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_UnitFrame_HpBar",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_UnitFrame_HpBar.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_SkillFrame */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_SkillFrame",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_SkillFrame.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_Ability_Dash */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Ability_Dash",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AbilityIcon_Dash.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_Ability_Leap */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Ability_Leap",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AbilityIcon_Leap.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_Ability_Wheel */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Ability_Wheel",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AbilityIcon_Wheel.png"))))
+		return E_FAIL;
+
 	m_szLoading = TEXT("UI 로딩 중.");
 
 	/* For. UI_Overlay */
@@ -156,7 +209,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("모델 로딩 중.");
 
 	FILEDATA FileData;
-	m_pGameInstance->Load("../../Data/Monstertest.dat", FileData);
+	m_pGameInstance->Load("../../Data/testmap.dat", FileData);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"VIBuffer_Terrain",
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
@@ -188,9 +241,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 	MODEL_BINARYDATA Data;
 
 	/* SteamRoller Model */
-	m_pGameInstance->ReadModel("../../Data/SteamRoller.dat", FilePath, Data);
+	m_pGameInstance->ReadModel("../../Data/HollowLord.dat", FilePath, Data);
 
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_HollowLord",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* SteamRoller Model */
+	m_pGameInstance->ReadModel("../../Data/SteamRoller.dat", FilePath, Data);
+
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_SteamRoller",
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, PivotMatrix))))
@@ -328,6 +391,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CStatic_Object::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For. Monster_HollowLord */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_HollowLord",
+		CHollowLord::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For. Monster_SteamRoller */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_SteamRoller",
 		CSteamRoller::Create(m_pDevice, m_pContext))))
@@ -373,9 +441,14 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CLava::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For. Camera_Free */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Camera_Free",
-		CCamera_Free::Create(m_pDevice, m_pContext))))
+	/* For. AOE */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"AOE",
+		CAoE::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Trigger_Free */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Trigger_Free",
+		CTrigger_Free::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	list<CComponent*> data = m_pGameInstance->Get_All_Prototypes();

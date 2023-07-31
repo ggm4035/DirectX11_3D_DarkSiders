@@ -40,6 +40,11 @@ public:
 	static CBounding_AABB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CBounding_AABB* Clone(void* pArg) override;
 	virtual void Free() override;
+
+public: /* Tool */
+	void Set_Extents(const _float3& vExtents) {
+		m_pAABB_Original->Extents = vExtents;
+	}
 };
 
 END

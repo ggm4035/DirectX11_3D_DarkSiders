@@ -60,6 +60,14 @@ HRESULT CLegion_Champion::Render()
 	return S_OK;
 }
 
+void CLegion_Champion::Dead_Motion(const _double& TimeDelta)
+{
+	CMonster::Dead_Motion(TimeDelta);
+
+	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRemove = true;
+}
+
 void CLegion_Champion::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
@@ -70,6 +78,14 @@ void CLegion_Champion::OnCollisionEnter(CCollider::COLLISION Collision, const _d
 		Collision.pOther->Get_Damaged();
 	}
 
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Huge_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		_float4 vPosition;
+		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		Collision.pOther->Get_Damaged_Knockback(vPosition);
+	}
+	
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
@@ -116,6 +132,7 @@ HRESULT CLegion_Champion::Add_Components()
 
 	CBounding_AABB::AABBDESC AABBDesc;
 	CBounding_Sphere::SPHEREDESC SphereDesc;
+	CBounding_OBB::OBBDESC OBBDesc;
 
 	SphereDesc.fRadius = 1.f;
 	SphereDesc.vPosition = _float3(0.f, 1.f, 0.f);
@@ -123,7 +140,7 @@ HRESULT CLegion_Champion::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Body", &SphereDesc)))
 		return E_FAIL;
 
-	SphereDesc.fRadius = 10.f;
+	SphereDesc.fRadius = 15.f;
 	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	SphereDesc.eGroup = CCollider::COL_ENEMY_RANGE;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Range", &SphereDesc)))
@@ -135,12 +152,20 @@ HRESULT CLegion_Champion::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
 		return E_FAIL;
 
-	SphereDesc.fRadius = 1.f;
+	SphereDesc.fRadius = 1.2f;
 	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	SphereDesc.eGroup = CCollider::COL_ENEMY_ATK;
-	SphereDesc.vOffset = _float3(0.f, 0.5f, 1.5f);
+	SphereDesc.vOffset = _float3(0.f, 0.f, 1.5f);
 	SphereDesc.isEnable = false;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack", &SphereDesc)))
+		return E_FAIL;
+
+	OBBDesc.vExtents = _float3(1.5f, 1.f, 1.5f);
+	OBBDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	OBBDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	OBBDesc.vOffset = _float3(0.f, 0.f, 1.5f);
+	OBBDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Col_Huge_Attack", &OBBDesc)))
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
@@ -162,49 +187,48 @@ HRESULT CLegion_Champion::Make_AI()
 	if (nullptr == pSelector)
 		return E_FAIL;
 
-	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence_Hit", this));
+	CAction* pAction_Rest = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Rest)
+		return E_FAIL;
+	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
 	if (nullptr == pHit)
 		return E_FAIL;
-
+	CPattern_Wheel* pPattern_Wheel = dynamic_cast<CPattern_Wheel*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Wheel", this));
+	if (nullptr == pPattern_Wheel)
+		return E_FAIL;
 	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
 	if (nullptr == pPattern_Attack)
 		return E_FAIL;
 
-	CWait* pWait = dynamic_cast<CWait*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Wait", this));
-	if (nullptr == pWait)
-		return E_FAIL;
-
-	pWait->Set_Timer(1.f);
-
-	pWait->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			CGameObject3D::HITSTATE* pCurState = { nullptr };
-			pBlackBoard->Get_Type(L"eCurHitState", pCurState);
-
-			if (CGameObject3D::NONE == *pCurState)
-				return true;
-			else
-				return false;
-		});
+	pAction_Rest->Bind_AnimationTag("Idle");
+	pHit->Not_Impact();
+	pPattern_Wheel->Set_CoolTime(15.f);
 	pPattern_Attack->Bind_FollowAnimTag("Run");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_3");
+
+	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_bool* pIsSpawn = { nullptr };
+			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
+			if (nullptr == pIsSpawn)
+				return false;
+
+			return !(*pIsSpawn);
+		});
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
-
-	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Hit", pHit)))
+	/* 플레이어 발견하기 전까지는 비활성화 하기 */
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pHit)))
 		return E_FAIL;
-
+	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Wheel", pPattern_Wheel)))
+		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;
 
-	if (FAILED(pSelector->Assemble_Behavior(L"Tsk_Wait", pWait)))
-		return E_FAIL;
-
 	pHit->Assemble_Childs();
+	pPattern_Wheel->Assemble_Childs();
 	pPattern_Attack->Assemble_Childs();
 
 	Safe_Release(pGameInstance);

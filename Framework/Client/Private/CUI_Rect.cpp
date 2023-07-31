@@ -23,9 +23,11 @@ HRESULT CUI_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	if (nullptr == pArg)
 		return E_FAIL;
 
-	UIRECTDESC Desc;
-	Desc.iTextureLevelIndex = reinterpret_cast<UIRECTDESC*>(pArg)->iTextureLevelIndex;
-	Desc.wstrTextureTag = reinterpret_cast<UIRECTDESC*>(pArg)->wstrTextureTag;
+	UIRECTDESC Desc = *reinterpret_cast<UIRECTDESC*>(pArg);
+
+	m_iPassNum = Desc.iPassNum;
+	m_pMaxHp = Desc.pMaxHp;
+	m_pHp = Desc.pHp;
 
 	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
@@ -42,11 +44,12 @@ HRESULT CUI_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 void CUI_Rect::Tick(const _double& TimeDelta)
 {
+	m_fTimeAcc += TimeDelta;
 }
 
 void CUI_Rect::Late_Tick(const _double& TimeDelta)
 {
-	if(nullptr != m_pRendererCom)
+	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
@@ -55,7 +58,7 @@ HRESULT CUI_Rect::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(2);
+	m_pShaderCom->Begin(m_iPassNum);
 
 	m_pBufferCom->Render();
 
@@ -98,6 +101,22 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_Texture")))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeAcc", &m_fTimeAcc, sizeof(_float))))
+		return E_FAIL;
+
+	if (nullptr != m_pMaxHp)
+	{
+		_float fData = _float(*m_pMaxHp);
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxHp", &fData, sizeof(_float))))
+			return E_FAIL;
+	}
+
+	if (nullptr != m_pHp)
+	{
+		_float fData = _float(*m_pHp);
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fHp", &fData, sizeof(_float))))
+			return E_FAIL;
+	}
 	Safe_Release(pGameInstance);
 
 	return S_OK;

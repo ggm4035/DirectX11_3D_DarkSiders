@@ -49,6 +49,7 @@ HRESULT CHit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pAr
 
 HRESULT CHit::Tick(const _double& TimeDelta)
 {
+
 	CGameObject3D* pTarget = { nullptr };
 	CGameObject3D::HITSTATE* pCurState = { nullptr };
 	_float* pHitTimeAcc = { nullptr };
@@ -61,14 +62,21 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 	{
 	case CGameObject3D::NONE:
 		*pHitTimeAcc = 0.f;
+
 		return BEHAVIOR_FAIL;
 
 	case CGameObject3D::HIT:
 		m_pTransform->Set_On_Navigation(true);
-		m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-		m_pModel->Change_Animation("Impact");
+
+		if(true == m_isLook)
+			m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+
+		if(true == m_isImpact)
+			m_pModel->Change_Animation("Impact");
+
 		*pCurState = CGameObject3D::HITTING;
 		*pHitTimeAcc = 0.f;
+
 		return BEHAVIOR_SUCCESS;
 
 	case CGameObject3D::HITTING:
@@ -79,6 +87,7 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 			*pCurState = CGameObject3D::NONE;
 			return BEHAVIOR_FAIL;
 		}
+
 		return BEHAVIOR_RUNNING;
 	}
 

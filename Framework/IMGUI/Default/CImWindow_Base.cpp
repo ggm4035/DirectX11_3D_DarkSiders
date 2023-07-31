@@ -10,6 +10,7 @@
 #include "CImWindow_Top.h"
 
 #include "CDummyObject3D.h"
+#include "CDummyTrigger.h"
 #include "CCoordnate_Axis.h"
 #include "CFileInfo.h"
 #include "CMainCamera.h"
@@ -164,9 +165,11 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
 
     if (ImGui::BeginTabBar("TabObjects", ImGuiTabBarFlags_None))
     {
+#pragma region StaticObject
+
         if (ImGui::BeginTabItem("Static"))
         {
-            if (ImGui::BeginTable("Table_Model", 3, flags, ImVec2(0, 600), 0.f))
+            if (ImGui::BeginTable("Table_Model_Static", 3, flags, ImVec2(0, 600), 0.f))
             {
                 ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
                 ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
@@ -225,9 +228,13 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
             ImGui::EndTabItem();
         }
 
+#pragma endregion
+
+#pragma region Monster
+
         if (ImGui::BeginTabItem("Monster"))
         {
-            if (ImGui::BeginTable("Table_Model", 3, flags, ImVec2(0, 600), 0.f))
+            if (ImGui::BeginTable("Table_Model_Monster", 3, flags, ImVec2(0, 600), 0.f))
             {
                 ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
                 ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
@@ -285,6 +292,44 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
             }
             ImGui::EndTabItem();
         }
+
+
+#pragma endregion
+
+        if (ImGui::BeginTabItem("Trigger"))
+        {
+            if (ImGui::BeginTable("Table_Model_Trigger", 2, flags, ImVec2(0, 600), 0.f))
+            {
+                ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
+                ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
+
+                ImGui::TableHeadersRow();
+
+                /* Model Data Table Ãâ·Â */
+                static _uint iSelected = 0;
+                _uint iIndex = 0;
+                auto iter = m_TriggerList.begin();
+                for (auto& pTrigger : m_TriggerList)
+                {
+                    ImGui::TableNextRow();
+
+                    ImGui::TableSetColumnIndex(0);
+                    if (ImGui::Selectable(std::to_string(iIndex).c_str(), iSelected == iIndex))
+                    {
+                        iSelected = iIndex;
+                        TOOL->m_pCurrentTrigger = *iter;
+                    }
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::TextUnformatted(pGameInstance->wstrToStr(pTrigger->Get_Tag()).c_str());
+
+                    ++iIndex;
+                    ++iter;
+                }
+                ImGui::EndTable();
+            }
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
 
@@ -312,6 +357,16 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
 
         pGameInstance->Remove_GameObject(TOOL->m_pCurrentObject->Get_Tag());
         TOOL->m_pCurrentObject = nullptr;
+        WINDOWMGR->Refresh_All_Window();
+    }
+
+    if (ImGui::Button("Delete_Trigger"))
+    {
+        if (0 == lstrcmp(L"Terrain", TOOL->m_pCurrentTrigger->Get_Tag().c_str()))
+            m_pToolHeightMap->Set_Terrain(nullptr);
+
+        pGameInstance->Remove_GameObject(TOOL->m_pCurrentTrigger->Get_Tag());
+        TOOL->m_pCurrentTrigger = nullptr;
         WINDOWMGR->Refresh_All_Window();
     }
 }

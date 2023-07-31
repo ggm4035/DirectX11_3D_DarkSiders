@@ -16,9 +16,6 @@
     <Filter Include="02. GameObject">
       <UniqueIdentifier>{c51a81ab-03cf-477a-b390-9b3a55f8522a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. CMainCamera">
-      <UniqueIdentifier>{683011ef-8f44-42c8-9bf4-4a980e559831}</UniqueIdentifier>
-    </Filter>
     <Filter Include="IMGUIFile">
       <UniqueIdentifier>{57755711-d961-4440-9cd0-05b739dc3cd2}</UniqueIdentifier>
     </Filter>
@@ -49,9 +46,6 @@
     <Filter Include="02. GameObject\00. Dummy">
       <UniqueIdentifier>{bd1d008b-256d-4df2-9307-06651583c831}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\00. Dummy\UI">
-      <UniqueIdentifier>{025c4d40-23a1-440a-bb2c-35ac0a4482e6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\00. Dummy\3D">
       <UniqueIdentifier>{6fd08361-30c6-42d9-ae90-e6d7221409bc}</UniqueIdentifier>
     </Filter>
@@ -69,6 +63,12 @@
     </Filter>
     <Filter Include="01. ImWindow\00. ImWindow_Base\ImWindow_Animation">
       <UniqueIdentifier>{1b5ade38-f4cd-49dd-871a-9f022a9e123d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Dummy\Trigger">
+      <UniqueIdentifier>{168464a2-7ddc-4bc7-850f-be3774ac2073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. MainCamera">
+      <UniqueIdentifier>{683011ef-8f44-42c8-9bf4-4a980e559831}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +100,7 @@
       <Filter>02. GameObject\03. Coordnate_Axis</Filter>
     </ClInclude>
     <ClInclude Include="CMainCamera.h">
-      <Filter>02. GameObject\01. CMainCamera</Filter>
+      <Filter>02. GameObject\01. MainCamera</Filter>
     </ClInclude>
     <ClInclude Include="CImWindow_Base.h">
       <Filter>01. ImWindow\00. ImWindow_Base</Filter>
@@ -138,8 +138,8 @@
     <ClInclude Include="CImWindow_Animation.h">
       <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Animation</Filter>
     </ClInclude>
-    <ClInclude Include="CDummyUI.h">
-      <Filter>02. GameObject\00. Dummy\UI</Filter>
+    <ClInclude Include="CDummyTrigger.h">
+      <Filter>02. GameObject\00. Dummy\Trigger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -162,7 +162,7 @@
       <Filter>02. GameObject\03. Coordnate_Axis</Filter>
     </ClCompile>
     <ClCompile Include="CMainCamera.cpp">
-      <Filter>02. GameObject\01. CMainCamera</Filter>
+      <Filter>02. GameObject\01. MainCamera</Filter>
     </ClCompile>
     <ClCompile Include="CImWindow_Inspector.cpp">
       <Filter>01. ImWindow\01. ImWindow_Inspector</Filter>
@@ -215,8 +215,8 @@
     <ClCompile Include="CImWindow_Animation.cpp">
       <Filter>01. ImWindow\00. ImWindow_Base\ImWindow_Animation</Filter>
     </ClCompile>
-    <ClCompile Include="CDummyUI.cpp">
-      <Filter>02. GameObject\00. Dummy\UI</Filter>
+    <ClCompile Include="CDummyTrigger.cpp">
+      <Filter>02. GameObject\00. Dummy\Trigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

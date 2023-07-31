@@ -2,6 +2,10 @@
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
+
+texture2D g_TextureCircle; // ExplosionData
+float3 g_vHpColor = float3(1.f, 0.f, 0.f);
+
 float g_fDetail = 1.f;
 float g_fTimeAcc = 1.f;
 float g_fMaxHp = 0.f;
@@ -92,7 +96,7 @@ float4 PS_MAIN_HPBAR(PS_IN In) : SV_TARGET0
     
     vHpBar = g_Texture.Sample(LinearSampler, In.vTexUV);
     
-    vHpBar = float4(1.f, 0.f, 0.f, 1.f);
+    vHpBar = float4(g_vHpColor, 1.f);
     
     float fPer = g_fHp / g_fMaxHp;
     
@@ -107,9 +111,56 @@ float4 PS_MAIN_HPBAR(PS_IN In) : SV_TARGET0
     return vColor;
 }
 
+float4 PS_MAIN_EXPLOSION(PS_IN In) : SV_TARGET0
+{
+    vector vCircle = (vector) 0;
+    
+    vCircle = g_TextureCircle.Sample(LinearSampler, In.vTexUV);
+    
+    if (vCircle.a < 0.1f)
+        discard;
+    
+    vCircle = vector(1.f, 0.f, 0.f, 0.5f);
+    
+    return vCircle;
+}
+
+float4 PS_MAIN_FADEIN(PS_IN In) : SV_TARGET0
+{
+    float4 vColor = (float4) 0;
+	
+    vColor = vector(0.f, 0.f, 0.f, 1.f);
+    
+    vColor.a = saturate(vColor.a - (g_fTimeAcc - 1.6f));
+    
+    if (vColor.a < 0.01f)
+        discard;
+    
+    return vColor;
+}
+
+float4 PS_MAIN_PHP(PS_IN In) : SV_TARGET0
+{
+    float4 vColor = (float4) 0;
+	
+    vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+    
+    float fPer = g_fHp / g_fMaxHp;
+    
+    if (In.vTexUV.x > fPer)
+    {
+        vColor = float4(0.f, 0.f, 0.f, 1.f);
+    }
+    
+    float4 vRet = (float4) 0;
+    vRet = lerp(vRet, vColor, vColor.a);
+    
+    return vRet;
+}
+
 technique11 DefaultTechnique
 {
-    pass BackGround
+    pass BackGround //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -122,7 +173,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
-    pass Lava
+    pass Lava //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -135,7 +186,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
-    pass UI
+    pass UI //2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -148,7 +199,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_UI();
     }
 
-    pass HpBar
+    pass HpBar //3
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -159,5 +210,44 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_HPBAR();
+    }
+
+    pass Explosion // 4 : 폭발 범위 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_EXPLOSION();
+    }
+
+    pass FadeIn // 5 : 페이드 인 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_FADEIN();
+    }
+
+    pass PlayerHP // 6: 플레이어 HP
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_PHP();
     }
 };

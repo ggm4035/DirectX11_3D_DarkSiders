@@ -8,11 +8,11 @@ BEGIN(Engine)
 class ENGINE_DLL CCamera abstract : public CGameObject3D
 {
 public:
-	typedef struct tagCameraDesc
+	typedef struct tagCameraDesc : public CTransform::TRASNFORMDESC
 	{
 		_float4 vEye, vAt, vUp;
 		_float fFov, fAspect, fNear, fFar;
-		CTransform::TRASNFORMDESC TransformDesc;
+		_float3 vOffsets;
 	}CAMERADESC;
 
 protected:
@@ -37,7 +37,7 @@ protected:
 	_bool m_bSwitch = { false };
 
 protected:
-	virtual HRESULT Add_Components() override = 0;
+	virtual HRESULT Add_Components() = 0;
 
 public:
 	virtual CGameObject3D* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;

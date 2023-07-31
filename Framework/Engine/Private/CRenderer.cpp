@@ -307,7 +307,7 @@ CComponent* CRenderer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 void CRenderer::Free()
 {
-	__super::Free();
+	CComponent::Free();
 
 	for (auto& RenderList : m_RenderObjects)
 	{
@@ -316,11 +316,17 @@ void CRenderer::Free()
 		RenderList.clear();
 	}
 
-	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pTarget_Manager);
+	Safe_Release(m_pLight_Manager);
 
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
+
+#ifdef _DEBUG
+	for (auto& pComponent : m_DebugObject)
+		Safe_Release(pComponent);
+	m_DebugObject.clear();
+#endif
 }
 
 HRESULT CRenderer::Add_DebugGroup(CComponent* pDebugCom)
@@ -348,7 +354,6 @@ HRESULT CRenderer::Render_Debug()
 	}
 	m_DebugObject.clear();
 
-#ifdef _DEBUG
 	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
@@ -358,6 +363,7 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
-#endif // _DEBUG
 	return S_OK;
 }
+#ifdef _DEBUG
+#endif // _DEBUG

@@ -20,12 +20,21 @@ HRESULT CPlayerMove::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 	if (FAILED(CBehavior::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-	m_pTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_Transform();
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pOwner);
+	if (nullptr == pPlayer)
+		return E_FAIL;
+
+	m_pCamera = dynamic_cast<CGameObject3D*>(pPlayer->Get_Parts(L"Camera_Free"));
+	if (nullptr == m_pCamera)
+		return E_FAIL;
+	Safe_AddRef(m_pCamera);
+
+	m_pTransform = pPlayer->Get_Transform();
 	if (nullptr == m_pTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pTransform);
 
-	m_pModel = dynamic_cast<CModel*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Component(L"Com_Model"));
+	m_pModel = dynamic_cast<CModel*>(pPlayer->Get_Component(L"Com_Model"));
 	if (nullptr == m_pModel)
 		return E_FAIL;
 	Safe_AddRef(m_pModel);
@@ -35,26 +44,31 @@ HRESULT CPlayerMove::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 {
-	_vector vDirection = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+	_vector vCamLook = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK);
+	_vector vCamRight = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT);
+	_vector vDirection = XMVectorZero();
+
+	vCamLook = XMVector3Normalize(XMVectorSetY(vCamLook, 0.f));
 
 	while (true != m_Qmessage.empty())
 	{
 		switch (m_Qmessage.front())
 		{
 		case DIK_W:
-			vDirection.m128_f32[2] = 1.f;
-			break;
-
-		case DIK_S:
-			vDirection.m128_f32[2] = -1.f;
-			break;
-
-		case DIK_D:
-			vDirection.m128_f32[0] = 1.f;
+			//vDirection.m128_f32[2] = 1.f;
+			vDirection += vCamLook;
 			break;
 
 		case DIK_A:
-			vDirection.m128_f32[0] = -1.f;
+			vDirection += -vCamRight;
+			break;
+
+		case DIK_S:
+			vDirection += -vCamLook;
+			break;
+
+		case DIK_D:
+			vDirection += vCamRight;
 			break;
 		}
 		m_Qmessage.pop();
@@ -62,6 +76,8 @@ HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 
 	if (0 == XMVector3Length(vDirection).m128_f32[0])
 		return S_OK;
+
+	vDirection = XMVector3Normalize(vDirection);
 
 	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
 
@@ -110,6 +126,11 @@ HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 		m_pTransform->Set_On_Navigation(false);
 		m_pTransform->Go(vDirection, TimeDelta);
 		break;
+
+	case Client::CPlayerAction::STATE_WHEEL:
+		m_pTransform->Set_On_Navigation(true);
+		m_pTransform->Go(vDirection, TimeDelta);
+		break;
 	}
 
 	return S_OK;
@@ -143,6 +164,7 @@ void CPlayerMove::Free()
 {
 	if (true == m_isCloned)
 	{
+		Safe_Release(m_pCamera);
 		Safe_Release(m_pTransform);
 		Safe_Release(m_pModel);
 	}

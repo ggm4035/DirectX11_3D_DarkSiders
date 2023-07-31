@@ -26,9 +26,6 @@ public:
 	void Bind_Move_Force(const _float& fForce) {
 		m_fMoveForce = fForce;
 	}
-	void Bind_Direction(const _float3& vDirection) {
-		m_vDirection = vDirection;
-	}
 	void Set_Timer(const _float& fTime) {
 		m_fLimit = fTime;
 		m_isUseTimer = true;
@@ -36,7 +33,6 @@ public:
 
 private:
 	_float m_fMoveForce = { 1.f };
-	_float3 m_vDirection;
 
 	_bool m_isUseTimer = { false };
 	_float m_fLimit = { 0.f };
