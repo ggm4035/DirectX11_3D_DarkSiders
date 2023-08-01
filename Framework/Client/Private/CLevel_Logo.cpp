@@ -57,6 +57,7 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(wstring pLayerTag)
 	CUI_Rect::UIRECTDESC UIDesc;
 	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
 	UIDesc.m_fY = _float(g_iWinSizeY >> 1);
+	UIDesc.m_fDepth = 0.01f;
 	UIDesc.m_fSizeX = (_float)g_iWinSizeX;
 	UIDesc.m_fSizeY = (_float)g_iWinSizeY;
 	UIDesc.wstrTextureTag = L"Texture_Logo";

@@ -4,6 +4,11 @@
 
 IMPLEMENT_SINGLETON(CSound_Manager)
 
+HRESULT CSound_Manager::isPlaying(SOUNDCHANNEL eChannel, OUT _bool& Out)
+{
+	return m_Channels[eChannel]->isPlaying(&Out);
+}
+
 HRESULT CSound_Manager::Initialize()
 {
 	// fmod system °´Ã¼ »ý¼º

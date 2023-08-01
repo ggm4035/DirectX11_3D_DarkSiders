@@ -49,6 +49,16 @@ HRESULT CPlayerKnockback::Tick(const _double& TimeDelta)
 	if (CPlayerAction::STATE_KNOCKBACK != pAction->Get_State())
 		return S_OK;
 
+	if (true == m_isFirst)
+	{
+		m_pPlayer->Get_Collider(L"Col_Attack")->Set_Enable(false);
+		m_pPlayer->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
+
+		pAction->Set_State(CPlayerAction::STATE_KNOCKBACK);
+
+		m_isFirst = false;
+	}
+
 	XMStoreFloat3(&m_vDirection, m_pTransform->Get_State(CTransform::STATE_LOOK));
 
 	m_pBlackBoard->Set_Type(L"vDirection", m_vDirection);
@@ -56,9 +66,14 @@ HRESULT CPlayerKnockback::Tick(const _double& TimeDelta)
 	for (auto& BehaviorDesc : m_BehaviorList)
 		hr = BehaviorDesc.pBehavior->Tick(TimeDelta);
 
+	_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(XMVectorSetY(vLook, 0.f)));
+
 	if (hr == BEHAVIOR_SUCCESS)
 	{
+		pAction->Reset_Jump();
 		pAction->Set_State(CPlayerAction::STATE_IDLE);
+		m_isFirst = true;
 	}
 
 	return S_OK;

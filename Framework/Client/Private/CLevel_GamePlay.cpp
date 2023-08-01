@@ -1,9 +1,10 @@
-
 #include "CLevel_GamePlay.h"
 
+#include "CGameManager.h"
 #include "CGameInstance.h"
 #include "CWeapon.h"
 
+#include "CPlayerAction.h"
 #include "CPlayer.h"
 #include "CTerrain.h"
 #include "CGoblin.h"
@@ -27,24 +28,24 @@ HRESULT CLevel_GamePlay::Initialize()
 	
 	if (FAILED(Ready_Layer_Player(L"Layer_Player")))
 		return E_FAIL;
-		
+	
 	if (FAILED(Ready_Layer_Monster(L"Layer_Monster")))
 		return E_FAIL;
-
+		
 	if (FAILED(Ready_HUD()))
 		return E_FAIL;
-
+		
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
 	if (FAILED(pGameInstance->Stop_AllSound()))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Play_BGM(L"mus_hell_low.ogg", 0.5f)))
+	if (FAILED(pGameInstance->Play_BGM(L"mus_level02_ambient.ogg", 0.5f)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
-	
+
 	return S_OK;
 }
 
@@ -59,6 +60,8 @@ void CLevel_GamePlay::Tick(const _double& TimeDelta)
 	for (auto UI : m_pPlayerUI)
 		UI->Late_Tick(TimeDelta);
 	m_pFadeIn->Late_Tick(TimeDelta);
+
+	CGameManager::GetInstance()->Tick(TimeDelta);
 }
 
 HRESULT CLevel_GamePlay::Render()
@@ -366,7 +369,8 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Leap";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
+	UIDesc.iPassNum = 7;
+	UIDesc.pCoolTime = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Action()->Get_LeapCoolTimePtr();
 
 	m_pPlayerUI[6] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Leap", nullptr, &UIDesc));
 	if (nullptr == m_pPlayerUI[6])
@@ -379,7 +383,8 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Wheel";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
+	UIDesc.iPassNum = 7;
+	UIDesc.pCoolTime = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Action()->Get_WheelCoolTimePtr();
 
 	m_pPlayerUI[7] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Wheel", nullptr, &UIDesc));
 	if (nullptr == m_pPlayerUI[7])
@@ -404,7 +409,15 @@ CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 void CLevel_GamePlay::Free()
 {
+	Safe_Release(m_pFadeIn);
+
+	for (auto& UI : m_pPlayerUI)
+		Safe_Release(UI);
+
 	for (auto& Data : m_vecMonsterDatas)
 		Safe_Delete_BinaryData(Data.BinaryData);
+
+	CGameManager::DestroyInstance();
+
 	CLevel::Free();
 }

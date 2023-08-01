@@ -57,7 +57,9 @@ void CStatic_Object::Late_Tick(const _double& TimeDelta)
 
 	if (nullptr != m_pRendererCom &&
 		true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f))
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	}
 
 	Safe_Release(pGameInstance);
 }

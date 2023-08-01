@@ -12,7 +12,7 @@ class CSound_Manager final : public CBase
 
 public:
 	enum SOUNDCHANNEL {
-		SOUND_BGM,
+		SOUND_BGM, SOUND_SUB_BGM,
 		SOUND_PLAYER,
 		SOUND_ENEMY,
 		SOUND_EFFECT_1, SOUND_EFFECT_2,
@@ -22,6 +22,9 @@ public:
 private:
 	explicit CSound_Manager() = default;
 	virtual ~CSound_Manager() = default;
+
+public:
+	HRESULT isPlaying(SOUNDCHANNEL eChannel, OUT _bool& Out);
 
 public:
 	// 이거 꼭 Initialize_Engine에 넣어서 초기화 실행해주세요

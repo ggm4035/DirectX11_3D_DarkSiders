@@ -6,6 +6,17 @@ CLayer::CLayer()
 {
 }
 
+CGameObject* CLayer::Find_GameObject(const wstring& wstrObjectTag)
+{
+	for (auto& pGameObject : m_pGameObjects)
+	{
+		if (wstring::npos != pGameObject->Get_Tag().find(wstrObjectTag))
+			return pGameObject;
+	}
+
+	return nullptr;
+}
+
 HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 {
 	if (nullptr == pGameObject)

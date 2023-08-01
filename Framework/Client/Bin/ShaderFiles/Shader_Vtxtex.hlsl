@@ -8,6 +8,7 @@ float3 g_vHpColor = float3(1.f, 0.f, 0.f);
 
 float g_fDetail = 1.f;
 float g_fTimeAcc = 1.f;
+float g_fCoolTime = 0.f;
 float g_fMaxHp = 0.f;
 float g_fHp = 0.f;
 
@@ -86,7 +87,7 @@ float4 PS_MAIN_UI(PS_IN In) : SV_TARGET0
     vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
     if (vColor.a < 0.1f)
         discard;
-	
+    
     return vColor;
 }
 
@@ -146,6 +147,9 @@ float4 PS_MAIN_PHP(PS_IN In) : SV_TARGET0
     vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
     
     float fPer = g_fHp / g_fMaxHp;
+    float fVal = (1.f - fPer) * 0.8f;
+    vColor.r += fVal;
+    vColor.gb -= fVal * 0.5f;
     
     if (In.vTexUV.x > fPer)
     {
@@ -156,6 +160,22 @@ float4 PS_MAIN_PHP(PS_IN In) : SV_TARGET0
     vRet = lerp(vRet, vColor, vColor.a);
     
     return vRet;
+}
+
+float4 PS_MAIN_COOLTIME(PS_IN In) : SV_TARGET0
+{
+    float4 vColor = (float4) 0;
+	
+    vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+    if (vColor.a < 0.1f)
+        discard;
+    
+    if (In.vTexUV.y > g_fCoolTime) // 0 ~ 1
+    {
+        vColor.rgb = (vColor.r + vColor.g + vColor.b) / 3.f;
+    }
+	
+    return vColor;
 }
 
 technique11 DefaultTechnique
@@ -249,5 +269,18 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_PHP();
+    }
+
+    pass CoolTime // 7: ½ºÅ³ ÄðÅ¸ÀÓ
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_COOLTIME();
     }
 };

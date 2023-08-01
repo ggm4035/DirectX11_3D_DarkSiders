@@ -32,9 +32,11 @@ public:
 
 private:
 	_float4 m_vResponPosition;
+	class CUI_Rect* m_pMonsterUI[3] = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;
+	HRESULT Ready_UI();
 	HRESULT Make_AI();
 
 public:

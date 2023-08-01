@@ -186,6 +186,14 @@ HRESULT CGameInstance::Open_Level(const _uint& iNumLevels, CLevel* pNewLevel)
 	return m_pLevel_Manager->Open_Level(iNumLevels, pNewLevel);
 }
 
+CGameObject* CGameInstance::Find_GameObject(const _uint& iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrGameObjectTag)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Find_GameObject(iLevelIndex, wstrLayerTag, wstrGameObjectTag);
+}
+
 HRESULT CGameInstance::Add_Prototype(const wstring PrototypeTag, CGameObject* pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
@@ -549,6 +557,14 @@ vector<pair<_uint, _int>> CGameInstance::Pick_Spheres(const POINT& ptMouse, CNav
 		return vector<pair<_uint, _int>>();
 
 	return m_pCalculator->Pick_Spheres(ptMouse, pNavigation, pTransform);
+}
+
+HRESULT CGameInstance::isPlaying(CSound_Manager::SOUNDCHANNEL eChannel, OUT _bool& Out)
+{
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	return m_pSound_Manager->isPlaying(eChannel, Out);
 }
 
 HRESULT CGameInstance::Play_Sound(const _tchar* pSoundTag, CSound_Manager::SOUNDCHANNEL eChannel, _float fVolume, _bool bForcePlay)

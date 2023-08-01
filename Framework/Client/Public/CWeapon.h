@@ -16,6 +16,8 @@ class CWeapon : public CParts
 public:
 	typedef struct tagWeaponDesc : public PARENTDESC
 	{
+		_float3 vOffsetLow;
+		_float3 vOffsetHigh;
 		wstring wstrModelTag = { L"" };
 	}WEAPONDESC;
 
@@ -35,6 +37,8 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+
+	class CSwordTrail* m_pSwordTrail = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

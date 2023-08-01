@@ -30,6 +30,11 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	void Spawn() {
+		m_isSpawn = true;
+	}
+
+public:
 	virtual HRESULT Initialize_Prototype() = 0;
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta);
@@ -66,7 +71,6 @@ protected:
 private:
 	_float m_fHitTimeAcc = { 0.f };
 	_bool m_isSuperArmor = { false };
-
 
 public:
 	virtual void Free() override;

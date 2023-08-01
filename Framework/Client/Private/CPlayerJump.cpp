@@ -41,6 +41,7 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 			m_isDoubleJump = true;
 
 		m_isJump = true;
+		m_isFirst = true;
 
 		m_Qmessage.pop();
 	}
@@ -52,21 +53,21 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 
 	_bool isJump = { true };
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
 	switch (pAction->Get_State())
 	{
-	case Client::CPlayerAction::STATE_IDLE:
-		pAction->Set_State(CPlayerAction::STATE_JUMP);
-		isJump = m_pTransform->Jump(0.45f, TimeDelta);
-		break;
-
 	case Client::CPlayerAction::STATE_RUN:
-		pAction->Set_State(CPlayerAction::STATE_JUMP);
-		isJump = m_pTransform->Jump(0.45f, TimeDelta);
-		break;
-
+	case Client::CPlayerAction::STATE_IDLE:
 	case Client::CPlayerAction::STATE_JUMP_LAND:
 		pAction->Set_State(CPlayerAction::STATE_JUMP);
 		isJump = m_pTransform->Jump(0.45f, TimeDelta);
+		if (true == m_isFirst)
+		{
+			pGameInstance->Play_Sound(L"char_war_jump_02.ogg", CSound_Manager::SOUND_PLAYER, 0.3f, true);
+			m_isFirst = false;
+		}
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP:
@@ -74,10 +75,13 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 		{
 			pAction->Set_State(CPlayerAction::STATE_DOUBLE_JUMP);
 			dynamic_cast<CPlayer*>(m_pOwner)->Get_Transform()->Reset_TimeAcc();
-			//cout << "더블 점프" << endl;
 		}
-		//cout << "점프" << endl;
 		isJump = m_pTransform->Jump(0.45f, TimeDelta);
+		if (true == m_isFirst)
+		{
+			pGameInstance->Play_Sound(L"char_war_jumpdouble_02.ogg", CSound_Manager::SOUND_PLAYER, 0.3f, true);
+			m_isFirst = false;
+		}
 		break;
 
 	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
@@ -92,7 +96,17 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 		m_isDoubleJump = false;
 	}
 
+	Safe_Release(pGameInstance);
+
 	return S_OK;
+}
+
+void CPlayerJump::Reset()
+{
+	m_isJump = false;
+	m_isDoubleJump = false;
+	m_isFirst = true;
+	m_pTransform->Reset_Jump();
 }
 
 CPlayerJump* CPlayerJump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

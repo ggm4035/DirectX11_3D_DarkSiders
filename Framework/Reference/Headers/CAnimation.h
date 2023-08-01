@@ -61,7 +61,7 @@ private:
 	_double m_Duration = { 0.0 };
 	_double m_TickPerSec = { 0.0 };
 
-	_double m_LerpDuration = { 0.2 };
+	_double m_LerpDuration = { 0.05 };
 
 	_bool m_isLoop = { false };
 	_bool m_isLerped = { true };

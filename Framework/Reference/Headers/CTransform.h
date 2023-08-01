@@ -58,6 +58,7 @@ public:
 	void Set_On_Navigation(_bool bSwitch) {
 		m_isOnNavigation = bSwitch;
 	}
+	void Reset_Jump();
 
 public:
 	/* Imgui Tool Only*/
@@ -110,6 +111,9 @@ private: /* For. Jump */
 
 private:
 	void Move_Stop_Sliding(const _double& TimeDelta);
+	void Organize_From_Right();
+	void Organize_From_Up();
+	void Organize_From_Look();
 
 public:
 	static CTransform* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);

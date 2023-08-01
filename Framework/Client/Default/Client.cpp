@@ -72,6 +72,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     _double TimerAcc = { 0.0 };
 
+    ShowCursor(false);
+
     // 기본 메시지 루프입니다:
     while (true)
     {

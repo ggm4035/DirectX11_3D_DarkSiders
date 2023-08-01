@@ -38,6 +38,7 @@ public:
 	virtual CGameObject* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 
+#if defined(_USE_IMGUI) || defined(_DEBUG)
 protected:
 	_bool m_isRender = { true };
 
@@ -45,7 +46,6 @@ public:
 	void Togle_Render_Debug() {
 		m_isRender = true == m_isRender ? false : true;
 	}
-#ifdef _DEBUG
 #endif
 };
 

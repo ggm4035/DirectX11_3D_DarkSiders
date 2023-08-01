@@ -30,6 +30,8 @@ HRESULT CWeapon::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 		if (FAILED(Add_Component(iLevelIndex, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
 			(CComponent**)&m_pModelCom, this)))
 			return E_FAIL;
+
+
 	}
 
 	if (FAILED(Add_Components()))

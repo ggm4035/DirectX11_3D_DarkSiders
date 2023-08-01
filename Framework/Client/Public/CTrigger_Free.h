@@ -3,6 +3,10 @@
 #include "CTrigger.h"
 #include "Client_Defines.h"
 
+BEGIN(Engine)
+class CGameInstance;
+END
+
 BEGIN(Client)
 
 class CTrigger_Free final : public CTrigger
@@ -26,6 +30,8 @@ public:
 
 private:
 	virtual HRESULT Add_Components() override;
+	void Sub_Boss(CGameInstance* pGameInstance);
+	void Final_Boss(CGameInstance* pGameInstance);
 
 public:
 	static CTrigger_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

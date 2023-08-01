@@ -8,6 +8,16 @@ CObject_Manager::CObject_Manager()
 {
 }
 
+CGameObject* CObject_Manager::Find_GameObject(const _uint& iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrGameObjectTag)
+{
+	auto iter = m_pLayers[iLevelIndex].find(wstrLayerTag);
+
+	if(iter == m_pLayers[iLevelIndex].end())
+		return nullptr;
+
+	return iter->second->Find_GameObject(wstrGameObjectTag);
+}
+
 HRESULT CObject_Manager::Reserve_Containers(const _uint& iNumLevels)
 {
 	if (0 == iNumLevels)

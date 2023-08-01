@@ -12,7 +12,11 @@ private:
 	explicit CObject_Manager();
 	virtual ~CObject_Manager() = default;
 
-public:/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
+public:
+	/* 자세하게는 못찾아줌 보스 가져오는 용도로 제작 */
+	class CGameObject* Find_GameObject(const _uint& iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrGameObjectTag);
+
+	/*실제 사용할 레벨의 갯수만큼 미리 공간을 할당한다. */
 	HRESULT Reserve_Containers(const _uint& iNumLevels);
 	HRESULT Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, const wstring& LayerTag, void* pArg);

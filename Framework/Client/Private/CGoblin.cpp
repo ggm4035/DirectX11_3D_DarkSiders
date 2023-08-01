@@ -99,6 +99,7 @@ void CGoblin::Dead_Motion(const _double& TimeDelta)
 
 	if (2.f <= m_fExplosionTimeAcc)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"en_fleamag_explode_01.ogg", CSound_Manager::SOUND_ENEMY, 2.f, true);
 		m_isRemove = true;
 	}
 }

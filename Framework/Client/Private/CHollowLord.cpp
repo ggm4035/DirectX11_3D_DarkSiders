@@ -2,6 +2,7 @@
 
 #include "MonoBehavior_Defines.h"
 #include "CBlackBoard.h"
+#include "CGameManager.h"
 #include "CGameInstance.h"
 #include "CPlayer.h"
 
@@ -30,53 +31,31 @@ HRESULT CHollowLord::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 5;
-	m_Status.iMaxHP = 5;
+	m_Status.iHP = 20;
+	m_Status.iMaxHP = 20;
 	m_isRangeInPlayer = true;
-
-
 
 	return S_OK;
 }
 
 void CHollowLord::Tick(const _double& TimeDelta)
 {
+	CMonster::Tick(TimeDelta);
+
 	if (CGameInstance::GetInstance()->Key_Down(DIK_T))
 	{
 		m_isSpawn = true;
 	}
-	if (CGameInstance::GetInstance()->Key_Down(DIK_2))
-	{
-		m_pModelCom->Change_Animation("Attack_1");
-	}
-	if (CGameInstance::GetInstance()->Key_Down(DIK_3))
-	{
-		m_pModelCom->Change_Animation("Attack_2");
-	}
-	if (CGameInstance::GetInstance()->Key_Down(DIK_4))
-	{
-		m_pModelCom->Change_Animation("Attack_3");
-	}
-	if (CGameInstance::GetInstance()->Key_Down(DIK_5))
-	{
-		m_pModelCom->Change_Animation("Attack_4");
-	}
-	if (CGameInstance::GetInstance()->Key_Down(DIK_6))
-	{
-		m_pModelCom->Change_Animation("Attack_5");
-	}
 
-	for (auto UI : m_pPlayerUI)
+	for (auto UI : m_pMonsterUI)
 		UI->Tick(TimeDelta);
-
-	for (auto UI : m_pPlayerUI)
-		UI->Late_Tick(TimeDelta);
-
-	CMonster::Tick(TimeDelta);
 }
 
 void CHollowLord::AfterFrustumTick(const _double& TimeDelta)
 {
+	if (false == m_isSpawn)
+		return;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -92,9 +71,9 @@ void CHollowLord::AfterFrustumTick(const _double& TimeDelta)
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
-		if (FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
-			return;
 #ifdef _DEBUG
+		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+			return;
 #endif
 	}
 
@@ -103,6 +82,12 @@ void CHollowLord::AfterFrustumTick(const _double& TimeDelta)
 
 void CHollowLord::Late_Tick(const _double& TimeDelta)
 {
+	if (false == m_isSpawn)
+		return;
+
+	for (auto UI : m_pMonsterUI)
+		UI->Late_Tick(TimeDelta);
+
 	On_Colisions(TimeDelta);
 }
 
@@ -121,7 +106,26 @@ void CHollowLord::Dead_Motion(const _double& TimeDelta)
 	static _float fTimeAcc = 0.f;
 	fTimeAcc += TimeDelta;
 
-	if (fTimeAcc > 6.3f)
+	static _bool bFirst = { true };
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (fTimeAcc <= 0.5f)
+	{
+		if (FAILED(pGameInstance->Set_ChannelVolume(CSound_Manager::SOUND_BGM, 0.5f - fTimeAcc)))
+			return;
+	}
+
+	if (true == bFirst)
+	{
+		pGameInstance->Play_Sound(L"mus_level01_hollowlord_outro.ogg", CSound_Manager::SOUND_SUB_BGM, 0.5f);
+		bFirst = false;
+	}
+
+	Safe_Release(pGameInstance);
+
+	if (fTimeAcc > 6.5f)
 	{
 		m_pTransformCom->Set_On_Navigation(false);
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -130,7 +134,10 @@ void CHollowLord::Dead_Motion(const _double& TimeDelta)
 	}
 
 	if (true == m_pModelCom->isFinishedAnimation())
+	{
+		CGameManager::GetInstance()->FinalBossDead();
 		m_isRemove = true;
+	}
 }
 
 void CHollowLord::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -215,42 +222,42 @@ HRESULT CHollowLord::Ready_UI()
 
 	CUI_Rect::UIRECTDESC UIDesc;
 
-	UIDesc.m_fX = 250;
-	UIDesc.m_fY = 110;
-	UIDesc.m_fSizeX = 220;
-	UIDesc.m_fSizeY = 40;
-	UIDesc.m_fDepth = 0.01f;
-	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_Hp";
+	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
+	UIDesc.m_fY = 650;
+	UIDesc.m_fSizeX = 500;
+	UIDesc.m_fSizeY = 50;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_BossHpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
 	UIDesc.iPassNum = 2;
-	m_pPlayerUI[0] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrameHp", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[0])
+	m_pMonsterUI[0] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"HpFrame", nullptr, &UIDesc));
+	if (nullptr == m_pMonsterUI[0])
 		return E_FAIL;
 
-	UIDesc.m_fX = 100;
-	UIDesc.m_fY = 100;
-	UIDesc.m_fSizeX = 100;
-	UIDesc.m_fSizeY = 100;
-	UIDesc.m_fDepth = 0.01f;
-	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_2";
+	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
+	UIDesc.m_fY = 650;
+	UIDesc.m_fSizeX = 460;
+	UIDesc.m_fSizeY = 25;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
-	m_pPlayerUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrame2", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[1])
-		return E_FAIL;
-
-	UIDesc.m_fX = 100;
-	UIDesc.m_fY = 100;
-	UIDesc.m_fSizeX = 100;
-	UIDesc.m_fSizeY = 100;
-	UIDesc.m_fDepth = 0.01f;
-	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_2";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
+	UIDesc.iPassNum = 6;
 	UIDesc.pMaxHp = &m_Status.iMaxHP;
 	UIDesc.pHp = &m_Status.iHP;
-	m_pPlayerUI[2] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrame2", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[2])
+	m_pMonsterUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"HpBar", nullptr, &UIDesc));
+	if (nullptr == m_pMonsterUI[1])
+		return E_FAIL;
+
+	UIDesc.m_fX = 380;
+	UIDesc.m_fY = 630;
+	UIDesc.m_fSizeX = 100;
+	UIDesc.m_fSizeY = 100;
+	UIDesc.m_fDepth = 0.f;
+	UIDesc.wstrTextureTag = L"Texture_UI_HollowLord";
+	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
+	UIDesc.iPassNum = 2;
+	m_pMonsterUI[2] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrameHollowLord", nullptr, &UIDesc));
+	if (nullptr == m_pMonsterUI[2])
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -346,5 +353,8 @@ CHollowLord* CHollowLord::Clone(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 void CHollowLord::Free()
 {
+	for (auto UI : m_pMonsterUI)
+		Safe_Release(UI);
+
 	CMonster::Free();
 }

@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CModel;
+class CShader;
 class CTransform;
 END
 
@@ -17,9 +18,8 @@ class CPlayerAction final : public CBehavior
 public:
 	enum STATE { STATE_IDLE, STATE_RUN, STATE_DASH, STATE_HIT, STATE_KNOCKBACK,
 		STATE_LATK_1, STATE_LATK_2, STATE_LATK_3, STATE_LATK_4,
-		STATE_HATK_1, STATE_HATK_2, STATE_HATK_3, 
 		STATE_JUMP, STATE_DOUBLE_JUMP, STATE_JUMP_LAND, 
-		STATE_WHEEL, STATE_END };
+		STATE_WHEEL, STATE_LEAP, STATE_END };
 
 private:
 	explicit CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -34,6 +34,8 @@ public:
 	void On_SuperArmor() {
 		m_isSuperArmor = true;
 	}
+	const _float* Get_LeapCoolTimePtr() const;
+	const _float* Get_WheelCoolTimePtr() const;
 
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
@@ -43,6 +45,9 @@ public:
 
 public:
 	HRESULT AssembleBehaviors();
+	void Reset_Wheel();
+	void Reset_Leap();
+	void Reset_Jump();
 
 private:
 	STATE m_eCurState = { STATE_END };
@@ -63,6 +68,7 @@ private:
 	class CPlayerKnockback* m_pKnockbackAction = { nullptr };
 
 	class CWheelWind* m_pSkillWheelWind = { nullptr };
+	class CLeapAttack* m_pSkillLeapAttack = { nullptr };
 
 public:
 	static CPlayerAction* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

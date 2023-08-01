@@ -11,6 +11,7 @@
 #include "CPlayerKnockback.h"
 
 #include "CWheelWind.h"
+#include "CLeapAttack.h"
 
 CPlayerAction::CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBehavior(pDevice, pContext)
@@ -54,18 +55,6 @@ void CPlayerAction::Set_State(STATE eState)
 			m_pModelCom->Change_Animation("Atk_Light_04");
 			break;
 
-		case Client::CPlayerAction::STATE_HATK_1:
-			m_pModelCom->Change_Animation("Atk_Heavy_01");
-			break;
-
-		case Client::CPlayerAction::STATE_HATK_2:
-			m_pModelCom->Change_Animation("Atk_Heavy_02");
-			break;
-
-		case Client::CPlayerAction::STATE_HATK_3:
-			m_pModelCom->Change_Animation("Atk_Heavy_03");
-			break;
-
 		case Client::CPlayerAction::STATE_DASH:
 			m_pModelCom->Change_Animation("Dash");
 			break;
@@ -85,10 +74,33 @@ void CPlayerAction::Set_State(STATE eState)
 		case Client::CPlayerAction::STATE_HIT:
 			m_pModelCom->Change_Animation("Impact");
 			break;
+
+		case Client::CPlayerAction::STATE_KNOCKBACK:
+
+			if (CPlayerAction::STATE_WHEEL == m_ePreState)
+			{
+				Reset_Wheel();
+			}
+			else if (CPlayerAction::STATE_LEAP == m_ePreState)
+			{
+				Reset_Leap();
+			}
+			m_eCurState = STATE_KNOCKBACK;
+			break;
 		}
 
 		m_ePreState = m_eCurState;
 	}
+}
+
+const _float* CPlayerAction::Get_LeapCoolTimePtr() const
+{
+	return m_pSkillLeapAttack->Get_CoolTimePtr();
+}
+
+const _float* CPlayerAction::Get_WheelCoolTimePtr() const
+{
+	return m_pSkillWheelWind->Get_CoolTimePtr();
 }
 
 HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
@@ -146,10 +158,11 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 	pGameInstance->Key_Down(DIK_SPACE);
 
 	pGameInstance->Mouse_Down(CInput_Device::DIM_LB);
-	pGameInstance->Mouse_Down(CInput_Device::DIM_RB);
 
-	if (pGameInstance->Key_Down(DIK_1))
+	if (pGameInstance->Key_Down(DIK_Q))
 		m_pSkillWheelWind->Play();
+	if (pGameInstance->Key_Down(DIK_E))
+		m_pSkillLeapAttack->Play();
 
 	/* 각 액션들에게 메시지를 보낸다. */
 
@@ -165,7 +178,6 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 		switch (Input)
 		{
 		case CInput_Device::DIM_LB:
-		case CInput_Device::DIM_RB:
 			if(STATE_WHEEL != m_eCurState)
 				m_pAttackAction->Push_Move_Message(Input);
 			break;
@@ -183,10 +195,9 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 			break;
 
 		case DIK_LSHIFT:
-			if ((STATE_KNOCKBACK != m_eCurState) && 
-				(STATE_DASH != m_eCurState))
+			if (STATE_KNOCKBACK != m_eCurState && STATE_DASH != m_eCurState &&
+				STATE_WHEEL != m_eCurState && STATE_LEAP != m_eCurState)
 			{
-				m_pSkillWheelWind->Reset();
 				Set_State(STATE_DASH);
 			}
 			break;
@@ -249,9 +260,30 @@ HRESULT CPlayerAction::AssembleBehaviors()
 	if (FAILED(m_pSkillWheelWind->AssembleBehaviors()))
 		return E_FAIL;
 
+	pAction = dynamic_cast<CLeapAttack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerLeapAttack", m_pOwner));
+	if (nullptr == pAction)
+		return E_FAIL;
+	Assemble_Behavior(L"PlayerLeapAttack", pAction);
+	m_pSkillLeapAttack = dynamic_cast<CLeapAttack*>(pAction);
+	
 	Safe_Release(pGameInstance);
 
 	return S_OK;
+}
+
+void CPlayerAction::Reset_Wheel()
+{
+	m_pSkillWheelWind->Reset();
+}
+
+void CPlayerAction::Reset_Leap()
+{
+	m_pSkillLeapAttack->Reset();
+}
+
+void CPlayerAction::Reset_Jump()
+{
+	m_pJumpAction->Reset();
 }
 
 CPlayerAction* CPlayerAction::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

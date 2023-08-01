@@ -8,7 +8,7 @@ BEGIN(Client)
 class CCamera_Free final : public CCamera
 {
 public:
-	enum CAM_STATE { CAM_DEFAULT, CAM_FINALBOSS, CAM_END };
+	enum CAM_STATE { CAM_DEFAULT, CAM_SUBBOSS, CAM_FINALBOSS, CAM_END };
 
 private:
 	explicit CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -36,6 +36,7 @@ private:
 
 private:
 	void FinalBoss(const _double& TimeDelta);
+	void SubBoss(const _double& TimeDelta);
 	void Default(const _double& TimeDelta);
 
 private:

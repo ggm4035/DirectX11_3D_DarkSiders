@@ -88,9 +88,6 @@ HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 	case Client::CPlayerAction::STATE_LATK_2:
 	case Client::CPlayerAction::STATE_LATK_3:
 	case Client::CPlayerAction::STATE_LATK_4:
-	case Client::CPlayerAction::STATE_HATK_1:
-	case Client::CPlayerAction::STATE_HATK_2:
-	case Client::CPlayerAction::STATE_HATK_3:
 		if (true == m_pModel->isAbleChangeAnimation())
 		{
 			m_pTransform->Set_On_Navigation(true);

@@ -58,15 +58,6 @@ HRESULT CPlayerAttack::Tick(const _double& TimeDelta)
 				m_iCombo = (3 < ++m_iCombo) ? -1 : m_iCombo;
 
 			break;
-
-		case CInput_Device::DIM_RB:
-			m_eCurrentAttack = TYPE_HEAVY;
-
-			if (true == m_pModel->isLoopAnimation() ||
-				true == m_pModel->isAbleChangeAnimation())
-				m_iCombo = (2 < ++m_iCombo) ? -1 : m_iCombo;
-
-			break;
 		}
 		m_Qmessage.pop();
 	}
@@ -74,24 +65,9 @@ HRESULT CPlayerAttack::Tick(const _double& TimeDelta)
 	if (m_iCombo == m_iPreCombo)
 		return S_OK;
 
-	switch (m_eCurrentAttack)
-	{
-	case Client::CPlayerAttack::TYPE_LIGHT:
-		LightAttackCombo();
-		break;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
-	case Client::CPlayerAttack::TYPE_HEAVY:
-		HeavyAttackCombo();
-		break;
-	}
-
-	m_iPreCombo = m_iCombo;
-
-	return S_OK;
-}
-
-void CPlayerAttack::LightAttackCombo()
-{
 	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
 
 	switch (pAction->Get_State())
@@ -105,94 +81,46 @@ void CPlayerAttack::LightAttackCombo()
 		{
 		case 0:
 			pAction->Set_State(CPlayerAction::STATE_LATK_1);
+			pGameInstance->Play_Sound(L"char_war_attack_2_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 			break;
 		case 1:
 			pAction->Set_State(CPlayerAction::STATE_LATK_2);
+			pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 			break;
 		case 2:
 			pAction->Set_State(CPlayerAction::STATE_LATK_3);
+			pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 			break;
 		case 3:
 			pAction->Set_State(CPlayerAction::STATE_LATK_4);
+			pGameInstance->Play_Sound(L"char_war_attack_4_b_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 			m_iCombo = -1;
 			break;
 		}
 		break;
 
 	case Client::CPlayerAction::STATE_LATK_1:
+		pGameInstance->Play_Sound(L"char_war_attack_2_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_2);
 		break;
 	case Client::CPlayerAction::STATE_LATK_2:
+		pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_3);
 		break;
 	case Client::CPlayerAction::STATE_LATK_3:
+		pGameInstance->Play_Sound(L"char_war_attack_4_b_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_4);
 		break;
 	case Client::CPlayerAction::STATE_LATK_4:
-		pAction->Set_State(CPlayerAction::STATE_LATK_1);
-		break;
-	case Client::CPlayerAction::STATE_HATK_1:
-		pAction->Set_State(CPlayerAction::STATE_LATK_1);
-		break;
-	case Client::CPlayerAction::STATE_HATK_2:
-		pAction->Set_State(CPlayerAction::STATE_LATK_1);
-		break;
-	case Client::CPlayerAction::STATE_HATK_3:
+		pGameInstance->Play_Sound(L"char_war_attack_1_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_1);
 		break;
 	}
-}
 
-void CPlayerAttack::HeavyAttackCombo()
-{
-	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
+	Safe_Release(pGameInstance);
+	m_iPreCombo = m_iCombo;
 
-	switch (pAction->Get_State())
-	{
-	case Client::CPlayerAction::STATE_IDLE:
-	case Client::CPlayerAction::STATE_RUN:
-	case Client::CPlayerAction::STATE_DASH:
-	case Client::CPlayerAction::STATE_JUMP:
-	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
-		switch (m_iCombo)
-		{
-		case 0:
-			pAction->Set_State(CPlayerAction::STATE_HATK_1);
-			break;
-		case 1:
-			pAction->Set_State(CPlayerAction::STATE_HATK_2);
-			break;
-		case 2:
-			m_pTransform->Set_On_Navigation(false);
-			pAction->Set_State(CPlayerAction::STATE_HATK_3);
-			m_iCombo = -1;
-			break;
-		}
-		break;
-
-	case Client::CPlayerAction::STATE_LATK_1:
-		pAction->Set_State(CPlayerAction::STATE_HATK_1);
-		break;
-	case Client::CPlayerAction::STATE_LATK_2:
-		pAction->Set_State(CPlayerAction::STATE_HATK_1);
-		break;
-	case Client::CPlayerAction::STATE_LATK_3:
-		pAction->Set_State(CPlayerAction::STATE_HATK_1);
-		break;
-	case Client::CPlayerAction::STATE_LATK_4:
-		pAction->Set_State(CPlayerAction::STATE_HATK_1);
-		break;
-	case Client::CPlayerAction::STATE_HATK_1:
-		pAction->Set_State(CPlayerAction::STATE_HATK_2);
-		break;
-	case Client::CPlayerAction::STATE_HATK_2:
-		m_pTransform->Set_On_Navigation(false);
-		pAction->Set_State(CPlayerAction::STATE_HATK_3);
-		break;
-	case Client::CPlayerAction::STATE_HATK_3:
-		pAction->Set_State(CPlayerAction::STATE_HATK_1);
-		break;
-	}
+	return S_OK;
 }
 
 CPlayerAttack* CPlayerAttack::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

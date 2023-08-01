@@ -39,6 +39,8 @@ private:
 	wstring m_wstrFPS = { L"" };
 	_uint m_iRanderCount = { 0 };
 
+	class CCursor* m_pCursor = { nullptr };
+
 private:
 	HRESULT Ready_UI_Objects();
 	HRESULT Ready_Prototype_Component_For_Static();

@@ -38,28 +38,7 @@ void CFallenDog::Tick(const _double& TimeDelta)
 
 void CFallenDog::AfterFrustumTick(const _double& TimeDelta)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
-	{
-		if (FAILED(Add_Colliders_To_Manager()))
-		{
-			MSG_BOX("Failed to Add Colliders To Manager");
-			Safe_Release(pGameInstance);
-			return;
-		}
-
-		if (nullptr != m_pRendererCom)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-
-#ifdef _DEBUG
-		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
-			return;
-#endif
-	}
-
-	Safe_Release(pGameInstance);
+	CMonster::AfterFrustumTick(TimeDelta);
 }
 
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */

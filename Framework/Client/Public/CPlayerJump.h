@@ -26,12 +26,14 @@ public:
 	void Push_Jump_Message(_ubyte ubyKey) {
 		m_Qmessage.push(ubyKey);
 	}
+	void Reset();
 
 private:
 	queue<_ubyte> m_Qmessage;
 
 	_bool m_isJump = { false };
 	_bool m_isDoubleJump = { false };
+	_bool m_isFirst = { true };
 
 private:
 	CTransform* m_pTransform = { nullptr };

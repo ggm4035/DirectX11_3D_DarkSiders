@@ -38,6 +38,17 @@ HRESULT CPattern_Wheel::Initialize(const _uint& iLevelIndex, CComponent* pOwner,
 			return true;
 		});
 
+	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			CGameObject3D::HITSTATE* pCurHitState;
+			pBlackBoard->Get_Type(L"eCurHitState", pCurHitState);
+
+			if (CGameObject3D::NONE == *pCurHitState)
+				return true;
+
+			return false;
+		});
+
 	return S_OK; 
 }
 

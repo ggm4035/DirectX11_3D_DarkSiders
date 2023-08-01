@@ -8,6 +8,8 @@
 #include "CWeapon.h"
 #include "CCamera_Free.h"
 #include "CUI_Rect.h"
+#include "CCursor.h"
+#include "CGameManager.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
@@ -54,6 +56,23 @@ HRESULT Client::CMainApp::Initialize()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
+	POINT ptMouse;
+	GetCursorPos(&ptMouse);
+	ScreenToClient(g_hWnd, &ptMouse);
+
+	CUI_Rect::UIDESC Desc;
+	Desc.m_fDepth = 0.f;
+	Desc.m_fSizeX = 40.f;
+	Desc.m_fSizeY = 40.f;
+	Desc.m_fX = (_float)ptMouse.x;
+	Desc.m_fY = (_float)ptMouse.y;
+
+	m_pCursor = dynamic_cast<CCursor*>(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_STATIC, L"UI_Cursor", L"UI_Cursor", nullptr, &Desc));
+	if (nullptr == m_pCursor)
+		return E_FAIL;
+
+	CGameManager::GetInstance()->Set_Cursor(m_pCursor);
+
 	return S_OK;
 }
 
@@ -62,6 +81,8 @@ void CMainApp::Tick(const _double& TimeDelta)
 	m_TimeAcc += TimeDelta;
 
 	m_pGameInstance->Tick_Engine(TimeDelta);
+
+	m_pCursor->Tick(TimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -105,6 +126,10 @@ HRESULT CMainApp::Ready_UI_Objects()
 		CUI_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
+	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Cursor",
+		CCursor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -129,6 +154,11 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/emberBW.png"))))
 		return E_FAIL;
 
+	/* Texture_UI_Cursor */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Texture_UI_Cursor",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Cursor.png"))))
+		return E_FAIL;
+
 	/* VIBuffer_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Rect",
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
@@ -137,6 +167,11 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	/* VIBuffer_Cube */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Cube",
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* VIBuffer_Trail */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Trail",
+		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* Shader_VtxTex */
@@ -359,6 +394,11 @@ HRESULT CMainApp::Ready_Player()
 		CWheelWind::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For. Player_LeapAttack */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerLeapAttack",
+		CLeapAttack::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -400,6 +440,7 @@ void CMainApp::Free()
 	for (auto& Model : m_vecModelDatas)
 		Safe_Delete_BinaryData(Model);
 
+	Safe_Release(m_pCursor);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);

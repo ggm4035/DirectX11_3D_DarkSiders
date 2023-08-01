@@ -32,7 +32,7 @@ public:
 
 private:
 	_float4 m_vResponPosition;
-	class CUI_Rect* m_pPlayerUI[3] = { nullptr };
+	class CUI_Rect* m_pMonsterUI[3] = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

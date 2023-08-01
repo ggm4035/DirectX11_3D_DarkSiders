@@ -14,6 +14,8 @@ private:
 	virtual ~CLayer() = default;
 
 public:
+	/* 이거 자세하게는 못찾아줌 */
+	class CGameObject* Find_GameObject(const wstring& wstrObjectTag);
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Tick(const _double& TimeDelta);
 	void AfterFrustumTick(const _double& TimeDelta);

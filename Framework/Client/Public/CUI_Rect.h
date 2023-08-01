@@ -20,6 +20,7 @@ public:
 	{
 		const _int* pMaxHp = { nullptr };
 		const _int* pHp = { nullptr };
+		const _float* pCoolTime = { nullptr };
 		_uint iTextureLevelIndex = { 0 };
 		wstring wstrTextureTag = { L"" };
 		_uint iPassNum = { 2 };
@@ -42,6 +43,7 @@ private:
 	_uint m_iPassNum = { 0 };
 	const _int* m_pMaxHp = { nullptr };
 	const _int* m_pHp = { nullptr };
+	const _float* m_pCoolTime = { nullptr };
 
 private:
 	CRenderer* m_pRendererCom = { nullptr };

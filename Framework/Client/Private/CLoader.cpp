@@ -77,7 +77,10 @@ HRESULT CLoader::Loading()
 	}
 
 	if (E_FAIL == hResult)
+	{
+		LeaveCriticalSection(&m_Critical_Section);
 		return E_FAIL;
+	}
 
 	LeaveCriticalSection(&m_Critical_Section);
 
@@ -192,6 +195,21 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Texture_UI_Ability_Wheel */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Ability_Wheel",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AbilityIcon_Wheel.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_HollowLord */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_HollowLord",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_HollowLord.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_SteamRoller */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_SteamRoller",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_SteamRoller.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_BossHpBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_BossHpBar",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_BossHpBar.png"))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("UI ·Îµù Áß.");

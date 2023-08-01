@@ -28,6 +28,7 @@ HRESULT CUI_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	m_iPassNum = Desc.iPassNum;
 	m_pMaxHp = Desc.pMaxHp;
 	m_pHp = Desc.pHp;
+	m_pCoolTime = Desc.pCoolTime;
 
 	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
@@ -104,6 +105,13 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeAcc", &m_fTimeAcc, sizeof(_float))))
 		return E_FAIL;
 
+	if (nullptr != m_pCoolTime)
+	{
+		_float fData = *m_pCoolTime / 5.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fCoolTime", &fData, sizeof(_float))))
+			return E_FAIL;
+	}
+
 	if (nullptr != m_pMaxHp)
 	{
 		_float fData = _float(*m_pMaxHp);
@@ -117,6 +125,7 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fHp", &fData, sizeof(_float))))
 			return E_FAIL;
 	}
+
 	Safe_Release(pGameInstance);
 
 	return S_OK;

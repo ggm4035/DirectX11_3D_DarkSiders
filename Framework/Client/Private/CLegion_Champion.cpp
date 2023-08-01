@@ -219,7 +219,8 @@ HRESULT CLegion_Champion::Make_AI()
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
-	/* 플레이어 발견하기 전까지는 비활성화 하기 */
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Rest", pAction_Rest)))
+		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pHit)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Wheel", pPattern_Wheel)))

@@ -160,6 +160,18 @@
     <Filter Include="02. GameObject\05. Trigger">
       <UniqueIdentifier>{2255584d-1b7d-42dd-8db1-d8640890b3dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. GameManager">
+      <UniqueIdentifier>{0d7cb692-df39-48ae-ab43-b8fa157ddd4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\04. Skills\Dash">
+      <UniqueIdentifier>{6ff453f8-d952-4b73-ba44-22a40f42ff67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. ETC\Cursor">
+      <UniqueIdentifier>{83d00752-90f4-47cb-b97c-82aa1aeefe0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\03. Parts\00. Weapon\SwordTrail">
+      <UniqueIdentifier>{a5e0c6da-a389-4eab-8139-8c1f4f1866e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -336,6 +348,15 @@
     <ClInclude Include="..\Public\CBoss_Attack.h">
       <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CGameManager.h">
+      <Filter>96. GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCursor.h">
+      <Filter>02. GameObject\99. ETC\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSwordTrail.h">
+      <Filter>02. GameObject\03. Parts\00. Weapon\SwordTrail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -504,6 +525,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\CBoss_Attack.cpp">
       <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CGameManager.cpp">
+      <Filter>96. GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCursor.cpp">
+      <Filter>02. GameObject\99. ETC\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSwordTrail.cpp">
+      <Filter>02. GameObject\03. Parts\00. Weapon\SwordTrail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

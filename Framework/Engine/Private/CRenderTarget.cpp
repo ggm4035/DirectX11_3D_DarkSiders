@@ -1,8 +1,8 @@
 #include "CRenderTarget.h"
 #include "CShader.h"
 
-#include "CVIBuffer_Rect.h"
 #ifdef _DEBUG
+#include "CVIBuffer_Rect.h"
 #endif // _DEBUG
 
 CRenderTarget::CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -46,6 +46,7 @@ HRESULT CRenderTarget::Initialize(const _uint& iSizeX, const _uint& iSizeY, DXGI
 	return S_OK;
 }
 
+#ifdef _DEBUG
 HRESULT CRenderTarget::Ready_Debug(const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY)
 {
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
@@ -77,7 +78,6 @@ HRESULT CRenderTarget::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	return pVIBuffer->Render();
 }
-#ifdef _DEBUG
 #endif // _DEBUG
 
 void CRenderTarget::Clear()

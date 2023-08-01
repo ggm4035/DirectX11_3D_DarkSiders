@@ -15,6 +15,7 @@
 #include "CPlayerKnockback.h"
 
 #include "CWheelWind.h"
+#include "CLeapAttack.h"
 
 /* Behaviors */
 #include "CHit.h"

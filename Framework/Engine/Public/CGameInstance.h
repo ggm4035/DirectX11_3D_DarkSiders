@@ -48,6 +48,8 @@ public: /* For.Level_Manager */
 	HRESULT Open_Level(const _uint& iNumLevels, class CLevel* pNewLevel);
 
 public: /* For.Object_Manager */
+	/* 자세하게는 못찾아줌 보스 가져오는 용도로 제작 */
+	class CGameObject* Find_GameObject(const _uint& iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrGameObjectTag);
 	HRESULT Add_Prototype(const wstring pPrototypeTag, class CGameObject* pPrototype);
 	class CGameObject* Clone_GameObject(const _uint& iLevelIndex, const wstring& PrototypeTag, const wstring& GameObjectTag, class CComponent* pOwner, void* pArg);
 
@@ -122,6 +124,7 @@ public: /* For.Collider_Manager */
 #endif
 
 public: /* For. Sound_Manager */
+	HRESULT isPlaying(CSound_Manager::SOUNDCHANNEL eChannel, OUT _bool& Out);
 	HRESULT Play_Sound(const _tchar* pSoundTag, CSound_Manager::SOUNDCHANNEL eChannel, _float fVolume, _bool bForcePlay = false);
 	HRESULT Play_BGM(const _tchar* pSoundTag, _float fVolume);
 	HRESULT Stop_Sound(CSound_Manager::SOUNDCHANNEL eChannel);

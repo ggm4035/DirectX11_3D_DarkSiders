@@ -33,15 +33,11 @@ private:
 	queue<_ubyte> m_Qmessage;
 
 	_int m_iPreCombo = { 0 };
-	_int m_iCombo = { 0 };
+	_int m_iCombo = { -1 };
 
 private:
 	CModel* m_pModel = { nullptr };
 	CTransform* m_pTransform = { nullptr };
-
-private:
-	void LightAttackCombo();
-	void HeavyAttackCombo();
 
 public:
 	static CPlayerAttack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -216,7 +216,7 @@ HRESULT CPlayer::Add_Components()
 
 	/* Navigation */
 	CNavigation::NAVIGATIONDESC NaviDesc;
-	NaviDesc.iCurrentIndex = 0; /*290*/
+	NaviDesc.iCurrentIndex = 290;
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
 		(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
 		return E_FAIL;
@@ -253,7 +253,6 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
 		(CComponent**)&m_pRoot, this)))
 		return E_FAIL;
-
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -297,7 +296,7 @@ HRESULT CPlayer::Add_Parts()
 	CameraDesc.fFov = XMConvertToRadians(60.f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
 	CameraDesc.fNear = 0.3f;
-	CameraDesc.fFar = 500.f;
+	CameraDesc.fFar = 150.f;
 
 	CameraDesc.SpeedPerSec = 10.f;
 	CameraDesc.RotationPerSec = XMConvertToRadians(90.f);

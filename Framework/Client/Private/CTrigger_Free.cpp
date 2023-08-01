@@ -2,6 +2,10 @@
 
 #include "CGameInstance.h"
 
+#include "CPlayer.h"
+#include "CMonster.h"
+#include "CCamera_Free.h"
+
 CTrigger_Free::CTrigger_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTrigger(pDevice, pContext)
 {
@@ -35,14 +39,22 @@ void CTrigger_Free::Late_Tick(const _double& TimeDelta)
 
 void CTrigger_Free::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	//cout << "Call" << endl;
+	if (true == m_isCall)
+		return;
 
-	if (Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	if (Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_PLAYER &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		/* 내가 가지고 있는 태그값을 누구한테 전달한다 */
-		_float4 vPosition;
-		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		Collision.pOther->Get_Damaged_Knockback(vPosition);
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		Safe_AddRef(pGameInstance);
+
+		if (wstring::npos != m_wstrTag.find(L"Final"))
+			Final_Boss(pGameInstance);
+
+		if (wstring::npos != m_wstrTag.find(L"Mid"))
+			Sub_Boss(pGameInstance);
+
+		Safe_Release(pGameInstance);
 	}
 
 	m_isCall = true;
@@ -67,6 +79,46 @@ HRESULT CTrigger_Free::Add_Components()
 #endif
 
 	return S_OK;
+}
+
+void CTrigger_Free::Sub_Boss(CGameInstance* pGameInstance)
+{
+	CGameObject* pGameObject = { nullptr };
+
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"Layer_Monster", L"SteamRoller");
+	if (nullptr == pGameObject)
+		return;
+
+	static_cast<CMonster*>(pGameObject)->Spawn();
+	pGameObject = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Parts(L"Camera_Free");
+	if (nullptr == pGameObject)
+		return;
+
+	static_cast<CCamera_Free*>(pGameObject)->Set_CamState(CCamera_Free::CAM_SUBBOSS);
+
+	pGameInstance->Stop_Sound(CSound_Manager::SOUND_BGM);
+	pGameInstance->Play_Sound(L"mus_level02_boss_intro.ogg", CSound_Manager::SOUND_SUB_BGM, 0.5f);
+	pGameInstance->Play_BGM(L"mus_level02_boss.ogg", 0.5f);
+}
+
+void CTrigger_Free::Final_Boss(CGameInstance* pGameInstance)
+{
+	CGameObject* pGameObject = { nullptr };
+
+	pGameObject = pGameInstance->Find_GameObject(LEVEL_GAMEPLAY, L"Layer_Monster", L"HollowLord");
+	if (nullptr == pGameObject)
+		return;
+
+	static_cast<CMonster*>(pGameObject)->Spawn();
+	pGameObject = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Parts(L"Camera_Free");
+	if (nullptr == pGameObject)
+		return;
+
+	static_cast<CCamera_Free*>(pGameObject)->Set_CamState(CCamera_Free::CAM_FINALBOSS);
+
+	pGameInstance->Stop_Sound(CSound_Manager::SOUND_BGM);
+	pGameInstance->Play_Sound(L"mus_level01_hollowlord_intro.ogg", CSound_Manager::SOUND_SUB_BGM, 0.5f);
+	pGameInstance->Play_BGM(L"mus_level01_hollowlord.ogg", 0.5f);
 }
 
 CTrigger_Free* CTrigger_Free::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -108,6 +108,7 @@ void CGameObject3D::On_Colisions(const _double& TimeDelta)
 		Pair.second->On_Collision(this, TimeDelta);
 }
 
+#if defined(_USE_IMGUI) || defined(_DEBUG)
 HRESULT CGameObject3D::Add_Colliders_Debug_Render_Group(CRenderer* pRenderer)
 {
 	for (auto& Pair : m_umapColliders)
@@ -117,7 +118,6 @@ HRESULT CGameObject3D::Add_Colliders_Debug_Render_Group(CRenderer* pRenderer)
 	}
 	return S_OK;
 }
-#ifdef _DEBUG
 #endif // _DEBUG
 
 void CGameObject3D::Free()

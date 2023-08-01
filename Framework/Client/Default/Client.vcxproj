@@ -126,7 +126,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>../../Reference/Librarys/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;DirectXTKd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine_d.lib;DirectXTKd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -166,8 +166,10 @@
     <ClInclude Include="..\Public\CAoE.h" />
     <ClInclude Include="..\Public\CBoss_Attack.h" />
     <ClInclude Include="..\Public\CCamera_Free.h" />
+    <ClInclude Include="..\Public\CCursor.h" />
     <ClInclude Include="..\Public\CDead.h" />
     <ClInclude Include="..\Public\CFallenDog.h" />
+    <ClInclude Include="..\Public\CGameManager.h" />
     <ClInclude Include="..\Public\CHollowLord.h" />
     <ClInclude Include="..\Public\CJump.h" />
     <ClInclude Include="..\Public\CLeapAttack.h" />
@@ -245,6 +247,7 @@
     <ClInclude Include="..\Public\CStatic_Object.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\CSwordTrail.h" />
     <ClInclude Include="..\Public\CTerrain.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -272,8 +275,10 @@
     <ClCompile Include="..\Private\CAoE.cpp" />
     <ClCompile Include="..\Private\CBoss_Attack.cpp" />
     <ClCompile Include="..\Private\CCamera_Free.cpp" />
+    <ClCompile Include="..\Private\CCursor.cpp" />
     <ClCompile Include="..\Private\CDead.cpp" />
     <ClCompile Include="..\Private\CFallenDog.cpp" />
+    <ClCompile Include="..\Private\CGameManager.cpp" />
     <ClCompile Include="..\Private\CHollowLord.cpp" />
     <ClCompile Include="..\Private\CJump.cpp" />
     <ClCompile Include="..\Private\CLeapAttack.cpp" />
@@ -350,6 +355,7 @@
     <ClCompile Include="..\Private\CStatic_Object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\CSwordTrail.cpp" />
     <ClCompile Include="..\Private\CTerrain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

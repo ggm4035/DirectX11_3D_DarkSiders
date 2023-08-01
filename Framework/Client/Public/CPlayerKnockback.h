@@ -31,6 +31,7 @@ private:
 	class CAction* pAction_Exit = { nullptr };
 
 	_float3 m_vDirection;
+	_bool m_isFirst = { true };
 
 private:
 	CTransform* m_pTransform = { nullptr };

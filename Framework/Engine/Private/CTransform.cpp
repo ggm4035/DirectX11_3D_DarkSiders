@@ -39,6 +39,28 @@ void CTransform::Set_State(STATE _eState, _fvector _vState)
 	_float4 vState;
 	XMStoreFloat4(&vState, _vState);
 	memcpy(&m_WorldMatrix.m[_eState][0], &vState, sizeof vState);
+
+	switch (_eState)
+	{
+	case Engine::CTransform::STATE_RIGHT:
+		Organize_From_Right();
+		break;
+
+	case Engine::CTransform::STATE_UP:
+		Organize_From_Up();
+		break;
+
+	case Engine::CTransform::STATE_LOOK:
+		Organize_From_Look();
+		break;
+	}
+}
+
+void CTransform::Reset_Jump()
+{
+	m_isOnNavigation = true;
+	m_fTimeAcc = 0.f;
+	m_isJump = false;
 }
 
 HRESULT CTransform::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
@@ -402,6 +424,51 @@ void CTransform::Move_Stop_Sliding(const _double& TimeDelta)
 
 	XMStoreFloat3(&m_vMoveDir, vLook);
 	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Organize_From_Right()
+{
+	_vector vRight = XMVector3Normalize(XMLoadFloat4x4(&m_WorldMatrix).r[STATE_RIGHT]);
+	_vector vLook = XMVector3Normalize(XMVector3Cross(vRight, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+	_float4 vState;
+	XMStoreFloat4(&vState, vRight);
+	memcpy(&m_WorldMatrix.m[STATE_RIGHT][0], &vState, sizeof vState);
+	XMStoreFloat4(&vState, vUp);
+	memcpy(&m_WorldMatrix.m[STATE_UP][0], &vState, sizeof vState);
+	XMStoreFloat4(&vState, vLook);
+	memcpy(&m_WorldMatrix.m[STATE_LOOK][0], &vState, sizeof vState);
+}
+
+void CTransform::Organize_From_Up()
+{
+	_vector vUp = XMVector3Normalize(XMLoadFloat4x4(&m_WorldMatrix).r[STATE_UP]);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, XMVectorSet(0.f, 0.f, 1.f, 0.f)));
+	_vector vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+
+	_float4 vState;
+	XMStoreFloat4(&vState, vRight);
+	memcpy(&m_WorldMatrix.m[STATE_RIGHT][0], &vState, sizeof vState);
+	XMStoreFloat4(&vState, vUp);
+	memcpy(&m_WorldMatrix.m[STATE_UP][0], &vState, sizeof vState);
+	XMStoreFloat4(&vState, vLook);
+	memcpy(&m_WorldMatrix.m[STATE_LOOK][0], &vState, sizeof vState);
+}
+
+void CTransform::Organize_From_Look()
+{
+	_vector vLook = XMVector3Normalize(XMLoadFloat4x4(&m_WorldMatrix).r[STATE_LOOK]);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+	_float4 vState;
+	XMStoreFloat4(&vState, vRight);
+	memcpy(&m_WorldMatrix.m[STATE_RIGHT][0], &vState, sizeof vState);
+	XMStoreFloat4(&vState, vUp);
+	memcpy(&m_WorldMatrix.m[STATE_UP][0], &vState, sizeof vState);
+	XMStoreFloat4(&vState, vLook);
+	memcpy(&m_WorldMatrix.m[STATE_LOOK][0], &vState, sizeof vState);
 }
 
 CTransform* CTransform::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

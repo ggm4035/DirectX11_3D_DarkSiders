@@ -27,6 +27,9 @@ public:
 public:
 	virtual void Get_Damaged_Knockback(const _float4& _vPosition) override;
 
+	class CPlayerAction* Get_Action() {
+		return m_pActionCom;
+	}
 	CCollider* Get_Collider(const wstring& wstrColliderTag);
 	CGameObject* Get_Parts(const wstring& wstrPartsTag);
 	HITSTATE Get_CurHitState() const {

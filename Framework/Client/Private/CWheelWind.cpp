@@ -36,6 +36,12 @@ HRESULT CWheelWind::Tick(const _double& TimeDelta)
 
 	m_fTimeAcc += TimeDelta;
 
+	if (7.5f > m_fTimeAcc && m_fTimeAcc > m_fTick)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"en_legionchampion_atk_whirlwind_whoosh_02.ogg", CSound_Manager::SOUND_PLAYER, 0.3f, true);
+		m_fTick += 0.4f;
+	}
+
 	HRESULT hr = S_OK;
 
 	for (auto& BehaviorDesc : m_BehaviorList)
@@ -55,6 +61,7 @@ void CWheelWind::Reset()
 	dynamic_cast<CPlayer*>(m_pOwner)->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
 	m_isPlay = false;
 	m_fTimeAcc = 0.f;
+	m_fTick = 0.f;
 	m_fCoolTime = 0.f;
 }
 
@@ -95,7 +102,6 @@ HRESULT CWheelWind::AssembleBehaviors()
 		return E_FAIL;
 
 	pAction_Start->Bind_AnimationTag("Wheel_Enter");
-	//pAction_Start->NotLerp();
 	pAction_Ing->Bind_AnimationTag("Wheel_Stay");
 	pAction_Ing->NotLerp();
 	pAction_End->Bind_AnimationTag("Wheel_Exit");
