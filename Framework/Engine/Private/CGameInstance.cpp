@@ -502,6 +502,14 @@ _vector CGameInstance::Picking_On_Triangle(const POINT& ptMouse, CModel* pModel,
 	return m_pCalculator->Picking_On_Triangle(ptMouse, pModel, pTransform);
 }
 
+_fvector CGameInstance::Get_RandomVectorInSphere(const _float& fRadius)
+{
+	if (nullptr == m_pCalculator)
+		return _vector();
+
+	return m_pCalculator->Get_RandomVectorInSphere(fRadius);
+}
+
 HRESULT CGameInstance::Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& wstrFontTag, const wstring& wstrFontFilePath)
 {
 	if (nullptr == m_pFont_Manager)

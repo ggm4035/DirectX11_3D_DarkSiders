@@ -41,7 +41,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(pGameInstance->Stop_AllSound()))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Play_BGM(L"mus_level02_ambient.ogg", 0.5f)))
+	if (FAILED(pGameInstance->Play_BGM(L"mus_level02_ambient.ogg", 0.6f)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -172,7 +172,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(wstring pLayerTag)
 
 	PlayerDesc.WorldMatrix = m_PlayerWorldMatrix;
 	PlayerDesc.vAngle = m_vPlayerAngle;
-	PlayerDesc.SpeedPerSec = 4.f; // °È±â = 1.5, ¶Ù±â 3
+	PlayerDesc.SpeedPerSec = 6.f; // °È±â = 1.5, ¶Ù±â 3
 	PlayerDesc.RotationPerSec = XMConvertToRadians(90.f);
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Player",
@@ -226,7 +226,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 				L"Monster_Legion_Melee", pLayerTag, &MonsterDesc)))
 				return E_FAIL;
 		}
-
+		
 		if (wstring::npos != wstrObjTag.find(L"SteamRoller"))
 		{
 			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_SteamRoller",
@@ -240,7 +240,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 				L"Monster_FallenDog", pLayerTag, &MonsterDesc)))
 				return E_FAIL;
 		}
-
+		
 		if (wstring::npos != wstrObjTag.find(L"HollowLord"))
 		{
 			MonsterDesc.SpeedPerSec = 0.f;
@@ -328,7 +328,7 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 6;
+	UIDesc.iPassNum = 3;
 	UIDesc.pMaxHp = &pPlayer->Get_Status().iMaxHP;
 	UIDesc.pHp = &pPlayer->Get_Status().iHP;
 
@@ -369,7 +369,7 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Leap";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 7;
+	UIDesc.iPassNum = 6;
 	UIDesc.pCoolTime = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Action()->Get_LeapCoolTimePtr();
 
 	m_pPlayerUI[6] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Leap", nullptr, &UIDesc));
@@ -383,7 +383,7 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Wheel";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 7;
+	UIDesc.iPassNum = 6;
 	UIDesc.pCoolTime = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Action()->Get_WheelCoolTimePtr();
 
 	m_pPlayerUI[7] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Wheel", nullptr, &UIDesc));

@@ -4,12 +4,11 @@
 
 BEGIN(Engine)
 
-class CVIBuffer_Instancing abstract : public CVIBuffer
+class ENGINE_DLL CVIBuffer_Instancing abstract : public CVIBuffer
 {
 public:
 	typedef struct tagInstanceDesc
 	{
-		vector<_float4x4> vecWorldMatrix;
 		_uint iNumInstance;
 	}INSTANCEDESC;
 
@@ -19,13 +18,10 @@ protected:
 	virtual ~CVIBuffer_Instancing() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const INSTANCEDESC* pInstanceDesc);
+	virtual HRESULT Initialize_Prototype() { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
+	virtual void Tick(vector<_float4x4>& vecMatrices);
 	virtual HRESULT Render() override;
-
-public:
-	HRESULT Begin_Instance(OUT VTXINSTANCE** ppSubResourceData);
-	void End_Instance();
 
 protected:
 	ID3D11Buffer* m_pVBInstance = { nullptr };
@@ -34,7 +30,6 @@ protected:
 
 protected: /* INSTANCE DESC */
 	_uint m_iNumInstance = { 0 };
-	_float4x4* m_pInstance_WorldMatrix = { nullptr };
 
 public:
 	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;

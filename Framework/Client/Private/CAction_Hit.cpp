@@ -53,6 +53,7 @@ HRESULT CAction_Hit::Assemble_Childs()
 	if (nullptr == pDead)
 		return E_FAIL;
 
+	pHit->Bind_SoundTag(m_wstrSoundTag);
 	if (false == m_isImpact)
 		pHit->Not_Impact();
 	if (false == m_isLook)

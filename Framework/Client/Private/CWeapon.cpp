@@ -2,6 +2,7 @@
 #include "CWeapon.h"
 
 #include "CGameInstance.h"
+#include "CSwordTrail.h"
 
 CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CParts(pDevice, pContext)
@@ -9,7 +10,7 @@ CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CWeapon::CWeapon(const CWeapon& rhs)
-	:CParts(rhs)
+	: CParts(rhs)
 {
 }
 
@@ -20,19 +21,20 @@ HRESULT CWeapon::Initialize_Prototype()
 
 HRESULT CWeapon::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
+	if (nullptr == pArg)
+		return E_FAIL;
+
 	if (FAILED(CParts::Initialize(LEVEL_STATIC, pOwner, pArg)))
 		return E_FAIL;
 
-	if (nullptr != pArg)
-	{
-		WEAPONDESC Desc = *reinterpret_cast<WEAPONDESC*>(pArg);
+	WEAPONDESC Desc = *reinterpret_cast<WEAPONDESC*>(pArg);
 
-		if (FAILED(Add_Component(iLevelIndex, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
-			(CComponent**)&m_pModelCom, this)))
-			return E_FAIL;
-
-
-	}
+	if (FAILED(Add_Component(iLevelIndex, Desc.wstrModelTag.c_str(), L"Com_Model_Weapon",
+		(CComponent**)&m_pModelCom, this)))
+		return E_FAIL;
+	
+	if (nullptr != Desc.pSwordTrail)
+		m_pSwordTrail = Desc.pSwordTrail;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -45,7 +47,7 @@ void CWeapon::Tick(const _double& TimeDelta)
 	_matrix BoneMatrix;
 	CModel* pModel = dynamic_cast<CModel*>(dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Component(L"Com_Model"));
 
-	if(false == pModel->isLoopAnimation())
+	if (false == pModel->isLoopAnimation())
 		BoneMatrix = XMLoadFloat4x4(&m_OffsetMatrix) * XMLoadFloat4x4(m_pNotMoveCombinedTransformationMatrix) * XMLoadFloat4x4(&m_PivotMatrix);
 	else
 		BoneMatrix = XMLoadFloat4x4(&m_OffsetMatrix) * XMLoadFloat4x4(m_pCombinedTransformationMatrix) * XMLoadFloat4x4(&m_PivotMatrix);
@@ -54,6 +56,16 @@ void CWeapon::Tick(const _double& TimeDelta)
 		BoneMatrix.r[i] = XMVector3Normalize(BoneMatrix.r[i]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * BoneMatrix * XMLoadFloat4x4(m_pParentWorldMatrix));
+
+	if (nullptr != m_pSwordTrail)
+		m_pSwordTrail->Tick(m_WorldMatrix);
+}
+
+void CWeapon::AfterFrustumTick(const _double& TimeDelta)
+{
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+	m_pSwordTrail->AfterFrustumTick(TimeDelta);
 }
 
 void CWeapon::Late_Tick(const _double& TimeDelta)
@@ -129,7 +141,7 @@ CWeapon* CWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CWeapon* CWeapon::Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pArg)
+CWeapon* CWeapon::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	CWeapon* pInstance = new CWeapon(*this);
 
@@ -146,6 +158,7 @@ void CWeapon::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pSwordTrail);
 
 	CParts::Free();
 }

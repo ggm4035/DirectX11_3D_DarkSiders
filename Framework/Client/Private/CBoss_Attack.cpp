@@ -56,7 +56,6 @@ HRESULT CBoss_Attack::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 			return false;
 		});
 
-
 	return S_OK;
 }
 

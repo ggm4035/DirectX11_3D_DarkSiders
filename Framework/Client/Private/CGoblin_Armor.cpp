@@ -205,6 +205,7 @@ HRESULT CGoblin_Armor::Make_AI()
 			return !(*pIsSpawn);
 		});
 
+	pSequence_Hit->Bind_SoundTag(L"en_fleamag_armored_block_01.ogg");
 	pAction_Rest->Bind_AnimationTag("Sit");
 	pAction_Detect->Bind_AnimationTag("Sit_End");
 	pAction_Detect->Just_One_Time_Action();

@@ -54,6 +54,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctrigge
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctransform.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctexture.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctarget_manager.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csound_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csequence.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cselector.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\croot.obj
@@ -65,7 +66,9 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameob
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameobject.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cblackboard.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbehavior.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csound_manager.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_trail.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_sprite.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_parabola.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_deferred.cso

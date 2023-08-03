@@ -91,6 +91,7 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 
 	if (false == isJump)
 	{
+		pGameInstance->Play_Sound(L"char_war_jump_ledge_02.ogg", CSound_Manager::SOUND_PLAYER, 0.3f, true);
 		pAction->Set_State(CPlayerAction::STATE_JUMP_LAND);
 		m_isJump = false;
 		m_isDoubleJump = false;

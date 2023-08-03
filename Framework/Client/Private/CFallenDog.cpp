@@ -272,7 +272,7 @@ CFallenDog* CFallenDog::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created CTusker");
+		MSG_BOX("Failed to Created CFallenDog");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
@@ -284,7 +284,7 @@ CFallenDog* CFallenDog::Clone(const _uint& iLevelIndex, CComponent* pOwner, void
 
 	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
-		MSG_BOX("Failed to Cloned CTusker");
+		MSG_BOX("Failed to Cloned CFallenDog");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

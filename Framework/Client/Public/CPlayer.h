@@ -10,6 +10,9 @@ class CModel;
 class CCollider;
 class CNavigation;
 class CRoot;
+
+class CTexture;
+class CVIBuffer_Sprite;
 END
 
 BEGIN(Client)
@@ -65,6 +68,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
+	class CStone_Effect* m_pEffect = { nullptr };
 
 	CRoot* m_pRoot = { nullptr };
 	class CPlayerAction* m_pActionCom = { nullptr };

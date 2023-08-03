@@ -19,6 +19,8 @@
 #include "CFallenDog.h"
 #include "CWeapon.h"
 #include "CTrigger_Free.h"
+#include "CSwordTrail.h"
+#include "CStone_Effect.h"
 
 #include "CUI_Overlay.h"
 #include "CUI_HpBar.h"
@@ -210,6 +212,38 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Texture_UI_BossHpBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_BossHpBar",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_BossHpBar.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_Spawn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Spawn",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Spawn.png"))))
+		return E_FAIL;
+
+	/* For. Texture_SwordTrail */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SwordTrail",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/War_SwordTrail.png"))))
+		return E_FAIL;
+
+	/* For. Texture_Explosion */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Explosion",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Sprites/Explosion.png"))))
+		return E_FAIL;
+
+	/* For. Texture_RockChip */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_RockChip",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Sprites/RockChip.png"))))
+		return E_FAIL;
+
+	m_szLoading = TEXT("버퍼 로딩 중.");
+
+	/* VIBuffer_Trail */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"VIBuffer_Trail",
+		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Stone_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Stone_Effect",
+		CStone_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("UI 로딩 중.");
@@ -467,6 +501,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Trigger_Free */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Trigger_Free",
 		CTrigger_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. SwordTrail */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"SwordTrail",
+		CSwordTrail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	list<CComponent*> data = m_pGameInstance->Get_All_Prototypes();

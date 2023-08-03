@@ -207,7 +207,6 @@
     <ClInclude Include="..\Public\CGameObject3D.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\CInstance_Mesh.h" />
     <ClInclude Include="..\Public\CInstance_Point.h" />
     <ClInclude Include="..\Public\CInstance_Rect.h" />
     <ClInclude Include="..\Public\CLayer.h">
@@ -251,6 +250,7 @@
     <ClInclude Include="..\Public\CVIBuffer_Cell.h" />
     <ClInclude Include="..\Public\CVIBuffer_Instancing.h" />
     <ClInclude Include="..\Public\CVIBuffer_Rect.h" />
+    <ClInclude Include="..\Public\CViBuffer_Sprite.h" />
     <ClInclude Include="..\Public\CVIBuffer_Terrain.h" />
     <ClInclude Include="..\Public\CVIBuffer_Trail.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
@@ -307,7 +307,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CGraphic_Device.cpp" />
     <ClCompile Include="..\Private\CInput_Device.cpp" />
-    <ClCompile Include="..\Private\CInstance_Mesh.cpp" />
     <ClCompile Include="..\Private\CInstance_Point.cpp" />
     <ClCompile Include="..\Private\CInstance_Rect.cpp" />
     <ClCompile Include="..\Private\CLayer.cpp">
@@ -351,6 +350,7 @@
     <ClCompile Include="..\Private\CVIBuffer_Cell.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Instancing.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Rect.cpp" />
+    <ClCompile Include="..\Private\CViBuffer_Sprite.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Terrain.cpp" />
     <ClCompile Include="..\Private\CVIBuffer_Trail.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />

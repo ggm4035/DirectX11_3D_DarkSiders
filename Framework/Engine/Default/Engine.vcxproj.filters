@@ -208,9 +208,6 @@
     <Filter Include="01. Utility\07. RenderTarget\Manager">
       <UniqueIdentifier>{36374a33-57b7-4d45-94ec-cb7cc7934014}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\02. Component\Components\01. VIBuffer\Instancing\Mesh">
-      <UniqueIdentifier>{0f8a970f-5b25-4cfa-b30c-c3e33336e709}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\02. Component\GameObjects\00. CGameObject3D\Trigger">
       <UniqueIdentifier>{d1b9c3d4-d055-4a12-8388-1148ce612d43}</UniqueIdentifier>
     </Filter>
@@ -222,6 +219,9 @@
     </Filter>
     <Filter Include="01. Utility\02. Component\Components\01. VIBuffer\SwordTrail">
       <UniqueIdentifier>{3864b1b4-5b33-406c-8b71-880305b7af8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\02. Component\Components\01. VIBuffer\Sprite">
+      <UniqueIdentifier>{0a553705-0fe3-4cec-849c-227775cecee4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -432,9 +432,6 @@
     <ClInclude Include="..\Public\CTarget_Manager.h">
       <Filter>01. Utility\07. RenderTarget\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CInstance_Mesh.h">
-      <Filter>01. Utility\02. Component\Components\01. VIBuffer\Instancing\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CTrigger.h">
       <Filter>01. Utility\02. Component\GameObjects\00. CGameObject3D\Trigger</Filter>
     </ClInclude>
@@ -446,6 +443,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\CVIBuffer_Trail.h">
       <Filter>01. Utility\02. Component\Components\01. VIBuffer\SwordTrail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CViBuffer_Sprite.h">
+      <Filter>01. Utility\02. Component\Components\01. VIBuffer\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -638,9 +638,6 @@
     <ClCompile Include="..\Private\CTarget_Manager.cpp">
       <Filter>01. Utility\07. RenderTarget\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CInstance_Mesh.cpp">
-      <Filter>01. Utility\02. Component\Components\01. VIBuffer\Instancing\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CTrigger.cpp">
       <Filter>01. Utility\02. Component\GameObjects\00. CGameObject3D\Trigger</Filter>
     </ClCompile>
@@ -652,6 +649,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CVIBuffer_Trail.cpp">
       <Filter>01. Utility\02. Component\Components\01. VIBuffer\SwordTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CViBuffer_Sprite.cpp">
+      <Filter>01. Utility\02. Component\Components\01. VIBuffer\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -107,5 +107,10 @@ CLeapAttack* CLeapAttack::Clone(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 void CLeapAttack::Free()
 {
+	if (true == m_isCloned)
+	{
+		Safe_Release(m_pModel);
+		Safe_Release(m_pTransform);
+	}
 	CBehavior::Free();
 }

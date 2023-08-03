@@ -83,5 +83,5 @@ CRoot* CRoot::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 
 void CRoot::Free()
 {
-	CBehavior::Free();
+ 	CBehavior::Free();
 }

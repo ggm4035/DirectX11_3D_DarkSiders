@@ -1,9 +1,7 @@
-
 #include "CHit.h"
 
+#include "CGameInstance.h"
 #include "CBlackBoard.h"
-#include "CGameObject3D.h"
-#include "CModel.h"
 
 CHit::CHit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBehavior(pDevice, pContext)
@@ -67,6 +65,8 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 
 	case CGameObject3D::HIT:
 		m_pTransform->Set_On_Navigation(true);
+
+		CGameInstance::GetInstance()->Play_Sound(m_wstrSoundTag.c_str(), CSound_Manager::SOUND_ENEMY, 0.3f, true);
 
 		if(true == m_isLook)
 			m_pTransform->LookAt(pTarget->Get_Transform()->Get_State(CTransform::STATE_POSITION));

@@ -198,6 +198,7 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 			if (STATE_KNOCKBACK != m_eCurState && STATE_DASH != m_eCurState &&
 				STATE_WHEEL != m_eCurState && STATE_LEAP != m_eCurState)
 			{
+				pGameInstance->Play_Sound(L"char_war_attack_launch_02.ogg", CSound_Manager::SOUND_PLAYER, 0.4f, true);
 				Set_State(STATE_DASH);
 			}
 			break;

@@ -18,6 +18,7 @@ public:
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, string Typename, const _uint & iTextureIndex = 0);
 	HRESULT Bind_ShaderResources(class CShader* pShader, string Typename);
+	const _float2 Get_TextureSize(_uint iTextureIndex);
 
 private:
 	/* ID3D11ShaderResourceView*: 쉐이더에 전달될 수 있는 텍스쳐 타입. */

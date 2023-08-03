@@ -5,7 +5,9 @@
 
 #include "CPlayerAction.h"
 #include "CWeapon.h"
+#include "CSwordTrail.h"
 #include "CRoot.h"
+#include "CStone_Effect.h"
 
 void CPlayer::Get_Damaged_Knockback(const _float4& _vPosition)
 {
@@ -81,6 +83,9 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
+	if (CGameInstance::GetInstance()->Key_Down(DIK_4))
+		m_pEffect->Render_Effect(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	CGameObject3D::Tick(TimeDelta);
 
 	m_fHitTimeAcc += TimeDelta * 2.f;
@@ -99,6 +104,8 @@ void CPlayer::Tick(const _double& TimeDelta)
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
+
+	m_pEffect->Tick(TimeDelta);
 
 	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
@@ -119,7 +126,9 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 		}
 
 		for (auto Pair : m_Parts)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
+			Pair.second->AfterFrustumTick(TimeDelta);
+
+		m_pEffect->AfterFrustumTick(TimeDelta);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
@@ -169,7 +178,7 @@ HRESULT CPlayer::Render()
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
 	}
-
+	
 	return S_OK;
 }
 
@@ -180,7 +189,6 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 		(Collision.pOtherCollider->Get_Tag() == L"Col_Body" ||
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS))
 	{
-		//cout << "µ¥¹ÌÁö" << endl;
 		Collision.pOther->Get_Damaged();
 	}
 
@@ -205,13 +213,14 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer", L"Com_Renderer",
 		(CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
-
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_AnimMesh", L"Com_Shader_AnimMesh",
 		(CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
-
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Model_Player", L"Com_Model",
 		(CComponent**)&m_pModelCom, this)))
+		return E_FAIL;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Stone_Effect", L"Com_Effect",
+		(CComponent**)&m_pEffect, this)))
 		return E_FAIL;
 
 	/* Navigation */
@@ -269,6 +278,18 @@ HRESULT CPlayer::Add_Components()
 HRESULT CPlayer::Add_Parts()
 {
 	CWeapon::WEAPONDESC Desc;
+	CSwordTrail::SWORDTRAILDESC TrailDesc;
+
+	TrailDesc.iNumRect = 10.f;
+	TrailDesc.vOffsetHigh = _float3(0.f, 0.f, 2.4f);
+	TrailDesc.vOffsetLow = _float3(0.f, 0.f, 0.5f);
+	TrailDesc.wstrTextureTag = L"Texture_SwordTrail";
+	TrailDesc.iLevelIndex = LEVEL_GAMEPLAY;
+
+	CSwordTrail* pSwordTrail = dynamic_cast<CSwordTrail*>(CGameInstance::GetInstance()->
+		Clone_GameObject(LEVEL_GAMEPLAY, L"SwordTrail", L"PlayerSwordTrail", this, &TrailDesc));
+	if (nullptr == pSwordTrail)
+		return E_FAIL;
 
 	const CBone* pBone = m_pModelCom->Get_Bone("Bone_War_Weapon_Sword");
 	if (nullptr == pBone)
@@ -284,6 +305,8 @@ HRESULT CPlayer::Add_Parts()
 	Desc.RotationPerSec = XMConvertToRadians(90.0);
 
 	Desc.wstrModelTag = L"Model_PlayerWeapon";
+
+	Desc.pSwordTrail = pSwordTrail;
 
 	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon_Player", this, &Desc)))
 		return E_FAIL;
@@ -364,6 +387,7 @@ void CPlayer::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pActionCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect);
 	Safe_Release(m_pRoot);
 
 	CGameObject3D::Free();

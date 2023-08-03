@@ -12,7 +12,7 @@
 #include "CGameManager.h"
 
 CMainApp::CMainApp()
-	: m_pGameInstance { CGameInstance::GetInstance() }
+	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 }
@@ -122,10 +122,10 @@ HRESULT CMainApp::Ready_UI_Objects()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	if(FAILED(m_pGameInstance->Add_Prototype(L"UI_Rect", 
+	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Rect",
 		CUI_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Cursor",
 		CCursor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -169,9 +169,14 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* VIBuffer_Trail */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Trail",
-		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+	/* VIBuffer_Sprite */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"VIBuffer_Sprite",
+		CVIBuffer_Sprite::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Instance_Point */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Instance_Point",
+		CInstance_Point::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* Shader_VtxTex */
@@ -202,6 +207,12 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_VtxNorTex",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl",
 			VTXPOSNORTEX_DECL::Elements, VTXPOSNORTEX_DECL::iNumElements))))
+		return E_FAIL;
+
+	/* Shader_PointInstance */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_PointInstance",
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxPointInstance.hlsl",
+			VTXPOINTTEXINSTANCE_DECL::Elements, VTXPOINTTEXINSTANCE_DECL::iNumElements))))
 		return E_FAIL;
 
 	/* For. Collider_Sphere */
@@ -240,7 +251,7 @@ HRESULT CMainApp::Ready_Behaviors()
 		return E_FAIL;
 
 	/* RandomSelector */
-	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"RandomSelector",
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"RandomSelector",
 		CRandomSelector::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -289,6 +300,38 @@ HRESULT CMainApp::Ready_Behaviors()
 	/* Tsk_Move */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Move",
 		CMove::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* ==== Boss Actions ==== */
+
+	/* Boss_Attack_DB*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Boss_Attack_DB",
+		CBoss_Attack_DB::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Boss_Attack_LH*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Boss_Attack_LH",
+		CBoss_Attack_LH::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Boss_Attack_RH*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Boss_Attack_RH",
+		CBoss_Attack_RH::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Boss_Attack_LHS*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Boss_Attack_LHS",
+		CBoss_Attack_LHS::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Boss_Attack_RHS*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Boss_Attack_RHS",
+		CBoss_Attack_RHS::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Boss_Attacks*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Boss_Attacks",
+		CBoss_Attacks::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* ==== Monster Actions ==== */
@@ -360,7 +403,7 @@ HRESULT CMainApp::Ready_Player()
 		return E_FAIL;
 
 	/* For. PlayerAction */
-	if(FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerAction", 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"PlayerAction",
 		CPlayerAction::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -417,15 +460,15 @@ HRESULT CMainApp::Ready_Parts()
 
 HRESULT CMainApp::Ready_Fonts()
 {
-	if(FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, L"Font_135", L"../../Resources/Fonts/135.spritefont")))
+	if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, L"Font_135", L"../../Resources/Fonts/135.spritefont")))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CMainApp * CMainApp::Create()
+CMainApp* CMainApp::Create()
 {
-	CMainApp*	pInstance = new CMainApp();
+	CMainApp* pInstance = new CMainApp();
 
 	if (FAILED(pInstance->Initialize()))
 	{
@@ -444,6 +487,8 @@ void CMainApp::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+
+	CGameManager::GetInstance()->DestroyInstance();
 
 	Safe_Release(m_pGameInstance);
 

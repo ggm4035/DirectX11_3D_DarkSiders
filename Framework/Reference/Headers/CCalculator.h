@@ -18,6 +18,7 @@ public:
 public:
 	_vector Picking_On_Triangle(const POINT& ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform);
 	_vector Picking_On_Triangle(const POINT& ptMouse, class CModel* pModel, class CTransform* pTransform);
+	_fvector Get_RandomVectorInSphere(const _float& fRadius);
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

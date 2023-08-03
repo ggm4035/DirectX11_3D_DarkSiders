@@ -96,6 +96,58 @@ _vector CCalculator::Picking_On_Triangle(const POINT& ptMouse, CModel* pModel, C
 
 	return OutData;
 }
+_fvector CCalculator::Get_RandomVectorInSphere(const _float& fRadius)
+{
+    _float fRandX = (rand() % 1000) * 0.001f;
+    _float fRandY = (rand() % 1000) * 0.001f;
+    _float fRandZ = (rand() % 1000) * 0.001f;
+
+    _float3 vDir = _float3(fRandX, fRandY, fRandZ);
+    XMStoreFloat3(&vDir, XMVector3Normalize(XMLoadFloat3(&vDir)) * fRadius);
+    
+    switch (rand() % 8)
+    {
+    case 0:
+        // 1사분면
+        break;
+    case 1:
+        // 2사분면
+        vDir.x *= -1.f;
+        break;
+    case 2:
+        // 3사분면
+        vDir.x *= -1.f;
+        vDir.y *= -1.f;
+        break;
+    case 3:
+        // 4사분면
+        vDir.y *= -1.f;
+        break;
+        // -z분면
+    case 4:
+        // 1사분면
+        vDir.z *= -1.f;
+        break;
+    case 5:
+        // 2사분면
+        vDir.x *= -1.f;
+        vDir.z *= -1.f;
+        break;
+    case 6:
+        // 3사분면
+        vDir.x *= -1.f;
+        vDir.y *= -1.f;
+        vDir.z *= -1.f;
+        break;
+    case 7:
+        // 4사분면
+        vDir.y *= -1.f;
+        vDir.z *= -1.f;
+        break;
+    }
+
+    return XMLoadFloat3(&vDir);
+}
 
 void CCalculator::Free()
 {

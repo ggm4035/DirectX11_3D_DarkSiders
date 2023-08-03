@@ -10,18 +10,6 @@ CVIBuffer_Instancing::CVIBuffer_Instancing(const CVIBuffer_Instancing& rhs)
 {
 }
 
-HRESULT CVIBuffer_Instancing::Initialize_Prototype(const INSTANCEDESC* pInstanceDesc)
-{
-	m_iNumInstance = pInstanceDesc->iNumInstance;
-	m_pInstance_WorldMatrix = new _float4x4[m_iNumInstance];
-
-	_uint iMatrixIndex = { 0 };
-	for (auto& WorldMatrix : pInstanceDesc->vecWorldMatrix)
-		m_pInstance_WorldMatrix[iMatrixIndex++] = WorldMatrix;
-
-	return S_OK;
-}
-
 HRESULT CVIBuffer_Instancing::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	if (nullptr != pArg)
@@ -43,12 +31,13 @@ HRESULT CVIBuffer_Instancing::Initialize(const _uint& iLevelIndex, CComponent* p
 	
 	VTXINSTANCE* pVertices = new VTXINSTANCE[m_iNumInstance];
 
+	_matrix matrix = XMMatrixIdentity();
 	for (_uint i = 0; i < m_iNumInstance; ++i)
 	{
-		memcpy(&pVertices[i].vRight, (_float4*)&m_pInstance_WorldMatrix[i]._11, sizeof(_float4));
-		memcpy(&pVertices[i].vUp, (_float4*)&m_pInstance_WorldMatrix[i]._21, sizeof(_float4));
-		memcpy(&pVertices[i].vLook, (_float4*)&m_pInstance_WorldMatrix[i]._31, sizeof(_float4));
-		memcpy(&pVertices[i].vTranslation, (_float4*)&m_pInstance_WorldMatrix[i]._41, sizeof(_float4));
+		memcpy(&pVertices[i].vRight, &matrix.r[0], sizeof(_float4));
+		memcpy(&pVertices[i].vUp, &matrix.r[1], sizeof(_float4));
+		memcpy(&pVertices[i].vLook, &matrix.r[2], sizeof(_float4));
+		memcpy(&pVertices[i].vTranslation, &matrix.r[3], sizeof(_float4));
 	}
 
 	D3D11_SUBRESOURCE_DATA SubResourceData;
@@ -62,6 +51,22 @@ HRESULT CVIBuffer_Instancing::Initialize(const _uint& iLevelIndex, CComponent* p
 	Safe_Delete_Array(pVertices);
 
 	return S_OK;
+}
+
+void CVIBuffer_Instancing::Tick(vector<_float4x4>& vecMatrices)
+{
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &m_MappedSubResource);
+	VTXINSTANCE* pVertices = reinterpret_cast<VTXINSTANCE*>(m_MappedSubResource.pData);
+
+	for (_uint i = 0; i < m_iNumInstance; ++i)
+	{
+		memcpy(&pVertices[i].vRight, vecMatrices[i].m[0], sizeof(_float4));
+		memcpy(&pVertices[i].vUp, vecMatrices[i].m[1], sizeof(_float4));
+		memcpy(&pVertices[i].vLook, vecMatrices[i].m[2], sizeof(_float4));
+		memcpy(&pVertices[i].vTranslation, vecMatrices[i].m[3], sizeof(_float4));
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
 }
 
 HRESULT CVIBuffer_Instancing::Render()
@@ -90,28 +95,6 @@ HRESULT CVIBuffer_Instancing::Render()
 	m_pContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iNumInstance, 0, 0, 0);
 
 	return S_OK;
-}
-
-HRESULT CVIBuffer_Instancing::Begin_Instance(OUT VTXINSTANCE** ppSubResourceData)
-{
-	if (nullptr == m_pVBInstance || 
-		nullptr == m_pContext)
-		return E_FAIL;
-
-	D3D11_MAPPED_SUBRESOURCE SubResource;
-	ZeroMemory(&SubResource, sizeof SubResource);
-
-	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-
-	*ppSubResourceData = reinterpret_cast<VTXINSTANCE*>(SubResource.pData);
-
-	return S_OK;
-}
-
-void CVIBuffer_Instancing::End_Instance()
-{
-	if (nullptr != m_pContext)
-		m_pContext->Unmap(m_pVBInstance, 0);
 }
 
 void CVIBuffer_Instancing::Free()

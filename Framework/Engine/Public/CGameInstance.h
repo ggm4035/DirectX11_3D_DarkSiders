@@ -106,6 +106,7 @@ public: /* For.Light_Manager*/
 public: /* For.Calculator */
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform);
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CModel* pModel, class CTransform* pTransform);
+	_fvector Get_RandomVectorInSphere(const _float& fRadius);
 
 public: /* For.Font_Manager */
 	HRESULT Add_Font(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & wstrFontTag, const wstring & wstrFontFilePath);

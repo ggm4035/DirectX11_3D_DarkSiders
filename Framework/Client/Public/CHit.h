@@ -24,6 +24,9 @@ public:
 	virtual HRESULT Tick(const _double& TimeDelta);
 
 public:
+	void Bind_SoundTag(const wstring& wstrSoundTag) {
+		m_wstrSoundTag = wstrSoundTag;
+	}
 	void Not_Impact() {
 		m_isImpact = false;
 	}
@@ -32,6 +35,7 @@ public:
 	}
 
 private:
+	wstring m_wstrSoundTag = { L"" };
 	_bool m_isLook = { true };
 	_bool m_isImpact = { true };
 

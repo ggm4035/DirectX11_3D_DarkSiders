@@ -30,8 +30,8 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 30;
-	m_Status.iMaxHP = 30;
+	m_Status.iHP = 20;
+	m_Status.iMaxHP = 20;
 
 	return S_OK;
 }
@@ -128,6 +128,13 @@ void CSteamRoller::Dead_Motion(const _double& TimeDelta)
 void CSteamRoller::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
+
+	if ((Collision.pMyCollider->Get_Tag() == L"Col_Attack" ||
+		Collision.pMyCollider->Get_Tag() == L"Col_Attack_Roll") &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		Collision.pOther->Get_Damaged();
+	}
 }
 
 void CSteamRoller::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -170,6 +177,7 @@ HRESULT CSteamRoller::Add_Components()
 
 	CBounding_Sphere::SPHEREDESC SphereDesc;
 	CBounding_AABB::AABBDESC AABBDesc;
+	CBounding_OBB::OBBDESC OBBDesc;
 
 	/* Col_Body */
 	AABBDesc.vExtents = _float3(2.f, 2.f, 2.f);
@@ -186,12 +194,20 @@ HRESULT CSteamRoller::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Melee_Range", &SphereDesc)))
 		return E_FAIL;
 
+	/* Col_Attack_Roll */
+	SphereDesc.fRadius = 4.5f;
+	SphereDesc.eGroup = CCollider::COL_ENEMY_MELEE_RANGE;
+	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	SphereDesc.vOffset = _float3(0.f, 0.f, 0.f);
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack_Roll", &SphereDesc)))
+		return E_FAIL;
+
 	/* Add_Col_Attack */
-	AABBDesc.vExtents = _float3(0.5f, 0.5f, 0.5f);
-	AABBDesc.eGroup = CCollider::COL_ENEMY_ATK;
-	AABBDesc.vOffset = _float3(0.f, 0.5f, 1.f);
-	AABBDesc.isEnable = false;
-	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack", &AABBDesc)))
+	OBBDesc.vExtents = _float3(1.5f, 1.f, 1.5f);
+	OBBDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	OBBDesc.vOffset = _float3(0.f, 0.5f, 2.f);
+	OBBDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack", &OBBDesc)))
 		return E_FAIL;
 
 	if (FAILED(Make_AI()))
@@ -229,7 +245,7 @@ HRESULT CSteamRoller::Ready_UI()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 6;
+	UIDesc.iPassNum = 3;
 	UIDesc.pMaxHp = &m_Status.iMaxHP;
 	UIDesc.pHp = &m_Status.iHP;
 	m_pMonsterUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"HpBar", nullptr, &UIDesc));
@@ -263,6 +279,9 @@ HRESULT CSteamRoller::Make_AI()
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
+	CSequence* pSequence = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
+	if (nullptr == pSequence)
+		return E_FAIL;
 	
 	CAction* pAction_Rest = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Rest)
@@ -279,10 +298,13 @@ HRESULT CSteamRoller::Make_AI()
 	CAction* pAction_Follow = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Follow)
 		return E_FAIL;
+
+	CLookAtTarget* pLookAtTarget = dynamic_cast<CLookAtTarget*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_LookAtTarget", this));
+	if (nullptr == pLookAtTarget)
+		return E_FAIL;
 	CBoss_Attack* pBoss_Attack = dynamic_cast<CBoss_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Boss_Attack", this));
 	if (nullptr == pBoss_Attack)
 		return E_FAIL;
-
 	CFollow* pFollow = dynamic_cast<CFollow*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Follow", this));
 	if (nullptr == pFollow)
 		return E_FAIL;
@@ -298,8 +320,6 @@ HRESULT CSteamRoller::Make_AI()
 	pBoss_Attack->Add_Attack_AnimTag("Attack_1");
 	pBoss_Attack->Add_Attack_AnimTag("Attack_2");
 	pBoss_Attack->Add_Attack_AnimTag("Attack_3");
-
-	pBoss_Attack->Set_CoolTime(0.5f);
 
 	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
@@ -348,10 +368,14 @@ HRESULT CSteamRoller::Make_AI()
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Action_Follow", pAction_Follow)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pBoss_Attack)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pSequence)))
 		return E_FAIL;
 
 	if (FAILED(pAction_Follow->Assemble_Behavior(L"Tsk_Follow", pFollow)))
+		return E_FAIL;
+	if (FAILED(pSequence->Assemble_Behavior(L"Tsk_Look", pLookAtTarget)))
+		return E_FAIL;
+	if (FAILED(pSequence->Assemble_Behavior(L"Boss_Attack", pBoss_Attack)))
 		return E_FAIL;
 
 	if (FAILED(pSequence_Hit->Assemble_Childs()))
@@ -372,7 +396,7 @@ CSteamRoller* CSteamRoller::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created CTusker");
+		MSG_BOX("Failed to Created CSteamRoller");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
@@ -384,7 +408,7 @@ CSteamRoller* CSteamRoller::Clone(const _uint& iLevelIndex, CComponent* pOwner, 
 
 	if (FAILED(pInstance->Initialize(iLevelIndex, pOwner, pArg)))
 	{
-		MSG_BOX("Failed to Cloned CTusker");
+		MSG_BOX("Failed to Cloned CSteamRoller");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
@@ -392,5 +416,8 @@ CSteamRoller* CSteamRoller::Clone(const _uint& iLevelIndex, CComponent* pOwner, 
 
 void CSteamRoller::Free()
 {
+	for (auto UI : m_pMonsterUI)
+		Safe_Release(UI);
+
 	CMonster::Free();
 }

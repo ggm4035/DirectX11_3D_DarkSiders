@@ -119,6 +119,7 @@ void CHollowLord::Dead_Motion(const _double& TimeDelta)
 
 	if (true == bFirst)
 	{
+		pGameInstance->Play_Sound(L"en_hollowlord_death_01.ogg", CSound_Manager::SOUND_ENEMY, 0.5f);
 		pGameInstance->Play_Sound(L"mus_level01_hollowlord_outro.ogg", CSound_Manager::SOUND_SUB_BGM, 0.5f);
 		bFirst = false;
 	}
@@ -241,7 +242,7 @@ HRESULT CHollowLord::Ready_UI()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 6;
+	UIDesc.iPassNum = 3;
 	UIDesc.pMaxHp = &m_Status.iMaxHP;
 	UIDesc.pHp = &m_Status.iHP;
 	m_pMonsterUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"HpBar", nullptr, &UIDesc));
@@ -282,19 +283,13 @@ HRESULT CHollowLord::Make_AI()
 	CAction_Hit* pAction_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
 	if (nullptr == pAction_Hit)
 		return E_FAIL;
-	CBoss_Attack* pBoss_Attack = dynamic_cast<CBoss_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Boss_Attack", this));
-	if (nullptr == pBoss_Attack)
+	CBoss_Attacks* pBoss_Attacks = dynamic_cast<CBoss_Attacks*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Boss_Attacks", this));
+	if (nullptr == pBoss_Attacks)
 		return E_FAIL;
 
 	pAction_Rest->Bind_AnimationTag("Idle");
 	pAction_Hit->Not_Impact();
 	pAction_Hit->Not_Look();
-	pBoss_Attack->Set_CoolTime(1.7f);
-	pBoss_Attack->Add_Attack_AnimTag("Attack_1");
-	pBoss_Attack->Add_Attack_AnimTag("Attack_2");
-	pBoss_Attack->Add_Attack_AnimTag("Attack_3");
-	pBoss_Attack->Add_Attack_AnimTag("Attack_4");
-	pBoss_Attack->Add_Attack_AnimTag("Attack_5");
 
 	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
@@ -314,12 +309,12 @@ HRESULT CHollowLord::Make_AI()
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pAction_Hit)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pBoss_Attack)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Boss_Attacks", pBoss_Attacks)))
 		return E_FAIL;
 
 	if (FAILED(pAction_Hit->Assemble_Childs()))
 		return E_FAIL;
-	if (FAILED(pBoss_Attack->Assemble_Childs()))
+	if (FAILED(pBoss_Attacks->Assemble_Childs()))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

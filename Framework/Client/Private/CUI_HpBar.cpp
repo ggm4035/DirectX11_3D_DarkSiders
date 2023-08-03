@@ -119,12 +119,8 @@ HRESULT CUI_HpBar::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	_float fData = _float(*m_pMaxHp);
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxHp", &fData, sizeof(_float))))
-		return E_FAIL;
-
-	fData = _float(*m_pHp);
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHp", &fData, sizeof(_float))))
+	_float fData = _float(*m_pHp) / _float(*m_pMaxHp);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHpPer", &fData, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture")))

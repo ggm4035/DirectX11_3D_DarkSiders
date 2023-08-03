@@ -38,7 +38,7 @@ HRESULT CWheelWind::Tick(const _double& TimeDelta)
 
 	if (7.5f > m_fTimeAcc && m_fTimeAcc > m_fTick)
 	{
-		CGameInstance::GetInstance()->Play_Sound(L"en_legionchampion_atk_whirlwind_whoosh_02.ogg", CSound_Manager::SOUND_PLAYER, 0.3f, true);
+		CGameInstance::GetInstance()->Play_Sound(L"en_legionchampion_atk_whirlwind_whoosh_02.ogg", CSound_Manager::SOUND_PLAYER, 0.4f, true);
 		m_fTick += 0.4f;
 	}
 

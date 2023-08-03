@@ -4,6 +4,8 @@
 #include "CVIBuffer_Rect.h"
 #include "CVIBuffer_Cube.h"
 #include "CVIBuffer_Trail.h"
+#include "CInstance_Point.h"
+#include "CViBuffer_Sprite.h"
 #include "CVIBuffer_Terrain.h"
 #include "CVIBuffer_Coordnate.h"
 #include "CCollider.h"

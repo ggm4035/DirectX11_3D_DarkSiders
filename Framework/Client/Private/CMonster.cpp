@@ -4,6 +4,7 @@
 #include "CRoot.h"
 #include "CGameInstance.h"
 #include "CUI_HpBar.h"
+#include "CAoE.h"
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject3D(pDevice, pContext)
@@ -32,6 +33,9 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 	m_pContext->RSGetViewports(&iNumView, &ViewPortDesc);
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
 	CUI_HpBar::UIHPBARDESC UIDesc;
 	UIDesc.m_fX = ((XMVectorGetX(vPosition) + 1.0f) * 0.5f) * ViewPortDesc.Width;
 	UIDesc.m_fY = ((-XMVectorGetY(vPosition) + 1.0f) * 0.5f) * ViewPortDesc.Height;
@@ -44,9 +48,6 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	UIDesc.vOffset = _float3(0.f, 2.f, 0.f);
 	UIDesc.pMaxHp = &m_Status.iMaxHP;
 	UIDesc.pHp = &m_Status.iHP;
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
 	CGameObject* pGameObject = pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_HpBar", L"UI_HealthBar", this, &UIDesc);
 	m_pHealthBar = dynamic_cast<CUI_HpBar*>(pGameObject);

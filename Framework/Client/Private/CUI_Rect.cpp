@@ -114,15 +114,9 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 
 	if (nullptr != m_pMaxHp)
 	{
-		_float fData = _float(*m_pMaxHp);
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxHp", &fData, sizeof(_float))))
-			return E_FAIL;
-	}
+		_float fPer = *m_pHp / *m_pMaxHp;
 
-	if (nullptr != m_pHp)
-	{
-		_float fData = _float(*m_pHp);
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_fHp", &fData, sizeof(_float))))
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fHpPer", &fPer, sizeof(_float))))
 			return E_FAIL;
 	}
 

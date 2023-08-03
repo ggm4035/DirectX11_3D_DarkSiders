@@ -173,6 +173,7 @@ HRESULT CHellHound::Make_AI()
 	if (nullptr == pPattern_Attack)
 		return E_FAIL;
 
+	pHit->Bind_SoundTag(L"en_hellhound_impact_vo_02.ogg");
 	pPattern_Attack->Set_CoolTime(1.f);
 	pPattern_Attack->Bind_FollowAnimTag("Run");
 	pPattern_Attack->Add_Attack_AnimTag("Attack_1");

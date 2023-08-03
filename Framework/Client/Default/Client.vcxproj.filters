@@ -172,6 +172,12 @@
     <Filter Include="02. GameObject\03. Parts\00. Weapon\SwordTrail">
       <UniqueIdentifier>{a5e0c6da-a389-4eab-8139-8c1f4f1866e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\HollowLord\Actions">
+      <UniqueIdentifier>{9912a704-08e5-45e9-b2e5-7d20119fb45a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\06. Effects">
+      <UniqueIdentifier>{649ff107-6f1d-4d41-8ac0-5e5e3c06aac7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -345,9 +351,6 @@
     <ClInclude Include="..\Public\CTrigger_Free.h">
       <Filter>02. GameObject\05. Trigger</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CBoss_Attack.h">
-      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CGameManager.h">
       <Filter>96. GameManager</Filter>
     </ClInclude>
@@ -356,6 +359,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\CSwordTrail.h">
       <Filter>02. GameObject\03. Parts\00. Weapon\SwordTrail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Spawn.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attack.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attack_LH.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attack_RH.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attack_DB.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attacks.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attack_LHS.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBoss_Attack_RHS.h">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CStone_Effect.h">
+      <Filter>02. GameObject\06. Effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -523,9 +553,6 @@
     <ClCompile Include="..\Private\CTrigger_Free.cpp">
       <Filter>02. GameObject\05. Trigger</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CBoss_Attack.cpp">
-      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CGameManager.cpp">
       <Filter>96. GameManager</Filter>
     </ClCompile>
@@ -534,6 +561,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\CSwordTrail.cpp">
       <Filter>02. GameObject\03. Parts\00. Weapon\SwordTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Spawn.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attack.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attack_LH.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attack_RH.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attack_DB.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attacks.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attack_LHS.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBoss_Attack_RHS.cpp">
+      <Filter>02. GameObject\01. Monster\00. Patterns\HollowLord\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CStone_Effect.cpp">
+      <Filter>02. GameObject\06. Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

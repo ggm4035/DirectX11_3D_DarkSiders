@@ -51,15 +51,7 @@ void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 {
 	CMonster::AfterFrustumTick(TimeDelta);
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
-	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pAoe);
-	}
-
-	Safe_Release(pGameInstance);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pAoe);
 }
 
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
@@ -108,7 +100,7 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack"&&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
 		Collision.pOther->Get_Damaged();
@@ -281,6 +273,7 @@ HRESULT CGoblin::Make_AI()
 	if (nullptr == pDead)
 		return E_FAIL;
 
+	pHit->Bind_SoundTag(L"en_fleamag_impact_01.ogg");
 	pAction_Spawn->Bind_AnimationTag("Spawn");
 	pAction_Spawn->Just_One_Time_Action();
 	pAction_Explosion_Start->Bind_AnimationTag("Explosion_Start");

@@ -26,6 +26,9 @@ public:
 	void Bind_AnimationTag(const string& strAnimationTag) {
 		m_strAnimationTag = strAnimationTag;
 	}
+	void Bind_SoundTag(const wstring& wstrSoundTag) {
+		m_wstrSoundTag = wstrSoundTag;
+	}
 	/* 단 한번만 실행하는 액션으로 설정 */
 	void Just_One_Time_Action() {
 		m_isOneTimeAction = true;
@@ -36,6 +39,7 @@ public:
 
 private:
 	string m_strAnimationTag = { "" };
+	wstring m_wstrSoundTag = { L"" };
 
 	_bool m_isFinishBehaviors = { false };
 	_bool m_isOneTimeAction = { false };

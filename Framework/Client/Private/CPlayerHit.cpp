@@ -1,6 +1,7 @@
 
 #include "CPlayerHit.h"
 
+#include "CGameInstance.h"
 #include "CPlayerAction.h"
 #include "CPlayer.h"
 #include "CModel.h"
@@ -56,6 +57,7 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 		m_pPlayer->Set_CurHitState(CPlayer::HITTING);
 		m_pPlayer->Get_Collider(L"Col_Attack")->Set_Enable(false);
 		m_pPlayer->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
+		CGameInstance::GetInstance()->Play_Sound(L"War_Effort_06.ogg", CSound_Manager::SOUND_PLAYER, 0.4f);
 		break;
 
 	case CGameObject3D::HITTING:

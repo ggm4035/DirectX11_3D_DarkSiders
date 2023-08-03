@@ -1,6 +1,7 @@
 
 #include "CAction.h"
 
+#include "CGameInstance.h"
 #include "CBlackBoard.h"
 #include "CGameObject3D.h"
 #include "CModel.h"
@@ -56,6 +57,7 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
+		CGameInstance::GetInstance()->Play_Sound(m_wstrSoundTag.c_str(), CSound_Manager::SOUND_ENEMY, 0.5f);
 		m_pModel->Change_Animation(m_strAnimationTag, m_isLerp);
 		m_isFirst = false;
 	}

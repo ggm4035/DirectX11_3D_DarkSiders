@@ -1,5 +1,7 @@
 #include "CVIBuffer_Trail.h"
 
+#include "CShader.h"
+
 CVIBuffer_Trail::CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CVIBuffer(pDevice, pContext)
 {
@@ -10,8 +12,20 @@ CVIBuffer_Trail::CVIBuffer_Trail(const CVIBuffer_Trail& rhs)
 {
 }
 
-HRESULT CVIBuffer_Trail::Initialize_Prototype()
+HRESULT CVIBuffer_Trail::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
+	if (nullptr == pArg)
+		return E_FAIL;
+
+	if (FAILED(CVIBuffer::Initialize(iLevelIndex, pOwner, pArg)))
+		return E_FAIL;
+
+	TRAILDESC Desc = *reinterpret_cast<TRAILDESC*>(pArg);
+
+	m_iNumRect = Desc.iNumRect;
+	pLowPosition = Desc.pLowPosition;
+	pHightPosition = Desc.pHightPosition;
+
 	m_iVertexBuffers = { 1 };
 	m_iStride = { sizeof(VTXPOSTEX) };
 	m_iNumVertices = 2 * (m_iNumRect + 1);
@@ -40,7 +54,7 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 		_float fTexU = (1.f / m_iNumRect) * _float(iRectIndex);
 
 		pVertices[iIndex].vPosition = _float3();
-		pVertices[iIndex].vTexCoord = _float2(fTexU , 0.f);
+		pVertices[iIndex].vTexCoord = _float2(fTexU, 0.f);
 
 		++iIndex;
 
@@ -97,24 +111,6 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Trail::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
-{
-	if (FAILED(CVIBuffer::Initialize(iLevelIndex, pOwner, pArg)))
-		return E_FAIL;
-
-	if (nullptr == pArg)
-		return E_FAIL;
-
-	TRAILDESC Desc = *reinterpret_cast<TRAILDESC*>(pArg);
-
-	m_iNumRect = Desc.iNumRect;
-	pLowPosition = Desc.pLowPosition;
-	pHightPosition = Desc.pHightPosition;
-	pParentWorldMatrix = Desc.pParentWorldMatrix;
-
-	return S_OK;
-}
-
 HRESULT CVIBuffer_Trail::Render()
 {
 	if (FAILED(CVIBuffer::Render()))
@@ -123,22 +119,22 @@ HRESULT CVIBuffer_Trail::Render()
 	return S_OK;
 }
 
-void CVIBuffer_Trail::Tick(const _double& TimeDelta)
+void CVIBuffer_Trail::Tick(const _float4x4& WorldMatrix)
 {
 	VTXPOSTEX* pVertices = { nullptr };
 	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &m_MappedSubResource);
 
 	pVertices = reinterpret_cast<VTXPOSTEX*>(m_MappedSubResource.pData);
 
-	pVertices[0].vPosition = *pHightPosition;//XMVector3TransformCoord(XMLoadFloat3(pHightPosition), XMLoadFloat4x4(pParentWorldMatrix));
-	pVertices[1].vPosition = *pLowPosition;
-
-	_uint iIndex = { 2 };
-	for (_uint i = 0; i < m_iNumRect; ++i)
+	_uint iIndex = m_iNumVertices - 1;
+	for (_uint i = m_iNumRect; i > 0; --i)
 	{
-		pVertices[iIndex++].vPosition = pVertices[iIndex - 2].vPosition;
-		pVertices[iIndex++].vPosition = pVertices[iIndex - 2].vPosition;
+		pVertices[iIndex--].vPosition = pVertices[iIndex - 2].vPosition;
+		pVertices[iIndex--].vPosition = pVertices[iIndex - 2].vPosition;
 	}
+
+	pVertices[0].vPosition = *pHightPosition;
+	pVertices[1].vPosition = *pLowPosition;
 
 	m_pContext->Unmap(m_pVB, 0);
 }

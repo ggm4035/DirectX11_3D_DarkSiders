@@ -28,6 +28,15 @@
 #include "CRandomLook.h"
 #include "CLookAtTarget.h"
 
+/* Boss */
+#include "CBoss_Attack_DB.h"
+#include "CBoss_Attack_LH.h"
+#include "CBoss_Attack_RH.h"
+#include "CBoss_Attack_LHS.h"
+#include "CBoss_Attack_RHS.h"
+
+#include "CBoss_Attacks.h"
+
 /* Monster Patterns */
 #include "CAction_Hit.h"
 #include "CBoss_Attack.h"
