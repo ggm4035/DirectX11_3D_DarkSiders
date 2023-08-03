@@ -31,15 +31,6 @@
     <Filter Include="01. Level\99. Level_Loading\Loader">
       <UniqueIdentifier>{47515268-fbcd-43bd-8559-519faed41aee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. Monster">
-      <UniqueIdentifier>{60686553-c835-48e3-9f9d-bf46657e5fc3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\01. Goblin">
-      <UniqueIdentifier>{5ff86110-2e8e-42c6-b3b2-dbb0462cf3be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\02. HellHound">
-      <UniqueIdentifier>{f5d58a59-c98a-483b-a28a-47e524a59452}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\00. Player">
       <UniqueIdentifier>{89161d61-250c-48b9-83e0-19e00e13a01d}</UniqueIdentifier>
     </Filter>
@@ -82,26 +73,11 @@
     <Filter Include="98. Default">
       <UniqueIdentifier>{eb3c224c-bae0-4907-81f3-ce03694ea332}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. Monster\03. Legion">
-      <UniqueIdentifier>{4f3122b0-66c5-4f52-9a14-f85bab31fe5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\03. Legion\Legion_Melee">
-      <UniqueIdentifier>{24bf42fc-ed64-4a97-a9d5-cc8a8e6bd961}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\03. Parts\01. Projectile">
       <UniqueIdentifier>{3565f326-cd94-4eb8-8786-ce27692d7774}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. Monster\03. Legion\Legion_Champion">
-      <UniqueIdentifier>{d19a6948-3fda-4dd6-a072-a54e30879fae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\00. Player\PlayerActions\03. HitAction">
       <UniqueIdentifier>{5a212178-0942-4351-a11b-1dec202ef8ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\01. Goblin\Goblin_Armor">
-      <UniqueIdentifier>{99f4260a-d930-416b-be43-c1b793aa05d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\04. SteamRoller">
-      <UniqueIdentifier>{3a69def9-e47d-4cc8-9a55-157295d9d094}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObject\02. Environment\04. Lava">
       <UniqueIdentifier>{69537671-87a9-4da2-b70b-03052dc03423}</UniqueIdentifier>
@@ -109,23 +85,8 @@
     <Filter Include="03. MonoBehaviors\Movement">
       <UniqueIdentifier>{fbcd3817-9ec8-4298-ba4f-d58e3678b44d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. Monster\00. Patterns">
-      <UniqueIdentifier>{fa67aaea-8c69-4855-8a46-5295ba1d3cca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\00. Patterns\SteamRoller">
-      <UniqueIdentifier>{2c55d1c6-afec-4af9-a62c-9b0a40247a5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. MonoBehaviors\Actions">
       <UniqueIdentifier>{84cf9661-a84d-4f89-8741-b78f0791aa6f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\05. FallenDog">
-      <UniqueIdentifier>{ec586f5d-837c-4586-9099-30e7db991efc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\00. Patterns\FallenDog">
-      <UniqueIdentifier>{d5fe91f7-7693-428b-b16b-8262591b83ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\01. Goblin\Goblin">
-      <UniqueIdentifier>{3004ab05-67ec-4bbe-ae8b-a5a21a81b0a3}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObject\99. ETC">
       <UniqueIdentifier>{0c493fd3-8a2a-440b-974e-406493ebb963}</UniqueIdentifier>
@@ -145,15 +106,6 @@
     <Filter Include="02. GameObject\00. Player\PlayerActions\05. Knockback">
       <UniqueIdentifier>{80abb2b4-840c-4437-9b66-06c68ccfa654}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\01. Monster\00. Patterns\Legion_Champion">
-      <UniqueIdentifier>{c863e395-12c7-465f-83c3-1f20058b07af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\06. HollowLord">
-      <UniqueIdentifier>{f456dcfc-e88e-43bb-b98c-254d7b113868}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\01. Monster\00. Patterns\HollowLord">
-      <UniqueIdentifier>{3b0ad9fd-6887-4abf-be3d-87d79cf2c55b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\03. Parts\02. Camera">
       <UniqueIdentifier>{25c94e65-65fe-4b4a-8170-e01b1882dc34}</UniqueIdentifier>
     </Filter>
@@ -172,11 +124,59 @@
     <Filter Include="02. GameObject\03. Parts\00. Weapon\SwordTrail">
       <UniqueIdentifier>{a5e0c6da-a389-4eab-8139-8c1f4f1866e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\06. Effects">
+      <UniqueIdentifier>{649ff107-6f1d-4d41-8ac0-5e5e3c06aac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster">
+      <UniqueIdentifier>{60686553-c835-48e3-9f9d-bf46657e5fc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\01. Goblin">
+      <UniqueIdentifier>{5ff86110-2e8e-42c6-b3b2-dbb0462cf3be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\01. Goblin\Goblin_Armor">
+      <UniqueIdentifier>{99f4260a-d930-416b-be43-c1b793aa05d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\01. Goblin\Goblin">
+      <UniqueIdentifier>{3004ab05-67ec-4bbe-ae8b-a5a21a81b0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\02. HellHound">
+      <UniqueIdentifier>{f5d58a59-c98a-483b-a28a-47e524a59452}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\03. Legion">
+      <UniqueIdentifier>{4f3122b0-66c5-4f52-9a14-f85bab31fe5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\03. Legion\Legion_Melee">
+      <UniqueIdentifier>{24bf42fc-ed64-4a97-a9d5-cc8a8e6bd961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\03. Legion\Legion_Champion">
+      <UniqueIdentifier>{d19a6948-3fda-4dd6-a072-a54e30879fae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\04. SteamRoller">
+      <UniqueIdentifier>{3a69def9-e47d-4cc8-9a55-157295d9d094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns">
+      <UniqueIdentifier>{fa67aaea-8c69-4855-8a46-5295ba1d3cca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\SteamRoller">
+      <UniqueIdentifier>{2c55d1c6-afec-4af9-a62c-9b0a40247a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\FallenDog">
+      <UniqueIdentifier>{d5fe91f7-7693-428b-b16b-8262591b83ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\Legion_Champion">
+      <UniqueIdentifier>{c863e395-12c7-465f-83c3-1f20058b07af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\00. Patterns\HollowLord">
+      <UniqueIdentifier>{3b0ad9fd-6887-4abf-be3d-87d79cf2c55b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. GameObject\01. Monster\00. Patterns\HollowLord\Actions">
       <UniqueIdentifier>{9912a704-08e5-45e9-b2e5-7d20119fb45a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\06. Effects">
-      <UniqueIdentifier>{649ff107-6f1d-4d41-8ac0-5e5e3c06aac7}</UniqueIdentifier>
+    <Filter Include="02. GameObject\01. Monster\05. FallenDog">
+      <UniqueIdentifier>{ec586f5d-837c-4586-9099-30e7db991efc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\06. HollowLord">
+      <UniqueIdentifier>{f456dcfc-e88e-43bb-b98c-254d7b113868}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

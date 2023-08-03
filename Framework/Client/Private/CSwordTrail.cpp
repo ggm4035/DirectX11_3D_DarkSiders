@@ -44,12 +44,12 @@ HRESULT CSwordTrail::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 	return S_OK;
 }
 
-void CSwordTrail::Tick(const _float4x4& WorldMatrix)
+void CSwordTrail::Tick(const _float4x4& WorldMatrix, const _double& TimeDelta)
 {
 	XMStoreFloat3(&m_vLowPosition, (XMMatrixTranslation(m_vOffsetLow.x, m_vOffsetLow.y, m_vOffsetLow.z) * XMLoadFloat4x4(&WorldMatrix)).r[3]);
 	XMStoreFloat3(&m_vHighPosition, (XMMatrixTranslation(m_vOffsetHigh.x, m_vOffsetHigh.y, m_vOffsetHigh.z) * XMLoadFloat4x4(&WorldMatrix)).r[3]);
 
-	m_pBufferCom->Tick(WorldMatrix);
+	m_pBufferCom->Tick(WorldMatrix, TimeDelta);
 }
 
 void CSwordTrail::AfterFrustumTick(const _double& TimeDelta)

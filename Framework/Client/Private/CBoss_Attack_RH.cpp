@@ -74,13 +74,6 @@ HRESULT CBoss_Attack_RH::Tick(const _double& TimeDelta)
 		m_isFirst = false;
 	}
 
-	m_fTimeAcc += TimeDelta;
-	if (3.f <= m_fTimeAcc)
-	{
-		CGameInstance::GetInstance()->Play_Sound(L"en_hollowlord_atk_slam_explosion_03.ogg", CSound_Manager::SOUND_ENEMY, 0.5f, true);
-		m_fTimeAcc = 0.f;
-	}
-
 	if (true == m_pModel->isAbleChangeAnimation() ||
 		true == m_pModel->isFinishedAnimation())
 	{

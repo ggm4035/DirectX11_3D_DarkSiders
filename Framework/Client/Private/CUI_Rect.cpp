@@ -114,7 +114,7 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 
 	if (nullptr != m_pMaxHp)
 	{
-		_float fPer = *m_pHp / *m_pMaxHp;
+		_float fPer = (_float)*m_pHp / *m_pMaxHp;
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fHpPer", &fPer, sizeof(_float))))
 			return E_FAIL;

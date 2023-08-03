@@ -32,12 +32,15 @@ public:
 
 private:
 	_float m_fCoolTime = { 0.f };
+	_float m_fTimeAcc = { 0.f };
 	_bool m_isPlay = { false };
 	_bool m_isFirst = { true };
+	_bool m_isRenderEffect = { false };
 
 private:
 	CModel* m_pModel = { nullptr };
 	CTransform* m_pTransform = { nullptr };
+	class CStone_Effect* m_pEffect = { nullptr };
 
 public:
 	static CLeapAttack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

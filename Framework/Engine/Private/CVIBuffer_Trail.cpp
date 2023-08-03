@@ -52,7 +52,7 @@ HRESULT CVIBuffer_Trail::Initialize(const _uint& iLevelIndex, CComponent* pOwner
 	for (_uint iRectIndex = 0; iRectIndex <= m_iNumRect; ++iRectIndex)
 	{
 		_float fTexU = (1.f / m_iNumRect) * _float(iRectIndex);
-
+		
 		pVertices[iIndex].vPosition = _float3();
 		pVertices[iIndex].vTexCoord = _float2(fTexU, 0.f);
 
@@ -60,6 +60,8 @@ HRESULT CVIBuffer_Trail::Initialize(const _uint& iLevelIndex, CComponent* pOwner
 
 		pVertices[iIndex].vPosition = _float3();
 		pVertices[iIndex].vTexCoord = _float2(fTexU, 1.f);
+
+		++iIndex;
 	}
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
@@ -119,18 +121,24 @@ HRESULT CVIBuffer_Trail::Render()
 	return S_OK;
 }
 
-void CVIBuffer_Trail::Tick(const _float4x4& WorldMatrix)
+void CVIBuffer_Trail::Tick(const _float4x4& WorldMatrix, const _double& TimeDelta)
 {
 	VTXPOSTEX* pVertices = { nullptr };
 	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &m_MappedSubResource);
 
 	pVertices = reinterpret_cast<VTXPOSTEX*>(m_MappedSubResource.pData);
 
-	_uint iIndex = m_iNumVertices - 1;
-	for (_uint i = m_iNumRect; i > 0; --i)
+	for (_uint i = m_iNumVertices - 1; i >= 2; --i)
 	{
-		pVertices[iIndex--].vPosition = pVertices[iIndex - 2].vPosition;
-		pVertices[iIndex--].vPosition = pVertices[iIndex - 2].vPosition;
+		_vector vSrcPosition = XMLoadFloat3(&pVertices[i].vPosition);
+		_vector vDstPosition = XMLoadFloat3(&pVertices[i - 2].vPosition);
+		_float fDistance = XMVectorGetX(XMVector3Length(vSrcPosition - vDstPosition));
+		_vector vLerpPosition = vDstPosition;
+
+		/*if (0.1f < fDistance)
+			vLerpPosition = XMVectorLerp(vSrcPosition, vDstPosition, TimeDelta * 10.f);*/
+
+		XMStoreFloat3(&pVertices[i].vPosition, vLerpPosition);
 	}
 
 	pVertices[0].vPosition = *pHightPosition;

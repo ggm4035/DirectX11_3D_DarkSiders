@@ -13,22 +13,24 @@ public:
 	}INSTANCEDESC;
 
 protected:
-	explicit CVIBuffer_Instancing(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	explicit CVIBuffer_Instancing(const CVIBuffer_Instancing& rhs);
+	CVIBuffer_Instancing(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CVIBuffer_Instancing(const CVIBuffer_Instancing& rhs);
 	virtual ~CVIBuffer_Instancing() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() { return S_OK; }
-	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	virtual void Tick(vector<_float4x4>& vecMatrices);
-	virtual HRESULT Render() override;
+	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
+
+public:
+	virtual void Tick(const vector<_float4x4>& vecMatrices);
+	virtual HRESULT Render();
 
 protected:
 	ID3D11Buffer* m_pVBInstance = { nullptr };
-	_uint m_iInstanceStride = { 0 };
-	_uint m_iIndexCountPerInstance = { 0 };
+	_uint		m_iInstanceStride = { 0 };
+	_uint		m_iIndexCountPerInstance = { 0 };
 
-protected: /* INSTANCE DESC */
+protected:
 	_uint m_iNumInstance = { 0 };
 
 public:

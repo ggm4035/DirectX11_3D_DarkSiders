@@ -33,6 +33,17 @@ public:
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void On_SwordTrail() {
+		m_isRenderTrail = true;
+	}
+	void Off_SwordTrail() {
+		m_isRenderTrail = false;
+	}
+
+private:
+	_bool m_isRenderTrail = { false };
+
 private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };

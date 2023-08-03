@@ -15,6 +15,14 @@ CCamera_Free::CCamera_Free(const CCamera_Free& rhs)
 {
 }
 
+void CCamera_Free::On_Shake(SHAKE_TYPE eType, const _float& fForce, const _float& fTime)
+{
+	m_eType = eType;
+	m_bShake = true;
+	m_fShakeForce = fForce;
+	m_fShakeTime = fTime;
+}
+
 HRESULT CCamera_Free::Initialize_Prototype()
 {
 	return S_OK;
@@ -32,7 +40,10 @@ HRESULT CCamera_Free::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 void CCamera_Free::Tick(const _double& TimeDelta)
 {
-	Key_Input(TimeDelta);
+	Mouse_Move(TimeDelta);
+
+	if (m_bShake)
+		Shake(TimeDelta);
 
 	switch (m_eCamState)
 	{
@@ -47,7 +58,12 @@ void CCamera_Free::Tick(const _double& TimeDelta)
 	case Client::CCamera_Free::CAM_FINALBOSS:
 		FinalBoss(TimeDelta);
 		break;
+
+	case Client::CCamera_Free::CAM_FREE:
+		CamFree(TimeDelta);
+		break;
 	}
+
 
 	CCamera::Tick(TimeDelta);
 }
@@ -59,6 +75,13 @@ void CCamera_Free::Late_Tick(const _double& TimeDelta)
 HRESULT CCamera_Free::Render()
 {
 	return S_OK;
+}
+
+void CCamera_Free::CamFree(const _double& Timedelta)
+{
+	Key_Input(Timedelta);
+
+	m_fFar = 500.f;
 }
 
 void CCamera_Free::FinalBoss(const _double& TimeDelta)
@@ -151,12 +174,97 @@ void CCamera_Free::Default(const _double& TimeDelta)
 	Safe_Release(pGameInstance);
 }
 
+void CCamera_Free::Shake_X(const _float& fTimeDelta)
+{
+	static _float fX = 0.f, fY = 0.f;
+
+	fX += fTimeDelta * 5.f;
+
+	fY = sinf(fX * 10.f) * sinf(fX * 10.f) * powf(0.4f, fX);
+
+	m_vEye.y += fY * m_fShakeForce;
+	m_vAt.y += fY * m_fShakeForce;
+
+	if (fX > m_fShakeTime)
+	{
+		fX = 0.f;
+		fY = 0.f;
+		m_bShake = false;
+	}
+}
+
+void CCamera_Free::Shake_Y(const _float& fTimeDelta)
+{
+	static _float fX = 0.f, fY = 0.f;
+
+	fX += fTimeDelta * 5.f;
+
+	fY = sinf(fX * 10.f) * sinf(fX * 10.f) * powf(0.4f, fX);
+
+	m_vEye.y += fY * m_fShakeForce;
+	m_vAt.y += fY * m_fShakeForce;
+
+	if (fX > m_fShakeTime)
+	{
+		fX = 0.f;
+		fY = 0.f;
+		m_bShake = false;
+	}
+}
+
+void CCamera_Free::Shake(const _float& fTimeDelta)
+{
+	switch (m_eType)
+	{
+	case SHAKE_X:
+		Shake_X(fTimeDelta);
+		break;
+
+	case SHAKE_Y:
+		Shake_Y(fTimeDelta);
+		break;
+	}
+}
+
 HRESULT CCamera_Free::Add_Components()
 {
 	return S_OK;
 }
 
 void CCamera_Free::Key_Input(const _double& TimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Key_Pressing(DIK_UP))
+		m_pTransformCom->Cam_Straight(TimeDelta);
+
+	CCursor* pCursor = CGameManager::GetInstance()->Get_Cursor();
+
+	if (pGameInstance->Mouse_Pressing(CInput_Device::DIM_RB))
+	{
+		pCursor->Off();
+		_long dwMouseMove = 0;
+
+		SetCursorPos(900, 600);
+
+		if (dwMouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
+		{
+			m_pTransformCom->Turn_Axis(XMVectorSet(1.f, 0.f, 0.f, 0.f), -dwMouseMove * TimeDelta / 10.f);
+		}
+
+		if (dwMouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
+		{
+			m_pTransformCom->Turn_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dwMouseMove * TimeDelta / 10.f);
+		}
+	}
+	else
+		pCursor->On();
+
+	Safe_Release(pGameInstance);
+}
+
+void CCamera_Free::Mouse_Move(const _double& TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);

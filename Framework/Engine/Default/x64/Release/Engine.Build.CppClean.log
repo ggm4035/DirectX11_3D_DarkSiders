@@ -33,7 +33,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel_
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_rect.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_point.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_mesh.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_parabola.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinput_device.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgraphic_device.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameinstance.obj
@@ -43,7 +43,9 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\engine_
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\timer_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\timer.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\debugdraw.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_trail.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_terrain.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_sprite.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_rect.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_instancing.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_cell.obj
@@ -66,9 +68,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameob
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameobject.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cblackboard.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbehavior.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_trail.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cvibuffer_sprite.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_parabola.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_deferred.cso

@@ -32,10 +32,6 @@ public:
 
 	void Tick(const _double& TimeDelta);
 
-public:
-	HRESULT Bind_LengthTexelU(class CShader* pShader, const string& strConstantName);
-	HRESULT Bind_LengthTexelV(class CShader* pShader, const string& strConstantName);
-
 private:
 	_bool m_isRepeat = { true };
 	_bool m_isPlay = { true };

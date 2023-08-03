@@ -23,6 +23,8 @@ HRESULT CCollider_Manager::Add_Collider(CCollider* pCollider)
 void CCollider_Manager::Tick()
 {
 	/* 콜라이더 충돌 체크 */
+	Collision(CCollider::COL_PLAYER, CCollider::COL_ENEMY);
+	Collision(CCollider::COL_PLAYER, CCollider::COL_ENEMY_ATK);
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_ENEMY);
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_BOSS);
 

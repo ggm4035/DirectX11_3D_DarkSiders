@@ -5,6 +5,7 @@
 #include "CPlayerAction.h"
 #include "CPlayer.h"
 #include "CModel.h"
+#include "CWeapon.h"
 
 CPlayerAttack::CPlayerAttack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBehavior(pDevice, pContext)
@@ -30,6 +31,11 @@ HRESULT CPlayerAttack::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	if (nullptr == m_pTransform)
 		return E_FAIL;
 	Safe_AddRef(m_pTransform);
+
+	m_pWeapon = dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"));
+	if (nullptr == m_pWeapon)
+		return E_FAIL;
+	Safe_AddRef(m_pWeapon);
 
 	return S_OK;
 }
@@ -69,6 +75,8 @@ HRESULT CPlayerAttack::Tick(const _double& TimeDelta)
 	Safe_AddRef(pGameInstance);
 
 	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
+	
+	m_pWeapon->On_SwordTrail();
 
 	switch (pAction->Get_State())
 	{
@@ -153,6 +161,7 @@ void CPlayerAttack::Free()
 	{
 		Safe_Release(m_pModel);
 		Safe_Release(m_pTransform);
+		Safe_Release(m_pWeapon);
 	}
 
 	CBehavior::Free();

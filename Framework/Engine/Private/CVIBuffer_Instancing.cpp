@@ -1,46 +1,49 @@
 #include "CVIBuffer_Instancing.h"
 
 CVIBuffer_Instancing::CVIBuffer_Instancing(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CVIBuffer(pDevice, pContext)
+	: CVIBuffer(pDevice, pContext)
 {
 }
 
 CVIBuffer_Instancing::CVIBuffer_Instancing(const CVIBuffer_Instancing& rhs)
-	:CVIBuffer(rhs)
+	: CVIBuffer(rhs)
+	, m_iInstanceStride(rhs.m_iInstanceStride)
+	, m_iIndexCountPerInstance(rhs.m_iIndexCountPerInstance)
 {
 }
 
 HRESULT CVIBuffer_Instancing::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (nullptr != pArg)
-	{
-		m_iNumInstance = reinterpret_cast<INSTANCEDESC*>(pArg)->iNumInstance;
-	}
+	if (FAILED(CVIBuffer::Initialize(iLevelIndex, pOwner, pArg)))
+		return E_FAIL;
 
-	D3D11_BUFFER_DESC BufferDesc;
+	if (nullptr != pArg)
+		m_iNumInstance = reinterpret_cast<INSTANCEDESC*>(pArg)->iNumInstance;
+
+	/* 인스턴스 정점 버퍼를 생성한다.(m_pVBInstance) */
+	D3D11_BUFFER_DESC		BufferDesc;
 	ZeroMemory(&BufferDesc, sizeof BufferDesc);
 
 	m_iInstanceStride = sizeof(VTXINSTANCE);
 
 	BufferDesc.ByteWidth = { m_iInstanceStride * m_iNumInstance };
-	BufferDesc.StructureByteStride = { m_iInstanceStride };
 	BufferDesc.Usage = { D3D11_USAGE_DYNAMIC };
 	BufferDesc.BindFlags = { D3D11_BIND_VERTEX_BUFFER };
+	BufferDesc.StructureByteStride = { m_iInstanceStride };
 	BufferDesc.CPUAccessFlags = { D3D11_CPU_ACCESS_WRITE };
 	BufferDesc.MiscFlags = { 0 };
-	
+
 	VTXINSTANCE* pVertices = new VTXINSTANCE[m_iNumInstance];
 
-	_matrix matrix = XMMatrixIdentity();
-	for (_uint i = 0; i < m_iNumInstance; ++i)
+	for (size_t i = 0; i < m_iNumInstance; ++i)
 	{
-		memcpy(&pVertices[i].vRight, &matrix.r[0], sizeof(_float4));
-		memcpy(&pVertices[i].vUp, &matrix.r[1], sizeof(_float4));
-		memcpy(&pVertices[i].vLook, &matrix.r[2], sizeof(_float4));
-		memcpy(&pVertices[i].vTranslation, &matrix.r[3], sizeof(_float4));
+		pVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+		pVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+		pVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+		pVertices[i].vTranslation = _float4(0.f, 0.f, 0.f, 1.f);
 	}
 
-	D3D11_SUBRESOURCE_DATA SubResourceData;
+	D3D11_SUBRESOURCE_DATA		SubResourceData;
 	ZeroMemory(&SubResourceData, sizeof SubResourceData);
 
 	SubResourceData.pSysMem = pVertices;
@@ -53,12 +56,14 @@ HRESULT CVIBuffer_Instancing::Initialize(const _uint& iLevelIndex, CComponent* p
 	return S_OK;
 }
 
-void CVIBuffer_Instancing::Tick(vector<_float4x4>& vecMatrices)
+void CVIBuffer_Instancing::Tick(const vector<_float4x4>& vecMatrices)
 {
-	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &m_MappedSubResource);
-	VTXINSTANCE* pVertices = reinterpret_cast<VTXINSTANCE*>(m_MappedSubResource.pData);
+	D3D11_MAPPED_SUBRESOURCE		SubResource;
 
-	for (_uint i = 0; i < m_iNumInstance; ++i)
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXINSTANCE* pVertices = static_cast<VTXINSTANCE*>(SubResource.pData);
+
+	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
 		memcpy(&pVertices[i].vRight, vecMatrices[i].m[0], sizeof(_float4));
 		memcpy(&pVertices[i].vUp, vecMatrices[i].m[1], sizeof(_float4));
@@ -66,7 +71,7 @@ void CVIBuffer_Instancing::Tick(vector<_float4x4>& vecMatrices)
 		memcpy(&pVertices[i].vTranslation, vecMatrices[i].m[3], sizeof(_float4));
 	}
 
-	m_pContext->Unmap(m_pVB, 0);
+	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
 HRESULT CVIBuffer_Instancing::Render()
@@ -74,22 +79,22 @@ HRESULT CVIBuffer_Instancing::Render()
 	if (nullptr == m_pContext)
 		return E_FAIL;
 
-	ID3D11Buffer* pBuffer[] = {
+	ID3D11Buffer* pBuffers[] = {
 		m_pVB,
 		m_pVBInstance,
 	};
 
-	_uint iStrides[] = {
+	_uint					iStrides[] = {
 		m_iStride,
 		m_iInstanceStride,
 	};
 
-	_uint iOffset[] = {
+	_uint					iOffset[] = {
 		0,
 		0,
 	};
 
-	m_pContext->IASetVertexBuffers(0, m_iNumVertices, pBuffer, iStrides, iOffset);
+	m_pContext->IASetVertexBuffers(0, m_iVertexBuffers, pBuffers, iStrides, iOffset);
 	m_pContext->IASetIndexBuffer(m_pIB, m_eFormat, 0);
 	m_pContext->IASetPrimitiveTopology(m_eTopology);
 	m_pContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iNumInstance, 0, 0, 0);
@@ -99,7 +104,7 @@ HRESULT CVIBuffer_Instancing::Render()
 
 void CVIBuffer_Instancing::Free()
 {
-	Safe_Release(m_pVBInstance);
-
 	CVIBuffer::Free();
+
+	Safe_Release(m_pVBInstance);
 }

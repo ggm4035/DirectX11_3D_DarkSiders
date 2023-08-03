@@ -24,7 +24,7 @@ public:
 	virtual	HRESULT Initialize(const _uint & iLevelIndex, CComponent * pOwner, void* pArg) override;
 	virtual HRESULT Render();
 
-	void Tick(const _float4x4& WorldMatrix);
+	void Tick(const _float4x4& WorldMatrix, const _double& TimeDelta);
 
 private:
 	_uint m_iNumRect = { 0 };

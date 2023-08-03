@@ -4,25 +4,25 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CInstance_Point final : public CVIBuffer_Instancing
+class ENGINE_DLL CVIBuffer_Point_Instance final : public CVIBuffer_Instancing
 {
 public:
-	typedef struct tagSpriteDesc : public CVIBuffer_Instancing::INSTANCEDESC
+	typedef struct tagPointInstanceDesc : public CVIBuffer_Instancing::INSTANCEDESC
 	{
 		_float fFrameSpeed = 0.f; // 초 단위로 넣으면 된다.
 		_uint iNumWidth = 1.f;
 		_uint iNumHeight = 1.f;
-	}SPRITEDESC;
+	}POINTINSTDESC;
 
-protected:
-	explicit CInstance_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	explicit CInstance_Point(const CInstance_Point& rhs);
-	virtual ~CInstance_Point() = default;
+private:
+	CVIBuffer_Point_Instance(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	CVIBuffer_Point_Instance(const CVIBuffer_Point_Instance& rhs);
+	virtual ~CVIBuffer_Point_Instance() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override { return S_OK; }
-	virtual	HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	void Tick(vector<_float4x4>& vecMatrices, const _double& TimeDelta);
+	virtual HRESULT Initialize_Prototype() { return S_OK; }
+	virtual HRESULT Initialize(const _uint & iLevelIndex, CComponent * pOwner, void* pArg) override;
+	void Tick(const vector<_float4x4>& vecMatrices, const _double& TimeDelta);
 
 public:
 	HRESULT Bind_LengthTexelU(class CShader* pShader, const string& strConstantName);
@@ -38,8 +38,8 @@ private:
 	_uint m_iCurKeyFrame = { 0 };
 
 public:
-	static CInstance_Point* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CInstance_Point* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
+	static CVIBuffer_Point_Instance* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	virtual CComponent* Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pArg) override;
 	virtual void Free() override;
 };
 

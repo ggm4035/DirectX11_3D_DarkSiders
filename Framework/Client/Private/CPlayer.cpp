@@ -8,6 +8,7 @@
 #include "CSwordTrail.h"
 #include "CRoot.h"
 #include "CStone_Effect.h"
+#include "CCamera_Free.h"
 
 void CPlayer::Get_Damaged_Knockback(const _float4& _vPosition)
 {
@@ -85,6 +86,10 @@ void CPlayer::Tick(const _double& TimeDelta)
 {
 	if (CGameInstance::GetInstance()->Key_Down(DIK_4))
 		m_pEffect->Render_Effect(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F3))
+		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->Set_CamState(CCamera_Free::CAM_FREE);
+	if (CGameInstance::GetInstance()->Key_Down(DIK_2))
+		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->On_Shake(CCamera_Free::SHAKE_Y, 5.f, 2.f);
 
 	CGameObject3D::Tick(TimeDelta);
 
@@ -108,10 +113,16 @@ void CPlayer::Tick(const _double& TimeDelta)
 	m_pEffect->Tick(TimeDelta);
 
 	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
+
+	_float4 vPos;
+	XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//cout << vPos.x << ", " << vPos.y << ", " << vPos.z << endl;
 }
 
 void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 {
+	m_pEffect->AfterFrustumTick(TimeDelta);
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -128,7 +139,6 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 		for (auto Pair : m_Parts)
 			Pair.second->AfterFrustumTick(TimeDelta);
 
-		m_pEffect->AfterFrustumTick(TimeDelta);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
@@ -196,7 +206,8 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 
 void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Body")
+	if (Collision.pOtherCollider->Get_Tag() == L"Col_Attack_Roll" &&
+		Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
 		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
@@ -308,7 +319,7 @@ HRESULT CPlayer::Add_Parts()
 
 	Desc.pSwordTrail = pSwordTrail;
 
-	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon_Player", this, &Desc)))
+	if (FAILED(CGameObject::Add_Parts(LEVEL_STATIC, L"Weapon", L"Weapon", this, &Desc)))
 		return E_FAIL;
 
 	CCamera::CAMERADESC CameraDesc;

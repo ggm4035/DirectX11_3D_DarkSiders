@@ -8,6 +8,7 @@
 #include "CAction.h"
 #include "CSequence.h"
 #include "CWait.h"
+#include "CWeapon.h"
 
 CWheelWind::CWheelWind(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBehavior(pDevice, pContext)
@@ -36,6 +37,7 @@ HRESULT CWheelWind::Tick(const _double& TimeDelta)
 
 	m_fTimeAcc += TimeDelta;
 
+	dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->On_SwordTrail();
 	if (7.5f > m_fTimeAcc && m_fTimeAcc > m_fTick)
 	{
 		CGameInstance::GetInstance()->Play_Sound(L"en_legionchampion_atk_whirlwind_whoosh_02.ogg", CSound_Manager::SOUND_PLAYER, 0.4f, true);
@@ -48,7 +50,10 @@ HRESULT CWheelWind::Tick(const _double& TimeDelta)
 		hr = BehaviorDesc.pBehavior->Tick(TimeDelta);
 
 	if (hr == BEHAVIOR_SUCCESS)
+	{
+		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		Reset();
+	}
 
 	return S_OK;
 }

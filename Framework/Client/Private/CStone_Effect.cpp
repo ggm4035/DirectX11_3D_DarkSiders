@@ -33,31 +33,46 @@ void CStone_Effect::Tick(const _double& TimeDelta)
 	{
 		Particle.dAge += TimeDelta;
 
+		/*if (Particle.dAge < Particle.dGenTime)
+		{
+			XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixIdentity());
+			ParticleMatrices.push_back(Particle.WorldMatrix);
+			continue;
+		}*/
+
+		if (Particle.dAge > Particle.dLifeTime /*+ Particle.dGenTime*/)
+			Particle.isAlive = false;
 
 		_float4 vPos;
+
 		memcpy(&vPos, Particle.WorldMatrix.m[3], sizeof(_float4));
 		_vector vVelocity = XMLoadFloat4(&Particle.vVelocity);
-		/*
-		_vector vAccel = XMLoadFloat4(&Particle.vAccel);
+		
+		vVelocity += XMLoadFloat4(&Particle.vAccel) * TimeDelta;
 
-		vVelocity += vAccel;
-		*/
 		XMStoreFloat4(&Particle.vVelocity, vVelocity);
-
+		
 		XMStoreFloat4(&vPos, XMLoadFloat4(&vPos) + vVelocity * _float(TimeDelta));
-
-		XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixScaling(100,100,100) * XMMatrixTranslation(vPos.x, vPos.y, vPos.z));
+		
+		XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixScaling(0.3f, 0.3f, 0.3f) * XMMatrixTranslation(vPos.x, vPos.y, vPos.z));
 
 		ParticleMatrices.push_back(Particle.WorldMatrix);
 	}
 
-	m_pBufferCom->Tick(TimeDelta);
+	m_pBufferCom->Tick(ParticleMatrices, TimeDelta);
+	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CStone_Effect::AfterFrustumTick(const _double& TimeDelta)
 {
 	if (nullptr != m_pRenderer)
+	{
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+#ifdef _DEBUG
+		Add_Colliders_Debug_Render_Group(m_pRenderer);
+#endif
+	}
+
 }
 
 void CStone_Effect::Late_Tick(const _double& TimeDelta)
@@ -69,7 +84,7 @@ HRESULT CStone_Effect::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(8);
+	m_pShaderCom->Begin(1);
 
 	m_pBufferCom->Render();
 
@@ -80,18 +95,22 @@ void CStone_Effect::Reset_Effects()
 {
 	for (auto& particle : m_vecParticles)
 	{
-		particle.dAge = 0.f;
-		particle.dLifeTime = 10.f;
-		particle.isAlive = true;
-		XMStoreFloat4(&particle.vVelocity, CGameInstance::GetInstance()->Get_RandomVectorInSphere(2.f));
-		particle.vAccel = _float4(
-			particle.vVelocity.x / (_float)particle.dLifeTime * -1.f,
-			particle.vVelocity.y / (_float)particle.dLifeTime * -1.f,
-			particle.vVelocity.z / (_float)particle.dLifeTime * -1.f,
-			0.f);
-
-		XMStoreFloat4x4(&particle.WorldMatrix, XMMatrixIdentity());
+		Reset_Particle(particle);
 	}
+}
+
+void CStone_Effect::Reset_Particle(STONEPARTICLE& Particle)
+{
+	Particle.dAge = 0.f;
+	Particle.dLifeTime = 2.f;
+	Particle.isAlive = true;
+
+	Particle.vVelocity = _float4(GetRandomFloat(-5.f, 5.f), GetRandomFloat(15.f, 25.f), GetRandomFloat(-5.f, 5.f), 0.f);
+
+	Particle.vAccel = _float4(0.f, GetRandomFloat(-35.f, -45.f), 0.f, 0.f);
+	//Particle.dGenTime = (rand() % 300) / 100.f;
+
+	XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixIdentity());
 }
 
 void CStone_Effect::Render_Effect(_fvector vEffectPos)
@@ -109,21 +128,29 @@ HRESULT CStone_Effect::Add_Components()
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Texture_RockChip", L"Com_Texture",
 		(CComponent**)&m_pTextureCom, this)))
 		return E_FAIL;
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_VtxTex"/*L"Shader_PointInstance"*/, L"Com_Shader",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_PointInstance", L"Com_Shader",
 		(CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
-	m_vecParticles.resize(1);
-	m_iNumParticles = 1;
+	/* Collider */
+	CBounding_AABB::AABBDESC AABBDesc;
+	AABBDesc.vExtents = _float3(1.f, 1.f, 1.f);
+	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	AABBDesc.eGroup = CCollider::COL_PLAYER;
+	AABBDesc.vOffset = _float3(0.f, 1.f, 0.f);
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Body", &AABBDesc)))
+		return E_FAIL;
 
-	CVIBuffer_Sprite::SPRITEDESC Desc;
-	//Desc.iNumInstance = m_iNumParticles;
-	Desc.bRepeat = true;
-	Desc.fFrameSpeed = 1.f;
+	m_vecParticles.resize(20);
+	m_iNumParticles = 20;
+
+	CVIBuffer_Point_Instance::POINTINSTDESC Desc;
+	Desc.iNumInstance = m_iNumParticles;
 	Desc.iNumHeight = 4;
 	Desc.iNumWidth = 4;
+	Desc.fFrameSpeed = 1.f;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"VIBuffer_Sprite", L"Com_Buffer",
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Instance_Point", L"Com_Buffer",
 		(CComponent**)&m_pBufferCom, this, &Desc)))
 		return E_FAIL;
 
@@ -144,19 +171,18 @@ HRESULT CStone_Effect::SetUp_ShaderResources()
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
-	/*_float4 InputFloat = pGameInstance->Get_Camera_Position();
+	_float4 InputFloat = pGameInstance->Get_Camera_Position();
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &InputFloat, sizeof(_float4))))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
-
-	/*if (FAILED(m_pBufferCom->Bind_LengthTexelU(m_pShaderCom, "g_fLengthTexelU")))
+	if (FAILED(m_pBufferCom->Bind_LengthTexelU(m_pShaderCom, "g_fLengthTexelU")))
 		return E_FAIL;
 	if (FAILED(m_pBufferCom->Bind_LengthTexelV(m_pShaderCom, "g_fLengthTexelV")))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	return S_OK;
 }

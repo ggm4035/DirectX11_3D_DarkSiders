@@ -244,7 +244,6 @@ HRESULT CRenderer::Render_Deferred()
 
 	m_pVIBuffer->Render();
 
-
 	return S_OK;
 }
 

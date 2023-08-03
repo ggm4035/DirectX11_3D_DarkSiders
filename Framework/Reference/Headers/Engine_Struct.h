@@ -127,6 +127,12 @@ namespace Engine
 
 	/* Instacne Desc */
 
+	typedef struct tagVertex_Point
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT2 vPSize;
+	}VTXPOINT;
+
 	typedef struct tagVertex_Point_Tex
 	{
 		XMFLOAT3 vPosition;
@@ -141,6 +147,12 @@ namespace Engine
 		XMFLOAT4 vLook;
 		XMFLOAT4 vTranslation;
 	}VTXINSTANCE;
+
+	typedef struct ENGINE_DLL tagVertex_Point_Instance_Declaration
+	{
+		static const _uint iNumElements = { 6 };
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXPOINTINSTANCE_DECL;
 
 	typedef struct ENGINE_DLL tagVertex_Point_Tex_Instance_Declaration
 	{

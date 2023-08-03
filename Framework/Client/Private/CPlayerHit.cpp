@@ -6,6 +6,7 @@
 #include "CPlayer.h"
 #include "CModel.h"
 #include "CCollider.h"
+#include "CWeapon.h"
 
 CPlayerHit::CPlayerHit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBehavior(pDevice, pContext)
@@ -53,11 +54,12 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 	switch (eCurHitState)
 	{
 	case CGameObject3D::HIT:
+		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		pAction->Set_State(CPlayerAction::STATE_HIT);
 		m_pPlayer->Set_CurHitState(CPlayer::HITTING);
 		m_pPlayer->Get_Collider(L"Col_Attack")->Set_Enable(false);
 		m_pPlayer->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
-		CGameInstance::GetInstance()->Play_Sound(L"War_Effort_06.ogg", CSound_Manager::SOUND_PLAYER, 0.4f);
+		CGameInstance::GetInstance()->Play_Sound(L"War_Effort_06.ogg", CSound_Manager::SOUND_PLAYER, 0.4f, true);
 		break;
 
 	case CGameObject3D::HITTING:

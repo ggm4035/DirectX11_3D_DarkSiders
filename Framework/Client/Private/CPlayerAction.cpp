@@ -12,6 +12,7 @@
 
 #include "CWheelWind.h"
 #include "CLeapAttack.h"
+#include "CWeapon.h"
 
 CPlayerAction::CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBehavior(pDevice, pContext)
@@ -170,8 +171,11 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 
 	if (STATE_WHEEL != m_eCurState && STATE_KNOCKBACK != m_eCurState &&
 		((true == m_pModelCom->isLoopAnimation() && DIK_END == Input) ||
-		(true == m_pModelCom->isFinishedAnimation() && DIK_END == Input)))
+			(true == m_pModelCom->isFinishedAnimation() && DIK_END == Input)))
+	{
+		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		Set_State(STATE_IDLE);
+	}
 
 	while (DIK_END != Input)
 	{

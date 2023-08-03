@@ -3,6 +3,7 @@
 
 #include "CPlayerAction.h"
 #include "CPlayer.h"
+#include "CWeapon.h"
 #include "CModel.h"
 
 CPlayerMove::CPlayerMove(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -88,8 +89,10 @@ HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 	case Client::CPlayerAction::STATE_LATK_2:
 	case Client::CPlayerAction::STATE_LATK_3:
 	case Client::CPlayerAction::STATE_LATK_4:
+		
 		if (true == m_pModel->isAbleChangeAnimation())
 		{
+			dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 			m_pTransform->Set_On_Navigation(true);
 			m_pTransform->Go(vDirection, TimeDelta);
 			pAction->Set_State(CPlayerAction::STATE_RUN);

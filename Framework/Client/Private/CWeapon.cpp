@@ -58,14 +58,15 @@ void CWeapon::Tick(const _double& TimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * BoneMatrix * XMLoadFloat4x4(m_pParentWorldMatrix));
 
 	if (nullptr != m_pSwordTrail)
-		m_pSwordTrail->Tick(m_WorldMatrix);
+		m_pSwordTrail->Tick(m_WorldMatrix, TimeDelta);
 }
 
 void CWeapon::AfterFrustumTick(const _double& TimeDelta)
 {
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
-	m_pSwordTrail->AfterFrustumTick(TimeDelta);
+	if(true == m_isRenderTrail)
+		m_pSwordTrail->AfterFrustumTick(TimeDelta);
 }
 
 void CWeapon::Late_Tick(const _double& TimeDelta)

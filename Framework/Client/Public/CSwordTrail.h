@@ -32,7 +32,7 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	virtual void Tick(const _float4x4& WorldMatrix);
+	virtual void Tick(const _float4x4& WorldMatrix, const _double& TimeDelta);
 	virtual void AfterFrustumTick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render();

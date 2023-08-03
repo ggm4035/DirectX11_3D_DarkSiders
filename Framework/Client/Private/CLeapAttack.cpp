@@ -4,7 +4,9 @@
 #include "CGameInstance.h"
 #include "CPlayerAction.h"
 #include "CPlayer.h"
+#include "CWeapon.h"
 #include "CModel.h"
+#include "CStone_Effect.h"
 
 CLeapAttack::CLeapAttack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBehavior(pDevice, pContext)
@@ -31,6 +33,11 @@ HRESULT CLeapAttack::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 		return E_FAIL;
 	Safe_AddRef(m_pTransform);
 
+	m_pEffect = dynamic_cast<CStone_Effect*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Component(L"Com_Effect"));
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+	Safe_AddRef(m_pEffect);
+
 	return S_OK;
 }
 
@@ -43,15 +50,28 @@ HRESULT CLeapAttack::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
+		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->On_SwordTrail();
 		m_pTransform->Set_On_Navigation(false);
 		m_pModel->Change_Animation("Atk_Heavy_03");
 		CGameInstance::GetInstance()->Play_Sound(L"char_war_attack_heavy_3.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
 		m_isFirst = false;
+		m_fTimeAcc = 0.f;
+	}
+
+	m_fTimeAcc += TimeDelta;
+
+	if (1.0f <= m_fTimeAcc && false == m_isRenderEffect)
+	{
+		m_pEffect->Render_Effect(m_pTransform->Get_State(CTransform::STATE_POSITION));
+		m_isRenderEffect = true;
 	}
 
 	if (true == m_pModel->isFinishedAnimation() ||
 		true == m_pModel->isAbleChangeAnimation())
+	{
+		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		Reset();
+	}
 
 	return S_OK;
 }
@@ -66,7 +86,9 @@ void CLeapAttack::Reset()
 	m_pTransform->Set_On_Navigation(true);
 	m_isPlay = false;
 	m_isFirst = true;
+	m_isRenderEffect = false;
 	m_fCoolTime = 0.f;
+	m_fTimeAcc = 0.f;
 }
 
 void CLeapAttack::Play()
@@ -109,6 +131,7 @@ void CLeapAttack::Free()
 {
 	if (true == m_isCloned)
 	{
+		Safe_Release(m_pEffect);
 		Safe_Release(m_pModel);
 		Safe_Release(m_pTransform);
 	}

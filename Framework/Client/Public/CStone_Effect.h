@@ -7,7 +7,8 @@ BEGIN(Engine)
 class CShader;
 class CTexture;
 class CRenderer;
-class CVIBuffer_Sprite;
+class CVIBuffer_Point_Instance;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -23,6 +24,7 @@ public:
 		_float4x4	WorldMatrix;
 		_double     dAge;
 		_double     dLifeTime;
+		//_double	dGenTime;
 	}STONEPARTICLE;
 
 private:
@@ -40,6 +42,7 @@ public:
 
 public:
 	void Reset_Effects();
+	void Reset_Particle(STONEPARTICLE& Particle);
 	void Render_Effect(_fvector vEffectPos);
 
 private:
@@ -50,7 +53,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CRenderer* m_pRenderer = { nullptr };
-	CVIBuffer_Sprite* m_pBufferCom = { nullptr };
+	CVIBuffer_Point_Instance* m_pBufferCom = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

@@ -9,6 +9,7 @@
 #include "CAction.h"
 #include "CMove.h"
 #include "CJump.h"
+#include "CWeapon.h"
 
 CPlayerKnockback::CPlayerKnockback(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBehavior(pDevice, pContext)
@@ -51,6 +52,7 @@ HRESULT CPlayerKnockback::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
+		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		m_pPlayer->Get_Collider(L"Col_Attack")->Set_Enable(false);
 		m_pPlayer->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
 

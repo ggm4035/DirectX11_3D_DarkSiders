@@ -42,12 +42,13 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	UIDesc.m_fDepth = XMVectorGetZ(vPosition);
 	UIDesc.m_fSizeX = 50.f;
 	UIDesc.m_fSizeY = 10.f;
-	UIDesc.wstrTextureTag = L"Texture_UI_HpBar_Monster";
+	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
 	UIDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4Ptr();
 	UIDesc.vOffset = _float3(0.f, 2.f, 0.f);
 	UIDesc.pMaxHp = &m_Status.iMaxHP;
 	UIDesc.pHp = &m_Status.iHP;
+	UIDesc.iPassNum = 3;
 
 	CGameObject* pGameObject = pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_HpBar", L"UI_HealthBar", this, &UIDesc);
 	m_pHealthBar = dynamic_cast<CUI_HpBar*>(pGameObject);

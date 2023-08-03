@@ -38,6 +38,7 @@ private:
 private:
 	CModel* m_pModel = { nullptr };
 	CTransform* m_pTransform = { nullptr };
+	class CWeapon* m_pWeapon = { nullptr };
 
 public:
 	static CPlayerAttack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

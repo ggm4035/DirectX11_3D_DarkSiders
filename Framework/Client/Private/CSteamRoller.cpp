@@ -152,6 +152,20 @@ void CSteamRoller::OnCollisionStay(CCollider::COLLISION Collision, const _double
 	{
 		m_isRangeInPlayer = true;
 	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack_Roll" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		static _float fTimeAcc = { 0.f };
+
+		fTimeAcc += TimeDelta;
+
+		if (0.3f <= fTimeAcc)
+		{
+			Collision.pOther->Get_Damaged();
+			fTimeAcc = 0.f;
+		}
+	}
 }
 
 void CSteamRoller::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -196,9 +210,10 @@ HRESULT CSteamRoller::Add_Components()
 
 	/* Col_Attack_Roll */
 	SphereDesc.fRadius = 4.5f;
-	SphereDesc.eGroup = CCollider::COL_ENEMY_MELEE_RANGE;
+	SphereDesc.eGroup = CCollider::COL_ENEMY_ATK;
 	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	SphereDesc.vOffset = _float3(0.f, 0.f, 0.f);
+	SphereDesc.isEnable = false;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack_Roll", &SphereDesc)))
 		return E_FAIL;
 

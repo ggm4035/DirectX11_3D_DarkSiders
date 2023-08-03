@@ -2,6 +2,7 @@
 #include "CPlayerJump.h"
 
 #include "CPlayer.h"
+#include "CWeapon.h"
 #include "CPlayerAction.h"
 #include "CGameInstance.h"
 
@@ -58,6 +59,13 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 
 	switch (pAction->Get_State())
 	{
+	case Client::CPlayerAction::STATE_LATK_1:
+	case Client::CPlayerAction::STATE_LATK_2:
+	case Client::CPlayerAction::STATE_LATK_3:
+	case Client::CPlayerAction::STATE_LATK_4:
+		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
+		break;
+
 	case Client::CPlayerAction::STATE_RUN:
 	case Client::CPlayerAction::STATE_IDLE:
 	case Client::CPlayerAction::STATE_JUMP_LAND:

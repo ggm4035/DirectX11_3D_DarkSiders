@@ -1,15 +1,13 @@
-﻿  CAction.cpp
-  CLegion_Champion.cpp
-  CMainApp.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(81,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(178,1): error C2653: 'CInstance_Point': 클래스 또는 네임스페이스 이름이 아닙니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(178,5): error C2660: 'Client::CMainApp::Create': 함수는 2개의 인수를 사용하지 않습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Public\CMainApp.h(53,19): message : 'Client::CMainApp::Create' 선언을 참조하십시오.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(178,5): error C2664: 'HRESULT Engine::CGameInstance::Add_Prototype(const std::wstring,Engine::CGameObject *)': 인수 1을(를) 'Client::LEVELID'에서 'const std::wstring'(으)로 변환할 수 없습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(178,1): message : 이 변환을 수행할 수 있는 사용 가능한 사용자 정의 변환 연산자가 없거나 연산자를 호출할 수 없습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CGameInstance.h(53,10): message : 'Engine::CGameInstance::Add_Prototype' 선언을 참조하십시오.
-  CMonster.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(97,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(184,28): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CStone_Effect.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CStone_Effect.cpp(43,5): error C2059: 구문 오류: ')'
+﻿  CCamera_Free.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(46,9): warning C4244: '인수': 'const Engine::_double'에서 'const Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(91,21): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(120,21): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(283,47): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다.
+  2 of 2977 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe
