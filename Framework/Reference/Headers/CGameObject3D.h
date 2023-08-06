@@ -8,30 +8,15 @@ BEGIN(Engine)
 
 class ENGINE_DLL CGameObject3D abstract : public CGameObject
 {
-public:
-	typedef struct tagStatus
-	{
-		_int iMaxHP = { 0 };
-		_int iHP = { 0 };
-		_int iAttack = { 0 };
-	}STATUS;
-
-	enum HITSTATE { NONE, HIT, HITTING, KNOCKBACK, HIT_END };
-
 protected:
 	explicit CGameObject3D(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	explicit CGameObject3D(const CGameObject3D& rhs);
 	virtual ~CGameObject3D() = default;
 
 public:
-	const STATUS& Get_Status() const {
-		return m_Status;
-	}
 	CTransform* Get_Transform() const {
 		return m_pTransformCom;
 	}
-	void Get_Damaged();
-	virtual void Get_Damaged_Knockback(const _float4& vPosition) {}
 
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
@@ -44,21 +29,18 @@ public:
 public:
 	CCollider* Find_Collider(const wstring& wstrColliderTag);
 
+	virtual void Get_Damaged(const class CAttack* pAttack) {}
 	virtual void Dead_Motion(const _double& TimeDelta) {}
+
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) {}
 
 protected:
-	STATUS m_Status;
-	_bool m_isDead = { false };
-
-	HITSTATE m_eCurHitState = { NONE };
-
 	CTransform* m_pTransformCom = { nullptr };
 	unordered_map<wstring, CCollider*> m_umapColliders;
 
-protected:
+protected: /* Collider */
 	HRESULT Add_Collider(const _uint& iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrColliderTag, void* pArg);
 	HRESULT Add_Colliders_To_Manager();
 	void Tick_Colliders(_fmatrix WorldMatrix);

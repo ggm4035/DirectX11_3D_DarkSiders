@@ -19,8 +19,10 @@ HRESULT CImWindow_Create::Initialize()
     m_Types[SHADER] = "Shader";
     m_Types[BUFFER] = "VIBuffer";
     m_Types[MODEL] = "Model";
+    m_Types[COLLIDER] = "Collider";
 
     m_LayerTag[LAYER_STATIC] = L"Layer_Tool";
+    m_LayerTag[LAYER_BREAKABLE] = L"Layer_BreakAble";
     m_LayerTag[LAYER_MONSTER] = L"Layer_Monster";
 
     return S_OK;
@@ -33,14 +35,21 @@ void CImWindow_Create::Tick(const _double& TimeDelta)
 
     ImGui::Begin("Create");
 
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
     static _int iOption = { 0 };
     ImGui::RadioButton("Object##CreateObjectOption", &iOption, 0); ImGui::SameLine();
-    ImGui::RadioButton("Trigger##CreateTriggerOption", &iOption, 1);
+    ImGui::RadioButton("BreakAble##CreateObjectOption", &iOption, 1); ImGui::SameLine();
+    ImGui::RadioButton("Monster##CreateObjectOption", &iOption, 2); ImGui::SameLine();
+    ImGui::RadioButton("Trigger##CreateTriggerOption", &iOption, 3);
 
-    if (0 == iOption)
-        Create_Object();
+    if (3 != iOption)
+        Create_Object(iOption, pGameInstance);
     else
-        Create_Trigger();
+        Create_Trigger(pGameInstance);
+
+    Safe_Release(pGameInstance);
 
     ImGui::End();
 }
@@ -50,11 +59,8 @@ void CImWindow_Create::Refresh()
     CImWindow::Refresh();
 }
 
-void CImWindow_Create::Create_Object()
+void CImWindow_Create::Create_Object(const _uint& iLayerIndex, CGameInstance* pGameInstance)
 {
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
-
     ImGui::Text("Object Name");
     ImGui::Separator();
     ImGui::SetNextItemWidth(300.f);
@@ -81,8 +87,9 @@ void CImWindow_Create::Create_Object()
                 ImGui::InputText("Search", m_szSearchTag, 256);
                 /* string 소문자로 변환 */
                 string strSearchTag = m_szSearchTag;
-                transform(strSearchTag.begin(), strSearchTag.end(), strSearchTag.begin(), [](_char c) {
-                    return tolower(c);
+                transform(strSearchTag.begin(), strSearchTag.end(), strSearchTag.begin(), [](_char c)
+                    {
+                        return tolower(c);
                     });
 
                 list<CComponent*> PrototypeList = pGameInstance->Get_All_Prototypes();
@@ -137,12 +144,7 @@ void CImWindow_Create::Create_Object()
         }
     }
 
-    static _int iSelectLayer = { 0 };
-
-    ImGui::RadioButton("Static", &iSelectLayer, 0); ImGui::SameLine();
-    ImGui::RadioButton("Monster", &iSelectLayer, 1);
-
-    m_eCurLayer = (LAYERTYPE)iSelectLayer;
+    m_eCurLayer = (LAYERTYPE)iLayerIndex;
 
     static _int clicked = 0;
 
@@ -175,6 +177,7 @@ void CImWindow_Create::Create_Object()
         pObject->Set_RasterizerState(RasterizerDesc);
 
         /* Components */
+        pObject->Add_Collider(pGameInstance->strToWStr(m_szPrototypeTag[COLLIDER]));
         pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
         pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
         pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));
@@ -225,15 +228,10 @@ void CImWindow_Create::Create_Object()
 
         m_bIsPicking = false;
     }
-
-    Safe_Release(pGameInstance);
 }
 
-void CImWindow_Create::Create_Trigger()
+void CImWindow_Create::Create_Trigger(CGameInstance* pGameInstance)
 {
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
-
     ImGui::Text("Object Name");
     ImGui::Separator();
     ImGui::SetNextItemWidth(300.f);
@@ -296,8 +294,6 @@ void CImWindow_Create::Create_Trigger()
 
         m_bIsPicking = false;
     }
-
-    Safe_Release(pGameInstance);
 }
 
 void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)

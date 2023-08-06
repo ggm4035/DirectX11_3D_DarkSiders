@@ -31,8 +31,11 @@ HRESULT CHollowLord::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 20;
-	m_Status.iMaxHP = 20;
+	m_pAttack->Set_Damage(1);
+	m_pDeffence->Set_Deffence(0);
+	m_pHealth->Set_Max_Hp(20);
+	m_pHealth->Set_HP(20);
+
 	m_isRangeInPlayer = true;
 
 	return S_OK;
@@ -146,7 +149,7 @@ void CHollowLord::OnCollisionEnter(CCollider::COLLISION Collision, const _double
 	if (wstring::npos != Collision.pMyCollider->Get_Tag().find(L"Attack") &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Huge_Attack" &&
@@ -154,7 +157,7 @@ void CHollowLord::OnCollisionEnter(CCollider::COLLISION Collision, const _double
 	{
 		_float4 vPosition;
 		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		Collision.pOther->Get_Damaged_Knockback(vPosition);
+		dynamic_cast<CPlayer*>(Collision.pOther)->Get_Damaged_Knockback(vPosition, m_pAttack);
 	}
 }
 
@@ -243,8 +246,7 @@ HRESULT CHollowLord::Ready_UI()
 	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
 	UIDesc.iPassNum = 3;
-	UIDesc.pMaxHp = &m_Status.iMaxHP;
-	UIDesc.pHp = &m_Status.iHP;
+	UIDesc.pHealth = m_pHealth;
 	m_pMonsterUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"HpBar", nullptr, &UIDesc));
 	if (nullptr == m_pMonsterUI[1])
 		return E_FAIL;

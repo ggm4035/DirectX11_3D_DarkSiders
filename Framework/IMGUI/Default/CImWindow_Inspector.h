@@ -29,6 +29,7 @@ private:
     void Show_Components(CGameInstance* pGameInstance);
     void Show_ObjectInfo(CGameInstance* pGameInstance);
     void Show_Transform();
+    void Show_Collider();
     void Show_Texture();
     void Show_Shader();
     void Show_Buffer();

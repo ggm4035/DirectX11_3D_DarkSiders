@@ -73,18 +73,22 @@ void CDummyObject3D::Tick(const _double& TimeDelta)
         CModel::TYPE_ANIM == m_pModelCom->Get_Type())
     {
         m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
-
         m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
     }
 
-    if (nullptr != m_pColliderCom)
-        m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+    if (nullptr != m_pCollider)
+        m_pCollider->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CDummyObject3D::Late_Tick(const _double& TimeDelta)
 {
     if (nullptr != m_pRenderer)
-        m_pRenderer->Add_RenderGroup(m_eRenderGroup, this);
+    {
+        m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+        if (FAILED(m_pRenderer->Add_DebugGroup(m_pCollider)))
+            return;
+    }
 }
 
 HRESULT CDummyObject3D::Render()
@@ -124,9 +128,24 @@ HRESULT CDummyObject3D::Render()
     if (nullptr != dynamic_cast<CVIBuffer_Terrain*>(m_pBufferCom))
         m_pNavigationCom->Render();
 
-    if (nullptr != m_pColliderCom)
-        m_pColliderCom->Render();
+    return S_OK;
+}
 
+HRESULT CDummyObject3D::Add_Collider(const wstring PrototypeTag)
+{
+    if (0 == PrototypeTag.size())
+        return S_OK;
+
+    CBounding_AABB::AABBDESC Desc;
+    Desc.vExtents = _float3(1.f, 1.f, 1.f);
+    Desc.vPosition = _float3(0.f, 0.f, 0.f);
+    Desc.vOffset = _float3(0.f, 0.f, 0.f);
+    Desc.eGroup = CCollider::COL_STATIC;
+    Desc.isEnable = true;
+
+    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Col_Default",
+        (CComponent**)&m_pCollider, this, &Desc)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -183,18 +202,6 @@ HRESULT CDummyObject3D::Add_Model(const wstring PrototypeTag)
         return E_FAIL;
 
     m_pModelCom->Set_Tag(PrototypeTag);
-
-    if (PrototypeTag == L"Model_Warrior")
-    {
-        /* Collider */
-        CBounding_AABB::AABBDESC AABBDesc;
-        AABBDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
-        AABBDesc.vPosition = _float3(0.f, 1.f, 0.f);
-
-        if (FAILED(Add_Component(LEVEL_TOOL, L"Collider_AABB", L"Com_Collider_AABB",
-            (CComponent**)&m_pColliderCom, this, &AABBDesc)))
-            return E_FAIL;
-    }
 
     return S_OK;
 }
@@ -303,7 +310,6 @@ CGameObject3D* CDummyObject3D::Clone(const _uint& iLevelIndex, CComponent* pOwne
 
 void CDummyObject3D::Free()
 {
-    Safe_Release(m_pColliderCom);
     Safe_Release(m_pNavigationCom);
     Safe_Release(m_pModelCom);
     Safe_Release(m_pRasterizer);
@@ -311,5 +317,7 @@ void CDummyObject3D::Free()
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pTextureCom);
     Safe_Release(m_pBufferCom);
+    Safe_Release(m_pCollider);
+
     CGameObject3D::Free();
 }

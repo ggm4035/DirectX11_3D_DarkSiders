@@ -2,6 +2,7 @@
 #include "CPlayerMove.h"
 
 #include "CPlayerAction.h"
+#include "CBlackBoard.h"
 #include "CPlayer.h"
 #include "CWeapon.h"
 #include "CModel.h"
@@ -29,16 +30,6 @@ HRESULT CPlayerMove::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 	if (nullptr == m_pCamera)
 		return E_FAIL;
 	Safe_AddRef(m_pCamera);
-
-	m_pTransform = pPlayer->Get_Transform();
-	if (nullptr == m_pTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pTransform);
-
-	m_pModel = dynamic_cast<CModel*>(pPlayer->Get_Component(L"Com_Model"));
-	if (nullptr == m_pModel)
-		return E_FAIL;
-	Safe_AddRef(m_pModel);
 
 	return S_OK;
 }
@@ -78,6 +69,13 @@ HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 	if (0 == XMVector3Length(vDirection).m128_f32[0])
 		return S_OK;
 
+	CModel* pModel = { nullptr };
+	CTransform* pTransform = { nullptr };
+	if (FAILED(m_pBlackBoard->Get_Type(L"pModel", pModel)))
+		return E_FAIL;
+	if (FAILED(m_pBlackBoard->Get_Type(L"pTransform", pTransform)))
+		return E_FAIL;
+
 	vDirection = XMVector3Normalize(vDirection);
 
 	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
@@ -90,46 +88,46 @@ HRESULT CPlayerMove::Tick(const _double& TimeDelta)
 	case Client::CPlayerAction::STATE_LATK_3:
 	case Client::CPlayerAction::STATE_LATK_4:
 		
-		if (true == m_pModel->isAbleChangeAnimation())
+		if (true == pModel->isAbleChangeAnimation())
 		{
 			dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
-			m_pTransform->Set_On_Navigation(true);
-			m_pTransform->Go(vDirection, TimeDelta);
+			pTransform->Set_On_Navigation(true);
+			pTransform->Go(vDirection, TimeDelta);
 			pAction->Set_State(CPlayerAction::STATE_RUN);
 		}
 		break;
 
 	case Client::CPlayerAction::STATE_IDLE:
-		m_pTransform->Set_On_Navigation(true);
-		m_pTransform->Go(vDirection, TimeDelta);
+		pTransform->Set_On_Navigation(true);
+		pTransform->Go(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_RUN:
-		m_pTransform->Set_On_Navigation(true);
-		m_pTransform->Go(vDirection, TimeDelta);
+		pTransform->Set_On_Navigation(true);
+		pTransform->Go(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP_LAND:
-		m_pTransform->Set_On_Navigation(true);
-		m_pTransform->Go(vDirection, TimeDelta);
+		pTransform->Set_On_Navigation(true);
+		pTransform->Go(vDirection, TimeDelta);
 		pAction->Set_State(CPlayerAction::STATE_RUN);
 		break;
 
 	case Client::CPlayerAction::STATE_JUMP:
-		m_pTransform->Set_On_Navigation(false);
-		m_pTransform->Go(vDirection, TimeDelta);
+		pTransform->Set_On_Navigation(false);
+		pTransform->Go(vDirection, TimeDelta);
 		break;
 
 	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
-		m_pTransform->Set_On_Navigation(false);
-		m_pTransform->Go(vDirection, TimeDelta);
+		pTransform->Set_On_Navigation(false);
+		pTransform->Go(vDirection, TimeDelta);
 		break;
 
 	case Client::CPlayerAction::STATE_WHEEL:
-		m_pTransform->Set_On_Navigation(true);
-		m_pTransform->Go(vDirection, TimeDelta);
+		pTransform->Set_On_Navigation(true);
+		pTransform->Go(vDirection, TimeDelta);
 		break;
 	}
 
@@ -165,8 +163,6 @@ void CPlayerMove::Free()
 	if (true == m_isCloned)
 	{
 		Safe_Release(m_pCamera);
-		Safe_Release(m_pTransform);
-		Safe_Release(m_pModel);
 	}
 
 	CBehavior::Free();

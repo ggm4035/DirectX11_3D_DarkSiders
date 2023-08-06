@@ -28,6 +28,20 @@ void CModelLoader::Tick()
 
 	ResetData();
 
+	/* NonAnimModel 바이너리화 */
+	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Environment/BreakAble", ".fbx", m_FilePathList);
+	ConvertBinary_NonAnimModel();
+	WriteNonAnimModels("../../ModelDatas/NonAnimModels/");
+
+	ResetData();
+
+	/* Skill 바이너리화 */
+	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Skill", ".fbx", m_FilePathList);
+	ConvertBinary_AnimModel();
+	WriteAnimModels("../../ModelDatas/Skill/");
+
+	ResetData();
+
 	/* Weapon 바이너리화 */
 	m_pGameInstance->Extraction_Data("../../Resources/NonAnimModels/Weapon", ".fbx", m_FilePathList);
 	ConvertBinary_AnimModel();

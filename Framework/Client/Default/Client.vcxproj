@@ -172,11 +172,13 @@
     <ClInclude Include="..\Public\CBoss_Attack_RH.h" />
     <ClInclude Include="..\Public\CBoss_Attack_RHS.h" />
     <ClInclude Include="..\Public\CBoss_Spawn.h" />
+    <ClInclude Include="..\Public\CBreakAbleObject.h" />
     <ClInclude Include="..\Public\CCamera_Free.h" />
     <ClInclude Include="..\Public\CCursor.h" />
     <ClInclude Include="..\Public\CDead.h" />
     <ClInclude Include="..\Public\CFallenDog.h" />
     <ClInclude Include="..\Public\CGameManager.h" />
+    <ClInclude Include="..\Public\CGather_Effect.h" />
     <ClInclude Include="..\Public\CHollowLord.h" />
     <ClInclude Include="..\Public\CJump.h" />
     <ClInclude Include="..\Public\CLeapAttack.h" />
@@ -289,11 +291,13 @@
     <ClCompile Include="..\Private\CBoss_Attack_RH.cpp" />
     <ClCompile Include="..\Private\CBoss_Attack_RHS.cpp" />
     <ClCompile Include="..\Private\CBoss_Spawn.cpp" />
+    <ClCompile Include="..\Private\CBreakAbleObject.cpp" />
     <ClCompile Include="..\Private\CCamera_Free.cpp" />
     <ClCompile Include="..\Private\CCursor.cpp" />
     <ClCompile Include="..\Private\CDead.cpp" />
     <ClCompile Include="..\Private\CFallenDog.cpp" />
     <ClCompile Include="..\Private\CGameManager.cpp" />
+    <ClCompile Include="..\Private\CGather_Effect.cpp" />
     <ClCompile Include="..\Private\CHollowLord.cpp" />
     <ClCompile Include="..\Private\CJump.cpp" />
     <ClCompile Include="..\Private\CLeapAttack.cpp" />

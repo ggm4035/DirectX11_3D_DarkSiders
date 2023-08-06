@@ -24,8 +24,10 @@ HRESULT CHellHound::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_Status.iHP = 5;
-	m_Status.iMaxHP = 5;
+	m_pAttack->Set_Damage(1);
+	m_pDeffence->Set_Deffence(0);
+	m_pHealth->Set_Max_Hp(5);
+	m_pHealth->Set_HP(5);
 
 	return S_OK;
 }
@@ -69,7 +71,7 @@ void CHellHound::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&

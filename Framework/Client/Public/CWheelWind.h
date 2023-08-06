@@ -38,12 +38,6 @@ private:
 	_float m_fTick = { 0.f };
 	_bool m_isPlay = { false };
 
-	class CAction* pAction_Start = { nullptr };
-	class CAction* pAction_Ing = { nullptr };
-	class CAction* pAction_End = { nullptr };
-
-
-
 public:
 	static CWheelWind* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CWheelWind* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;

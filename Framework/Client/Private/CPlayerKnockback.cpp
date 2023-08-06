@@ -26,59 +26,41 @@ HRESULT CPlayerKnockback::Initialize(const _uint& iLevelIndex, CComponent* pOwne
 	if (FAILED(CBehavior::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-	m_pPlayer = dynamic_cast<CPlayer*>(m_pOwner);
-
-	m_pTransform = m_pPlayer->Get_Transform();
-	if (nullptr == m_pTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pTransform);
-
-	m_pModel = dynamic_cast<CModel*>(m_pPlayer->Get_Component(L"Com_Model"));
-	if (nullptr == m_pModel)
-		return E_FAIL;
-	Safe_AddRef(m_pModel);
-
 	return S_OK;
 }
 
 HRESULT CPlayerKnockback::Tick(const _double& TimeDelta)
 {
-	HRESULT hr = S_OK;
-
-	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
-
-	if (CPlayerAction::STATE_KNOCKBACK != pAction->Get_State())
-		return S_OK;
+	CTransform* pTransform = { nullptr };
+	if (FAILED(m_pBlackBoard->Get_Type(L"pTransform", pTransform)))
+		return E_FAIL;
 
 	if (true == m_isFirst)
 	{
-		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
-		m_pPlayer->Get_Collider(L"Col_Attack")->Set_Enable(false);
-		m_pPlayer->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
-
-		pAction->Set_State(CPlayerAction::STATE_KNOCKBACK);
+		CPlayer* pOwner = dynamic_cast<CPlayer*>(m_pOwner);
+		dynamic_cast<CWeapon*>(pOwner->Get_Parts(L"Weapon"))->Off_SwordTrail();
+		pOwner->Get_Collider(L"Col_Attack")->Set_Enable(false);
+		pOwner->Get_Collider(L"Col_WheelWind")->Set_Enable(false);
 
 		m_isFirst = false;
 	}
 
-	XMStoreFloat3(&m_vDirection, m_pTransform->Get_State(CTransform::STATE_LOOK));
+	XMStoreFloat3(&m_vDirection, pTransform->Get_State(CTransform::STATE_LOOK));
 
 	m_pBlackBoard->Set_Type(L"vDirection", m_vDirection);
+
+	HRESULT hr = S_OK;
 
 	for (auto& BehaviorDesc : m_BehaviorList)
 		hr = BehaviorDesc.pBehavior->Tick(TimeDelta);
 
-	_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
-	m_pTransform->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(XMVectorSetY(vLook, 0.f)));
+	_vector vLook = pTransform->Get_State(CTransform::STATE_LOOK);
+	pTransform->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(XMVectorSetY(vLook, 0.f)));
 
 	if (hr == BEHAVIOR_SUCCESS)
-	{
-		pAction->Reset_Jump();
-		pAction->Set_State(CPlayerAction::STATE_IDLE);
 		m_isFirst = true;
-	}
 
-	return S_OK;
+	return hr;
 }
 
 HRESULT CPlayerKnockback::AssembleBehaviors()
@@ -90,10 +72,10 @@ HRESULT CPlayerKnockback::AssembleBehaviors()
 	if (nullptr == pSequence)
 		return E_FAIL;
 
-	pAction_Loop = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
+	CAction* pAction_Loop = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 	if (nullptr == pAction_Loop)
 		return E_FAIL;
-	pAction_Exit = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
+	CAction* pAction_Exit = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 	if (nullptr == pAction_Exit)
 		return E_FAIL;
 
@@ -154,11 +136,5 @@ CPlayerKnockback* CPlayerKnockback::Clone(const _uint& iLevelIndex, CComponent* 
 
 void CPlayerKnockback::Free()
 {
-	if (true == m_isCloned)
-	{
-		Safe_Release(m_pTransform);
-		Safe_Release(m_pModel);
-	}
-
 	CBehavior::Free();
 }

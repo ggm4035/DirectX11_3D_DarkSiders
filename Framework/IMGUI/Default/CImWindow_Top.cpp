@@ -210,7 +210,37 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
             }
 
-            /* 3. Monster 저장 */
+            /* 3. BreakAble 저장 */
+            auto iterBreakAble = m_GameObjectList[LAYER_BREAKABLE].begin();
+
+            iNumObjects = m_GameObjectList[LAYER_BREAKABLE].size();
+            WriteFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
+
+            for (_uint i = 0; i < iNumObjects; ++i, ++iterBreakAble)
+            {
+                /* Write szObjectTag */
+                _uint iTaglength = lstrlen((*iter)->Get_Model()->Get_Tag().c_str()) + 1;
+                WriteFile(hFile, &iTaglength, sizeof(_uint), &dwByte, nullptr);
+                WriteFile(hFile, (*iter)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
+
+                /* Write TransformMatrix */
+                WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
+
+                /* Write vAngle */
+                WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
+
+                /* Write Navigation Index */
+                WriteFile(hFile, &(*iter)->m_iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
+
+                /* Write Binary Datas */
+                Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
+
+                /* Write vExtents */
+                _float3 vExtents = (*iterBreakAble)->Get_Collider()->Get_Extents();
+                WriteFile(hFile, &vExtents, sizeof(_float3), &dwByte, nullptr);
+            }
+
+            /* 4. Monster 저장 */
             auto iterMonster = m_GameObjectList[LAYER_MONSTER].begin();
 
             iNumObjects = m_GameObjectList[LAYER_MONSTER].size();
@@ -236,7 +266,7 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 Write_BinData(hFile, (*iterMonster)->Get_Model_BinaryData(), dwByte);
             }
 
-            /* 4. Trigger 저장 */
+            /* 5. Trigger 저장 */
             auto iterTrigger = m_TriggerList.begin();
 
             iNumObjects = m_TriggerList.size();
@@ -257,13 +287,9 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
                 WriteFile(hFile, &Desc.vPosition, sizeof(_float4), &dwByte, nullptr);
             }
 
-            /* 4. Player 저장 */
+            /* 6. Player 저장 */
             WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
             WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
-
-            /* 5. 카메라를 저장한다. */
-
-            /* 6. UI를 저장한다. */
 
             CloseHandle(hFile);
 

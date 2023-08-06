@@ -3,6 +3,7 @@
 
 #include "CPlayer.h"
 #include "CWeapon.h"
+#include "CBlackBoard.h"
 #include "CPlayerAction.h"
 #include "CGameInstance.h"
 
@@ -20,16 +21,6 @@ HRESULT CPlayerJump::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 {
 	if (FAILED(CBehavior::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
-
-	m_pTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_Transform();
-	if (nullptr == m_pTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pTransform);
-
-	m_pModel = dynamic_cast<CModel*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Component(L"Com_Model"));
-	if (nullptr == m_pModel)
-		return E_FAIL;
-	Safe_AddRef(m_pModel);
 
 	return S_OK;
 }
@@ -49,6 +40,11 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 
 	if (false == m_isJump)
 		return S_OK;
+
+	CTransform* pTransform = { nullptr };
+
+	if (FAILED(m_pBlackBoard->Get_Type(L"pTransform", pTransform)))
+		return E_FAIL;
 
 	CPlayerAction* pAction = dynamic_cast<CPlayerAction*>(m_pParentBehavior);
 
@@ -70,7 +66,7 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 	case Client::CPlayerAction::STATE_IDLE:
 	case Client::CPlayerAction::STATE_JUMP_LAND:
 		pAction->Set_State(CPlayerAction::STATE_JUMP);
-		isJump = m_pTransform->Jump(0.45f, TimeDelta);
+		isJump = pTransform->Jump(0.45f, TimeDelta);
 		if (true == m_isFirst)
 		{
 			pGameInstance->Play_Sound(L"char_war_jump_02.ogg", CSound_Manager::SOUND_PLAYER, 0.3f, true);
@@ -84,7 +80,7 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 			pAction->Set_State(CPlayerAction::STATE_DOUBLE_JUMP);
 			dynamic_cast<CPlayer*>(m_pOwner)->Get_Transform()->Reset_TimeAcc();
 		}
-		isJump = m_pTransform->Jump(0.45f, TimeDelta);
+		isJump = pTransform->Jump(0.45f, TimeDelta);
 		if (true == m_isFirst)
 		{
 			pGameInstance->Play_Sound(L"char_war_jumpdouble_02.ogg", CSound_Manager::SOUND_PLAYER, 0.3f, true);
@@ -93,7 +89,7 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 		break;
 
 	case Client::CPlayerAction::STATE_DOUBLE_JUMP:
-		isJump = m_pTransform->Jump(0.45f, TimeDelta);
+		isJump = pTransform->Jump(0.45f, TimeDelta);
 		break;
 	}
 
@@ -112,10 +108,15 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 
 void CPlayerJump::Reset()
 {
+	CTransform* pTransform = { nullptr };
+
+	if(FAILED(m_pBlackBoard->Get_Type(L"pTransform", pTransform)))
+		return;
+
 	m_isJump = false;
 	m_isDoubleJump = false;
 	m_isFirst = true;
-	m_pTransform->Reset_Jump();
+	pTransform->Reset_Jump();
 }
 
 CPlayerJump* CPlayerJump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -144,11 +145,5 @@ CPlayerJump* CPlayerJump::Clone(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 void CPlayerJump::Free()
 {
-	if (true == m_isCloned)
-	{
-		Safe_Release(m_pTransform);
-		Safe_Release(m_pModel);
-	}
-
 	CBehavior::Free();
 }

@@ -8,7 +8,6 @@
 #include "CPlayerMove.h"
 #include "CPlayerJump.h"
 #include "CPlayerAttack.h"
-#include "CPlayerKnockback.h"
 
 #include "CWheelWind.h"
 #include "CLeapAttack.h"
@@ -112,23 +111,25 @@ HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	m_eCurState = STATE_IDLE;
 
 	m_pPlayer = dynamic_cast<CPlayer*>(pOwner);
+	if (nullptr == m_pPlayer)
+		return E_FAIL;
+
 	m_pModelCom = dynamic_cast<CModel*>(m_pPlayer->Get_Component(L"Com_Model"));
+	if (nullptr == m_pModelCom)
+		return E_FAIL;
 	Safe_AddRef(m_pModelCom);
 
+	m_pHealth = dynamic_cast<CHealth*>(m_pPlayer->Get_Component(L"Com_Health"));
+	if (nullptr == m_pHealth)
+		return E_FAIL;
+	Safe_AddRef(m_pHealth);
 	return S_OK;
 }
 
 HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 {
-	if (STATE_KNOCKBACK == m_eCurState &&
-		false == m_isSuperArmor)
-	{
-		m_pKnockbackAction->Tick(TimeDelta);
-		return S_OK;
-	}
-
-	CPlayer::HITSTATE eHitState = m_pPlayer->Get_CurHitState();
-	if (eHitState != CPlayer::NONE &&
+	CHealth::HITSTATE eHitState = m_pHealth->Get_Current_HitState();
+	if (eHitState != CHealth::HIT_NONE &&
 		false == m_isSuperArmor)
 	{
 		m_pHitAction->Tick(TimeDelta);
@@ -137,7 +138,7 @@ HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 
 	if (true == m_isSuperArmor)
 	{
-		m_pPlayer->Set_CurHitState(CPlayer::NONE);
+		m_pHealth->Set_HitState(CHealth::HIT_NONE);
 
 		m_fTimeAcc += TimeDelta;
 
@@ -229,6 +230,9 @@ HRESULT CPlayerAction::AssembleBehaviors()
 	Assemble_Behavior(L"PlayerHit", pAction);
 	m_pHitAction = dynamic_cast<CPlayerHit*>(pAction);
 	
+	if (FAILED(m_pHitAction->AssembleBehaviors()))
+		return E_FAIL;
+
 	pAction = dynamic_cast<CPlayerMove*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerMove", m_pOwner));
 	if (nullptr == pAction)
 		return E_FAIL;
@@ -246,15 +250,6 @@ HRESULT CPlayerAction::AssembleBehaviors()
 		return E_FAIL;
 	Assemble_Behavior(L"PlayerAttack", pAction);
 	m_pAttackAction = dynamic_cast<CPlayerAttack*>(pAction);
-
-	pAction = dynamic_cast<CPlayerKnockback*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerKnockback", m_pOwner));
-	if (nullptr == pAction)
-		return E_FAIL;
-	Assemble_Behavior(L"PlayerKnockback", pAction);
-	m_pKnockbackAction = dynamic_cast<CPlayerKnockback*>(pAction);
-
-	if (FAILED(m_pKnockbackAction->AssembleBehaviors()))
-		return E_FAIL;
 
 	pAction = dynamic_cast<CWheelWind*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerWheelWind", m_pOwner));
 	if (nullptr == pAction)
@@ -291,6 +286,18 @@ void CPlayerAction::Reset_Jump()
 	m_pJumpAction->Reset();
 }
 
+HRESULT CPlayerAction::Bind_HitTimeAcc(CShader* pShader, const string& strConstantName)
+{
+	if (nullptr == pShader)
+		return E_FAIL;
+
+	_float fTimeAcc = m_pHitAction->Get_HitTimeAcc();
+	if (FAILED(pShader->Bind_RawValue(strConstantName, &fTimeAcc, sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CPlayerAction* CPlayerAction::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPlayerAction* pInstance = new CPlayerAction(pDevice, pContext);
@@ -317,15 +324,20 @@ CPlayerAction* CPlayerAction::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CPlayerAction::Free()
 {
-	Safe_Release(m_pPlayer);
-
-	if(true == m_isCloned)
+	if (true == m_isCloned)
+	{
+		Safe_Release(m_pPlayer);
+		Safe_Release(m_pHealth);
 		Safe_Release(m_pModelCom);
 
-	Safe_Release(m_pHitAction);
-	Safe_Release(m_pMoveAction);
-	Safe_Release(m_pJumpAction);
-	Safe_Release(m_pAttackAction);
+		Safe_Release(m_pHitAction);
+		Safe_Release(m_pMoveAction);
+		Safe_Release(m_pJumpAction);
+		Safe_Release(m_pAttackAction);
+
+		Safe_Release(m_pSkillWheelWind);
+		Safe_Release(m_pSkillLeapAttack);
+	}
 
 	CBehavior::Free();
 }

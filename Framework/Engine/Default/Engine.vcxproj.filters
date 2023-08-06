@@ -223,6 +223,18 @@
     <Filter Include="01. Utility\02. Component\Components\01. VIBuffer\Sprite">
       <UniqueIdentifier>{0a553705-0fe3-4cec-849c-227775cecee4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\02. Component\Components\09. Status">
+      <UniqueIdentifier>{c3c55c33-2187-40bd-9132-fa8fd74417e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\02. Component\Components\09. Status\Health">
+      <UniqueIdentifier>{9664bacc-78c2-4840-a6c4-1556aff2d266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\02. Component\Components\09. Status\Attack">
+      <UniqueIdentifier>{b4f3811c-9140-4e2a-afa6-03de6bdacc99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\02. Component\Components\09. Status\Defence">
+      <UniqueIdentifier>{22df31d8-930b-4573-889c-5dc618b90ba3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\CBase.h">
@@ -447,6 +459,18 @@
     <ClInclude Include="..\Public\CViBuffer_Sprite.h">
       <Filter>01. Utility\02. Component\Components\01. VIBuffer\Sprite</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CStatus.h">
+      <Filter>01. Utility\02. Component\Components\09. Status</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHealth.h">
+      <Filter>01. Utility\02. Component\Components\09. Status\Health</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CAttack.h">
+      <Filter>01. Utility\02. Component\Components\09. Status\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CDeffence.h">
+      <Filter>01. Utility\02. Component\Components\09. Status\Defence</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\CBase.cpp">
@@ -652,6 +676,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\CViBuffer_Sprite.cpp">
       <Filter>01. Utility\02. Component\Components\01. VIBuffer\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CStatus.cpp">
+      <Filter>01. Utility\02. Component\Components\09. Status</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHealth.cpp">
+      <Filter>01. Utility\02. Component\Components\09. Status\Health</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CAttack.cpp">
+      <Filter>01. Utility\02. Component\Components\09. Status\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CDeffence.cpp">
+      <Filter>01. Utility\02. Component\Components\09. Status\Defence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,17 +10,7 @@ CGameObject3D::CGameObject3D(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 CGameObject3D::CGameObject3D(const CGameObject3D& rhs)
 	: CGameObject(rhs)
-	, m_Status(rhs.m_Status)
 {
-}
-
-void CGameObject3D::Get_Damaged()
-{
-	m_eCurHitState = HIT;
-	m_Status.iHP -= 1;
-
-	if (m_Status.iHP <= 0)
-		m_isDead = true;
 }
 
 HRESULT CGameObject3D::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)

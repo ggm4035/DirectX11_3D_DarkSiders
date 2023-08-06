@@ -92,13 +92,13 @@ HRESULT CWheelWind::AssembleBehaviors()
 	if (nullptr == pSequence)
 		return E_FAIL;
 
-	pAction_Start = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
+	CAction* pAction_Start = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 	if (nullptr == pAction_Start)
 		return E_FAIL;
-	pAction_Ing = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
+	CAction* pAction_Ing = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 	if (nullptr == pAction_Ing)
 		return E_FAIL;
-	pAction_End = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
+	CAction* pAction_End = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 	if (nullptr == pAction_End)
 		return E_FAIL;
 

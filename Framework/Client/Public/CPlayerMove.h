@@ -5,8 +5,6 @@
 
 BEGIN(Engine)
 class CGameObject3D;
-class CTransform;
-class CModel;
 END
 
 BEGIN(Client)
@@ -32,8 +30,6 @@ private:
 
 private:
 	CGameObject3D* m_pCamera = { nullptr };
-	CTransform* m_pTransform = { nullptr };
-	CModel* m_pModel = { nullptr };
 
 public:
 	static CPlayerMove* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

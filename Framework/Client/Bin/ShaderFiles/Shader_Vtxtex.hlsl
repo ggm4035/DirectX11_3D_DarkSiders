@@ -182,10 +182,9 @@ float4 PS_MAIN_COLOR(PS_IN In) : SV_TARGET0
     vColor.a = vColor.r;
     
     if (vColor.a < 0.1f)
-
         discard;
     
-    vColor.a = 0.6f;
+    vColor.rgb = float3(1.f, 0.51f, 0.26f);
     
     return vColor;
 }

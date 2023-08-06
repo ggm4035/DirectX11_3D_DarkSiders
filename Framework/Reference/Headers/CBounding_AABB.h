@@ -42,8 +42,11 @@ public:
 	virtual void Free() override;
 
 public: /* Tool */
+	const _float3& Get_Extents() const {
+		return m_pAABB_Original->Extents;
+	}
 	void Set_Extents(const _float3& vExtents) {
-		m_pAABB_Original->Extents = vExtents;
+		m_pAABB_Original->Extents = vExtents; // 이러면 안돼는데; 고치기 귀찮으니까 넘김
 	}
 };
 

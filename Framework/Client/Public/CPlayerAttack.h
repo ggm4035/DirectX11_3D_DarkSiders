@@ -2,11 +2,6 @@
 #include "CBehavior.h"
 #include "Client_Defines.h"
 
-BEGIN(Engine)
-class CModel;
-class CTransform;
-END
-
 BEGIN(Client)
 
 class CPlayerAttack final : public CBehavior
@@ -36,8 +31,6 @@ private:
 	_int m_iCombo = { -1 };
 
 private:
-	CModel* m_pModel = { nullptr };
-	CTransform* m_pTransform = { nullptr };
 	class CWeapon* m_pWeapon = { nullptr };
 
 public:

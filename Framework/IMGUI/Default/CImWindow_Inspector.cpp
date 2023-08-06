@@ -73,7 +73,8 @@ void CImWindow_Inspector::Show_Components(CGameInstance* pGameInstance)
         Show_Texture();
     if (TOOL->m_pCurrentObject->Get_Shader())
         Show_Shader();
-
+    if (TOOL->m_pCurrentObject->Get_Collider())
+        Show_Collider();
 }
 
 void CImWindow_Inspector::Show_ObjectInfo(CGameInstance* pGameInstance)
@@ -123,20 +124,43 @@ void CImWindow_Inspector::Show_Transform()
 
         _float fScale = 0.f;
         _float3 vScale = pTransform->Get_Scaled();
-
         ImGui::SetNextItemWidth(50.f);
         ImGui::DragFloat("SCL_X", &vScale.x, 0.01f, -100.f, 100.f, "%.2f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
         ImGui::DragFloat("SCL_Y", &vScale.y, 0.01f, -100.f, 100.f, "%.2f"); ImGui::SameLine();
         ImGui::SetNextItemWidth(50.f);
         ImGui::DragFloat("SCL_Z", &vScale.z, 0.01f, -100.f, 100.f, "%.2f");
+
         ImGui::DragFloat("SCL_XYZ",&fScale, 0.01f, -100.f, 100.f, "%.2f");
+        cout << vScale.x << ", " << vScale.y << ", " << vScale.z << endl;
 
         _float3 vTemp = _float3(vScale.x + fScale, vScale.y + fScale, vScale.z + fScale);
-
+        
         pTransform->Scaled(vTemp);
 
         ImGui::Separator();
+    }
+}
+
+void CImWindow_Inspector::Show_Collider()
+{
+    if (ImGui::CollapsingHeader("Collider", ImGuiTreeNodeFlags_None))
+    {
+        ImGui::Text("Extents");
+        CCollider* pCollider = TOOL->m_pCurrentObject->Get_Collider();
+        if (nullptr == pCollider)
+            return;
+        
+        _float3 vExtents = pCollider->Get_Extents();
+
+        ImGui::SetNextItemWidth(50.f);
+        ImGui::DragFloat("Extent_X", &vExtents.x, 0.01f, -10000.f, 10000.f, "%.2f"); ImGui::SameLine();
+        ImGui::SetNextItemWidth(50.f);
+        ImGui::DragFloat("Extent_Y", &vExtents.y, 0.01f, -10000.f, 10000.f, "%.2f"); ImGui::SameLine();
+        ImGui::SetNextItemWidth(50.f);
+        ImGui::DragFloat("Extent_Z", &vExtents.z, 0.01f, -10000.f, 10000.f, "%.2f");
+
+        pCollider->Set_Extents(vExtents);
     }
 }
 

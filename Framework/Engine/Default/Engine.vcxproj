@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\CAnimation.h" />
     <ClInclude Include="..\Public\CApplication.h" />
+    <ClInclude Include="..\Public\CAttack.h" />
     <ClInclude Include="..\public\CBase.h" />
     <ClInclude Include="..\Public\CBehavior.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -193,10 +194,12 @@
     <ClInclude Include="..\Public\CComponent.h" />
     <ClInclude Include="..\Public\CComponent_Manager.h" />
     <ClInclude Include="..\Public\CDecoration.h" />
+    <ClInclude Include="..\Public\CDeffence.h" />
     <ClInclude Include="..\Public\CFileInfo.h" />
     <ClInclude Include="..\Public\CFont.h" />
     <ClInclude Include="..\Public\CFont_Manager.h" />
     <ClInclude Include="..\Public\CFrustum.h" />
+    <ClInclude Include="..\Public\CHealth.h" />
     <ClInclude Include="..\Public\CInput_Device.h" />
     <ClInclude Include="..\Public\CGameObject.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -242,6 +245,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\CShader.h" />
     <ClInclude Include="..\Public\CSound_Manager.h" />
+    <ClInclude Include="..\Public\CStatus.h" />
     <ClInclude Include="..\Public\CTarget_Manager.h" />
     <ClInclude Include="..\public\CTexture.h" />
     <ClInclude Include="..\Public\CTransform.h" />
@@ -271,6 +275,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\CAnimation.cpp" />
     <ClCompile Include="..\Private\CApplication.cpp" />
+    <ClCompile Include="..\Private\CAttack.cpp" />
     <ClCompile Include="..\private\CBase.cpp" />
     <ClCompile Include="..\Private\CBehavior.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -293,6 +298,7 @@
     <ClCompile Include="..\Private\CComponent.cpp" />
     <ClCompile Include="..\Private\CComponent_Manager.cpp" />
     <ClCompile Include="..\Private\CDecoration.cpp" />
+    <ClCompile Include="..\Private\CDeffence.cpp" />
     <ClCompile Include="..\Private\CFileInfo.cpp" />
     <ClCompile Include="..\Private\CFont.cpp" />
     <ClCompile Include="..\Private\CFont_Manager.cpp" />
@@ -308,6 +314,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CGraphic_Device.cpp" />
+    <ClCompile Include="..\Private\CHealth.cpp" />
     <ClCompile Include="..\Private\CInput_Device.cpp" />
     <ClCompile Include="..\Private\CInstance_Point.cpp" />
     <ClCompile Include="..\Private\CInstance_Rect.cpp">
@@ -344,6 +351,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\CShader.cpp" />
     <ClCompile Include="..\Private\CSound_Manager.cpp" />
+    <ClCompile Include="..\Private\CStatus.cpp" />
     <ClCompile Include="..\Private\CTarget_Manager.cpp" />
     <ClCompile Include="..\private\CTexture.cpp" />
     <ClCompile Include="..\Private\CTransform.cpp" />

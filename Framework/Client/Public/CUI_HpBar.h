@@ -9,6 +9,7 @@ class CVIBuffer_Rect;
 class CShader;
 class CTexture;
 class CTransform;
+class CHealth;
 END
 
 BEGIN(Client)
@@ -18,8 +19,7 @@ class CUI_HpBar final : public CGameObjectUI
 public:
 	typedef struct tagUIHpBarDesc : public CGameObjectUI::UIDESC
 	{
-		const _int* pMaxHp = { nullptr };
-		const _int* pHp = { nullptr };
+		CHealth* pHealth = { nullptr };
 		_float3 vOffset;
 		const _float4x4* pParentMatrix = { nullptr };
 		_uint iTextureLevelIndex = { 0 };
@@ -45,11 +45,11 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 
+	CHealth* m_pHealth = { nullptr };
+
 private:
 	const _float4x4* m_pParentMatrix = { nullptr };
 	_float3 m_vOffset;
-	const _int* m_pMaxHp = { nullptr };
-	const _int* m_pHp = { nullptr };
 	_uint m_iPassNum = { 3 };
 
 private:

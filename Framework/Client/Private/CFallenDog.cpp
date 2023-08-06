@@ -25,8 +25,10 @@ HRESULT CFallenDog::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 25;
-	m_Status.iMaxHP = 25;
+	m_pAttack->Set_Damage(1);
+	m_pDeffence->Set_Deffence(0);
+	m_pHealth->Set_Max_Hp(25);
+	m_pHealth->Set_HP(25);
 
 	return S_OK;
 }
@@ -70,7 +72,7 @@ void CFallenDog::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Huge_Attack" &&
@@ -78,7 +80,7 @@ void CFallenDog::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 	{
 		_float4 vPosition;
 		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		Collision.pOther->Get_Damaged_Knockback(vPosition);
+		dynamic_cast<CPlayer*>(Collision.pOther)->Get_Damaged_Knockback(vPosition, m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
@@ -227,12 +229,12 @@ HRESULT CFallenDog::Make_AI()
 
 	pAction_Dead->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			_bool* pIsDead = { nullptr };
-			pBlackBoard->Get_Type(L"isDead", pIsDead);
-			if (nullptr == pIsDead)
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
 				return false;
 
-			return *pIsDead;
+			return pHealth->isDead();
 		});
 
 	/* Assemble */

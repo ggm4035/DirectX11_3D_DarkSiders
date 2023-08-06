@@ -230,6 +230,71 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
 
 #pragma endregion
 
+#pragma region BreakAble
+
+        if (ImGui::BeginTabItem("BreakAble"))
+        {
+            if (ImGui::BeginTable("Table_Model_Static", 3, flags, ImVec2(0, 600), 0.f))
+            {
+                ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoHide, 0.0f, 1);
+                ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
+                ImGui::TableSetupColumn("ModelTag", ImGuiTableColumnFlags_NoSort | ImGuiTableColumnFlags_WidthFixed, 0.0f);
+
+                ImGui::TableHeadersRow();
+
+                /* Model Data Table Ãâ·Â */
+                static _uint iSelected = 0;
+                _uint iIndex = 0;
+                auto iter = m_GameObjectList[LAYER_BREAKABLE].begin();
+                for (auto& Object : m_GameObjectList[LAYER_BREAKABLE])
+                {
+                    ImGui::TableNextRow();
+
+                    ImGui::TableSetColumnIndex(0);
+                    if (ImGui::Selectable(std::to_string(iIndex).c_str(), iSelected == iIndex))
+                    {
+                        iSelected = iIndex;
+
+                        if (true == TOOL->m_pTopWindow->isPickSolidMode())
+                        {
+                            D3D11_RASTERIZER_DESC RasterizerDesc;
+                            ZeroMemory(&RasterizerDesc, sizeof RasterizerDesc);
+
+                            RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+                            RasterizerDesc.FrontCounterClockwise = { false };
+                            RasterizerDesc.FillMode = { D3D11_FILL_WIREFRAME };
+
+                            if (nullptr != TOOL->m_pCurrentObject)
+                                TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+
+                            RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+
+                            TOOL->m_pCurrentObject = *iter;
+
+                            if (nullptr != TOOL->m_pCurrentObject)
+                                TOOL->m_pCurrentObject->Set_RasterizerState(RasterizerDesc);
+                        }
+                        else
+                            TOOL->m_pCurrentObject = *iter;
+                    }
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Tag()).c_str());
+
+                    ImGui::TableSetColumnIndex(2);
+                    if (nullptr != Object->Get_Model())
+                        ImGui::TextUnformatted(pGameInstance->wstrToStr(Object->Get_Model()->Get_Tag()).c_str());
+
+                    ++iIndex;
+                    ++iter;
+                }
+                ImGui::EndTable();
+            }
+            ImGui::EndTabItem();
+        }
+
+#pragma endregion
+
 #pragma region Monster
 
         if (ImGui::BeginTabItem("Monster"))
@@ -293,8 +358,9 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
             ImGui::EndTabItem();
         }
 
-
 #pragma endregion
+
+#pragma region Trigger
 
         if (ImGui::BeginTabItem("Trigger"))
         {
@@ -332,6 +398,8 @@ void CImWindow_Base::Create_Object(CGameInstance* pGameInstance)
         }
         ImGui::EndTabBar();
     }
+
+#pragma endregion
 
     if (ImGui::Button("Create new Object"))
         TOOL->m_pCreateWindow->m_bIsOpen = true;

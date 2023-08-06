@@ -60,19 +60,12 @@ void CStone_Effect::Tick(const _double& TimeDelta)
 	}
 
 	m_pBufferCom->Tick(ParticleMatrices, TimeDelta);
-	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CStone_Effect::AfterFrustumTick(const _double& TimeDelta)
 {
 	if (nullptr != m_pRenderer)
-	{
 		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
-#ifdef _DEBUG
-		Add_Colliders_Debug_Render_Group(m_pRenderer);
-#endif
-	}
-
 }
 
 void CStone_Effect::Late_Tick(const _double& TimeDelta)
@@ -108,7 +101,6 @@ void CStone_Effect::Reset_Particle(STONEPARTICLE& Particle)
 	Particle.vVelocity = _float4(GetRandomFloat(-5.f, 5.f), GetRandomFloat(15.f, 25.f), GetRandomFloat(-5.f, 5.f), 0.f);
 
 	Particle.vAccel = _float4(0.f, GetRandomFloat(-35.f, -45.f), 0.f, 0.f);
-	//Particle.dGenTime = (rand() % 300) / 100.f;
 
 	XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixIdentity());
 }
@@ -130,15 +122,6 @@ HRESULT CStone_Effect::Add_Components()
 		return E_FAIL;
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_PointInstance", L"Com_Shader",
 		(CComponent**)&m_pShaderCom, this)))
-		return E_FAIL;
-
-	/* Collider */
-	CBounding_AABB::AABBDESC AABBDesc;
-	AABBDesc.vExtents = _float3(1.f, 1.f, 1.f);
-	AABBDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	AABBDesc.eGroup = CCollider::COL_PLAYER;
-	AABBDesc.vOffset = _float3(0.f, 1.f, 0.f);
-	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Body", &AABBDesc)))
 		return E_FAIL;
 
 	m_vecParticles.resize(20);

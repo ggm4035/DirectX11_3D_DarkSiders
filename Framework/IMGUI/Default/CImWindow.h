@@ -12,7 +12,7 @@ BEGIN(Imgui)
 class CImWindow abstract : public CBase
 {
 public:
-    enum LAYERTYPE { LAYER_STATIC, LAYER_MONSTER, LAYER_END };
+    enum LAYERTYPE { LAYER_STATIC, LAYER_BREAKABLE, LAYER_MONSTER, LAYER_END };
 
 protected:
     explicit CImWindow();
@@ -31,12 +31,11 @@ protected: /* For.CDummyTrigger */
     list<class CDummyTrigger*> m_TriggerList;
     _uint m_iNumTriggers = { 0 };
 
-protected: /* For.CDummyUI */
+protected: /* For.BreakAble */
 
 protected:
     class CDummyObject3D* Find_GameObject(const wstring& GameObjectTag, LAYERTYPE eType = LAYER_STATIC);
     class CDummyTrigger* Find_Trigger(const wstring& TriggerTag);
-    class CDummyUI* Find_UI(const wstring& UITag);
 
 public:
     virtual void Free(void) override;

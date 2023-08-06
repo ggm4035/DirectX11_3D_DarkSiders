@@ -18,6 +18,10 @@
 #include "CModel.h"
 #include "CBone.h"
 
+#include "CHealth.h"
+#include "CAttack.h"
+#include "CDeffence.h"
+
 #include "CBounding_OBB.h"
 #include "CBounding_AABB.h"
 #include "CBounding_Sphere.h"

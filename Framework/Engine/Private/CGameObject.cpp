@@ -13,6 +13,16 @@ CGameObject::CGameObject(const CGameObject& rhs)
 {
 }
 
+CGameObject* CGameObject::Get_Parts(const wstring& wstrPartsTag)
+{
+	auto iter = m_Parts.find(wstrPartsTag);
+
+	if (iter == m_Parts.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 void CGameObject::Tick(const _double& TimeDelta)
 {
 #if defined(_USE_IMGUI) || defined(_DEBUG)
@@ -38,14 +48,12 @@ void CGameObject::Late_Tick(const _double& TimeDelta)
 HRESULT CGameObject::Add_Parts(const _uint& iLevelIndex, const wstring& PrototypeTag, 
 	const wstring& ObjectTag, CComponent* pOwner, void* pArg)
 {
-	CGameObject* pGameObject = CObject_Manager::GetInstance()->
-		Clone_GameObject(iLevelIndex, PrototypeTag, ObjectTag, pOwner, pArg);
-
-	if (nullptr == pGameObject)
+	if (nullptr != Get_Parts(ObjectTag))
 		return E_FAIL;
 
-	auto iter = m_Parts.find(ObjectTag);
-	if (iter != m_Parts.end())
+	CGameObject* pGameObject = CObject_Manager::GetInstance()->
+		Clone_GameObject(iLevelIndex, PrototypeTag, ObjectTag, pOwner, pArg);
+	if (nullptr == pGameObject)
 		return E_FAIL;
 
 	m_Parts.emplace(ObjectTag, pGameObject);
@@ -53,16 +61,6 @@ HRESULT CGameObject::Add_Parts(const _uint& iLevelIndex, const wstring& Prototyp
 	pGameObject->Set_Tag(ObjectTag);
 
 	return S_OK;
-}
-
-CGameObject* CGameObject::Find_Parts(const wstring& wstrPartsTag)
-{
-	auto iter = m_Parts.find(wstrPartsTag);
-
-	if (iter == m_Parts.end())
-		return nullptr;
-
-	return iter->second;
 }
 
 void CGameObject::Free()

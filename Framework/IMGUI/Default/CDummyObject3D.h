@@ -29,9 +29,9 @@ public:
     CShader* Get_Shader() { return m_pShaderCom; }
     CTexture* Get_Texture() { return m_pTextureCom; }
     CRenderer* Get_Renderer() { return m_pRenderer; }
+    CCollider* Get_Collider() { return m_pCollider; }
     CModel* Get_Model() { return m_pModelCom; }
     CNavigation* Get_Navigation() { return m_pNavigationCom; }
-    CRenderer::RENDERGROUP Get_RenderGroup() { return m_eRenderGroup; }
     void Updata_Toggle() { m_isUpdate = m_isUpdate ? false : true; }
     MODEL_BINARYDATA Get_Model_BinaryData();
 
@@ -48,9 +48,9 @@ public:
     _float m_fDetail = { 1.f };
     _uint m_iNavigationIndex = { 0 };
     ID3D11RasterizerState* m_pRasterizer = { nullptr };
-    CRenderer::RENDERGROUP m_eRenderGroup = { CRenderer::RENDER_NONBLEND };
 
 public:
+    HRESULT Add_Collider(const wstring PrototypeTag); // aabb
     HRESULT Add_Texture(const wstring PrototypeTag);
     HRESULT Add_Shader(const wstring PrototypeTag);
     HRESULT Add_Buffer(const wstring PrototypeTag);
@@ -65,8 +65,8 @@ private:
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer* m_pBufferCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
+    CCollider* m_pCollider = { nullptr };
     CNavigation* m_pNavigationCom = { nullptr };
-    CCollider* m_pColliderCom = { nullptr };
 
 private:
     _bool m_isUpdate = { true };

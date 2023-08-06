@@ -3,11 +3,6 @@
 #include "CBehavior.h"
 #include "Client_Defines.h"
 
-BEGIN(Engine)
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
 
 class CPlayerJump final : public CBehavior
@@ -34,10 +29,6 @@ private:
 	_bool m_isJump = { false };
 	_bool m_isDoubleJump = { false };
 	_bool m_isFirst = { true };
-
-private:
-	CTransform* m_pTransform = { nullptr };
-	CModel* m_pModel = { nullptr };
 
 public:
 	static CPlayerJump* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

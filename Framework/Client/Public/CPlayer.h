@@ -11,8 +11,9 @@ class CCollider;
 class CNavigation;
 class CRoot;
 
-class CTexture;
-class CVIBuffer_Sprite;
+class CHealth;
+class CAttack;
+class CDeffence;
 END
 
 BEGIN(Client)
@@ -20,7 +21,6 @@ BEGIN(Client)
 class CPlayer final : public CGameObject3D
 {
 public:
-	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
 	typedef struct tagPlayerDesc : public CTransform::TRASNFORMDESC
 	{
 		_float4x4 WorldMatrix;
@@ -28,19 +28,13 @@ public:
 	}PLAYERDESC;
 
 public:
-	virtual void Get_Damaged_Knockback(const _float4& _vPosition) override;
+	virtual void Get_Damaged(const CAttack* pAttack) override;
+	void Get_Damaged_Knockback(const _float4& _vPosition, const CAttack* pAttack);
 
 	class CPlayerAction* Get_Action() {
 		return m_pActionCom;
 	}
 	CCollider* Get_Collider(const wstring& wstrColliderTag);
-	CGameObject* Get_Parts(const wstring& wstrPartsTag);
-	HITSTATE Get_CurHitState() const {
-		return m_eCurHitState;
-	}
-	void Set_CurHitState(HITSTATE eState) {
-		m_eCurHitState = eState;
-	}
 
 private:
 	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -61,17 +55,18 @@ public:
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 private:
-	_float m_fHitTimeAcc = { 0.f };
-
-private:
+	CNavigation* m_pNavigationCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CNavigation* m_pNavigationCom = { nullptr };
-	class CStone_Effect* m_pEffect = { nullptr };
-
 	CRoot* m_pRoot = { nullptr };
+
 	class CPlayerAction* m_pActionCom = { nullptr };
+
+private: /* Status */
+	CHealth* m_pHealth = { nullptr };
+	CAttack* m_pAttack = { nullptr };
+	CDeffence* m_pDeffence = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

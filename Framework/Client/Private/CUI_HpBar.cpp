@@ -27,8 +27,8 @@ HRESULT CUI_HpBar::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void
 	m_pParentMatrix = Desc.pParentMatrix;
 	m_iPassNum = Desc.iPassNum;
 	m_vOffset = Desc.vOffset;
-	m_pMaxHp = Desc.pMaxHp;
-	m_pHp = Desc.pHp;
+	m_pHealth = Desc.pHealth;
+	Safe_AddRef(m_pHealth);
 
 	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
@@ -119,8 +119,8 @@ HRESULT CUI_HpBar::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	_float fData = _float(*m_pHp) / _float(*m_pMaxHp);
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHpPer", &fData, sizeof(_float))))
+	_float fPercent = m_pHealth->Get_Current_HP_Percent();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHpPer", &fPercent, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture")))
@@ -161,5 +161,7 @@ void CUI_HpBar::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pBufferCom);
+	Safe_Release(m_pHealth);
+
 	CGameObjectUI::Free();
 }

@@ -31,6 +31,7 @@ public:
 	/* Transform 정보 초기화 하고 싶으면 void*에 값 채우기 */
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
+	virtual void AfterFrustumTick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
 

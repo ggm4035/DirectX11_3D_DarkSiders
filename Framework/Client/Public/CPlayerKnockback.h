@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CTransform;
+class CHealth;
 class CModel;
 END
 
@@ -26,16 +27,8 @@ public:
 	HRESULT AssembleBehaviors();
 
 private:
-	class CPlayer* m_pPlayer = { nullptr };
-	class CAction* pAction_Loop = { nullptr };
-	class CAction* pAction_Exit = { nullptr };
-
 	_float3 m_vDirection;
 	_bool m_isFirst = { true };
-
-private:
-	CTransform* m_pTransform = { nullptr };
-	CModel* m_pModel = { nullptr };
 
 public:
 	static CPlayerKnockback* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

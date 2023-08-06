@@ -103,9 +103,6 @@
     <Filter Include="02. GameObject\00. Player\PlayerActions\04. Skills\LeapAttack">
       <UniqueIdentifier>{4cb5d671-3dab-4b3f-9b07-8c1ec135330f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\00. Player\PlayerActions\05. Knockback">
-      <UniqueIdentifier>{80abb2b4-840c-4437-9b66-06c68ccfa654}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\03. Parts\02. Camera">
       <UniqueIdentifier>{25c94e65-65fe-4b4a-8170-e01b1882dc34}</UniqueIdentifier>
     </Filter>
@@ -177,6 +174,12 @@
     </Filter>
     <Filter Include="02. GameObject\01. Monster\06. HollowLord">
       <UniqueIdentifier>{f456dcfc-e88e-43bb-b98c-254d7b113868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. Environment\01. Static_Object\BreakAble">
+      <UniqueIdentifier>{944a1738-0e4a-4751-8056-f37ace43776e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\PlayerActions\03. HitAction\Knockback">
+      <UniqueIdentifier>{80abb2b4-840c-4437-9b66-06c68ccfa654}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -337,7 +340,7 @@
       <Filter>02. GameObject\00. Player\PlayerActions\04. Skills\LeapAttack</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CPlayerKnockback.h">
-      <Filter>02. GameObject\00. Player\PlayerActions\05. Knockback</Filter>
+      <Filter>02. GameObject\00. Player\PlayerActions\03. HitAction\Knockback</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CPattern_Wheel.h">
       <Filter>02. GameObject\01. Monster\00. Patterns\Legion_Champion</Filter>
@@ -386,6 +389,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\CStone_Effect.h">
       <Filter>02. GameObject\06. Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CGather_Effect.h">
+      <Filter>02. GameObject\06. Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CBreakAbleObject.h">
+      <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -539,7 +548,7 @@
       <Filter>02. GameObject\00. Player\PlayerActions\04. Skills\LeapAttack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CPlayerKnockback.cpp">
-      <Filter>02. GameObject\00. Player\PlayerActions\05. Knockback</Filter>
+      <Filter>02. GameObject\00. Player\PlayerActions\03. HitAction\Knockback</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CPattern_Wheel.cpp">
       <Filter>02. GameObject\01. Monster\00. Patterns\Legion_Champion</Filter>
@@ -588,6 +597,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CStone_Effect.cpp">
       <Filter>02. GameObject\06. Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CGather_Effect.cpp">
+      <Filter>02. GameObject\06. Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CBreakAbleObject.cpp">
+      <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -28,8 +28,10 @@ HRESULT CLegion_Melee::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	if (FAILED(Add_Parts()))
 		return E_FAIL;
 
-	m_Status.iHP = 7;
-	m_Status.iMaxHP = 7;
+	m_pAttack->Set_Damage(1);
+	m_pDeffence->Set_Deffence(0);
+	m_pHealth->Set_Max_Hp(7);
+	m_pHealth->Set_HP(7);
 
 	return S_OK;
 }
@@ -74,7 +76,7 @@ void CLegion_Melee::OnCollisionEnter(CCollider::COLLISION Collision, const _doub
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
 		//cout << "µ¥¹ÌÁö" << endl;
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&

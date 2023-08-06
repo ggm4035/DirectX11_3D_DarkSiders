@@ -1,6 +1,6 @@
-
 #include "CTerrain.h"
 
+#include "CPlayer.h"
 #include "CGameInstance.h"
 
 CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -46,6 +46,30 @@ HRESULT CTerrain::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 void CTerrain::Tick(const _double& TimeDelta)
 {
 	m_fTimeAcc += TimeDelta;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pGameInstance->Get_Player());
+	if (nullptr == pPlayer)
+		return;
+
+	CTransform* pPlayerTransform = pPlayer->Get_Transform();
+	if (nullptr == pPlayerTransform)
+		return;
+
+	CNavigation* pPlayerNavigation = dynamic_cast<CNavigation*>(pPlayer->Get_Component(L"Com_Navigation"));
+	if (nullptr == pPlayerNavigation)
+		return;
+
+	if (CCell::OPT_LAVA == pPlayerNavigation->Get_Cur_Cell_Option() && 
+		m_fTimeAcc > 1.5f && false == pPlayerTransform->isJump())
+	{
+		m_fTimeAcc = 0.f;
+		pPlayer->Get_Damaged(m_pAttack);
+	}
+
+	Safe_Release(pGameInstance);
 }
 
 void CTerrain::Late_Tick(const _double& TimeDelta)
@@ -92,6 +116,13 @@ HRESULT CTerrain::Add_Components()
 
 	if (FAILED(Add_Component(m_iLevelIndex, L"Navigation",
 		L"Com_Navigation", (CComponent**)&m_pNavigationCom, this)))
+		return E_FAIL;
+
+	CAttack::ATTACKDESC AttackDesc;
+	AttackDesc.iDamage = 1;
+	AttackDesc.isIgnoreDeffence = true;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Attack", L"Com_Attack",
+		(CComponent**)&m_pAttack, this, &AttackDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -173,6 +204,7 @@ void CTerrain::Free()
 	Safe_Release(m_pNmTextureCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pAttack);
 
 	CGameObject3D::Free();
 }

@@ -34,6 +34,17 @@ void CImWindow::Refresh()
 
     m_iNumGameObjects[LAYER_STATIC] = m_GameObjectList[LAYER_STATIC].size();
 
+    /* Refresh BreakAble */
+    pObjects = pGameInstance->Get_GameObject_Layer(L"Layer_BreakAble");
+
+    for (auto& pObject : pObjects)
+    {
+        if (dynamic_cast<CDummyObject3D*>(pObject))
+            m_GameObjectList[LAYER_BREAKABLE].push_back(static_cast<CDummyObject3D*>(pObject));
+    }
+
+    m_iNumGameObjects[LAYER_BREAKABLE] = m_GameObjectList[LAYER_BREAKABLE].size();
+
     /* Refresh Monster */
     pObjects = pGameInstance->Get_GameObject_Layer(L"Layer_Monster");
 
@@ -50,8 +61,7 @@ void CImWindow::Refresh()
 
     for (auto& pTrigger : pObjects)
     {
-        if (dynamic_cast<CDummyTrigger*>(pTrigger))
-            m_TriggerList.push_back(static_cast<CDummyTrigger*>(pTrigger));
+        m_TriggerList.push_back(static_cast<CDummyTrigger*>(pTrigger));
     }
 
     m_iNumTriggers = m_TriggerList.size();
@@ -78,11 +88,6 @@ CDummyTrigger* CImWindow::Find_Trigger(const wstring& TriggerTag)
             return *iter;
     }
 
-    return nullptr;
-}
-
-CDummyUI* CImWindow::Find_UI(const wstring& UITag)
-{
     return nullptr;
 }
 

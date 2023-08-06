@@ -34,12 +34,12 @@ HRESULT CHit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pAr
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			_bool* pIsDead = { nullptr };
-			pBlackBoard->Get_Type(L"isDead", pIsDead);
-			if (nullptr == pIsDead)
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
 				return false;
 
-			return !(*pIsDead);
+			return !pHealth->isDead();
 		});
 
 	return S_OK;
@@ -49,21 +49,21 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 {
 
 	CGameObject3D* pTarget = { nullptr };
-	CGameObject3D::HITSTATE* pCurState = { nullptr };
+	CHealth* pHealth = { nullptr };
 	_float* pHitTimeAcc = { nullptr };
 
-	m_pBlackBoard->Get_Type(L"eCurHitState", pCurState);
+	m_pBlackBoard->Get_Type(L"pHealth", pHealth);
 	m_pBlackBoard->Get_Type(L"pTarget", pTarget);
 	m_pBlackBoard->Get_Type(L"fHitTimeAcc", pHitTimeAcc);
 
-	switch (*pCurState)
+	switch (pHealth->Get_Current_HitState())
 	{
-	case CGameObject3D::NONE:
+	case CHealth::HIT_NONE:
 		*pHitTimeAcc = 0.f;
 
 		return BEHAVIOR_FAIL;
 
-	case CGameObject3D::HIT:
+	case CHealth::HIT_ENTER:
 		m_pTransform->Set_On_Navigation(true);
 
 		CGameInstance::GetInstance()->Play_Sound(m_wstrSoundTag.c_str(), CSound_Manager::SOUND_ENEMY, 0.3f, true);
@@ -74,17 +74,17 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 		if(true == m_isImpact)
 			m_pModel->Change_Animation("Impact");
 
-		*pCurState = CGameObject3D::HITTING;
+		pHealth->Set_HitState(CHealth::HIT_STAY);
 		*pHitTimeAcc = 0.f;
 
 		return BEHAVIOR_SUCCESS;
 
-	case CGameObject3D::HITTING:
+	case CHealth::HIT_STAY:
 		*pHitTimeAcc += TimeDelta * 4.f;
 
 		if (true == m_pModel->isFinishedAnimation())
 		{
-			*pCurState = CGameObject3D::NONE;
+			pHealth->Set_HitState(CHealth::HIT_NONE);
 			return BEHAVIOR_FAIL;
 		}
 

@@ -9,6 +9,7 @@ class CTexture;
 class CShader;
 class CRenderer;
 class CNavigation;
+class CAttack;
 END
 
 BEGIN(Client)
@@ -43,6 +44,9 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
+
+private: /* Status */
+	CAttack* m_pAttack = { nullptr };
 
 private:
 	_float m_fTimeAcc = { 0.f };

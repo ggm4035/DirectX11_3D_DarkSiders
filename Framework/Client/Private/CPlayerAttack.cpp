@@ -3,8 +3,8 @@
 
 #include "CGameInstance.h"
 #include "CPlayerAction.h"
+#include "CBlackBoard.h"
 #include "CPlayer.h"
-#include "CModel.h"
 #include "CWeapon.h"
 
 CPlayerAttack::CPlayerAttack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -22,16 +22,6 @@ HRESULT CPlayerAttack::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	if (FAILED(CBehavior::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-	m_pModel = dynamic_cast<CModel*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Component(L"Com_Model"));
-	if (nullptr == m_pModel)
-		return E_FAIL;
-	Safe_AddRef(m_pModel);
-
-	m_pTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Transform());
-	if (nullptr == m_pTransform)
-		return E_FAIL;
-	Safe_AddRef(m_pTransform);
-
 	m_pWeapon = dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"));
 	if (nullptr == m_pWeapon)
 		return E_FAIL;
@@ -42,7 +32,12 @@ HRESULT CPlayerAttack::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 HRESULT CPlayerAttack::Tick(const _double& TimeDelta)
 {
-	if (true == m_pModel->isFinishedAnimation() &&
+	CModel* pModel = { nullptr };
+
+	if(FAILED(m_pBlackBoard->Get_Type(L"pModel", pModel)))
+		return E_FAIL;
+
+	if (true == pModel->isFinishedAnimation() &&
 		true == m_Qmessage.empty())
 		m_iCombo = -1;
 
@@ -59,8 +54,8 @@ HRESULT CPlayerAttack::Tick(const _double& TimeDelta)
 		case CInput_Device::DIM_LB:
 			m_eCurrentAttack = TYPE_LIGHT;
 
-			if (true == m_pModel->isLoopAnimation() ||
-				true == m_pModel->isAbleChangeAnimation())
+			if (true == pModel->isLoopAnimation() ||
+				true == pModel->isAbleChangeAnimation())
 				m_iCombo = (3 < ++m_iCombo) ? -1 : m_iCombo;
 
 			break;
@@ -159,8 +154,6 @@ void CPlayerAttack::Free()
 {
 	if (true == m_isCloned)
 	{
-		Safe_Release(m_pModel);
-		Safe_Release(m_pTransform);
 		Safe_Release(m_pWeapon);
 	}
 

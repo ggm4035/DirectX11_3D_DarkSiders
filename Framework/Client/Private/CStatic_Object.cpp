@@ -1,9 +1,4 @@
-
 #include "CStatic_Object.h"
-
-#include "CShader.h"
-#include "CModel.h"
-#include "CRenderer.h"
 
 #include "CGameInstance.h"
 
@@ -50,7 +45,7 @@ void CStatic_Object::Tick(const _double& TimeDelta)
 {
 }
 
-void CStatic_Object::Late_Tick(const _double& TimeDelta)
+void CStatic_Object::AfterFrustumTick(const _double& TimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -64,8 +59,15 @@ void CStatic_Object::Late_Tick(const _double& TimeDelta)
 	Safe_Release(pGameInstance);
 }
 
+void CStatic_Object::Late_Tick(const _double& TimeDelta)
+{
+}
+
 HRESULT CStatic_Object::Render()
 {
+	if (m_wstrTag == L"Rocks_Circle")
+		int i = 0;
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -105,18 +107,15 @@ HRESULT CStatic_Object::Bind_ShaderResources()
 	Safe_AddRef(pGameInstance);
 
 	_float4x4 InputMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix",
-		&InputMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_VIEW);
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix",
-		&InputMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ViewMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
-	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix",
-		&InputMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

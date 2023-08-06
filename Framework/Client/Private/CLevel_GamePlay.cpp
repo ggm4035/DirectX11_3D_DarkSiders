@@ -130,7 +130,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 			return E_FAIL;
 	}
 
-	/* Trigger_Free */
+	/* Load Trigger_Free */
 	for (auto& Data : FileData.vecTriggerData)
 	{
 		CTrigger_Free::TRIGGERDESC Desc;
@@ -329,8 +329,7 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
 	UIDesc.iPassNum = 3;
-	UIDesc.pMaxHp = &pPlayer->Get_Status().iMaxHP;
-	UIDesc.pHp = &pPlayer->Get_Status().iHP;
+	UIDesc.pHealth = dynamic_cast<CHealth*>(pPlayer->Get_Component(L"Com_Health"));
 
 	m_pPlayerUI[3] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitHpBar", nullptr, &UIDesc));
 	if (nullptr == m_pPlayerUI[3])

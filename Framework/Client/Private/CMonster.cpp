@@ -16,6 +16,17 @@ CMonster::CMonster(const CMonster& rhs)
 {
 }
 
+void CMonster::Get_Damaged(const CAttack* pAttack)
+{
+	_int iDeffence = m_pDeffence->Get_Deffence();
+	_int iDamage = pAttack->Get_Damage();
+
+	if (false == pAttack->isIgnoreDeffence())
+		Saturate(iDamage -= iDeffence, 0, iDamage);
+
+	m_pHealth->Damaged(iDamage);
+}
+
 HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
@@ -46,8 +57,7 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
 	UIDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4Ptr();
 	UIDesc.vOffset = _float3(0.f, 2.f, 0.f);
-	UIDesc.pMaxHp = &m_Status.iMaxHP;
-	UIDesc.pHp = &m_Status.iHP;
+	UIDesc.pHealth = m_pHealth;
 	UIDesc.iPassNum = 3;
 
 	CGameObject* pGameObject = pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_HpBar", L"UI_HealthBar", this, &UIDesc);
@@ -69,26 +79,6 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 			return E_FAIL;
 		m_pTransformCom->Bind_Navigation(m_pNavigationCom);
 	}
-
-	/* Root */
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
-		(CComponent**)&m_pRoot, this)))
-		return E_FAIL;
-
-	/* BlackBoard */
-	m_pRoot->Add_Type(L"vDirection", _float3());
-	m_pRoot->Add_Type(L"fTimeAcc", &m_fTimeAcc);
-
-	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
-	m_pRoot->Add_Type(L"eCurHitState", &m_eCurHitState);
-
-	m_pRoot->Add_Type(L"isDead", &m_isDead);
-	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
-	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
-	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
-	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
-
-	m_pRoot->Add_Type(L"pTarget", pGameInstance->Get_Player());
 
 	return S_OK;
 }
@@ -130,8 +120,7 @@ void CMonster::AfterFrustumTick(const _double& TimeDelta)
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
-		if (nullptr != m_pHealthBar &&
-			m_Status.iHP < m_Status.iMaxHP)
+		if (nullptr != m_pHealthBar)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pHealthBar);
 
 #ifdef _DEBUG
@@ -158,7 +147,7 @@ HRESULT CMonster::Render(/*const _uint& iPassIndex*/)
 
 	_uint iPassNum = { 0 };
 
-	if (NONE != m_eCurHitState)
+	if (CHealth::HIT_NONE != m_pHealth->Get_Current_HitState())
 		iPassNum = 1;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -221,6 +210,46 @@ HRESULT CMonster::Add_Components()
 		L"Com_Renderer", (CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
+	/* Status */
+	CHealth::HEALTHDESC HealthDesc;
+	HealthDesc.iMaxHP = 1;
+	HealthDesc.iHP = 1;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Health", L"Com_Health",
+		(CComponent**)&m_pHealth, this, &HealthDesc)))
+		return E_FAIL;
+
+	CAttack::ATTACKDESC AttackDesc;
+	AttackDesc.iDamage = 1;
+	AttackDesc.isIgnoreDeffence = false;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Attack", L"Com_Attack",
+		(CComponent**)&m_pAttack, this, &AttackDesc)))
+		return E_FAIL;
+
+	CDeffence::DEFFENCEDESC DeffenceDesc;
+	DeffenceDesc.iDeffence = 0;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Deffence", L"Com_Deffence",
+		(CComponent**)&m_pDeffence, this, &DeffenceDesc)))
+		return E_FAIL;
+
+	/* Root */
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
+		(CComponent**)&m_pRoot, this)))
+		return E_FAIL;
+
+	/* BlackBoard */
+	m_pRoot->Add_Type(L"vDirection", _float3());
+	m_pRoot->Add_Type(L"fTimeAcc", &m_fTimeAcc);
+
+	m_pRoot->Add_Type(L"fHitTimeAcc", &m_fHitTimeAcc);
+
+	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
+	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
+	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
+	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
+
+	m_pRoot->Add_Type(L"pTarget", CGameInstance::GetInstance()->Get_Player());
+	m_pRoot->Add_Type(L"pHealth", m_pHealth);
+
 	return S_OK;
 }
 
@@ -258,6 +287,10 @@ void CMonster::Free()
 	Safe_Release(m_pRoot);
 
 	Safe_Release(m_pHealthBar);
+
+	Safe_Release(m_pHealth);
+	Safe_Release(m_pAttack);
+	Safe_Release(m_pDeffence);
 
 	CGameObject3D::Free();
 }

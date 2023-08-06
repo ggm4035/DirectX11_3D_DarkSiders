@@ -28,8 +28,10 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 4;
-	m_Status.iMaxHP = 4;
+	m_pAttack->Set_Damage(1);
+	m_pDeffence->Set_Deffence(0);
+	m_pHealth->Set_Max_Hp(6);
+	m_pHealth->Set_HP(6);
 
 	return S_OK;
 }
@@ -103,7 +105,7 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Explosion" &&
@@ -111,7 +113,7 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 	{
 		_float4 vPosition;
 		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		Collision.pOther->Get_Damaged_Knockback(vPosition);
+		dynamic_cast<CPlayer*>(Collision.pOther)->Get_Damaged_Knockback(vPosition, m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
@@ -299,12 +301,12 @@ HRESULT CGoblin::Make_AI()
 
 	pAction_Explosion_Start->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			_bool* pIsDead = { nullptr };
-			pBlackBoard->Get_Type(L"isDead", pIsDead);
-			if (nullptr == pIsDead)
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
 				return false;
 
-			return *pIsDead;
+			return pHealth->isDead();
 		});
 
 	/* Assemble */

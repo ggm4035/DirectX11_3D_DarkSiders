@@ -133,16 +133,32 @@ void CVIBuffer_Trail::Tick(const _float4x4& WorldMatrix, const _double& TimeDelt
 		_vector vSrcPosition = XMLoadFloat3(&pVertices[i].vPosition);
 		_vector vDstPosition = XMLoadFloat3(&pVertices[i - 2].vPosition);
 		_float fDistance = XMVectorGetX(XMVector3Length(vSrcPosition - vDstPosition));
-		_vector vLerpPosition = vDstPosition;
-
-		/*if (0.1f < fDistance)
-			vLerpPosition = XMVectorLerp(vSrcPosition, vDstPosition, TimeDelta * 10.f);*/
-
-		XMStoreFloat3(&pVertices[i].vPosition, vLerpPosition);
+		XMStoreFloat3(&pVertices[i].vPosition, vDstPosition);
 	}
 
 	pVertices[0].vPosition = *pHightPosition;
 	pVertices[1].vPosition = *pLowPosition;
+
+	/* 스프라인 구면 보간 */
+	/*
+	for (_uint i = 0; i < (m_iNumVertices / 2) - 4; ++i)
+	{
+		XMStoreFloat3(&pVertices[(i + 2) * 2].vPosition,
+			XMVectorCatmullRom(
+				XMLoadFloat3(&pVertices[i * 2].vPosition),
+				XMLoadFloat3(&pVertices[(i + 1) * 2].vPosition),
+				XMLoadFloat3(&pVertices[(i + 3) * 2].vPosition),
+				XMLoadFloat3(&pVertices[(i + 4) * 2].vPosition),
+				0.5f));
+
+		XMStoreFloat3(&pVertices[(i + 2) * 2 + 1].vPosition,
+			XMVectorCatmullRom(
+				XMLoadFloat3(&pVertices[i * 2 + 1].vPosition),
+				XMLoadFloat3(&pVertices[(i + 1) * 2 + 1].vPosition),
+				XMLoadFloat3(&pVertices[(i + 3) * 2 + 1].vPosition),
+				XMLoadFloat3(&pVertices[(i + 4) * 2 + 1].vPosition),
+				0.5f));
+	}*/
 
 	m_pContext->Unmap(m_pVB, 0);
 }

@@ -24,12 +24,12 @@ HRESULT CAction_Hit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			CGameObject3D::HITSTATE* pCurHitState = { nullptr };
-			pBlackBoard->Get_Type(L"eCurHitState", pCurHitState);
-			if (nullptr == pCurHitState)
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
 				return false;
 
-			if (CGameObject3D::NONE == *pCurHitState)
+			if (CHealth::HIT_NONE == pHealth->Get_Current_HitState())
 				return false;
 
 			return true;
@@ -62,12 +62,12 @@ HRESULT CAction_Hit::Assemble_Childs()
 	pAction_Dead->Bind_AnimationTag("Dead");
 	pAction_Dead->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			_bool* pIsDead = { nullptr };
-			pBlackBoard->Get_Type(L"isDead", pIsDead);
-			if (nullptr == pIsDead)
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
 				return false;
 
-			return *pIsDead;
+			return pHealth->isDead();
 		});
 
 	if (FAILED(Assemble_Behavior(L"Tsk_Hit", pHit)))

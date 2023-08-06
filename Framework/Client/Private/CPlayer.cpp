@@ -7,14 +7,33 @@
 #include "CWeapon.h"
 #include "CSwordTrail.h"
 #include "CRoot.h"
-#include "CStone_Effect.h"
+
 #include "CCamera_Free.h"
 
-void CPlayer::Get_Damaged_Knockback(const _float4& _vPosition)
+void CPlayer::Get_Damaged(const CAttack* pAttack)
+{
+	_int iDeffence = m_pDeffence->Get_Deffence();
+	_int iDamage = pAttack->Get_Damage();
+
+	if(false == pAttack->isIgnoreDeffence())
+		Saturate(iDamage -= iDeffence, 0, iDamage);
+
+	m_pHealth->Damaged(iDamage);
+}
+
+void CPlayer::Get_Damaged_Knockback(const _float4& _vPosition, const CAttack* pAttack)
 {
 	_vector vPosition = XMLoadFloat4(&_vPosition);
 	m_pTransformCom->LookAt(vPosition);
 	m_pActionCom->Set_State(CPlayerAction::STATE_KNOCKBACK);
+
+	_int iDeffence = m_pDeffence->Get_Deffence();
+	_int iDamage = pAttack->Get_Damage();
+
+	if (false == pAttack->isIgnoreDeffence())
+		Saturate(iDamage -= iDeffence, 0, iDamage);
+
+	m_pHealth->Damaged_By_Knockback(iDamage);
 }
 
 CCollider* CPlayer::Get_Collider(const wstring& wstrColliderTag)
@@ -25,11 +44,6 @@ CCollider* CPlayer::Get_Collider(const wstring& wstrColliderTag)
 		return nullptr;
 
 	return iter->second;
-}
-
-CGameObject* CPlayer::Get_Parts(const wstring& wstrPartsTag)
-{
-	return Find_Parts(wstrPartsTag);
 }
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -76,16 +90,11 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 	CGameInstance::GetInstance()->Set_Player(this);
 
-	m_Status.iMaxHP = 100;
-	m_Status.iHP = 100;
-
 	return S_OK;
 }
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
-	if (CGameInstance::GetInstance()->Key_Down(DIK_4))
-		m_pEffect->Render_Effect(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	if (CGameInstance::GetInstance()->Key_Down(DIK_F3))
 		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->Set_CamState(CCamera_Free::CAM_FREE);
 	if (CGameInstance::GetInstance()->Key_Down(DIK_2))
@@ -93,36 +102,17 @@ void CPlayer::Tick(const _double& TimeDelta)
 
 	CGameObject3D::Tick(TimeDelta);
 
-	m_fHitTimeAcc += TimeDelta * 2.f;
-	if (HIT == m_eCurHitState)
-		m_fHitTimeAcc = 0.f;
-
-	if (CCell::OPT_LAVA == m_pNavigationCom->Get_Cur_Cell_Option() &&
-		m_fHitTimeAcc > 1.5f && false == m_pTransformCom->isJump())
-	{
-		m_fHitTimeAcc = 0.f;
-		Get_Damaged();
-	}
-	
 	m_pActionCom->Tick(TimeDelta);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
-	m_pEffect->Tick(TimeDelta);
-
 	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
-
-	_float4 vPos;
-	XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//cout << vPos.x << ", " << vPos.y << ", " << vPos.z << endl;
 }
 
 void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 {
-	m_pEffect->AfterFrustumTick(TimeDelta);
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -138,7 +128,6 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 
 		for (auto Pair : m_Parts)
 			Pair.second->AfterFrustumTick(TimeDelta);
-
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
@@ -171,7 +160,7 @@ HRESULT CPlayer::Render()
 
 	_uint iPassNum = { 0 };
 
-	if (NONE != m_eCurHitState)
+	if (CHealth::HIT_NONE != m_pHealth->Get_Current_HitState())
 		iPassNum = 1;
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -197,11 +186,11 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 	if ((Collision.pMyCollider->Get_Tag() == L"Col_Attack" ||
 		Collision.pMyCollider->Get_Tag() == L"Col_WheelWind") &&
 		(Collision.pOtherCollider->Get_Tag() == L"Col_Body" ||
-			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS))
+			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS ||
+			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC))
 	{
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
-
 }
 
 void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -230,8 +219,27 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Model_Player", L"Com_Model",
 		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Stone_Effect", L"Com_Effect",
-		(CComponent**)&m_pEffect, this)))
+
+	/* Status */
+
+	CHealth::HEALTHDESC HealthDesc;
+	HealthDesc.iMaxHP = 100;
+	HealthDesc.iHP = 100;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Health", L"Com_Health",
+		(CComponent**)&m_pHealth, this, &HealthDesc)))
+		return E_FAIL;
+
+	CAttack::ATTACKDESC AttackDesc;
+	AttackDesc.iDamage = 1;
+	AttackDesc.isIgnoreDeffence = false;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Attack", L"Com_Attack",
+		(CComponent**)&m_pAttack, this, &AttackDesc)))
+		return E_FAIL;
+
+	CDeffence::DEFFENCEDESC DeffenceDesc;
+	DeffenceDesc.iDeffence = 0;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Deffence", L"Com_Deffence",
+		(CComponent**)&m_pDeffence, this, &DeffenceDesc)))
 		return E_FAIL;
 
 	/* Navigation */
@@ -274,6 +282,17 @@ HRESULT CPlayer::Add_Components()
 		(CComponent**)&m_pRoot, this)))
 		return E_FAIL;
 
+	if (FAILED(m_pRoot->Add_Type(L"pShader", m_pShaderCom)))
+		return E_FAIL;
+	if (FAILED(m_pRoot->Add_Type(L"pModel", m_pModelCom)))
+		return E_FAIL;
+	if (FAILED(m_pRoot->Add_Type(L"pRenderer", m_pRendererCom)))
+		return E_FAIL;
+	if (FAILED(m_pRoot->Add_Type(L"pTransform", m_pTransformCom)))
+		return E_FAIL;
+	if (FAILED(m_pRoot->Add_Type(L"pHealth", m_pHealth)))
+		return E_FAIL;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -291,7 +310,7 @@ HRESULT CPlayer::Add_Parts()
 	CWeapon::WEAPONDESC Desc;
 	CSwordTrail::SWORDTRAILDESC TrailDesc;
 
-	TrailDesc.iNumRect = 10.f;
+	TrailDesc.iNumRect = 20.f;
 	TrailDesc.vOffsetHigh = _float3(0.f, 0.f, 2.4f);
 	TrailDesc.vOffsetLow = _float3(0.f, 0.f, 0.5f);
 	TrailDesc.wstrTextureTag = L"Texture_SwordTrail";
@@ -358,7 +377,7 @@ HRESULT CPlayer::Set_Shader_Resources()
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeAcc", &m_fHitTimeAcc, sizeof(_float))))
+	if (FAILED(m_pActionCom->Bind_HitTimeAcc(m_pShaderCom, "g_fTimeAcc")))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -396,10 +415,14 @@ void CPlayer::Free()
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pActionCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pEffect);
 	Safe_Release(m_pRoot);
+
+	Safe_Release(m_pActionCom);
+
+	Safe_Release(m_pHealth);
+	Safe_Release(m_pAttack);
+	Safe_Release(m_pDeffence);
 
 	CGameObject3D::Free();
 }

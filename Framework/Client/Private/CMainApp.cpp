@@ -215,12 +215,6 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 			VTXPOINTTEXINSTANCE_DECL::Elements, VTXPOINTTEXINSTANCE_DECL::iNumElements))))
 		return E_FAIL;
 
-	///* Shader_PointTexInstance */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Shader_PointInstance",
-	//	CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxPointInstance.hlsl",
-	//		VTXPOINTTEXINSTANCE_DECL::Elements, VTXPOINTTEXINSTANCE_DECL::iNumElements))))
-	//	return E_FAIL;
-
 	/* For. Collider_Sphere */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Collider_Sphere",
 		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))

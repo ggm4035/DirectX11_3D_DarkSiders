@@ -10,6 +10,10 @@ class CRenderer;
 class CShader;
 class CModel;
 class CRoot;
+
+class CHealth;
+class CAttack;
+class CDeffence;
 END
 
 BEGIN(Client)
@@ -30,6 +34,7 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	virtual void Get_Damaged(const CAttack* pAttack) override;
 	void Spawn() {
 		m_isSpawn = true;
 	}
@@ -56,6 +61,11 @@ protected:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 	class CUI_HpBar* m_pHealthBar = { nullptr };
+
+protected: /* Status */
+	CHealth* m_pHealth = { nullptr };
+	CAttack* m_pAttack = { nullptr };
+	CDeffence* m_pDeffence = { nullptr };
 
 protected:
 	_bool m_isSpawn = { false };

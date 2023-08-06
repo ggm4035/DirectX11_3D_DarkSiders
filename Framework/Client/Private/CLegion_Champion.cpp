@@ -30,8 +30,10 @@ HRESULT CLegion_Champion::Initialize(const _uint& iLevelIndex, CComponent* pOwne
 
 	m_pTransformCom->Get_Scaled();
 
-	m_Status.iHP = 10;
-	m_Status.iMaxHP = 10;
+	m_pAttack->Set_Damage(1);
+	m_pDeffence->Set_Deffence(0);
+	m_pHealth->Set_Max_Hp(10);
+	m_pHealth->Set_HP(10);
 
 	return S_OK;
 }
@@ -75,7 +77,7 @@ void CLegion_Champion::OnCollisionEnter(CCollider::COLLISION Collision, const _d
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Huge_Attack" &&
@@ -83,7 +85,7 @@ void CLegion_Champion::OnCollisionEnter(CCollider::COLLISION Collision, const _d
 	{
 		_float4 vPosition;
 		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		Collision.pOther->Get_Damaged_Knockback(vPosition);
+		dynamic_cast<CPlayer*>(Collision.pOther)->Get_Damaged_Knockback(vPosition, m_pAttack);
 	}
 	
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&

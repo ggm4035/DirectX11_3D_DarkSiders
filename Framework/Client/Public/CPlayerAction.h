@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CModel;
 class CShader;
+class CHealth;
 class CTransform;
 END
 
@@ -48,6 +49,7 @@ public:
 	void Reset_Wheel();
 	void Reset_Leap();
 	void Reset_Jump();
+	HRESULT Bind_HitTimeAcc(CShader* pShader, const string& strConstantName);
 
 private:
 	STATE m_eCurState = { STATE_END };
@@ -59,13 +61,13 @@ private:
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
+	CHealth* m_pHealth = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
 	class CPlayerHit* m_pHitAction = { nullptr };
 	class CPlayerMove* m_pMoveAction = { nullptr };
 	class CPlayerJump* m_pJumpAction = { nullptr };
 	class CPlayerAttack* m_pAttackAction = { nullptr };
-	class CPlayerKnockback* m_pKnockbackAction = { nullptr };
 
 	class CWheelWind* m_pSkillWheelWind = { nullptr };
 	class CLeapAttack* m_pSkillLeapAttack = { nullptr };

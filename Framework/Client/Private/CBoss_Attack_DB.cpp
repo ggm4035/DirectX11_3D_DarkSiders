@@ -47,10 +47,12 @@ HRESULT CBoss_Attack_DB::Initialize(const _uint& iLevelIndex, CComponent* pOwner
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			CGameObject3D::HITSTATE* pCurHitState;
-			pBlackBoard->Get_Type(L"eCurHitState", pCurHitState);
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
+				return false;
 
-			if (CGameObject3D::NONE == *pCurHitState)
+			if (CHealth::HIT_NONE == pHealth->Get_Current_HitState())
 				return true;
 
 			return false;

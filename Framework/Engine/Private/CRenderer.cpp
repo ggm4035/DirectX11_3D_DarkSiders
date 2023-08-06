@@ -108,18 +108,22 @@ HRESULT CRenderer::Draw_RenderGroup()
 {
 	if (FAILED(Render_Priority()))
 		return E_FAIL;
+
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
+
 	if (FAILED(Render_Light()))
 		return E_FAIL;
 
 	if (FAILED(Render_Deferred()))
 		return E_FAIL;
+
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;
 
 	if (FAILED(Render_Blend()))
 		return E_FAIL;
+
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 

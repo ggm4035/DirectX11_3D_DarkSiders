@@ -30,8 +30,10 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_Status.iHP = 20;
-	m_Status.iMaxHP = 20;
+	m_pAttack->Set_Damage(1);
+	m_pDeffence->Set_Deffence(0);
+	m_pHealth->Set_Max_Hp(20);
+	m_pHealth->Set_HP(20);
 
 	return S_OK;
 }
@@ -133,7 +135,7 @@ void CSteamRoller::OnCollisionEnter(CCollider::COLLISION Collision, const _doubl
 		Collision.pMyCollider->Get_Tag() == L"Col_Attack_Roll") &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
-		Collision.pOther->Get_Damaged();
+		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 }
 
@@ -162,7 +164,7 @@ void CSteamRoller::OnCollisionStay(CCollider::COLLISION Collision, const _double
 
 		if (0.3f <= fTimeAcc)
 		{
-			Collision.pOther->Get_Damaged();
+			Collision.pOther->Get_Damaged(m_pAttack);
 			fTimeAcc = 0.f;
 		}
 	}
@@ -261,8 +263,7 @@ HRESULT CSteamRoller::Ready_UI()
 	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
 	UIDesc.iPassNum = 3;
-	UIDesc.pMaxHp = &m_Status.iMaxHP;
-	UIDesc.pHp = &m_Status.iHP;
+	UIDesc.pHealth = m_pHealth;
 	m_pMonsterUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"HpBar", nullptr, &UIDesc));
 	if (nullptr == m_pMonsterUI[1])
 		return E_FAIL;
@@ -347,15 +348,17 @@ HRESULT CSteamRoller::Make_AI()
 		});
 
 	pAction_Follow->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			CGameObject3D::HITSTATE* pCurHitState;
-			pBlackBoard->Get_Type(L"eCurHitState", pCurHitState);
+			{
+				CHealth* pHealth = { nullptr };
+				pBlackBoard->Get_Type(L"pHealth", pHealth);
+				if (nullptr == pHealth)
+					return false;
 
-			if (CGameObject3D::NONE == *pCurHitState)
-				return true;
+				if (CHealth::HIT_NONE == pHealth->Get_Current_HitState())
+					return true;
 
-			return false;
-		});
+				return false;
+			});
 
 	pAction_Follow->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{

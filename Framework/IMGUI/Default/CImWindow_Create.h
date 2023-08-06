@@ -14,7 +14,7 @@ class CImWindow_Create final : public CImWindow
     DECLARE_SINGLETON(CImWindow_Create)
 
 public:
-    enum TYPE { TEXTURE, SHADER, BUFFER, MODEL, TYPE_END };
+    enum TYPE { TEXTURE, SHADER, BUFFER, MODEL, COLLIDER, TYPE_END };
 
 private:
     explicit CImWindow_Create() = default;
@@ -32,8 +32,8 @@ public:
     virtual void Refresh() override;
 
 public:
-    void Create_Object();
-    void Create_Trigger();
+    void Create_Object(const _uint& iLayerIndex, CGameInstance* pGameInstance);
+    void Create_Trigger(CGameInstance* pGameInstance);
     void Create_Object_Pick(CGameInstance* pGameInstance);
 
 private:

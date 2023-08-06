@@ -1,12 +1,6 @@
 #include "CBehavior.h"
 #include "Client_Defines.h"
 
-BEGIN(Engine)
-class CModel;
-class CShader;
-class CTransform;
-END
-
 BEGIN(Client)
 
 class CLeapAttack final : public CBehavior
@@ -38,8 +32,7 @@ private:
 	_bool m_isRenderEffect = { false };
 
 private:
-	CModel* m_pModel = { nullptr };
-	CTransform* m_pTransform = { nullptr };
+	class CStatic_Object* m_pRocks_Circle = { nullptr };
 	class CStone_Effect* m_pEffect = { nullptr };
 
 public:

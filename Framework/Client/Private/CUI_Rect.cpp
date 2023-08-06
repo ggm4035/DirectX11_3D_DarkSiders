@@ -26,8 +26,8 @@ HRESULT CUI_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	UIRECTDESC Desc = *reinterpret_cast<UIRECTDESC*>(pArg);
 
 	m_iPassNum = Desc.iPassNum;
-	m_pMaxHp = Desc.pMaxHp;
-	m_pHp = Desc.pHp;
+	m_pHealth = Desc.pHealth;
+	Safe_AddRef(m_pHealth);
 	m_pCoolTime = Desc.pCoolTime;
 
 	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, pArg)))
@@ -112,9 +112,9 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 			return E_FAIL;
 	}
 
-	if (nullptr != m_pMaxHp)
+	if (nullptr != m_pHealth)
 	{
-		_float fPer = (_float)*m_pHp / *m_pMaxHp;
+		_float fPer = m_pHealth->Get_Current_HP_Percent();
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fHpPer", &fPer, sizeof(_float))))
 			return E_FAIL;
@@ -155,5 +155,6 @@ void CUI_Rect::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pBufferCom);
+	Safe_Release(m_pHealth);
 	CGameObjectUI::Free();
 }

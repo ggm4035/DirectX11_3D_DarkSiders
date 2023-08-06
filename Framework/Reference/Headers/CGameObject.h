@@ -15,6 +15,7 @@ public:
 	_bool is_Remove() const {
 		return m_isRemove;
 	}
+	CGameObject* Get_Parts(const wstring& wstrPartsTag);
 
 public:
 	virtual HRESULT Initialize_Prototype() = 0;
@@ -24,6 +25,8 @@ public:
 	virtual void Late_Tick(const _double & TimeDelta);
 	virtual HRESULT Render() = 0;
 
+public:
+
 protected:
 	unordered_map<wstring, CGameObject*> m_Parts;
 
@@ -32,7 +35,6 @@ protected:
 protected:
 	HRESULT Add_Parts(const _uint & iLevelIndex, const wstring & PrototypeTag, 
 		const wstring & ObjectTag, CComponent * pOwner, void* pArg);
-	CGameObject* Find_Parts(const wstring& wstrPartsTag);
 
 public:
 	virtual CGameObject* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;

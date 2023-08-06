@@ -423,7 +423,54 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	Safe_Delete_BinaryData(Data);
 
-	m_szLoading = TEXT("셰이더 로딩 중.");
+	/* Player Skill Models */
+
+	/* Model_Rocks_Circle */
+	PivotMatrix = XMMatrixRotationX(XMConvertToRadians(180.f));
+	m_pGameInstance->ReadModel("../../ModelDatas/Skill/Rocks_Circle.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Rocks_Circle",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Model_Rocks_Cluster */
+	m_pGameInstance->ReadModel("../../ModelDatas/Skill/Rocks_Cluster.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Rocks_Cluster",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Model_Rock_A */
+	m_pGameInstance->ReadModel("../../ModelDatas/Skill/Rock_A.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Rock_A",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	/* Model_Rock_B */
+	m_pGameInstance->ReadModel("../../ModelDatas/Skill/Rock_B.dat", FilePath, Data);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Model_Rock_B",
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, Data, XMMatrixIdentity()))))
+		return E_FAIL;
+	Safe_Delete_BinaryData(Data);
+
+	m_szLoading = TEXT("스테이터스 로딩 중.");
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Status_Health",
+		CHealth::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Status_Attack",
+		CAttack::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Status_Deffence",
+		CDeffence::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	m_szLoading = TEXT("네비게이션 로딩 중.");
 

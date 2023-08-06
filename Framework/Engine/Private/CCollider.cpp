@@ -218,8 +218,16 @@ void CCollider::Free()
 	CComponent::Free();
 }
 
+const _float3& CCollider::Get_Extents() const
+{
+	if (m_eColliderType == TYPE_AABB)
+		return static_cast<CBounding_AABB*>(m_pBounding)->Get_Extents();
+
+	return _float3();
+}
+
 void CCollider::Set_Extents(const _float3& vExtents)
 {
 	if (m_eColliderType == TYPE_AABB)
-		reinterpret_cast<CBounding_AABB*>(m_pBounding)->Set_Extents(vExtents);
+		static_cast<CBounding_AABB*>(m_pBounding)->Set_Extents(vExtents);
 }

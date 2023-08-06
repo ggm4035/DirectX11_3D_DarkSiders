@@ -2,6 +2,14 @@
 
 namespace Engine
 {
+	template <typename T>
+	/* 최솟값 최댓값 사이의 값으로 고정 */
+	static void Saturate(T& _value, T _min, T _max)
+	{
+		_value = max(_value, _min);
+		_value = min(_value, _max);
+	}
+
 	/* lowBound 에서 highBound로 변환 */
 	static float GetRandomFloat(float lowBound, float highBound)
 	{
