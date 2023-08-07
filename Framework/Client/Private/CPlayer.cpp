@@ -244,7 +244,7 @@ HRESULT CPlayer::Add_Components()
 
 	/* Navigation */
 	CNavigation::NAVIGATIONDESC NaviDesc;
-	NaviDesc.iCurrentIndex = 290;
+	NaviDesc.iCurrentIndex = /*29*/0;
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
 		(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
 		return E_FAIL;

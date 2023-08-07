@@ -219,21 +219,21 @@ void CImWindow_Top::Save(CGameInstance* pGameInstance)
             for (_uint i = 0; i < iNumObjects; ++i, ++iterBreakAble)
             {
                 /* Write szObjectTag */
-                _uint iTaglength = lstrlen((*iter)->Get_Model()->Get_Tag().c_str()) + 1;
+                _uint iTaglength = lstrlen((*iterBreakAble)->Get_Model()->Get_Tag().c_str()) + 1;
                 WriteFile(hFile, &iTaglength, sizeof(_uint), &dwByte, nullptr);
-                WriteFile(hFile, (*iter)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
+                WriteFile(hFile, (*iterBreakAble)->Get_Tag().c_str(), sizeof(_tchar) * iTaglength, &dwByte, nullptr);
 
                 /* Write TransformMatrix */
-                WriteFile(hFile, &(*iter)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
+                WriteFile(hFile, &(*iterBreakAble)->Get_Transform()->Get_WorldFloat4x4(), sizeof(_float4x4), &dwByte, nullptr);
 
                 /* Write vAngle */
-                WriteFile(hFile, &(*iter)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
+                WriteFile(hFile, &(*iterBreakAble)->Get_Transform()->Get_Angle(), sizeof(_float3), &dwByte, nullptr);
 
                 /* Write Navigation Index */
-                WriteFile(hFile, &(*iter)->m_iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
+                WriteFile(hFile, &(*iterBreakAble)->m_iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
 
                 /* Write Binary Datas */
-                Write_BinData(hFile, (*iter)->Get_Model_BinaryData(), dwByte);
+                Write_BinData(hFile, (*iterBreakAble)->Get_Model_BinaryData(), dwByte);
 
                 /* Write vExtents */
                 _float3 vExtents = (*iterBreakAble)->Get_Collider()->Get_Extents();
@@ -408,6 +408,45 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
                 pObject->Add_Shader(L"Shader_Mesh");
                 pObject->Add_Model(Data.BinaryData.szTag);
 
+                ++idx;
+            }
+
+            /* Load BreakAble GameObjects */
+            idx = { 0 };
+            for (auto& Data : FileData.vecBreakAbleData)
+            {
+                _char szNum[8] = { "" };
+                _char szObjName[256] = { "" };
+                strcpy_s(szObjName, "BreakAble_Object");
+                _itoa_s(idx, szNum, 10);
+                strcat_s(szObjName, szNum);
+
+                if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, L"Prototype_GameObject_Dummy3D",
+                    pGameInstance->strToWStr(szObjName), L"Layer_BreakAble")))
+                    return;
+
+                WINDOWMGR->Refresh_All_Window();
+
+                pObject = Find_GameObject(pGameInstance->strToWStr(szObjName), LAYER_BREAKABLE);
+                if (nullptr == pObject)
+                    return;
+
+                pObject->Get_Transform()->Set_Matrix(Data.TransformMatrix);
+                pObject->Get_Transform()->Set_Angle(Data.vAngle);
+                pObject->m_iNavigationIndex = Data.iNavigationIndex;
+
+                /* Rasterizer */
+                RasterizerDesc.CullMode = { D3D11_CULL_BACK };
+                RasterizerDesc.FillMode = { D3D11_FILL_SOLID };
+                RasterizerDesc.FrontCounterClockwise = { false };
+
+                pObject->Set_RasterizerState(RasterizerDesc);
+
+                /* Components */
+                pObject->Add_Shader(L"Shader_Mesh");
+                pObject->Add_Model(Data.BinaryData.szTag);
+                pObject->Add_Collider(L"Collider_AABB");
+                pObject->Get_Collider()->Set_Extents(Data.vExtents);
                 ++idx;
             }
 

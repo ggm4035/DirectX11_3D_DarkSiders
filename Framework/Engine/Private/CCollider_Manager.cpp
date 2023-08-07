@@ -27,6 +27,7 @@ void CCollider_Manager::Tick()
 	Collision(CCollider::COL_PLAYER, CCollider::COL_ENEMY_ATK);
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_ENEMY);
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_BOSS);
+	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_STATIC);
 
 	Collision(CCollider::COL_ENEMY, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY, CCollider::COL_ENEMY);

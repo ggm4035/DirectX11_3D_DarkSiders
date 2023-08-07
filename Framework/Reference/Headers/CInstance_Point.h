@@ -31,10 +31,10 @@ public:
 private:
 	_float m_fFrameTick = { 0.f };
 	_float m_fTimeAcc = { 0.f };
-	_float m_fLengthTexelU = { 1.f };
-	_float m_fLengthTexelV = { 1.f };
-	_uint m_iNumWidth = { 1 };
-	_uint m_iNumHeight = { 1 };
+	_float m_fLengthTexelU = { 0.f };
+	_float m_fLengthTexelV = { 0.f };
+	_uint m_iNumWidth = { 0 };
+	_uint m_iNumHeight = { 0 };
 	_uint m_iCurKeyFrame = { 0 };
 
 public:

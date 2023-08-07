@@ -181,6 +181,9 @@
     <Filter Include="02. GameObject\00. Player\PlayerActions\03. HitAction\Knockback">
       <UniqueIdentifier>{80abb2b4-840c-4437-9b66-06c68ccfa654}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\07. Items">
+      <UniqueIdentifier>{e2957dba-f1f6-42ca-81da-9ab35beeb7ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -396,6 +399,12 @@
     <ClInclude Include="..\Public\CBreakAbleObject.h">
       <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CItem.h">
+      <Filter>02. GameObject\07. Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSoul.h">
+      <Filter>02. GameObject\07. Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -603,6 +612,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CBreakAbleObject.cpp">
       <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CItem.cpp">
+      <Filter>02. GameObject\07. Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSoul.cpp">
+      <Filter>02. GameObject\07. Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

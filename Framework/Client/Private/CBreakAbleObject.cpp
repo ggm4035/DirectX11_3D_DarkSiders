@@ -1,6 +1,7 @@
 #include "CBreakAbleObject.h"
 
 #include "CGameInstance.h"
+#include "CSoul.h"
 
 CBreakAbleObject::CBreakAbleObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject3D(pDevice, pContext)
@@ -12,9 +13,9 @@ CBreakAbleObject::CBreakAbleObject(const CBreakAbleObject& rhs)
 {
 }
 
-HRESULT CBreakAbleObject::Initialize_Prototype()
+void CBreakAbleObject::Get_Damaged(const CAttack* pAttack)
 {
-	return S_OK;
+	m_pHealth->Damaged(pAttack->Get_Damage());
 }
 
 HRESULT CBreakAbleObject::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
@@ -25,10 +26,7 @@ HRESULT CBreakAbleObject::Initialize(const _uint& iLevelIndex, CComponent* pOwne
 	if (FAILED(CGameObject3D::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-	STATICOBJECTDESC* pDesc = reinterpret_cast<STATICOBJECTDESC*>(pArg);
+	BREAKABLEDESC* pDesc = static_cast<BREAKABLEDESC*>(pArg);
 	wstring wstrModelTag = pDesc->wstrModelTag;
 
 	if (FAILED(Add_Component(iLevelIndex, wstrModelTag.c_str(), L"Com_Model",
@@ -46,6 +44,9 @@ HRESULT CBreakAbleObject::Initialize(const _uint& iLevelIndex, CComponent* pOwne
 	Desc.isEnable = true;
 
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Com_Collider", &Desc)))
+		return E_FAIL;
+
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	return S_OK;
@@ -75,6 +76,14 @@ void CBreakAbleObject::AfterFrustumTick(const _double& TimeDelta)
 		}
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+		for (auto& pSoul : m_vecSouls)
+			pSoul->AfterFrustumTick(TimeDelta);
+
+#ifdef _DEBUG
+		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+			return;
+#endif
 	}
 
 	Safe_Release(pGameInstance);
@@ -87,6 +96,9 @@ void CBreakAbleObject::Late_Tick(const _double& TimeDelta)
 
 HRESULT CBreakAbleObject::Render()
 {
+	if (true == m_pHealth->isDead())
+		return S_OK;
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -109,7 +121,20 @@ HRESULT CBreakAbleObject::Render()
 
 void CBreakAbleObject::Dead_Motion(const _double& TimeDelta)
 {
-	m_isRemove = true;
+	for (auto iter = m_vecSouls.begin(); iter !=  m_vecSouls.end();)
+	{
+		(*iter)->Tick(TimeDelta);
+		if (true == (*iter)->is_Remove())
+		{
+			Safe_Release(*iter);
+			iter = m_vecSouls.erase(iter);
+		}
+		else
+			++iter;
+	}
+
+	if (0 == m_vecSouls.size())
+		m_isRemove = true;
 }
 
 HRESULT CBreakAbleObject::Add_Components()
@@ -122,9 +147,30 @@ HRESULT CBreakAbleObject::Add_Components()
 		(CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Status_Health", L"Com_Health",
-		(CComponent**)&m_pHealth, this)))
+	CHealth::HEALTHDESC Desc;
+	Desc.iMaxHP = 1;
+	Desc.iHP = 1;
+
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Health", L"Com_Health",
+		(CComponent**)&m_pHealth, this, &Desc)))
 		return E_FAIL;
+
+
+	CSoul::SOULDESC tSoulDesc;
+	XMStoreFloat4(&tSoulDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	tSoulDesc.RotationPerSec = XMConvertToRadians(90.f);
+	tSoulDesc.SpeedPerSec = 2.f;
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		CSoul* pSoul = { nullptr };
+		wstring wstrTag = L"Soul" + to_wstring(i);
+		if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Soul", wstrTag,
+			(CComponent**)&pSoul, this, &tSoulDesc)))
+			return E_FAIL;
+
+		m_vecSouls.push_back(pSoul);
+	}
 
 	return S_OK;
 }
@@ -179,7 +225,9 @@ void CBreakAbleObject::Free()
 {
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pCollider);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pHealth);
 
 	CGameObject3D::Free();
 }

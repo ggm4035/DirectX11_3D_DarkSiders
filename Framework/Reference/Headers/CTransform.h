@@ -77,7 +77,7 @@ public:
 	void Go(_fvector vDirection, const _double& TimeDelta, const _float& fTurnSpeed = 5.f);
 	void Repersive(_fvector vOtherDir, const _double& TimeDelta);
 	void Chase(_fvector vTargetPosition, const _double& TimeDelta, const _float& fMinDistance = 0.1f);
-	void Chase_Lerp(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance);
+	_bool Chase_Lerp(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance);
 	_bool Jump(const _float& fForce, const _double& TimeDelta);
 	void Reset_TimeAcc() {
 		m_fTimeAcc = 0.f;
@@ -87,7 +87,7 @@ public:
 	void Rotation(const _float3& rDegrees);
 	void Turn_Axis(_fvector vAxis, const _double& TimeDelta);
 	void Turn(_fvector vDir, const _double& TimeDelta, const _float& fSpeed);
-
+	void BillBoard(const _double& TimeDelta);
 	void Scaled(const _float3& vScale);
 
 	/* 임시 (카메라 이동 용) */

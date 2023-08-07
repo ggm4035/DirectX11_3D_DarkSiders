@@ -4,6 +4,7 @@
 #include "CNavigation.h"
 #include "CGameObject3D.h"
 #include "CCollider.h"
+#include "CPipeLine.h"
 
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -29,8 +30,8 @@ _matrix CTransform::Get_WorldMatrix_Inverse()
 
 _float3 CTransform::Get_Scaled()
 {
-	return _float3(XMVector3Length(Get_State(STATE_RIGHT)).m128_f32[0], 
-		XMVector3Length(Get_State(STATE_UP)).m128_f32[0], 
+	return _float3(XMVector3Length(Get_State(STATE_RIGHT)).m128_f32[0],
+		XMVector3Length(Get_State(STATE_UP)).m128_f32[0],
 		XMVector3Length(Get_State(STATE_LOOK)).m128_f32[0]);
 }
 
@@ -100,7 +101,7 @@ void CTransform::Animation_Movement(class CModel* pModel, const _double& TimeDel
 	/* Move Check */
 	if (nullptr != m_pNavigation)
 		RetDesc = m_pNavigation->is_Move(vPosition);
-	
+
 	/* Sliding */
 	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
 	{
@@ -152,7 +153,7 @@ void CTransform::Go(_fvector vDirection, const _double& TimeDelta, const _float&
 
 void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 {
-	_vector vPosition = Get_State(STATE_POSITION); 
+	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vDirection = XMVector3Normalize(vOtherDir);
 	_float fDistance = XMVectorGetX(XMVector3Length(vOtherDir));
 
@@ -181,7 +182,7 @@ void CTransform::Repersive(_fvector vOtherDir, const _double& TimeDelta)
 	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
 		return;
 
-	if (nullptr != m_pNavigation && 
+	if (nullptr != m_pNavigation &&
 		true == m_isOnNavigation)
 	{
 		_float fNaviY = m_pNavigation->is_OnNavigation(vPosition);
@@ -206,16 +207,20 @@ void CTransform::Chase(_fvector vTargetPosition, const _double& TimeDelta, const
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Chase_Lerp(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance)
-{   
+_bool CTransform::Chase_Lerp(_fvector vTargetPosition, _double TimeDelta, _float fMinDistance)
+{
 	//현재 내 위치
 	_vector        vPosition = Get_State(STATE_POSITION);
 	//거리
 	_vector        vDir = vTargetPosition - vPosition;
 	if (fMinDistance < XMVectorGetX(XMVector3Length(vDir)))
+	{
 		vPosition = XMVectorLerp(vPosition, vTargetPosition, TimeDelta * m_TransformDesc.SpeedPerSec);
+		Set_State(STATE_POSITION, vPosition);
+		return true;
+	}
 
-	Set_State(STATE_POSITION, vPosition);
+	return false;
 }
 
 _bool CTransform::Jump(const _float& fForce, const _double& TimeDelta)
@@ -334,7 +339,7 @@ void CTransform::Cam_Straight(const _double& TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Cam_Backward(const _double & TimeDelta)
+void CTransform::Cam_Backward(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
@@ -344,7 +349,7 @@ void CTransform::Cam_Backward(const _double & TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Cam_Right(const _double & TimeDelta)
+void CTransform::Cam_Right(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vRight = Get_State(STATE_RIGHT);
@@ -354,7 +359,7 @@ void CTransform::Cam_Right(const _double & TimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Cam_Left(const _double & TimeDelta)
+void CTransform::Cam_Left(const _double& TimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vRight = Get_State(STATE_RIGHT);
@@ -380,7 +385,7 @@ void CTransform::Turn(_fvector Dir, const _double& TimeDelta, const _float& fSpe
 	_vector vLook = Get_State(STATE_LOOK);
 
 	_float fDegree = acosf(XMVector3Dot(vDir, vLook).m128_f32[0]);
-	_float fForce = fSpeed * fDegree * TimeDelta ;
+	_float fForce = fSpeed * fDegree * TimeDelta;
 
 	fDegree = XMConvertToDegrees(fDegree);
 
@@ -389,6 +394,30 @@ void CTransform::Turn(_fvector Dir, const _double& TimeDelta, const _float& fSpe
 
 	if (-0.0f < fDegree && 0.5f > fabs(fForce))
 		Turn_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
+}
+
+void CTransform::BillBoard(const _double& TimeDelta)
+{
+	_float3 vScaled = Get_Scaled();
+
+	CPipeLine* pPipeLine = CPipeLine::GetInstance();
+	Safe_AddRef(pPipeLine);
+
+	_vector vCamPosition = XMLoadFloat4(&pPipeLine->Get_Camera_Position());
+
+	Safe_Release(pPipeLine);
+
+	_vector vLook = XMVector3Normalize(vCamPosition - Get_State(STATE_POSITION));
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+	vRight *= vScaled.x;
+	vUp *= vScaled.y;
+	vLook *= vScaled.z;
+
+	memcpy(&m_WorldMatrix.m[STATE_RIGHT][0], &vRight, sizeof(_float4));
+	memcpy(&m_WorldMatrix.m[STATE_UP][0], &vUp, sizeof(_float4));
+	memcpy(&m_WorldMatrix.m[STATE_LOOK][0], &vLook, sizeof(_float4));
 }
 
 void CTransform::Move_Stop_Sliding(const _double& TimeDelta)

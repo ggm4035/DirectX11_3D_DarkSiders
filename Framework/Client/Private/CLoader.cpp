@@ -4,6 +4,7 @@
 #include "CGameInstance.h"
 #include "CUI_Rect.h"
 #include "CStatic_Object.h"
+#include "CBreakAbleObject.h"
 #include "CTerrain.h"
 #include "CLava.h"
 #include "CAoE.h"
@@ -20,7 +21,9 @@
 #include "CWeapon.h"
 #include "CTrigger_Free.h"
 #include "CSwordTrail.h"
+
 #include "CStone_Effect.h"
+#include "CSoul.h"
 
 #include "CUI_Overlay.h"
 #include "CUI_HpBar.h"
@@ -234,6 +237,16 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Sprites/RockChip.png"))))
 		return E_FAIL;
 
+	/* For. Texture_Soul */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Soul",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/Soul.png"))))
+		return E_FAIL;
+
+	/* For. Texture_SoulAlpha */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SoulAlpha",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/SoulAlpha.png"))))
+		return E_FAIL;
+
 	m_szLoading = TEXT("버퍼 로딩 중.");
 
 	/* VIBuffer_Trail */
@@ -241,9 +254,16 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	m_szLoading = TEXT("이펙트 로딩 중.");
+
 	/* Stone_Effect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Stone_Effect",
 		CStone_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Soul */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Soul",
+		CSoul::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("UI 로딩 중.");
@@ -270,6 +290,26 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Models */
 	list<_tchar*> redupList;
 	for (auto& Data : FileData.vecModelData)
+	{
+		auto iter = find_if(redupList.begin(), redupList.end(), [&](_tchar* pData) {
+			if (0 == lstrcmp(pData, Data.BinaryData.szTag))
+				return true;
+			else
+				return false;
+			});
+
+		if (iter == redupList.end())
+		{
+			redupList.push_back(Data.BinaryData.szTag);
+
+			if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, Data.BinaryData.szTag,
+				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, Data.BinaryData, XMMatrixIdentity()))))
+				return E_FAIL;
+		}
+	}
+
+	redupList.clear();
+	for (auto& Data : FileData.vecBreakAbleData)
 	{
 		auto iter = find_if(redupList.begin(), redupList.end(), [&](_tchar* pData) {
 			if (0 == lstrcmp(pData, Data.BinaryData.szTag))
@@ -485,9 +525,14 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For. Static Objects */
+	/* For. Static_Object */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Static_Object",
 		CStatic_Object::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. BreakAble_Object */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"BreakAble_Object",
+		CBreakAbleObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Monster_HollowLord */
@@ -559,6 +604,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 	m_szLoading = TEXT("로딩 완료.");
 
 	for (auto& Data : FileData.vecModelData)
+		Safe_Delete_BinaryData(Data.BinaryData);
+
+	for (auto& Data : FileData.vecBreakAbleData)
 		Safe_Delete_BinaryData(Data.BinaryData);
 
 	for (auto& Data : FileData.vecMonsterData)

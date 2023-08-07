@@ -180,6 +180,7 @@
     <ClInclude Include="..\Public\CGameManager.h" />
     <ClInclude Include="..\Public\CGather_Effect.h" />
     <ClInclude Include="..\Public\CHollowLord.h" />
+    <ClInclude Include="..\Public\CItem.h" />
     <ClInclude Include="..\Public\CJump.h" />
     <ClInclude Include="..\Public\CLeapAttack.h" />
     <ClInclude Include="..\Public\CMove.h" />
@@ -253,6 +254,7 @@
     <ClInclude Include="..\Public\CSky.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\CSoul.h" />
     <ClInclude Include="..\Public\CStatic_Object.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -299,6 +301,7 @@
     <ClCompile Include="..\Private\CGameManager.cpp" />
     <ClCompile Include="..\Private\CGather_Effect.cpp" />
     <ClCompile Include="..\Private\CHollowLord.cpp" />
+    <ClCompile Include="..\Private\CItem.cpp" />
     <ClCompile Include="..\Private\CJump.cpp" />
     <ClCompile Include="..\Private\CLeapAttack.cpp" />
     <ClCompile Include="..\Private\CMove.cpp" />
@@ -371,6 +374,7 @@
     <ClCompile Include="..\Private\CSky.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\CSoul.cpp" />
     <ClCompile Include="..\Private\CStatic_Object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

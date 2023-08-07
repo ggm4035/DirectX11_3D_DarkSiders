@@ -143,7 +143,7 @@ HRESULT CDummyObject3D::Add_Collider(const wstring PrototypeTag)
     Desc.eGroup = CCollider::COL_STATIC;
     Desc.isEnable = true;
 
-    if (FAILED(Add_Component(LEVEL_TOOL, PrototypeTag, L"Col_Default",
+    if (FAILED(Add_Component(LEVEL_TOOL, L"Collider_AABB", L"Col_Default",
         (CComponent**)&m_pCollider, this, &Desc)))
         return E_FAIL;
 

@@ -343,6 +343,7 @@ void CImWindow_Create::Create_Object_Pick(CGameInstance* pGameInstance)
     pObject->Set_RasterizerState(RasterizerDesc);
 
     /* Components */
+    pObject->Add_Collider(pGameInstance->strToWStr(m_szPrototypeTag[COLLIDER]));
     pObject->Add_Texture(pGameInstance->strToWStr(m_szPrototypeTag[TEXTURE]));
     pObject->Add_Shader(pGameInstance->strToWStr(m_szPrototypeTag[SHADER]));
     pObject->Add_Buffer(pGameInstance->strToWStr(m_szPrototypeTag[BUFFER]));

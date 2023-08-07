@@ -7,8 +7,6 @@ CVIBuffer_Instancing::CVIBuffer_Instancing(ID3D11Device* pDevice, ID3D11DeviceCo
 
 CVIBuffer_Instancing::CVIBuffer_Instancing(const CVIBuffer_Instancing& rhs)
 	: CVIBuffer(rhs)
-	, m_iInstanceStride(rhs.m_iInstanceStride)
-	, m_iIndexCountPerInstance(rhs.m_iIndexCountPerInstance)
 {
 }
 

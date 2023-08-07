@@ -93,6 +93,9 @@ void CVIBuffer_Point_Instance::Tick(const vector<_float4x4>& vecMatrices, const 
 {
 	CVIBuffer_Instancing::Tick(vecMatrices);
 
+	if (0 == m_iNumWidth)
+		return;
+
 	m_fTimeAcc += TimeDelta;
 	if (m_fFrameTick < m_fTimeAcc)
 	{

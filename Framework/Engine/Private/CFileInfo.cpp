@@ -527,7 +527,38 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		OutData.vecModelData.push_back(Data);
 	}
 
-	/* 3. Monster 불러오기 */
+	/* 3. 전체 BreakAble 게임오브젝트들을 불러온다. */
+	iNumObjects = { 0 };
+	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
+
+	for (_uint i = 0; i < iNumObjects; ++i)
+	{
+		MODELDATA Data;
+
+		/* Read szTag */
+		_uint iTagLength = { 0 };
+		ReadFile(hFile, &iTagLength, sizeof(_uint), &dwByte, nullptr);
+		ReadFile(hFile, Data.szObjectTag, sizeof(_tchar) * iTagLength, &dwByte, nullptr);
+
+		/* Read TransformMatrix */
+		ReadFile(hFile, &Data.TransformMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		/* Read vAngle */
+		ReadFile(hFile, &Data.vAngle, sizeof(_float3), &dwByte, nullptr);
+
+		/* Read Navigation Index */
+		ReadFile(hFile, &Data.iNavigationIndex, sizeof(_uint), &dwByte, nullptr);
+
+		/* Read Model Binary Datas */
+		Read_BinData(hFile, Data.BinaryData, dwByte);
+
+		/* Read vExtents */
+		ReadFile(hFile, &Data.vExtents, sizeof(_float3), &dwByte, nullptr);
+
+		OutData.vecBreakAbleData.push_back(Data);
+	}
+
+	/* 4. Monster 불러오기 */
 	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
 
 	for (_uint i = 0; i < iNumObjects; ++i)
@@ -554,7 +585,7 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		OutData.vecMonsterData.push_back(Data);
 	}
 
-	/* 4. Trigger 불러오기 */
+	/* 5. Trigger 불러오기 */
 	ReadFile(hFile, &iNumObjects, sizeof(_uint), &dwByte, nullptr);
 
 	for (_uint i = 0; i < iNumObjects; ++i)
@@ -576,13 +607,9 @@ HRESULT CFileInfo::Load(const string& strFilePath, OUT FILEDATA& OutData)
 		OutData.vecTriggerData.push_back(Data);
 	}
 
-	/* 5. Player 불러오기*/
+	/* 6. Player 불러오기*/
 	ReadFile(hFile, &OutData.WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
 	ReadFile(hFile, &OutData.vAngle, sizeof(_float3), &dwByte, nullptr);
-
-	/* 3. 카메라를 불러온다. */
-
-	/* 4. UI를 불러온다. */
 
 	CloseHandle(hFile);
 

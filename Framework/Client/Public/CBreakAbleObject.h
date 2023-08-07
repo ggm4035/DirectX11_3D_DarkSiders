@@ -22,7 +22,7 @@ public:
 		_float4x4 WorldMatrix;
 		_float3 vAngle;
 		_float3 vExtents;
-	}STATICOBJECTDESC;
+	}BREAKABLEDESC;
 
 private:
 	explicit CBreakAbleObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -30,7 +30,10 @@ private:
 	virtual ~CBreakAbleObject() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
+	virtual void Get_Damaged(const CAttack* pAttack) override;
+
+public:
+	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	/* Transform 정보 초기화 하고 싶으면 void*에 값 채우기 */
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
@@ -47,6 +50,8 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pCollider = { nullptr };
 	CHealth* m_pHealth = { nullptr };
+
+	vector<class CSoul*> m_vecSouls;
 
 private:
 	virtual HRESULT Add_Components() override;

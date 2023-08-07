@@ -9,6 +9,7 @@
 #include "CTerrain.h"
 #include "CGoblin.h"
 #include "CStatic_Object.h"
+#include "CBreakAbleObject.h"
 #include "CTrigger_Free.h"
 #include "CUI_Rect.h"
 #include "CUI_HpBar.h"
@@ -130,6 +131,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 			return E_FAIL;
 	}
 
+	/* Load BreakAble Models */
+	for (auto& Data : FileData.vecBreakAbleData)
+	{
+		CBreakAbleObject::BREAKABLEDESC BreakAbleDesc;
+
+		BreakAbleDesc.wstrModelTag = Data.BinaryData.szTag;
+		BreakAbleDesc.WorldMatrix = Data.TransformMatrix;
+		BreakAbleDesc.vAngle = Data.vAngle;
+		BreakAbleDesc.vExtents = Data.vExtents;
+
+		if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"BreakAble_Object",
+			Data.szObjectTag, pLayerTag, &BreakAbleDesc)))
+			return E_FAIL;
+	}
+
 	/* Load Trigger_Free */
 	for (auto& Data : FileData.vecTriggerData)
 	{
@@ -156,6 +172,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	Safe_Release(pGameInstance);
 
 	for (auto& Data : FileData.vecModelData)
+		Safe_Delete_BinaryData(Data.BinaryData);
+
+	for (auto& Data : FileData.vecBreakAbleData)
 		Safe_Delete_BinaryData(Data.BinaryData);
 
 	Safe_Delete_Array(FileData.pPositions);

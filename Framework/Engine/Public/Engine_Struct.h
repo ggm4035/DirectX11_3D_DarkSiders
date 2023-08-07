@@ -243,6 +243,7 @@ namespace Engine
 		_tchar szObjectTag[MAX_PATH] = { L"" };
 		_float4x4 TransformMatrix;
 		_float3 vAngle;
+		_float3 vExtents;
 		_uint iNavigationIndex = { 0 };
 		MODEL_BINARYDATA BinaryData;
 	}MODELDATA;
@@ -267,6 +268,7 @@ namespace Engine
 
 		/* Models */
 		vector<MODELDATA> vecModelData;
+		vector<MODELDATA> vecBreakAbleData;
 		vector<MODELDATA> vecMonsterData;
 		vector<TRIGGERDATA> vecTriggerData;
 	}FILEDATA;

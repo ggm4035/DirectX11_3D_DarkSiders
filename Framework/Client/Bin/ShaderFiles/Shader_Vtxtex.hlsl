@@ -1,7 +1,7 @@
 #include "Shader_Client_Defines.hlsli"
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D g_Texture;
+texture2D g_Texture, g_AlphaTexture;
 
 texture2D g_TextureCircle; // ExplosionData
 float3 g_vHpColor = float3(1.f, 0.f, 0.f);
@@ -204,6 +204,20 @@ float4 PS_MAIN_SPRITE(PS_IN In) : SV_TARGET0
     return vColor;
 }
 
+float4 PS_MAIN_ALPHA(PS_IN In) : SV_TARGET0
+{
+    float4 vColor = (float4) 0;
+    float4 vAlphaTexture = (float4) 0;
+    
+    vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+    vAlphaTexture = g_AlphaTexture.Sample(LinearSampler, In.vTexUV);
+    
+    if (vAlphaTexture.a < 0.1f)
+        discard;
+    
+    return vColor;
+}
+
 technique11 DefaultTechnique
 {
     pass BackGround //0
@@ -321,5 +335,18 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_SPRITE();
+    }
+
+    pass Alpha // 9: 알파텍스처 테스트
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_ALPHA();
     }
 };
