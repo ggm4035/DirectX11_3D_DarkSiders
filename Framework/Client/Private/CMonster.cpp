@@ -120,7 +120,7 @@ void CMonster::AfterFrustumTick(const _double& TimeDelta)
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
-		if (nullptr != m_pHealthBar)
+		if (1.f > m_pHealth->Get_Current_HP_Percent() && nullptr != m_pHealthBar)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pHealthBar);
 
 #ifdef _DEBUG

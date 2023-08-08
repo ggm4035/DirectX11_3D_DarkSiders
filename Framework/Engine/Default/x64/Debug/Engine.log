@@ -1,29 +1,4 @@
-﻿  CTransform.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(116,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(116,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(160,43): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(160,58): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(179,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(179,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(205,64): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(205,79): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(218,66): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(233,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(315,86): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(337,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(337,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(347,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(347,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(357,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(357,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(367,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(367,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(377,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(377,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(388,16): warning C4244: '초기화 중': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(428,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(428,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(448,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(448,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Deferred.cso
   Engine.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine_d.dll

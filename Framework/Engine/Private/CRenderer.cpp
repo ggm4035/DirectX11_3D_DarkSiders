@@ -26,6 +26,7 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	m_pContext->RSGetViewports(&iNumViews, &ViewportDesc);
 
+	/* MRT_GameObject RenderTargets */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Diffuse"), m_pDevice, m_pContext,
 		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
@@ -35,15 +36,16 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Depth"), m_pDevice, m_pContext,
 		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Shadow"), m_pDevice, m_pContext,
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
-		return E_FAIL;
 
+	/* MRT_Light RenderTargets */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Shade"), m_pDevice, m_pContext,
 		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Specular"), m_pDevice, m_pContext,
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Specular"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* MRT_Shadow RenderTargets */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_LightDepth"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
@@ -52,12 +54,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Shadow"))))
-		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Shade"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Specular"))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Shadow"), TEXT("Target_LightDepth"))))
 		return E_FAIL;
 
 	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements);
@@ -81,11 +84,11 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shadow"), 500.f, 100.f, 200.f, 200.f)))
-		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_LightDepth"), 300.f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -107,6 +110,9 @@ void CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameObje
 HRESULT CRenderer::Draw_RenderGroup()
 {
 	if (FAILED(Render_Priority()))
+		return E_FAIL;
+
+	if (FAILED(Render_Shadow()))
 		return E_FAIL;
 
 	if (FAILED(Render_NonBlend()))
@@ -223,6 +229,42 @@ HRESULT CRenderer::Render_Light()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Shadow()
+{
+	if(FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Shadow")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+
+	CLight_Manager* pLight_Manager = CLight_Manager::GetInstance();
+	Safe_AddRef(pLight_Manager);
+
+	_float4x4 InputFloat4x4 = pLight_Manager->Get_LightViewFloat4x4(0);
+	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &InputFloat4x4)))
+		return E_FAIL;
+	InputFloat4x4 = pLight_Manager->Get_LightProjFloat4x4(m_pContext);
+	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &InputFloat4x4)))
+		return E_FAIL;
+	
+	Safe_Release(pLight_Manager);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOW])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_Shadow();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjects[RENDER_SHADOW].clear();
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_Deferred()
 {
 	/* 백버퍼에 최종적으로 그려낸다.  */
@@ -231,10 +273,17 @@ HRESULT CRenderer::Render_Deferred()
 	/* 디퓨즈 렌더타겟을 셰이더 전역으로 던진다.*/
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader,
+		"g_DepthTexture")))
+		return E_FAIL;
 	/* 셰이드 렌더타겟을 셰이더 전역으로 던진다.*/
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
+		return E_FAIL;
+	/* 셰도우 렌더타겟을 셰이더 전역으로 던진다. */
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_LightDepth"), m_pShader,
+		"g_LightDepthTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
@@ -243,6 +292,19 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+
+	CLight_Manager* pLight_Manager = CLight_Manager::GetInstance();
+	Safe_AddRef(pLight_Manager);
+
+	_float4x4 InputFloat4x4 = pLight_Manager->Get_LightViewFloat4x4(0);
+	if (FAILED(m_pShader->Bind_Float4x4("g_LightViewMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	InputFloat4x4 = pLight_Manager->Get_LightProjFloat4x4(m_pContext);
+	if (FAILED(m_pShader->Bind_Float4x4("g_LightProjMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	Safe_Release(pLight_Manager);
 
 	m_pShader->Begin(3);
 

@@ -24,6 +24,7 @@ public:
 	virtual void AfterFrustumTick(const _double & TimeDelta) {};
 	virtual void Late_Tick(const _double & TimeDelta);
 	virtual HRESULT Render() = 0;
+	virtual HRESULT Render_Shadow() { return S_OK; }
 
 public:
 

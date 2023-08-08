@@ -54,6 +54,7 @@ void CStatic_Object::AfterFrustumTick(const _double& TimeDelta)
 		true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f))
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 	}
 
 	Safe_Release(pGameInstance);
@@ -65,9 +66,6 @@ void CStatic_Object::Late_Tick(const _double& TimeDelta)
 
 HRESULT CStatic_Object::Render()
 {
-	if (m_wstrTag == L"Rocks_Circle")
-		int i = 0;
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -79,6 +77,25 @@ HRESULT CStatic_Object::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, TYPE_NORMALS);
 
 		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CStatic_Object::Render_Shadow()
+{
+	if (FAILED(Set_Shader_Shadow_Resources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pShaderCom->Begin(1)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
@@ -116,6 +133,28 @@ HRESULT CStatic_Object::Bind_ShaderResources()
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CStatic_Object::Set_Shader_Shadow_Resources()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	_float4x4 InputFloat4x4 = m_pTransformCom->Get_WorldFloat4x4();
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	InputFloat4x4 = pGameInstance->Get_LightViewFloat4x4(0);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_LightViewMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	InputFloat4x4 = pGameInstance->Get_LightProjFloat4x4(m_pContext);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_LightProjMatrix", &InputFloat4x4)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

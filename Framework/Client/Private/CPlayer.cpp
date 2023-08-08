@@ -130,7 +130,7 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 			Pair.second->AfterFrustumTick(TimeDelta);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 #ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
 			return;
@@ -178,6 +178,27 @@ HRESULT CPlayer::Render()
 			return E_FAIL;
 	}
 	
+	return S_OK;
+}
+
+HRESULT CPlayer::Render_Shadow()
+{
+	if (FAILED(Set_Shader_Shadow_Resources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		if (FAILED(m_pShaderCom->Begin(2)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -375,6 +396,31 @@ HRESULT CPlayer::Set_Shader_Resources()
 
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pActionCom->Bind_HitTimeAcc(m_pShaderCom, "g_fTimeAcc")))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Set_Shader_Shadow_Resources()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	_float4x4 InputFloat4x4 = m_pTransformCom->Get_WorldFloat4x4();
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	InputFloat4x4 = pGameInstance->Get_LightViewFloat4x4(0);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_LightViewMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	InputFloat4x4 = pGameInstance->Get_LightProjFloat4x4(m_pContext);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_LightProjMatrix", &InputFloat4x4)))
 		return E_FAIL;
 
 	if (FAILED(m_pActionCom->Bind_HitTimeAcc(m_pShaderCom, "g_fTimeAcc")))

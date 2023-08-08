@@ -486,6 +486,22 @@ HRESULT CGameInstance::Add_Light(const CLight::LIGHTDESC& LightDesc)
 	return m_pLight_Manager->Add_Light(LightDesc);
 }
 
+_float4x4 CGameInstance::Get_LightViewFloat4x4(const _uint& iIndex)
+{
+	if (nullptr == m_pLight_Manager)
+		return _float4x4();
+
+	return m_pLight_Manager->Get_LightViewFloat4x4(iIndex);
+}
+
+_float4x4 CGameInstance::Get_LightProjFloat4x4(ID3D11DeviceContext* pContext)
+{
+	if (nullptr == m_pLight_Manager)
+		return _float4x4();
+
+	return m_pLight_Manager->Get_LightProjFloat4x4(pContext);
+}
+
 _vector CGameInstance::Picking_On_Triangle(const POINT& ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform)
 {
 	if (nullptr == m_pCalculator)

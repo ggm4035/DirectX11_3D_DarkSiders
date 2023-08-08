@@ -34,6 +34,7 @@ public:
 	virtual void AfterFrustumTick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
 
 private:
 	CRenderer* m_pRendererCom = { nullptr };
@@ -43,6 +44,7 @@ private:
 private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Bind_ShaderResources();
+	HRESULT Set_Shader_Shadow_Resources();
 
 public:
 	static CStatic_Object* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

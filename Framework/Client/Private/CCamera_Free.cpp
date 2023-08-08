@@ -153,6 +153,8 @@ void CCamera_Free::SubBoss(const _double& TimeDelta)
 
 void CCamera_Free::Default(const _double& TimeDelta)
 {
+	m_fFar = 500.f;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 

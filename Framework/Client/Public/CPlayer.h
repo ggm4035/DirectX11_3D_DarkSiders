@@ -48,6 +48,7 @@ public:
 	virtual void AfterFrustumTick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
 
 public:
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override;
@@ -72,6 +73,7 @@ private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Add_Parts();
 	HRESULT Set_Shader_Resources();
+	HRESULT Set_Shader_Shadow_Resources();
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

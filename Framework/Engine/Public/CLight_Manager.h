@@ -14,6 +14,8 @@ private:
 
 public:
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint& iIndex);
+	_float4x4 Get_LightViewFloat4x4(const _uint& iIndex);
+	_float4x4 Get_LightProjFloat4x4(ID3D11DeviceContext* pContext);
 
 public:
 	HRESULT Add_Light(const CLight::LIGHTDESC& LightDesc);

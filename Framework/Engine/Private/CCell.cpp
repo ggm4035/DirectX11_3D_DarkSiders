@@ -220,6 +220,12 @@ HRESULT CCell::Render_Font()
 
 	vPosition = XMVector3TransformCoord(vPosition, CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_VIEW));
 	vPosition = XMVector3TransformCoord(vPosition, CPipeLine::GetInstance()->Get_Transform_Matrix(CPipeLine::STATE_PROJ));
+
+	if (vPosition.m128_f32[0] > 1.f || vPosition.m128_f32[0] < -1.f ||
+		vPosition.m128_f32[1] > 1.f || vPosition.m128_f32[1] < -1.f ||
+		vPosition.m128_f32[2] > 1.f || vPosition.m128_f32[2] < 0.f)
+		return S_OK;
+
 	wstring wstrIndex = to_wstring(m_iIndex);
 
 	_float screenX = ((XMVectorGetX(vPosition) + 1.0f) * 0.5f) * 1280;

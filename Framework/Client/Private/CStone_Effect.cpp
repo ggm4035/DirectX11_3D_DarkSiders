@@ -27,7 +27,7 @@ HRESULT CStone_Effect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 void CStone_Effect::Tick(const _double& TimeDelta)
 {
-	vector<_float4x4>		ParticleMatrices;
+	vector<_float4x4> ParticleMatrices;
 
 	for (auto& Particle : m_vecParticles)
 	{

@@ -102,6 +102,8 @@ public: /* For.FileInfo */
 public: /* For.Light_Manager*/
 	const CLight::LIGHTDESC* Get_LightDesc(const _uint & iIndex);
 	HRESULT Add_Light(const CLight::LIGHTDESC & LightDesc);
+	_float4x4 Get_LightViewFloat4x4(const _uint& iIndex);
+	_float4x4 Get_LightProjFloat4x4(ID3D11DeviceContext* pContext);
 
 public: /* For.Calculator */
 	_vector Picking_On_Triangle(const POINT & ptMouse, class CVIBuffer* pBuffer, class CTransform* pTransform);

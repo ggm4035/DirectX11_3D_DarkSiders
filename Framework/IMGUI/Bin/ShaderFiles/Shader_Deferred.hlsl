@@ -1,6 +1,9 @@
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_ViewMatrixInv, g_ProjMatrixInv;
+
+matrix g_LightViewMatrix, g_LightProjMatrix;
+
 texture2D g_Texture;
 vector g_vCamPosition;
 
@@ -9,6 +12,7 @@ texture2D g_NormalTexture;
 texture2D g_ShadeTexture;
 texture2D g_DepthTexture;
 texture2D g_SpecularTexture;
+texture2D g_LightDepthTexture;
 
 vector g_vLightDir;
 vector g_vLightPos;
@@ -140,9 +144,36 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
     vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+    vector vShadowDesc = g_LightDepthTexture.Sample(LinearSampler, In.vTexUV);
     
-    Out.vColor = vDiffuse * vShade; //+ vSpecular;
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexUV);
+    float fViewZ = vDepthDesc.y;
+    vector vPosition;
+
+	/* 투영스페이스 상의 위치 */
+    vPosition.x = In.vTexUV.x * 2.f - 1.f;
+    vPosition.y = In.vTexUV.y * -2.f + 1.f;
+    vPosition.z = vDepthDesc.x;
+    vPosition.w = 1.f;
+
+	/* 뷰스페이스 상의 위치. */
+    vPosition = vPosition * fViewZ;
+    vPosition = mul(vPosition, g_ProjMatrixInv);
+
+	/* 월드스페이스 상의 위치. */
+    vPosition = mul(vPosition, g_ViewMatrixInv);
     
+    /* 라이트 뷰 스페이스 상의 위치 */
+    vPosition = mul(vPosition, g_LightViewMatrix);
+    
+    /* 라이트 투영스페이스 상의 위치 */
+    vPosition = mul(vPosition, g_LightProjMatrix);
+    
+    Out.vColor = vDiffuse * vShade;
+    
+    if(vPosition.z - 0.1f > vShadowDesc.r * 1000.f)
+        Out.vColor = vector(0.f, 0.f, 1.f, 1.f);
+   
     return Out;
 }
 

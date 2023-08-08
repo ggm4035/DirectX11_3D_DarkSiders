@@ -1,10 +1,8 @@
-
-
 #include "Shader_Client_Defines.hlsli"
-
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_BoneMatrices[256]; /* 이 메시를 그리기위해 사용되는 뼈들의 행려 VTF */
+matrix g_LightViewMatrix, g_LightProjMatrix;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 float g_fTimeAcc = 0.f;
@@ -19,7 +17,6 @@ struct VS_IN
     float4 vBlendWeights : BLENDWEIGHT;
 };
 
-
 struct VS_OUT
 {
     float4 vPosition : SV_POSITION;
@@ -30,7 +27,6 @@ struct VS_OUT
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
 };
-
 
 /* 정점을 받고 변환하고 정점을 리턴한다. */
 VS_OUT VS_MAIN(VS_IN In)
@@ -61,6 +57,36 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
     Out.vBinormal = normalize(vector(cross(Out.vTangent.xyz, Out.vNormal.xyz), 0.f));
 
+    return Out;
+}
+
+struct VS_OUT_SHADOW
+{
+    float4 vPosition : SV_POSITION;
+    float4 vProjPos : TEXCOORD1;
+};
+
+VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
+{
+    VS_OUT_SHADOW Out = (VS_OUT_SHADOW) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_LightViewMatrix);
+    matWVP = mul(matWV, g_LightProjMatrix);
+
+    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+    matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+		g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+	
+    Out.vPosition = mul(vPosition, matWVP);
+    Out.vProjPos = Out.vPosition;
+    
     return Out;
 }
 
@@ -137,6 +163,26 @@ PS_OUT PS_MAIN_HIT(PS_IN In)
     return Out;
 }
 
+struct PS_IN_SHADOW
+{
+    float4 vPosition : SV_POSITION;
+    float4 vProjPos : TEXCOORD1;
+};
+
+struct PS_OUT_SHADOW
+{
+    float4 vLightDepth : SV_TARGET0;
+};
+
+PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
+{
+    PS_OUT_SHADOW Out = (PS_OUT_SHADOW) 0;
+    
+    Out.vLightDepth = In.vProjPos.z / In.vProjPos.w;
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass AnimMesh
@@ -162,5 +208,18 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_HIT();
+    }
+
+    pass Shadow
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
     }
 }

@@ -79,6 +79,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 
 	LightDesc.eType = CLight::TYPE_DIRECTIONAL;
+	LightDesc.vPosition = _float4(46.f, 92.f, 20.f, 1.f);//_float4(155, 40, 100.f, 1.f);//
 	LightDesc.vDirection = _float4(1.5f, -1.f, 0.8f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 0.7f, 0.7f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 0.7f, 0.7f, 1.f);
