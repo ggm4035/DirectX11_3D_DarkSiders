@@ -146,7 +146,7 @@ void CCell::Free()
 	Safe_Release(m_pContext);
 }
 
-#if defined(_USE_IMGUI) || defined(_DEBUG) 
+#if defined(_USE_IMGUI) || defined(_DEBUG)
 
 void CCell::Set_Position(POINT ePoint, const _float3& vPosition)
 {
@@ -213,7 +213,6 @@ HRESULT CCell::Render_Sphere()
 HRESULT CCell::Render_Font()
 {
 	CFont_Manager* pFont_Manager = CFont_Manager::GetInstance();
-
 	Safe_AddRef(pFont_Manager);
 
 	_vector vPosition = (XMLoadFloat3(&m_arrPoints[0]) + XMLoadFloat3(&m_arrPoints[1]) + XMLoadFloat3(&m_arrPoints[2])) / 3.f;
@@ -224,7 +223,10 @@ HRESULT CCell::Render_Font()
 	if (vPosition.m128_f32[0] > 1.f || vPosition.m128_f32[0] < -1.f ||
 		vPosition.m128_f32[1] > 1.f || vPosition.m128_f32[1] < -1.f ||
 		vPosition.m128_f32[2] > 1.f || vPosition.m128_f32[2] < 0.f)
+	{
+		Safe_Release(pFont_Manager);
 		return S_OK;
+	}
 
 	wstring wstrIndex = to_wstring(m_iIndex);
 

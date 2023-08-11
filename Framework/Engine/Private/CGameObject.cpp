@@ -25,7 +25,7 @@ CGameObject* CGameObject::Get_Parts(const wstring& wstrPartsTag)
 
 void CGameObject::Tick(const _double& TimeDelta)
 {
-#if defined(_USE_IMGUI) || defined(_DEBUG)
+#ifdef _DEBUG
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 

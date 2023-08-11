@@ -93,7 +93,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         TimerAcc += pGameInstance->Get_Timer(L"Timer_Default");
 
         /* MainApp 객체의 처리. */
-        if (TimerAcc >= 1.0 / 60.0)
+        /*if (TimerAcc >= 1.0 / 60.0)*/
         {
             pGameInstance->Set_Timer(L"Timer_60");
 
@@ -152,8 +152,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
+   RECT	rcWindow = { 0, 0, g_iWinSizeX, g_iWinSizeY };
+
+   AdjustWindowRect(&rcWindow, WS_OVERLAPPEDWINDOW, TRUE);
+
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, 
+       rcWindow.right - rcWindow.left,
+       rcWindow.bottom - rcWindow.top,
+       nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -197,14 +204,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
-        }
-        break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:

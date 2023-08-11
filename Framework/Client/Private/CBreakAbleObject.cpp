@@ -76,9 +76,7 @@ void CBreakAbleObject::AfterFrustumTick(const _double& TimeDelta)
 		}
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-
-		for (auto& pSoul : m_vecSouls)
-			pSoul->AfterFrustumTick(TimeDelta);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 
 #ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
@@ -119,8 +117,37 @@ HRESULT CBreakAbleObject::Render()
 	return S_OK;
 }
 
+HRESULT CBreakAbleObject::Render_Shadow()
+{
+	if (FAILED(Set_Shader_Shadow_Resources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 void CBreakAbleObject::Dead_Motion(const _double& TimeDelta)
 {
+	if (true == m_isDeadMotionFirst)
+	{
+		for (auto& pSoul : m_vecSouls)
+		{
+			pSoul->Get_Transform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		}
+
+		m_isDeadMotionFirst = false;
+	}
+
 	for (auto iter = m_vecSouls.begin(); iter !=  m_vecSouls.end();)
 	{
 		(*iter)->Tick(TimeDelta);
@@ -132,6 +159,9 @@ void CBreakAbleObject::Dead_Motion(const _double& TimeDelta)
 		else
 			++iter;
 	}
+
+	for (auto& pSoul : m_vecSouls)
+		pSoul->AfterFrustumTick(TimeDelta);
 
 	if (0 == m_vecSouls.size())
 		m_isRemove = true;
@@ -155,9 +185,7 @@ HRESULT CBreakAbleObject::Add_Components()
 		(CComponent**)&m_pHealth, this, &Desc)))
 		return E_FAIL;
 
-
 	CSoul::SOULDESC tSoulDesc;
-	XMStoreFloat4(&tSoulDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	tSoulDesc.RotationPerSec = XMConvertToRadians(90.f);
 	tSoulDesc.SpeedPerSec = 2.f;
 
@@ -197,6 +225,28 @@ HRESULT CBreakAbleObject::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CBreakAbleObject::Set_Shader_Shadow_Resources()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	_float4x4 InputFloat4x4 = m_pTransformCom->Get_WorldFloat4x4();
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_WorldMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	InputFloat4x4 = pGameInstance->Get_LightViewFloat4x4(0);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_LightViewMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	InputFloat4x4 = pGameInstance->Get_LightProjFloat4x4(m_pContext);
+	if (FAILED(m_pShaderCom->Bind_Float4x4("g_LightProjMatrix", &InputFloat4x4)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
 CBreakAbleObject* CBreakAbleObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CBreakAbleObject* pInstance = new CBreakAbleObject(pDevice, pContext);
@@ -223,6 +273,9 @@ CBreakAbleObject* CBreakAbleObject::Clone(const _uint& iLevelIndex, CComponent* 
 
 void CBreakAbleObject::Free()
 {
+	for (auto& pSoul : m_vecSouls)
+		Safe_Release(pSoul);
+
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pCollider);

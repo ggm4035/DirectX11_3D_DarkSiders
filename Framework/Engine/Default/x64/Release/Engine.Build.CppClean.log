@@ -19,6 +19,7 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbone.o
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbase.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\capplication.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\canimation.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csound_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cshader.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\crendertarget.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\crenderer.obj
@@ -33,7 +34,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel_
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\clevel.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_rect.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_point.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinstance_parabola.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cinput_device.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgraphic_device.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameinstance.obj
@@ -56,7 +56,6 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctrigge
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctransform.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctexture.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\ctarget_manager.obj
-c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csound_manager.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\csequence.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cselector.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\croot.obj
@@ -68,6 +67,10 @@ c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameob
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cgameobject.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cblackboard.obj
 c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cbehavior.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cdeffence.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cattack.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\chealth.obj
+c:\users\joo\documents\github\jusin\framework\engine\default\x64\release\cstatus.obj
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.lib
 c:\users\joo\documents\github\jusin\framework\engine\bin\engine.exp
 c:\users\joo\documents\github\jusin\framework\engine\bin\shader_deferred.cso

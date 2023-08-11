@@ -1,6 +1,8 @@
 #include "CSoul.h"
 
 #include "CGameInstance.h"
+#include "CInven.h"
+#include "CCurrency.h"
 
 CSoul::CSoul(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject3D(pDevice, pContext)
@@ -19,12 +21,6 @@ HRESULT CSoul::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pA
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
-	if (nullptr != pArg)
-	{
-		SOULDESC Desc = *static_cast<SOULDESC*>(pArg);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&Desc.vPosition));
-	}
 
 	m_tSoulDesc.vVelocity = _float4(GetRandomFloat(-5.f, 5.f), GetRandomFloat(15.f, 25.f), GetRandomFloat(-5.f, 5.f), 0.f);
 
@@ -85,6 +81,24 @@ HRESULT CSoul::Render()
 void CSoul::Dead_Motion(const _double& TimeDelta)
 {
 	/* 플레이어의 소울 양을 조절(보통 증가하지) 하고 삭제 */
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CGameObject3D* pPlayer = pGameInstance->Get_Player();
+	if (nullptr == pPlayer)
+		return;
+
+	CInven* pInven = dynamic_cast<CInven*>(pPlayer->Get_Component(L"Inven"));
+	if (nullptr == pInven)
+		return;
+
+	CCurrency* pCurrency = pInven->Get_Currency();
+	if (nullptr == pCurrency)
+		return;
+
+	pCurrency->Add_Currency(100);
+
+	Safe_Release(pGameInstance);
 
 	m_isRemove = true;
 }

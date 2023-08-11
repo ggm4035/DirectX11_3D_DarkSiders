@@ -33,14 +33,7 @@ void CStone_Effect::Tick(const _double& TimeDelta)
 	{
 		Particle.dAge += TimeDelta;
 
-		/*if (Particle.dAge < Particle.dGenTime)
-		{
-			XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixIdentity());
-			ParticleMatrices.push_back(Particle.WorldMatrix);
-			continue;
-		}*/
-
-		if (Particle.dAge > Particle.dLifeTime /*+ Particle.dGenTime*/)
+		if (Particle.dAge > Particle.dLifeTime)
 			Particle.isAlive = false;
 
 		_float4 vPos;
@@ -55,7 +48,7 @@ void CStone_Effect::Tick(const _double& TimeDelta)
 		XMStoreFloat4(&vPos, XMLoadFloat4(&vPos) + vVelocity * _float(TimeDelta));
 		
 		XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixScaling(0.3f, 0.3f, 0.3f) * XMMatrixTranslation(vPos.x, vPos.y, vPos.z));
-
+		
 		ParticleMatrices.push_back(Particle.WorldMatrix);
 	}
 

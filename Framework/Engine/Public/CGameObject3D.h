@@ -46,7 +46,7 @@ protected: /* Collider */
 	void Tick_Colliders(_fmatrix WorldMatrix);
 	void On_Colisions(const _double& TimeDelta);
 
-#if defined(_USE_IMGUI) || defined(_DEBUG)
+#ifdef _DEBUG
 	HRESULT Add_Colliders_Debug_Render_Group(class CRenderer* pRenderer);
 #endif // _DEBUG
 

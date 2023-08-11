@@ -271,8 +271,6 @@ HRESULT CNavigation::Render()
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
-	//return S_OK;
-
 	_float4x4 WorldMatrix, ViewMatrix, ProjMatrix;
 
 	XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());

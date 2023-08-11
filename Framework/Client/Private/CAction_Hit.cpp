@@ -8,18 +8,18 @@
 #include "CAction.h"
 
 CAction_Hit::CAction_Hit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CSequence(pDevice, pContext)
+	:CSelector(pDevice, pContext)
 {
 }
 
 CAction_Hit::CAction_Hit(const CAction_Hit& rhs)
-	: CSequence(rhs)
+	: CSelector(rhs)
 {
 }
 
 HRESULT CAction_Hit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CSequence::Initialize(iLevelIndex, pOwner, pArg)))
+	if (FAILED(CSelector::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
@@ -43,12 +43,13 @@ HRESULT CAction_Hit::Assemble_Childs()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", m_pOwner));
-	if (nullptr == pHit)
-		return E_FAIL;
 	CAction* pAction_Dead = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 	if (nullptr == pAction_Dead)
 		return E_FAIL;
+	CHit* pHit = dynamic_cast<CHit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Hit", m_pOwner));
+	if (nullptr == pHit)
+		return E_FAIL;
+
 	CDead* pDead = dynamic_cast<CDead*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Dead", m_pOwner));
 	if (nullptr == pDead)
 		return E_FAIL;
@@ -70,9 +71,9 @@ HRESULT CAction_Hit::Assemble_Childs()
 			return pHealth->isDead();
 		});
 
-	if (FAILED(Assemble_Behavior(L"Tsk_Hit", pHit)))
-		return E_FAIL;
 	if (FAILED(Assemble_Behavior(L"Action_Dead", pAction_Dead)))
+		return E_FAIL;
+	if (FAILED(Assemble_Behavior(L"Tsk_Hit", pHit)))
 		return E_FAIL;
 
 	if (FAILED(pAction_Dead->Assemble_Behavior(L"Tsk_Dead", pDead)))
@@ -111,5 +112,5 @@ CAction_Hit* CAction_Hit::Clone(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 void CAction_Hit::Free()
 {
-	CSequence::Free();
+	CSelector::Free();
 }

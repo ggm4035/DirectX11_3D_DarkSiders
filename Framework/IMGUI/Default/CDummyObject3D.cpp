@@ -86,8 +86,8 @@ void CDummyObject3D::Late_Tick(const _double& TimeDelta)
     {
         m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
-        if (FAILED(m_pRenderer->Add_DebugGroup(m_pCollider)))
-            return;
+        /*if (FAILED(m_pRenderer->Add_DebugGroup(m_pCollider)))
+            return;*/
     }
 }
 

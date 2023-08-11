@@ -37,20 +37,14 @@ void CDummyTrigger::Tick(const _double& TimeDelta)
 
     CTrigger::Tick(TimeDelta);
 
-    Add_RenderDebug();
 }
 
 void CDummyTrigger::Late_Tick(const _double& TimeDelta)
 {
     CTrigger::Late_Tick(TimeDelta);
-}
 
-HRESULT CDummyTrigger::Render()
-{
-    if (false == m_isUpdate)
-        return S_OK;
-
-    return S_OK;
+    if (FAILED(m_pRenderer->Add_DebugGroup(m_pColliderCom)))
+        return;
 }
 
 HRESULT CDummyTrigger::Add_Components()
@@ -68,6 +62,7 @@ HRESULT CDummyTrigger::Add_Components()
     if(FAILED(Add_Component(LEVEL_TOOL, L"Renderer", L"Com_Renderer",
         (CComponent**)&m_pRenderer, this)))
         return E_FAIL;
+
     return S_OK;
 }
 
@@ -99,5 +94,6 @@ CDummyTrigger* CDummyTrigger::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CDummyTrigger::Free()
 {
+    Safe_Release(m_pRenderer);
     CTrigger::Free();
 }

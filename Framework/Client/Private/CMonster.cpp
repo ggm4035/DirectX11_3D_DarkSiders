@@ -5,6 +5,7 @@
 #include "CGameInstance.h"
 #include "CUI_HpBar.h"
 #include "CAoE.h"
+#include "CSoul.h"
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject3D(pDevice, pContext)
@@ -102,6 +103,9 @@ void CMonster::Tick(const _double& TimeDelta)
 
 void CMonster::AfterFrustumTick(const _double& TimeDelta)
 {
+	if (false == m_isRender)
+		return;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -171,6 +175,15 @@ HRESULT CMonster::Render(/*const _uint& iPassIndex*/)
 
 void CMonster::Dead_Motion(const _double& TimeDelta)
 {
+	if (true == m_isDeadMotionFirst)
+	{
+		for (auto& pSoul : m_vecSouls)
+		{
+			pSoul->Get_Transform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		}
+
+		m_isDeadMotionFirst = false;
+	}
 	m_fHitTimeAcc += TimeDelta;
 }
 
@@ -244,6 +257,7 @@ HRESULT CMonster::Add_Components()
 
 	m_pRoot->Add_Type(L"isSpawn", &m_isSpawn);
 	m_pRoot->Add_Type(L"isRemove", &m_isRemove);
+	m_pRoot->Add_Type(L"isRender", &m_isRender);
 	m_pRoot->Add_Type(L"isAbleAttack", &m_isAbleAttack);
 	m_pRoot->Add_Type(L"isRangeInPlayer", &m_isRangeInPlayer);
 

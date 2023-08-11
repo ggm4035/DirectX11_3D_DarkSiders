@@ -35,6 +35,11 @@ void CTrigger_Free::Tick(const _double& TimeDelta)
 void CTrigger_Free::Late_Tick(const _double& TimeDelta)
 {
 	CTrigger::Late_Tick(TimeDelta);
+
+//#ifdef _DEBUG
+//	if (FAILED(m_pRenderer->Add_DebugGroup(m_pColliderCom)))
+//		return;
+//#endif // _DEBUG
 }
 
 void CTrigger_Free::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -72,11 +77,11 @@ HRESULT CTrigger_Free::Add_Components()
 		(CComponent**)&m_pColliderCom, this, &Desc)))
 		return E_FAIL;
 
-#ifdef _DEBUG
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer", L"Com_Renderer",
-		(CComponent**)&m_pRenderer, this)))
-		return E_FAIL;
-#endif
+//#ifdef _DEBUG
+//	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer", L"Com_Renderer",
+//		(CComponent**)&m_pRenderer, this)))
+//		return E_FAIL;
+//#endif
 
 	return S_OK;
 }
@@ -147,5 +152,9 @@ CTrigger_Free* CTrigger_Free::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CTrigger_Free::Free()
 {
+//#ifdef _DEBUG
+//	Safe_Release(m_pRenderer);
+//#endif // _DEBUG
+
 	CTrigger::Free();
 }

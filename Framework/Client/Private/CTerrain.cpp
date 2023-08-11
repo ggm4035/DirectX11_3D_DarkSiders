@@ -72,12 +72,21 @@ void CTerrain::Tick(const _double& TimeDelta)
 	Safe_Release(pGameInstance);
 }
 
+void CTerrain::AfterFrustumTick(const _double& TimeDelta)
+{
+	if (nullptr != m_pRendererCom)
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+#ifdef _DEBUG
+		if (FAILED(m_pRendererCom->Add_DebugGroup(m_pNavigationCom)))
+			return;
+#endif
+	}
+}
+
 void CTerrain::Late_Tick(const _double& TimeDelta)
 {
-	//m_pBufferCom->Culling(m_pTransformCom->Get_WorldMatrix());
-
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
 HRESULT CTerrain::Render()
@@ -88,10 +97,6 @@ HRESULT CTerrain::Render()
 	m_pShaderCom->Begin(0);
 
 	m_pBufferCom->Render();
-
-#ifdef _DEBUG
-	m_pNavigationCom->Render();
-#endif
 
 	return S_OK;
 }

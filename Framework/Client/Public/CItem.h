@@ -7,7 +7,7 @@ BEGIN(Engine)
 class CShader;
 class CTexture;
 class CRenderer;
-class CVIBuffer_Point_Instance;
+class CVIBuffer_Rect;
 class CCollider;
 END
 
@@ -16,16 +16,12 @@ BEGIN(Client)
 class CItem final : public CGameObject3D
 {
 public:
-	typedef struct tagStoneParticle
+	enum ITEMTYPE { TYPE_ALL, TYPE_ATTACK, TYPE_DEFFENCE, TYPE_HEALTH, TYPE_END };
+	typedef struct tagItemDesc : public CTransform::TRASNFORMDESC
 	{
-		_bool		isAlive;
-		_float4     vAccel;
-		_float4     vVelocity;
-		_float4x4	WorldMatrix;
-		_double     dAge;
-		_double     dLifeTime;
-		//_double	dGenTime;
-	}STONEPARTICLE;
+		ITEMTYPE eType;
+		wstring wstrTextureTag;
+	}ITEMDESC;
 
 private:
 	explicit CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,19 +37,19 @@ public:
 	virtual HRESULT Render();
 
 public:
-	void Reset_Effects();
-	void Reset_Particle(STONEPARTICLE& Particle);
-	void Render_Effect(_fvector vEffectPos);
+	virtual void Dead_Motion(const _double& TimeDelta) override;
+	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) override {}
+	virtual void OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta) override;
+	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override {}
 
 private:
-	vector<STONEPARTICLE> m_vecParticles;
-	_uint m_iNumParticles = { 0 };
+	ITEMTYPE m_eItemType = { TYPE_END };
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
-	CRenderer* m_pRenderer = { nullptr };
-	CVIBuffer_Point_Instance* m_pBufferCom = { nullptr };
+	CRenderer* m_pRendererCom = { nullptr };
+	CVIBuffer_Rect* m_pBufferCom = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

@@ -23,7 +23,7 @@ private:
 
 private:
 	class CUI_Rect* m_pFadeIn = { nullptr };
-	class CUI_Rect* m_pPlayerUI[8] = { nullptr };
+	class CHUD* m_pHud = { nullptr };
 
 private:
 	HRESULT Ready_Lights();

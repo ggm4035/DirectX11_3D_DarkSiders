@@ -7,6 +7,8 @@
 #include "CPlayer.h"
 #include "CUI_Rect.h"
 
+#include "CSoul.h"
+
 CSteamRoller::CSteamRoller(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
 {
@@ -120,7 +122,25 @@ void CSteamRoller::Dead_Motion(const _double& TimeDelta)
 
 	Safe_Release(pGameInstance);
 
+	for (auto iter = m_vecSouls.begin(); iter != m_vecSouls.end();)
+	{
+		(*iter)->Tick(TimeDelta);
+		if (true == (*iter)->is_Remove())
+		{
+			Safe_Release(*iter);
+			iter = m_vecSouls.erase(iter);
+		}
+		else
+			++iter;
+	}
+
+	for (auto& pSoul : m_vecSouls)
+		pSoul->AfterFrustumTick(TimeDelta);
+
 	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRender = false;
+
+	if (0 == m_vecSouls.size() && true == m_pModelCom->isFinishedAnimation())
 	{
 		CGameManager::GetInstance()->SubBossDead();
 		m_isRemove = true;
@@ -226,6 +246,21 @@ HRESULT CSteamRoller::Add_Components()
 	OBBDesc.isEnable = false;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack", &OBBDesc)))
 		return E_FAIL;
+
+	CSoul::SOULDESC tSoulDesc;
+	tSoulDesc.RotationPerSec = XMConvertToRadians(90.f);
+	tSoulDesc.SpeedPerSec = 2.f;
+
+	for (_uint i = 0; i < 40; ++i)
+	{
+		CSoul* pSoul = { nullptr };
+		wstring wstrTag = L"Soul" + to_wstring(i);
+		if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Soul", wstrTag,
+			(CComponent**)&pSoul, this, &tSoulDesc)))
+			return E_FAIL;
+
+		m_vecSouls.push_back(pSoul);
+	}
 
 	if (FAILED(Make_AI()))
 		return E_FAIL;
@@ -434,6 +469,9 @@ CSteamRoller* CSteamRoller::Clone(const _uint& iLevelIndex, CComponent* pOwner, 
 
 void CSteamRoller::Free()
 {
+	for (auto& pSoul : m_vecSouls)
+		Safe_Release(pSoul);
+
 	for (auto UI : m_pMonsterUI)
 		Safe_Release(UI);
 

@@ -20,6 +20,10 @@ namespace Engine
 
 		return (f * (highBound - lowBound)) + lowBound;
 	}
+	// 선형 보간 함수
+	static float lerp(float a, float b, float t) {
+		return (1 - t) * a + t * b;
+	}
 
 	////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////Template 함수//////////////////////////

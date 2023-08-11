@@ -112,10 +112,10 @@ HRESULT CRenderer::Draw_RenderGroup()
 	if (FAILED(Render_Priority()))
 		return E_FAIL;
 
-	if (FAILED(Render_Shadow()))
+	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
 
-	if (FAILED(Render_NonBlend()))
+	if (FAILED(Render_Shadow()))
 		return E_FAIL;
 
 	if (FAILED(Render_Light()))
@@ -133,7 +133,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
-#if defined(_USE_IMGUI) || defined(_DEBUG)
+#ifdef _DEBUG
 	if (FAILED(Render_Debug()))
 		return E_FAIL;
 #endif // _DEBUG
@@ -234,20 +234,13 @@ HRESULT CRenderer::Render_Shadow()
 	if(FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Shadow")))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
+	CTarget_Manager* pTarget_Manager = CTarget_Manager::GetInstance();
+	Safe_AddRef(pTarget_Manager);
+
+	if (FAILED(pTarget_Manager->Clear_RenderTargetView(m_pContext, L"Target_LightDepth", _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
-	CLight_Manager* pLight_Manager = CLight_Manager::GetInstance();
-	Safe_AddRef(pLight_Manager);
-
-	_float4x4 InputFloat4x4 = pLight_Manager->Get_LightViewFloat4x4(0);
-	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &InputFloat4x4)))
-		return E_FAIL;
-	InputFloat4x4 = pLight_Manager->Get_LightProjFloat4x4(m_pContext);
-	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &InputFloat4x4)))
-		return E_FAIL;
-	
-	Safe_Release(pLight_Manager);
+	Safe_Release(pTarget_Manager);
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOW])
 	{
@@ -376,7 +369,11 @@ CComponent* CRenderer::Clone(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 void CRenderer::Free()
 {
-	CComponent::Free();
+#ifdef _DEBUG
+	for (auto& pComponent : m_DebugObject)
+		Safe_Release(pComponent);
+	m_DebugObject.clear();
+#endif
 
 	for (auto& RenderList : m_RenderObjects)
 	{
@@ -391,14 +388,10 @@ void CRenderer::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
 
-#if defined(_USE_IMGUI) || defined(_DEBUG)
-	for (auto& pComponent : m_DebugObject)
-		Safe_Release(pComponent);
-	m_DebugObject.clear();
-#endif
+	CComponent::Free();
 }
 
-#if defined(_USE_IMGUI) || defined(_DEBUG)
+#ifdef _DEBUG
 HRESULT CRenderer::Add_DebugGroup(CComponent* pDebugCom)
 {
 	if (nullptr == pDebugCom)
@@ -417,6 +410,32 @@ HRESULT CRenderer::Render_Debug()
 
 	for (auto& pDebugCom : m_DebugObject)
 	{
+		pDebugCom->Render();
+		Safe_Release(pDebugCom);
+	}
+
+	m_DebugObject.clear();
+
+#ifdef _DEBUG
+
+	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	/*if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;*/
+
+#endif // _DEBUG
+
+	return S_OK;
+
+	for (auto& pDebugCom : m_DebugObject)
+	{
 		if (nullptr != pDebugCom)
 			pDebugCom->Render();
 
@@ -424,18 +443,7 @@ HRESULT CRenderer::Render_Debug()
 	}
 	m_DebugObject.clear();
 
-#ifdef _DEBUG
-	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
 	return S_OK;
-#endif // _DEBUG
 }
 
 #endif

@@ -9,6 +9,7 @@
 #include "CRoot.h"
 
 #include "CCamera_Free.h"
+#include "CInven.h"
 
 void CPlayer::Get_Damaged(const CAttack* pAttack)
 {
@@ -100,6 +101,9 @@ void CPlayer::Tick(const _double& TimeDelta)
 	if (CGameInstance::GetInstance()->Key_Down(DIK_2))
 		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->On_Shake(CCamera_Free::SHAKE_Y, 5.f, 2.f);
 
+	if (CGameInstance::GetInstance()->Key_Down(DIK_I))
+		m_pInven->ToggleSwitch();
+
 	CGameObject3D::Tick(TimeDelta);
 
 	m_pActionCom->Tick(TimeDelta);
@@ -108,6 +112,7 @@ void CPlayer::Tick(const _double& TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
+	m_pInven->Tick(TimeDelta);
 	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
@@ -129,8 +134,11 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 		for (auto Pair : m_Parts)
 			Pair.second->AfterFrustumTick(TimeDelta);
 
+		m_pInven->AfterFrustumTick(TimeDelta);
+
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
+
 #ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
 			return;
@@ -263,6 +271,14 @@ HRESULT CPlayer::Add_Components()
 		(CComponent**)&m_pDeffence, this, &DeffenceDesc)))
 		return E_FAIL;
 
+	CInven::INVENDESC InvenDesc;
+	InvenDesc.pAttack = m_pAttack;
+	InvenDesc.pDeffence = m_pDeffence;
+	InvenDesc.pHealth = m_pHealth;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Inven", L"Inven", 
+		(CComponent**)&m_pInven, this, &InvenDesc)))
+		return E_FAIL;
+
 	/* Navigation */
 	CNavigation::NAVIGATIONDESC NaviDesc;
 	NaviDesc.iCurrentIndex = /*29*/0;
@@ -331,7 +347,7 @@ HRESULT CPlayer::Add_Parts()
 	CWeapon::WEAPONDESC Desc;
 	CSwordTrail::SWORDTRAILDESC TrailDesc;
 
-	TrailDesc.iNumRect = 20.f;
+	TrailDesc.iNumRect = 30.f;
 	TrailDesc.vOffsetHigh = _float3(0.f, 0.f, 2.4f);
 	TrailDesc.vOffsetLow = _float3(0.f, 0.f, 0.5f);
 	TrailDesc.wstrTextureTag = L"Texture_SwordTrail";
@@ -469,6 +485,8 @@ void CPlayer::Free()
 	Safe_Release(m_pHealth);
 	Safe_Release(m_pAttack);
 	Safe_Release(m_pDeffence);
+
+	Safe_Release(m_pInven);
 
 	CGameObject3D::Free();
 }

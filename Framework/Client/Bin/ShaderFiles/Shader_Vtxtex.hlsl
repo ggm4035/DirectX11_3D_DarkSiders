@@ -184,8 +184,6 @@ float4 PS_MAIN_COLOR(PS_IN In) : SV_TARGET0
     if (vColor.a < 0.1f)
         discard;
     
-    vColor.rgb = float3(1.f, 0.51f, 0.26f);
-    
     return vColor;
 }
 
@@ -205,6 +203,20 @@ float4 PS_MAIN_SPRITE(PS_IN In) : SV_TARGET0
 }
 
 float4 PS_MAIN_ALPHA(PS_IN In) : SV_TARGET0
+{
+    float4 vColor = (float4) 0;
+    float4 vAlphaTexture = (float4) 0;
+    
+    vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+    vAlphaTexture = g_AlphaTexture.Sample(LinearSampler, In.vTexUV);
+    
+    if (vAlphaTexture.a < 0.1f)
+        discard;
+    
+    return vColor;
+}
+
+float4 PS_MAIN_FOCUS(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
     float4 vAlphaTexture = (float4) 0;
@@ -337,7 +349,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPRITE();
     }
 
-    pass Alpha // 9: 알파텍스처 테스트
+    pass Alpha // 9: 알파텍스처 블렌드
     {
         SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
@@ -348,5 +360,31 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_ALPHA();
+    }
+
+    pass AlphaBlend // 10: 알파텍스처 테스트
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_ALPHA();
+    }
+
+    pass Focus // 11: 포커스
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_FOCUS();
     }
 };

@@ -131,7 +131,3 @@ void CChannel::Free()
 {
 	m_vecKeyFrames.clear();
 }
-
-#if defined(_USE_IMGUI) || defined(_DEBUG)
-
-#endif

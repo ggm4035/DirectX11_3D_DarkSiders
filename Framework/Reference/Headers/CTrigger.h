@@ -1,8 +1,6 @@
 #pragma once
 
 #include "CGameObject3D.h"
-#include "CTransform.h"
-#include "CCollider.h"
 
 BEGIN(Engine)
 
@@ -45,14 +43,6 @@ protected:
 public:
 	virtual CTrigger* Clone(const _uint & iLevelIndex, CComponent * pOwner, void* pArg) = 0;
 	virtual void Free() override;
-
-#if defined(_USE_IMGUI) || defined(_DEBUG)
-public:
-	HRESULT Add_RenderDebug();
-
-protected:
-	class CRenderer* m_pRenderer = { nullptr };
-#endif
 };
 
 END

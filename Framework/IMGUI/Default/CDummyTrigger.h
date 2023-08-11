@@ -29,7 +29,7 @@ public:
     virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
     virtual void Tick(const _double& TimeDelta) override;
     virtual void Late_Tick(const _double& TimeDelta) override;
-    virtual HRESULT Render() override;
+    virtual HRESULT Render() override { return S_OK; }
 
 public:
     virtual void OnCollisionEnter(Engine::CCollider::COLLISION Collision, const Engine::_double& TimeDelta) {}
@@ -38,6 +38,8 @@ public:
 
 private:
     _bool m_isUpdate = { true };
+
+    class CRenderer* m_pRenderer = { nullptr };
 
 private:
     virtual HRESULT Add_Components() override;

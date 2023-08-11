@@ -61,6 +61,7 @@ protected:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 	class CUI_HpBar* m_pHealthBar = { nullptr };
+	vector<class CSoul*> m_vecSouls;
 
 protected: /* Status */
 	CHealth* m_pHealth = { nullptr };
@@ -69,6 +70,7 @@ protected: /* Status */
 
 protected:
 	_bool m_isSpawn = { false };
+	_bool m_isRender = { true };
 	_bool m_isAbleAttack = { false };
 	_bool m_isRangeInPlayer = { false };
 
@@ -81,6 +83,7 @@ protected:
 private:
 	_float m_fHitTimeAcc = { 0.f };
 	_bool m_isSuperArmor = { false };
+	_bool m_isDeadMotionFirst = { true };
 
 public:
 	virtual void Free() override;

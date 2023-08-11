@@ -181,7 +181,19 @@
     <Filter Include="02. GameObject\00. Player\PlayerActions\03. HitAction\Knockback">
       <UniqueIdentifier>{80abb2b4-840c-4437-9b66-06c68ccfa654}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\07. Items">
+    <Filter Include="02. GameObject\00. Player\Inventory">
+      <UniqueIdentifier>{09168a27-db7e-4f27-935e-1a172a9c4f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\Inventory\CCurrency">
+      <UniqueIdentifier>{bd0223a5-4621-4f22-9b14-45cfb583428d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. HUD">
+      <UniqueIdentifier>{40e2addd-3321-4453-ae3c-6f334f6160b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\Inventory\Slot">
+      <UniqueIdentifier>{e701c55a-0135-461c-8309-008f7b4e78bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\Inventory\Items">
       <UniqueIdentifier>{e2957dba-f1f6-42ca-81da-9ab35beeb7ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -400,10 +412,22 @@
       <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CItem.h">
-      <Filter>02. GameObject\07. Items</Filter>
+      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CSoul.h">
-      <Filter>02. GameObject\07. Items</Filter>
+      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CInven.h">
+      <Filter>02. GameObject\00. Player\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCurrency.h">
+      <Filter>02. GameObject\00. Player\Inventory\CCurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHUD.h">
+      <Filter>04. HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSlot.h">
+      <Filter>02. GameObject\00. Player\Inventory\Slot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -614,10 +638,22 @@
       <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CItem.cpp">
-      <Filter>02. GameObject\07. Items</Filter>
+      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CSoul.cpp">
-      <Filter>02. GameObject\07. Items</Filter>
+      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CInven.cpp">
+      <Filter>02. GameObject\00. Player\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCurrency.cpp">
+      <Filter>02. GameObject\00. Player\Inventory\CCurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHUD.cpp">
+      <Filter>04. HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSlot.cpp">
+      <Filter>02. GameObject\00. Player\Inventory\Slot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

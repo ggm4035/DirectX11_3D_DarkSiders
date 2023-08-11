@@ -3,6 +3,7 @@
 #include "CGameInstance.h"
 #include "CCursor.h"
 
+#include "CGameInstance.h"
 IMPLEMENT_SINGLETON(CGameManager)
 
 void CGameManager::Set_Cursor(CCursor* pCursor)
@@ -12,6 +13,22 @@ void CGameManager::Set_Cursor(CCursor* pCursor)
 }
 
 void CGameManager::Tick(const _double& TimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Key_Down(DIK_ESCAPE))
+		m_isPop = !m_isPop;
+
+	Safe_Release(pGameInstance);
+
+	if (true == m_isPop)
+		PopUpMenu(TimeDelta);
+
+	BossSoundCheck();
+}
+
+void CGameManager::BossSoundCheck()
 {
 	if (false == m_isFirst)
 		return;
@@ -32,6 +49,10 @@ void CGameManager::Tick(const _double& TimeDelta)
 			m_isFirst = false;
 		}
 	}
+}
+
+void CGameManager::PopUpMenu(const _double& TimeDelta)
+{
 }
 
 void CGameManager::Free()

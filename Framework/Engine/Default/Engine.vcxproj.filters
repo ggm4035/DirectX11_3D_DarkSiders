@@ -232,7 +232,7 @@
     <Filter Include="01. Utility\02. Component\Components\09. Status\Attack">
       <UniqueIdentifier>{b4f3811c-9140-4e2a-afa6-03de6bdacc99}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\02. Component\Components\09. Status\Defence">
+    <Filter Include="01. Utility\02. Component\Components\09. Status\Deffence">
       <UniqueIdentifier>{22df31d8-930b-4573-889c-5dc618b90ba3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -469,7 +469,7 @@
       <Filter>01. Utility\02. Component\Components\09. Status\Attack</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CDeffence.h">
-      <Filter>01. Utility\02. Component\Components\09. Status\Defence</Filter>
+      <Filter>01. Utility\02. Component\Components\09. Status\Deffence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -687,7 +687,7 @@
       <Filter>01. Utility\02. Component\Components\09. Status\Attack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CDeffence.cpp">
-      <Filter>01. Utility\02. Component\Components\09. Status\Defence</Filter>
+      <Filter>01. Utility\02. Component\Components\09. Status\Deffence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

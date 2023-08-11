@@ -46,6 +46,41 @@ HRESULT CRenderTarget::Initialize(const _uint& iSizeX, const _uint& iSizeY, DXGI
 	return S_OK;
 }
 
+void CRenderTarget::Clear()
+{
+	m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
+}
+
+HRESULT CRenderTarget::Bind_ShaderResourceView(class CShader* pShader, const string& wstrConstantName)
+{
+	if (nullptr == m_pSRV)
+		return E_FAIL;
+
+	return pShader->Bind_ShaderResource(wstrConstantName, m_pSRV);
+}
+
+CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
+	const _uint& iSizeX, const _uint& iSizeY, DXGI_FORMAT eFormat, const _float4& vClearColor)
+{
+	CRenderTarget* pInstance = new CRenderTarget(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize(iSizeX, iSizeY, eFormat, vClearColor)))
+	{
+		MSG_BOX("Failed to Created CRenderTarget");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CRenderTarget::Free()
+{
+	Safe_Release(m_pRTV);
+	Safe_Release(m_pSRV);
+	Safe_Release(m_pTexture2D);
+	Safe_Release(m_pContext);
+	Safe_Release(m_pDevice);
+}
+
 #ifdef _DEBUG
 HRESULT CRenderTarget::Ready_Debug(const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY)
 {
@@ -79,42 +114,3 @@ HRESULT CRenderTarget::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	return pVIBuffer->Render();
 }
 #endif // _DEBUG
-
-void CRenderTarget::Clear()
-{
-	m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
-}
-
-HRESULT CRenderTarget::Bind_ShaderResourceView(class CShader* pShader, const string& wstrConstantName)
-{
-	if (nullptr == m_pSRV)
-		return E_FAIL;
-
-	return pShader->Bind_ShaderResource(wstrConstantName, m_pSRV);
-}
-
-CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
-	const _uint& iSizeX, const _uint& iSizeY, DXGI_FORMAT eFormat, const _float4& vClearColor)
-{
-	CRenderTarget* pInstance = new CRenderTarget(pDevice, pContext);
-
-	if (FAILED(pInstance->Initialize(iSizeX, iSizeY, eFormat, vClearColor)))
-	{
-		MSG_BOX("Failed to Created CRenderTarget");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
-}
-
-void CRenderTarget::Free()
-{
-
-	SaveDDSTextureToFile(m_pContext, m_pTexture2D, TEXT("../Bin/Diffuse.dds"));
-
-	Safe_Release(m_pRTV);
-	Safe_Release(m_pSRV);
-	Safe_Release(m_pTexture2D);
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pContext);
-
-}

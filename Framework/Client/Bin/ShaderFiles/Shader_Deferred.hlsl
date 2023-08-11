@@ -168,11 +168,12 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     /* 라이트 투영스페이스 상의 위치 */
     vPosition = mul(vPosition, g_LightProjMatrix);
+    vPosition.z = vPosition.z / vPosition.w;
     
     Out.vColor = vDiffuse * vShade;
     
-    if(vPosition.z - 0.1f > vShadowDesc.r * 1000.f)
-        Out.vColor = vector(0.f, 0.f, 1.f, 1.f);
+    if(vPosition.z > vShadowDesc.r)
+        Out.vColor = vector(1.f, 0.f, 1.f, 1.f);
    
     return Out;
 }

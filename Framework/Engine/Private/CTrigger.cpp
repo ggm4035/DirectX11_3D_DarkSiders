@@ -66,18 +66,5 @@ void CTrigger::Free()
 {
 	Safe_Release(m_pColliderCom);
 
-#if defined(_USE_IMGUI) || defined(_DEBUG)
-	Safe_Release(m_pRenderer);
-#endif
 	CGameObject3D::Free();
 }
-
-#if defined(_USE_IMGUI) || defined(_DEBUG)
-HRESULT CTrigger::Add_RenderDebug()
-{
-	if (FAILED(m_pRenderer->Add_DebugGroup(m_pColliderCom)))
-		return E_FAIL;
-
-	return S_OK;
-}
-#endif

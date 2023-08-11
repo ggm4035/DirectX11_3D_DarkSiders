@@ -1,6 +1,8 @@
 #include "CItem.h"
 
 #include "CGameInstance.h"
+#include "CInven.h"
+#include "CCurrency.h"
 
 CItem::CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject3D(pDevice, pContext)
@@ -20,47 +22,34 @@ HRESULT CItem::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pA
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		ITEMDESC Desc = *static_cast<ITEMDESC*>(pArg);
+
+		if (FAILED(Add_Component(LEVEL_GAMEPLAY, Desc.wstrTextureTag, L"Com_Texture",
+			(CComponent**)&m_pTextureCom, this)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
 void CItem::Tick(const _double& TimeDelta)
 {
-	vector<_float4x4>		ParticleMatrices;
+	m_pTransformCom->BillBoard(TimeDelta);
 
-	for (auto& Particle : m_vecParticles)
-	{
-		Particle.dAge += TimeDelta;
-
-		if (Particle.dAge > Particle.dLifeTime)
-			Particle.isAlive = false;
-
-		_float4 vPos;
-
-		memcpy(&vPos, Particle.WorldMatrix.m[3], sizeof(_float4));
-		_vector vVelocity = XMLoadFloat4(&Particle.vVelocity);
-
-		vVelocity += XMLoadFloat4(&Particle.vAccel) * TimeDelta;
-
-		XMStoreFloat4(&Particle.vVelocity, vVelocity);
-
-		XMStoreFloat4(&vPos, XMLoadFloat4(&vPos) + vVelocity * _float(TimeDelta));
-
-		XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixScaling(0.3f, 0.3f, 0.3f) * XMMatrixTranslation(vPos.x, vPos.y, vPos.z));
-
-		ParticleMatrices.push_back(Particle.WorldMatrix);
-	}
-
-	m_pBufferCom->Tick(ParticleMatrices, TimeDelta);
+	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CItem::AfterFrustumTick(const _double& TimeDelta)
 {
-	if (nullptr != m_pRenderer)
-		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
 }
 
 void CItem::Late_Tick(const _double& TimeDelta)
 {
+	On_Colisions(TimeDelta);
 }
 
 HRESULT CItem::Render()
@@ -68,64 +57,51 @@ HRESULT CItem::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(9);
 
 	m_pBufferCom->Render();
 
 	return S_OK;
 }
 
-void CItem::Reset_Effects()
+void CItem::Dead_Motion(const _double& TimeDelta)
 {
-	for (auto& particle : m_vecParticles)
-	{
-		Reset_Particle(particle);
-	}
+	m_isRemove = true;
 }
 
-void CItem::Reset_Particle(STONEPARTICLE& Particle)
+void CItem::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	Particle.dAge = 0.f;
-	Particle.dLifeTime = 2.f;
-	Particle.isAlive = true;
+	/* 여기는 애초에 플레이어랑만 충돌하게 해서 들어온 상황의 other객체는 무조건 플레이어임 */
 
-	Particle.vVelocity = _float4(GetRandomFloat(-5.f, 5.f), GetRandomFloat(15.f, 25.f), GetRandomFloat(-5.f, 5.f), 0.f);
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
-	Particle.vAccel = _float4(0.f, GetRandomFloat(-35.f, -45.f), 0.f, 0.f);
 
-	XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixIdentity());
-}
 
-void CItem::Render_Effect(_fvector vEffectPos)
-{
-	Reset_Effects();
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vEffectPos);
+	Safe_Release(pGameInstance);
 }
 
 HRESULT CItem::Add_Components()
 {
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Renderer", L"Com_Renderer",
-		(CComponent**)&m_pRenderer, this)))
+		(CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Texture_RockChip", L"Com_Texture",
-		(CComponent**)&m_pTextureCom, this)))
-		return E_FAIL;
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_PointInstance", L"Com_Shader",
+
+	if (FAILED(Add_Component(LEVEL_STATIC, L"Shader_VtxTex", L"Com_Shader",
 		(CComponent**)&m_pShaderCom, this)))
 		return E_FAIL;
 
-	m_vecParticles.resize(20);
-	m_iNumParticles = 20;
+	if (FAILED(Add_Component(LEVEL_STATIC, L"VIBuffer_Rect", L"Com_Buffer",
+		(CComponent**)&m_pBufferCom, this)))
+		return E_FAIL;
 
-	CVIBuffer_Point_Instance::POINTINSTDESC Desc;
-	Desc.iNumInstance = m_iNumParticles;
-	Desc.iNumHeight = 4;
-	Desc.iNumWidth = 4;
-	Desc.fFrameSpeed = 1.f;
-
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Instance_Point", L"Com_Buffer",
-		(CComponent**)&m_pBufferCom, this, &Desc)))
+	CBounding_Sphere::SPHEREDESC SphereDesc;
+	SphereDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	SphereDesc.vOffset = _float3(0.f, 0.f, 0.f);
+	SphereDesc.eGroup = CCollider::COL_ITEM;
+	SphereDesc.fRadius = 1.f;
+	SphereDesc.isEnable = true;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Sphere", &SphereDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -145,17 +121,12 @@ HRESULT CItem::SetUp_ShaderResources()
 	InputMatrix = pGameInstance->Get_Transform_Float4x4(CPipeLine::STATE_PROJ);
 	if (FAILED(m_pShaderCom->Bind_Float4x4("g_ProjMatrix", &InputMatrix)))
 		return E_FAIL;
-	_float4 InputFloat = pGameInstance->Get_Camera_Position();
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &InputFloat, sizeof(_float4))))
-		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture")))
 		return E_FAIL;
-	if (FAILED(m_pBufferCom->Bind_LengthTexelU(m_pShaderCom, "g_fLengthTexelU")))
-		return E_FAIL;
-	if (FAILED(m_pBufferCom->Bind_LengthTexelV(m_pShaderCom, "g_fLengthTexelV")))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_AlphaTexture")))
 		return E_FAIL;
 
 	return S_OK;
@@ -189,7 +160,7 @@ void CItem::Free()
 {
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRenderer);
+	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pBufferCom);
 
 	CGameObject3D::Free();

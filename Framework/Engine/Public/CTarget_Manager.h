@@ -21,12 +21,7 @@ public:
 	/* 원래상태로 복구한다. (0번째에 백버퍼가 바인딩 된 상태로 돌려준다. */
 	HRESULT End_MRT(ID3D11DeviceContext* pContext);
 	HRESULT Bind_ShaderResourceView(const wstring& wstrTargetTag, class CShader* pShader, const string& wstrConstantName);
-
-#ifdef _DEBUG
-public:
-	HRESULT Ready_Debug(const wstring& wstrTargetTag, const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY);
-	HRESULT Render(const wstring& wstrMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
-#endif
+	HRESULT Clear_RenderTargetView(ID3D11DeviceContext* pContext, const wstring& wstrTargetTag, const _float4& vClearColor);
 
 private:
 	unordered_map<wstring, class CRenderTarget*> m_umapRenderTargets;
@@ -42,6 +37,13 @@ private:
 
 public:
 	virtual void Free() override;
+
+#ifdef _DEBUG
+public:
+	HRESULT Ready_Debug(const wstring& wstrTargetTag, const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY);
+	HRESULT Render(const wstring& wstrMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+#endif
+
 };
 
 END

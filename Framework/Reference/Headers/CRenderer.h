@@ -48,7 +48,7 @@ public:
 	virtual CComponent* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
 
-#if defined(_USE_IMGUI) || defined(_DEBUG)
+#ifdef _DEBUG
 public:
 	HRESULT Add_DebugGroup(CComponent* pDebugCom);
 	HRESULT Render_Debug();

@@ -26,6 +26,9 @@ protected:
 
 public:
 	_float2 Get_Scale();
+	const _float3& Get_Position() const {
+		return m_vPosition;
+	}
 	void Set_Scale(const _float2& _vScale);
 	void Set_Position(const _float3& _vPosition);
 
@@ -38,6 +41,7 @@ public:
 
 protected:
 	_float4x4 m_WorldMatrix;
+	_float3 m_vPosition;
 
 protected:
 	virtual HRESULT Add_Components() = 0;

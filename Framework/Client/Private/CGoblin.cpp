@@ -7,6 +7,7 @@
 #include "CPlayer.h"
 
 #include "CAoE.h"
+#include "CSoul.h"
 
 CGoblin::CGoblin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -75,14 +76,22 @@ void CGoblin::Dead_Motion(const _double& TimeDelta)
 	CMonster::Dead_Motion(TimeDelta);
 	m_fExplosionTimeAcc += TimeDelta;
 
-	_float fScale = m_fExplosionTimeAcc * 4.f;
-	_matrix Matrix = XMMatrixScaling(fScale, fScale, fScale) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, 0.1f, 0.f) * m_pTransformCom->Get_WorldMatrix();
-	_float4x4 WorldMatrix;
-	XMStoreFloat4x4(&WorldMatrix, Matrix);
+	if (1.9f > m_fExplosionTimeAcc)
+	{
+		_float fScale = m_fExplosionTimeAcc * 4.f;
+		_matrix Matrix = XMMatrixScaling(fScale, fScale, fScale) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, 0.1f, 0.f) * m_pTransformCom->Get_WorldMatrix();
+		_float4x4 WorldMatrix;
+		XMStoreFloat4x4(&WorldMatrix, Matrix);
+		m_pAoe->Tick(WorldMatrix);
+	}
+	
+	if (true == m_isRender && 2.f <= m_fExplosionTimeAcc)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"en_fleamag_explode_01.ogg", CSound_Manager::SOUND_ENEMY, 2.f, true);
+		m_isRender = false;
+	}
 
-	m_pAoe->Tick(WorldMatrix);
-
-	if (1.9f <= m_fExplosionTimeAcc)
+	if (true == m_isRender && 1.9f <= m_fExplosionTimeAcc)
 	{
 		CCollider* pCollider = Find_Collider(L"Col_Explosion");
 		if (nullptr == pCollider)
@@ -91,10 +100,25 @@ void CGoblin::Dead_Motion(const _double& TimeDelta)
 		pCollider->Set_Enable(true);
 	}
 
-	if (2.f <= m_fExplosionTimeAcc)
+	if (false == m_isRender)
 	{
-		CGameInstance::GetInstance()->Play_Sound(L"en_fleamag_explode_01.ogg", CSound_Manager::SOUND_ENEMY, 2.f, true);
-		m_isRemove = true;
+		for (auto iter = m_vecSouls.begin(); iter != m_vecSouls.end();)
+		{
+			(*iter)->Tick(TimeDelta);
+			if (true == (*iter)->is_Remove())
+			{
+				Safe_Release(*iter);
+				iter = m_vecSouls.erase(iter);
+			}
+			else
+				++iter;
+		}
+
+		for (auto& pSoul : m_vecSouls)
+			pSoul->AfterFrustumTick(TimeDelta);
+
+		if (0 == m_vecSouls.size())
+			m_isRemove = true;
 	}
 }
 
@@ -196,6 +220,21 @@ HRESULT CGoblin::Add_Components()
 	SphereDesc.isEnable = false;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Explosion", &SphereDesc)))
 		return E_FAIL;
+
+	CSoul::SOULDESC tSoulDesc;
+	tSoulDesc.RotationPerSec = XMConvertToRadians(90.f);
+	tSoulDesc.SpeedPerSec = 2.f;
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		CSoul* pSoul = { nullptr };
+		wstring wstrTag = L"Soul" + to_wstring(i);
+		if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Soul", wstrTag,
+			(CComponent**)&pSoul, this, &tSoulDesc)))
+			return E_FAIL;
+
+		m_vecSouls.push_back(pSoul);
+	}
 
 	if (FAILED(Make_AI()))
 		return E_FAIL;
@@ -309,6 +348,16 @@ HRESULT CGoblin::Make_AI()
 			return pHealth->isDead();
 		});
 
+	pAction_Explosion_Start->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_bool* pIsRender = { nullptr };
+			pBlackBoard->Get_Type(L"isRender", pIsRender);
+			if (nullptr == pIsRender)
+				return false;
+
+			return *pIsRender;
+		});
+
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
 		return E_FAIL;
@@ -376,6 +425,9 @@ CGoblin* CGoblin::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg
 
 void CGoblin::Free()
 {
+	for (auto& pSoul : m_vecSouls)
+		Safe_Release(pSoul);
+
 	Safe_Release(m_pAoe);
 
 	CMonster::Free();

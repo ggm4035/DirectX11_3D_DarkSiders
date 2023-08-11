@@ -102,6 +102,9 @@ HRESULT CUI_Rect::SetUp_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_Texture")))
 		return E_FAIL;
 
+	if (FAILED(m_pTextureCom->Bind_ShaderResources(m_pShaderCom, "g_AlphaTexture")))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeAcc", &m_fTimeAcc, sizeof(_float))))
 		return E_FAIL;
 

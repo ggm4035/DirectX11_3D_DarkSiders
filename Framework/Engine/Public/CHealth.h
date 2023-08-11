@@ -31,6 +31,9 @@ public:
 	const _float& Get_Current_HP_Percent() const {
 		return _float(m_iHP) / _float(m_iMaxHP);
 	}
+	const _int& Get_MaxHP() const {
+		return m_iMaxHP;
+	}
 	void Set_HitState(HITSTATE eState) {
 		m_eCurHitState = eState;
 	}

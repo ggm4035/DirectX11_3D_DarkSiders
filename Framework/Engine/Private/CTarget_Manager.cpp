@@ -87,30 +87,16 @@ HRESULT CTarget_Manager::Bind_ShaderResourceView(const wstring& wstrTargetTag, C
 	return pRenderTarget->Bind_ShaderResourceView(pShader, wstrConstantName);
 }
 
-#ifdef _DEBUG
-HRESULT CTarget_Manager::Ready_Debug(const wstring& wstrTargetTag, const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY)
+HRESULT CTarget_Manager::Clear_RenderTargetView(ID3D11DeviceContext* pContext, const wstring& wstrTargetTag, const _float4& vClearColor)
 {
 	CRenderTarget* pRenderTarget = Find_RenderTarget(wstrTargetTag);
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
 
-	return pRenderTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);
-}
-
-HRESULT CTarget_Manager::Render(const wstring& wstrMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer)
-{
-	for (auto Pair : m_umapMRTs)
-	{
-		for (auto pRenderTarget : Pair.second)
-		{
-			if (FAILED(pRenderTarget->Render(pShader, pVIBuffer)))
-				return E_FAIL;
-		}
-	}
+	pContext->ClearRenderTargetView(pRenderTarget->Get_RTV(), (_float*)(&vClearColor));
 
 	return S_OK;
 }
-#endif
 
 CRenderTarget* CTarget_Manager::Find_RenderTarget(const wstring& wstrTargetTag)
 {
@@ -145,3 +131,28 @@ void CTarget_Manager::Free()
 	}
 	m_umapMRTs.clear();
 }
+
+#ifdef _DEBUG
+HRESULT CTarget_Manager::Ready_Debug(const wstring& wstrTargetTag, const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(wstrTargetTag);
+	if (nullptr == pRenderTarget)
+		return E_FAIL;
+
+	return pRenderTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);
+}
+
+HRESULT CTarget_Manager::Render(const wstring& wstrMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+{
+	for (auto Pair : m_umapMRTs)
+	{
+		for (auto pRenderTarget : Pair.second)
+		{
+			if (FAILED(pRenderTarget->Render(pShader, pVIBuffer)))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+#endif

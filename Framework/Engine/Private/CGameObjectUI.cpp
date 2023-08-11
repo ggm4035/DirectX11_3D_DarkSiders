@@ -47,6 +47,8 @@ void CGameObjectUI::Set_Scale(const _float2& _vScale)
 
 void CGameObjectUI::Set_Position(const _float3& _vPosition)
 {
+	m_vPosition = _vPosition;
+
 	_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 	WorldMatrix.r[3].m128_f32[0] = _vPosition.x - CApplication::m_iWinSizeX * 0.5f;
 	WorldMatrix.r[3].m128_f32[1] = -_vPosition.y + CApplication::m_iWinSizeY * 0.5f;

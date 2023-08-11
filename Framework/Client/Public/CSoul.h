@@ -8,7 +8,6 @@ class CShader;
 class CTexture;
 class CRenderer;
 class CVIBuffer_Rect;
-class CCollider;
 END
 
 BEGIN(Client)
@@ -21,7 +20,6 @@ public:
 		_float4 vAccel;
 		_float4 vVelocity;
 		_double dGenTime;
-		_float4 vPosition;
 	}SOULDESC;
 
 private:

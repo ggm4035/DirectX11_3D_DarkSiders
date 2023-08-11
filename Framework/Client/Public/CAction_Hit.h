@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CSequence.h"
+#include "CSelector.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -10,7 +10,7 @@ END
 
 BEGIN(Client)
 
-class CAction_Hit final : public CSequence
+class CAction_Hit final : public CSelector
 {
 private:
 	explicit CAction_Hit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

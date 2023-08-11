@@ -122,7 +122,12 @@ HRESULT CMainApp::Ready_UI_Objects()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
+
 	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Rect",
+		CUI_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"UI_Rect",
 		CUI_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 

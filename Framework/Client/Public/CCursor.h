@@ -4,11 +4,11 @@
 #include "Client_Defines.h"
 
 BEGIN(Engine)
-class CRenderer;
-class CVIBuffer_Rect;
 class CShader;
 class CTexture;
+class CRenderer;
 class CTransform;
+class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
@@ -39,10 +39,10 @@ private:
 	_bool m_isRender = { true };
 
 private:
-	CRenderer* m_pRendererCom = { nullptr };
-	CVIBuffer_Rect* m_pBufferCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	CRenderer* m_pRendererCom = { nullptr };
+	CVIBuffer_Rect* m_pBufferCom = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

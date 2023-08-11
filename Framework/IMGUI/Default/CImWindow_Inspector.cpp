@@ -132,7 +132,7 @@ void CImWindow_Inspector::Show_Transform()
         ImGui::DragFloat("SCL_Z", &vScale.z, 0.01f, -100.f, 100.f, "%.2f");
 
         ImGui::DragFloat("SCL_XYZ",&fScale, 0.01f, -100.f, 100.f, "%.2f");
-        cout << vScale.x << ", " << vScale.y << ", " << vScale.z << endl;
+        //cout << vScale.x << ", " << vScale.y << ", " << vScale.z << endl;
 
         _float3 vTemp = _float3(vScale.x + fScale, vScale.y + fScale, vScale.z + fScale);
         

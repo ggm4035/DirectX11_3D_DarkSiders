@@ -174,12 +174,21 @@
     <ClInclude Include="..\Public\CBoss_Spawn.h" />
     <ClInclude Include="..\Public\CBreakAbleObject.h" />
     <ClInclude Include="..\Public\CCamera_Free.h" />
+    <ClInclude Include="..\Public\CCurrency.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\CCursor.h" />
     <ClInclude Include="..\Public\CDead.h" />
     <ClInclude Include="..\Public\CFallenDog.h" />
     <ClInclude Include="..\Public\CGameManager.h" />
     <ClInclude Include="..\Public\CGather_Effect.h" />
     <ClInclude Include="..\Public\CHollowLord.h" />
+    <ClInclude Include="..\Public\CHUD.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\CInven.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\CItem.h" />
     <ClInclude Include="..\Public\CJump.h" />
     <ClInclude Include="..\Public\CLeapAttack.h" />
@@ -254,6 +263,7 @@
     <ClInclude Include="..\Public\CSky.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\CSlot.h" />
     <ClInclude Include="..\Public\CSoul.h" />
     <ClInclude Include="..\Public\CStatic_Object.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -295,12 +305,21 @@
     <ClCompile Include="..\Private\CBoss_Spawn.cpp" />
     <ClCompile Include="..\Private\CBreakAbleObject.cpp" />
     <ClCompile Include="..\Private\CCamera_Free.cpp" />
+    <ClCompile Include="..\Private\CCurrency.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\CCursor.cpp" />
     <ClCompile Include="..\Private\CDead.cpp" />
     <ClCompile Include="..\Private\CFallenDog.cpp" />
     <ClCompile Include="..\Private\CGameManager.cpp" />
     <ClCompile Include="..\Private\CGather_Effect.cpp" />
     <ClCompile Include="..\Private\CHollowLord.cpp" />
+    <ClCompile Include="..\Private\CHUD.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\CInven.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\CItem.cpp" />
     <ClCompile Include="..\Private\CJump.cpp" />
     <ClCompile Include="..\Private\CLeapAttack.cpp" />
@@ -374,6 +393,7 @@
     <ClCompile Include="..\Private\CSky.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\CSlot.cpp" />
     <ClCompile Include="..\Private\CSoul.cpp" />
     <ClCompile Include="..\Private\CStatic_Object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

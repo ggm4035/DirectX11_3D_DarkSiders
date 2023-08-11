@@ -143,14 +143,11 @@ float4 PS_MAIN(PS_IN In) : SV_TARGET0
     return vColor;
 }
 
-float4 PS_MAIN_ALPHACHANNEL(PS_IN In) : SV_TARGET0
+float4 PS_MAIN_SPRITE(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
 
     vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-    
-    if (vColor.x < 0.1f && vColor.y < 0.1f && vColor.z < 0.1f)
-        vColor.a = 0.f;
     
     if (vColor.a < 0.1f)
         discard;
@@ -158,7 +155,7 @@ float4 PS_MAIN_ALPHACHANNEL(PS_IN In) : SV_TARGET0
     return vColor;
 }
 
-float4 PS_MAIN_SPRITE(PS_IN In) : SV_TARGET0
+float4 PS_MAIN_ALPHACHANNEL(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
     float4 vAlphaChannel = (float4) 0;
@@ -188,7 +185,7 @@ technique11 DefaultTechnique
 
     pass Sprite
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         VertexShader = compile vs_5_0 VS_MAIN();

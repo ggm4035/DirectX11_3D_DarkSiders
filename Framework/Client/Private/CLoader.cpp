@@ -21,12 +21,17 @@
 #include "CWeapon.h"
 #include "CTrigger_Free.h"
 #include "CSwordTrail.h"
+#include "CSlot.h"
 
 #include "CStone_Effect.h"
 #include "CSoul.h"
 
+#include "CInven.h"
+#include "CCurrency.h"
+
 #include "CUI_Overlay.h"
 #include "CUI_HpBar.h"
+#include "CHUD.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -222,6 +227,46 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Spawn.png"))))
 		return E_FAIL;
 
+	/* For. Texture_UI_War */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_War",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_War.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_CharBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_CharBox",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_CharBox.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_AttackDS */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_AttackDS",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AttackDS.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_DeffenceDS */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_DeffenceDS",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_DeffenceDS.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_HealthDS */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_HealthDS",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_HealthDS.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_CoreMajor */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_CoreMajor",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_CoreMajor.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_CoreMinor */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_CoreMinor",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_CoreMinor.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_Focus */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Focus",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Focus.png"))))
+		return E_FAIL;
+
 	/* For. Texture_SwordTrail */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SwordTrail",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/War_SwordTrail.png"))))
@@ -245,6 +290,16 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Texture_SoulAlpha */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SoulAlpha",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/SoulAlpha.png"))))
+		return E_FAIL;
+
+	/* For. Texture_Currency_Soul */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Currency_Soul",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_CurrencySouls.png"))))
+		return E_FAIL;
+
+	/* For. Texture_Inven */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Inven",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Inven.png"))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("버퍼 로딩 중.");
@@ -276,6 +331,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. UI_HpBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_HpBar",
 		CUI_HpBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. HUD */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"HUD",
+		CHUD::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");
@@ -510,6 +570,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Status_Deffence",
 		CDeffence::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Inven",
+		CInven::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Currency",
+		CCurrency::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Slot */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Slot",
+		CSlot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("네비게이션 로딩 중.");

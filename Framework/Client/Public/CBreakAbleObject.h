@@ -40,6 +40,7 @@ public:
 	virtual void AfterFrustumTick(const _double& TimeDelta) override;
 	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
 
 public:
 	virtual void Dead_Motion(const _double& TimeDelta) override;
@@ -52,10 +53,12 @@ private:
 	CHealth* m_pHealth = { nullptr };
 
 	vector<class CSoul*> m_vecSouls;
+	_bool m_isDeadMotionFirst = { true };
 
 private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Bind_ShaderResources();
+	HRESULT Set_Shader_Shadow_Resources();
 
 public:
 	static CBreakAbleObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

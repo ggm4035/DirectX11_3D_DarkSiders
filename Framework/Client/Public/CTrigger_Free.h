@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CGameInstance;
+class CRenderer;
 END
 
 BEGIN(Client)
@@ -37,6 +38,11 @@ public:
 	static CTrigger_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CTrigger_Free* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Free() override;
+
+#ifdef _DEBUG
+private:
+	CRenderer* m_pRenderer = { nullptr };
+#endif
 };
 
 END

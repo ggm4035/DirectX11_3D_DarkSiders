@@ -41,7 +41,7 @@ public:
 	virtual CGameObject* Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 
-#if defined(_USE_IMGUI) || defined(_DEBUG)
+#ifdef _DEBUG
 protected:
 	_bool m_isRender = { true };
 

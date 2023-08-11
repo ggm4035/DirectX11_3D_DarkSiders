@@ -507,6 +507,9 @@ void CImWindow_Top::Load(CGameInstance* pGameInstance)
             for (auto& Data : FileData.vecModelData)
                 Safe_Delete_BinaryData(Data.BinaryData);
 
+            for (auto& Data : FileData.vecBreakAbleData)
+                Safe_Delete_BinaryData(Data.BinaryData);
+
             for (auto& Data : FileData.vecMonsterData)
                 Safe_Delete_BinaryData(Data.BinaryData);
 

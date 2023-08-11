@@ -59,7 +59,7 @@ _float4x4 CLight_Manager::Get_LightProjFloat4x4(ID3D11DeviceContext* pContext)
 
 	pContext->RSGetViewports(&iNumViews, &ViewportDesc);
 
-	_matrix LightProjMatrix = XMMatrixPerspectiveFovLH(120.f, ViewportDesc.Width / ViewportDesc.Height, 0.3f, 1000.f);
+	_matrix LightProjMatrix = XMMatrixPerspectiveFovLH(120.f, ViewportDesc.Width / ViewportDesc.Height, 0.3f, 500.f);
 
 	_float4x4 LightProjFloat4x4;
 	XMStoreFloat4x4(&LightProjFloat4x4, LightProjMatrix);

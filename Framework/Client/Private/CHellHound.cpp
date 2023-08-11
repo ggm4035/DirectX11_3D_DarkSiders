@@ -5,6 +5,7 @@
 #include "CGameInstance.h"
 #include "CBlackBoard.h"
 #include "CPlayer.h"
+#include "CSoul.h"
 
 CHellHound::CHellHound(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
@@ -60,7 +61,25 @@ void CHellHound::Dead_Motion(const _double& TimeDelta)
 {
 	CMonster::Dead_Motion(TimeDelta);
 
+	for (auto iter = m_vecSouls.begin(); iter != m_vecSouls.end();)
+	{
+		(*iter)->Tick(TimeDelta);
+		if (true == (*iter)->is_Remove())
+		{
+			Safe_Release(*iter);
+			iter = m_vecSouls.erase(iter);
+		}
+		else
+			++iter;
+	}
+	
+	for (auto& pSoul : m_vecSouls)
+		pSoul->AfterFrustumTick(TimeDelta);
+
 	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRender = false;
+
+	if (0 == m_vecSouls.size())
 		m_isRemove = true;
 }
 
@@ -146,6 +165,21 @@ HRESULT CHellHound::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack", &SphereDesc)))
 		return E_FAIL;
 
+	CSoul::SOULDESC tSoulDesc;
+	tSoulDesc.RotationPerSec = XMConvertToRadians(90.f);
+	tSoulDesc.SpeedPerSec = 2.f;
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		CSoul* pSoul = { nullptr };
+		wstring wstrTag = L"Soul" + to_wstring(i);
+		if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Soul", wstrTag,
+			(CComponent**)&pSoul, this, &tSoulDesc)))
+			return E_FAIL;
+
+		m_vecSouls.push_back(pSoul);
+	}
+
 	if (FAILED(Make_AI()))
 		return E_FAIL;
 
@@ -164,6 +198,9 @@ HRESULT CHellHound::Make_AI()
 	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
 	if (nullptr == pSelector)
 		return E_FAIL;
+	CSelector* pSelector_Pattern = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
+	if (nullptr == pSelector_Pattern)
+		return E_FAIL;
 
 	CAction_Hit* pHit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
 	if (nullptr == pHit)
@@ -174,6 +211,15 @@ HRESULT CHellHound::Make_AI()
 	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
 	if (nullptr == pPattern_Attack)
 		return E_FAIL;
+
+	pSelector_Pattern->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			CHealth* pHealth = { nullptr };
+			if (FAILED(pBlackBoard->Get_Type(L"pHealth", pHealth)))
+				return false;
+
+			return !pHealth->isDead();
+		});
 
 	pHit->Bind_SoundTag(L"en_hellhound_impact_vo_02.ogg");
 	pPattern_Attack->Set_CoolTime(1.f);
@@ -187,9 +233,12 @@ HRESULT CHellHound::Make_AI()
 
 	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pHit)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Patrol", pPatrol)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Selector_Pattern", pSelector_Pattern)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
+
+	if (FAILED(pSelector_Pattern->Assemble_Behavior(L"Sequence_Patrol", pPatrol)))
+		return E_FAIL;
+	if (FAILED(pSelector_Pattern->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
 		return E_FAIL;
 
 	if (FAILED(pHit->Assemble_Childs()))
@@ -230,5 +279,8 @@ CHellHound* CHellHound::Clone(const _uint& iLevelIndex, CComponent* pOwner, void
 
 void CHellHound::Free()
 {
+	for (auto& pSoul : m_vecSouls)
+		Safe_Release(pSoul);
+
 	CMonster::Free();
 }

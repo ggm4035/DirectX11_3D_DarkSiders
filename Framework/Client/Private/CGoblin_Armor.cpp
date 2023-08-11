@@ -7,6 +7,8 @@
 #include "CPlayer.h"
 #include "CWeapon.h"
 
+#include "CSoul.h"
+
 CGoblin_Armor::CGoblin_Armor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster(pDevice, pContext)
 {
@@ -66,7 +68,25 @@ void CGoblin_Armor::Dead_Motion(const _double& TimeDelta)
 {
 	CMonster::Dead_Motion(TimeDelta);
 
+	for (auto iter = m_vecSouls.begin(); iter != m_vecSouls.end();)
+	{
+		(*iter)->Tick(TimeDelta);
+		if (true == (*iter)->is_Remove())
+		{
+			Safe_Release(*iter);
+			iter = m_vecSouls.erase(iter);
+		}
+		else
+			++iter;
+	}
+
+	for (auto& pSoul : m_vecSouls)
+		pSoul->AfterFrustumTick(TimeDelta);
+
 	if (true == m_pModelCom->isFinishedAnimation())
+		m_isRender = false;
+
+	if (0 == m_vecSouls.size())
 		m_isRemove = true;
 }
 
@@ -153,6 +173,21 @@ HRESULT CGoblin_Armor::Add_Components()
 	AABBDesc.isEnable = false;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack", &AABBDesc)))
 		return E_FAIL;
+
+	CSoul::SOULDESC tSoulDesc;
+	tSoulDesc.RotationPerSec = XMConvertToRadians(90.f);
+	tSoulDesc.SpeedPerSec = 2.f;
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		CSoul* pSoul = { nullptr };
+		wstring wstrTag = L"Soul" + to_wstring(i);
+		if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Soul", wstrTag,
+			(CComponent**)&pSoul, this, &tSoulDesc)))
+			return E_FAIL;
+
+		m_vecSouls.push_back(pSoul);
+	}
 
 	if (FAILED(Make_AI()))
 		return E_FAIL;
@@ -310,5 +345,8 @@ CGoblin_Armor* CGoblin_Armor::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CGoblin_Armor::Free()
 {
+	for (auto& pSoul : m_vecSouls)
+		Safe_Release(pSoul);
+
 	CMonster::Free();
 }

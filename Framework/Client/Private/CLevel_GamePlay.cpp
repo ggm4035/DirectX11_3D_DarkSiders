@@ -13,6 +13,7 @@
 #include "CTrigger_Free.h"
 #include "CUI_Rect.h"
 #include "CUI_HpBar.h"
+#include "CHUD.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice, pContext)
@@ -54,12 +55,10 @@ void CLevel_GamePlay::Tick(const _double& TimeDelta)
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
 
-	for (auto UI : m_pPlayerUI)
-		UI->Tick(TimeDelta);
+	m_pHud->Tick(TimeDelta);
 	m_pFadeIn->Tick(TimeDelta);
 
-	for (auto UI : m_pPlayerUI)
-		UI->Late_Tick(TimeDelta);
+	m_pHud->Late_Tick(TimeDelta);
 	m_pFadeIn->Late_Tick(TimeDelta);
 
 	CGameManager::GetInstance()->Tick(TimeDelta);
@@ -166,8 +165,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(wstring pLayerTag)
 	m_vecMonsterDatas = FileData.vecMonsterData;
 
 	/* SkyBox*/
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"SkyBox",
-		L"SkyBox", pLayerTag)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"SkyBox", L"SkyBox", pLayerTag)))
 		return E_FAIL;
 		
 	Safe_Release(pGameInstance);
@@ -289,6 +287,10 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	m_pHud = dynamic_cast<CHUD*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"HUD", L"HUD", nullptr, nullptr));
+	if (nullptr == m_pHud)
+		return E_FAIL;
+
 	CUI_Rect::UIRECTDESC UIDesc;
 
 	UIDesc.m_fX = _float(g_iWinSizeX >> 1);
@@ -302,111 +304,6 @@ HRESULT CLevel_GamePlay::Ready_HUD()
 
 	m_pFadeIn = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"FadeIn", nullptr, &UIDesc));
 	if (nullptr == m_pFadeIn)
-		return E_FAIL;
-
-	UIDesc.m_fX = 250;
-	UIDesc.m_fY = 110;
-	UIDesc.m_fSizeX = 220;
-	UIDesc.m_fSizeY = 40;
-	UIDesc.m_fDepth = 0.01f;
-	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_Hp";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
-	m_pPlayerUI[0] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrameHp", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[0])
-		return E_FAIL;
-
-	UIDesc.m_fX = 100;
-	UIDesc.m_fY = 100;
-	UIDesc.m_fSizeX = 100;
-	UIDesc.m_fSizeY = 100;
-	UIDesc.m_fDepth = 0.01f;
-	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_2";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
-	m_pPlayerUI[1] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrame2", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[1])
-		return E_FAIL;
-
-	UIDesc.m_fX = 105;
-	UIDesc.m_fY = 103;
-	UIDesc.m_fSizeX = 75;
-	UIDesc.m_fSizeY = 77;
-	UIDesc.m_fDepth = 0.f;
-	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_1";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
-	m_pPlayerUI[2] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitFrame1", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[2])
-		return E_FAIL;
-
-	CGameObject3D* pPlayer = pGameInstance->Get_Player();
-	UIDesc.m_fX = 247;
-	UIDesc.m_fY = 106;
-	UIDesc.m_fSizeX = 185;
-	UIDesc.m_fSizeY = 14;
-	UIDesc.m_fDepth = 0.f;
-	UIDesc.wstrTextureTag = L"Texture_UI_UnitFrame_HpBar";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 3;
-	UIDesc.pHealth = dynamic_cast<CHealth*>(pPlayer->Get_Component(L"Com_Health"));
-
-	m_pPlayerUI[3] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"UnitHpBar", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[3])
-		return E_FAIL;
-
-	UIDesc.m_fX = 150;
-	UIDesc.m_fY = 600;
-	UIDesc.m_fSizeX = 184;
-	UIDesc.m_fSizeY = 88;
-	UIDesc.m_fDepth = 0.f;
-	UIDesc.wstrTextureTag = L"Texture_UI_SkillFrame";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
-
-	m_pPlayerUI[4] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"SkillFrame", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[4])
-		return E_FAIL;
-
-	UIDesc.m_fX = 150;
-	UIDesc.m_fY = 590;
-	UIDesc.m_fSizeX = 80;
-	UIDesc.m_fSizeY = 80;
-	UIDesc.m_fDepth = 0.f;
-	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Dash";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 2;
-
-	m_pPlayerUI[5] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Dash", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[5])
-		return E_FAIL;
-
-	UIDesc.m_fX = 90;
-	UIDesc.m_fY = 610;
-	UIDesc.m_fSizeX = 80;
-	UIDesc.m_fSizeY = 80;
-	UIDesc.m_fDepth = 0.f;
-	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Leap";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 6;
-	UIDesc.pCoolTime = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Action()->Get_LeapCoolTimePtr();
-
-	m_pPlayerUI[6] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Leap", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[6])
-		return E_FAIL;
-
-	UIDesc.m_fX = 210;
-	UIDesc.m_fY = 610;
-	UIDesc.m_fSizeX = 80;
-	UIDesc.m_fSizeY = 80;
-	UIDesc.m_fDepth = 0.f;
-	UIDesc.wstrTextureTag = L"Texture_UI_Ability_Wheel";
-	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 6;
-	UIDesc.pCoolTime = static_cast<CPlayer*>(pGameInstance->Get_Player())->Get_Action()->Get_WheelCoolTimePtr();
-
-	m_pPlayerUI[7] = dynamic_cast<CUI_Rect*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Rect", L"Ability_Wheel", nullptr, &UIDesc));
-	if (nullptr == m_pPlayerUI[7])
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -429,9 +326,7 @@ CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 void CLevel_GamePlay::Free()
 {
 	Safe_Release(m_pFadeIn);
-
-	for (auto& UI : m_pPlayerUI)
-		Safe_Release(UI);
+	Safe_Release(m_pHud);
 
 	for (auto& Data : m_vecMonsterDatas)
 		Safe_Delete_BinaryData(Data.BinaryData);

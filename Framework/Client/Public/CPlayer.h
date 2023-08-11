@@ -30,7 +30,9 @@ public:
 public:
 	virtual void Get_Damaged(const CAttack* pAttack) override;
 	void Get_Damaged_Knockback(const _float4& _vPosition, const CAttack* pAttack);
-
+	class CInven* Get_Inven() {
+		return m_pInven;
+	}
 	class CPlayerAction* Get_Action() {
 		return m_pActionCom;
 	}
@@ -68,6 +70,9 @@ private: /* Status */
 	CHealth* m_pHealth = { nullptr };
 	CAttack* m_pAttack = { nullptr };
 	CDeffence* m_pDeffence = { nullptr };
+
+private:
+	class CInven* m_pInven = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;
