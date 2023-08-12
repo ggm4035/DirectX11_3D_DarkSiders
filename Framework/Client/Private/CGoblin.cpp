@@ -29,10 +29,10 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_pAttack->Set_Damage(1);
+	m_pAttack->Set_Damage(15);
 	m_pDeffence->Set_Deffence(0);
-	m_pHealth->Set_Max_Hp(6);
-	m_pHealth->Set_HP(6);
+	m_pHealth->Set_Max_Hp(100);
+	m_pHealth->Set_HP(100);
 
 	return S_OK;
 }

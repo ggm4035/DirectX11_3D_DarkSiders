@@ -32,6 +32,9 @@ private:
 	virtual ~CInven() = default;
 
 public:
+	void Set_On_Mouse(const _uint iIndex) {
+		m_isOnMouse[iIndex] = true;
+	}
 	class CCurrency* Get_Currency() {
 		return m_pCurrency;
 	}
@@ -45,12 +48,13 @@ public:
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg);
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void AfterFrustumTick(const _double& TimeDelta) override;
-	virtual void Late_Tick(const _double& TimeDelta) override {}
+	virtual void Late_Tick(const _double& TimeDelta) override;
 	virtual HRESULT Render();
 
 private:
 	_bool m_isEnable = { false };
 	_bool m_isPopEnd = { true };
+	_bool m_isOnMouse[3] = { false };
 	_float m_vDestX = { 0.f };
 
 private:
@@ -60,14 +64,15 @@ private:
 	CAttack* m_pPlayerAttack = { nullptr };
 	CDeffence* m_pPlayerDeffence = { nullptr };
 
+	class CAttackCore* m_pAttackCore = { nullptr };
+	class CArmorCore* m_pArmorCore = { nullptr };
+	class CHealthCore* m_pHealthCore = { nullptr };
+
 	class CUI_Rect* m_pPlayerIcon = { nullptr };
 	class CUI_Rect* m_pCharBox = { nullptr };
 	class CUI_Rect* m_pAttackDS = { nullptr };
 	class CUI_Rect* m_pDeffenceDS = { nullptr };
 	class CUI_Rect* m_pHealthDS = { nullptr };
-
-	class CSlot* m_pMajor = { nullptr };
-	class CSlot* m_pMinors[3] = { nullptr };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

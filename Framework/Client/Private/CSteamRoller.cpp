@@ -32,10 +32,10 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_pAttack->Set_Damage(1);
+	m_pAttack->Set_Damage(40);
 	m_pDeffence->Set_Deffence(0);
-	m_pHealth->Set_Max_Hp(20);
-	m_pHealth->Set_HP(20);
+	m_pHealth->Set_Max_Hp(2000);
+	m_pHealth->Set_HP(2000);
 
 	return S_OK;
 }

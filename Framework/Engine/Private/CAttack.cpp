@@ -20,6 +20,7 @@ HRESULT CAttack::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 		ATTACKDESC Desc = *static_cast<ATTACKDESC*>(pArg);
 
 		m_iDamage = Desc.iDamage;
+		m_iSkillDamage = Desc.iSkillDamage;
 		m_isIgnoreDeffence = Desc.isIgnoreDeffence;
 	}
 

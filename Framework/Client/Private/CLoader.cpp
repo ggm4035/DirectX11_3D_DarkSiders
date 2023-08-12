@@ -21,7 +21,9 @@
 #include "CWeapon.h"
 #include "CTrigger_Free.h"
 #include "CSwordTrail.h"
-#include "CSlot.h"
+#include "CAttackCore.h"
+#include "CArmorCore.h"
+#include "CHealthCore.h"
 
 #include "CStone_Effect.h"
 #include "CSoul.h"
@@ -252,20 +254,74 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_HealthDS.png"))))
 		return E_FAIL;
 
-	/* For. Texture_UI_CoreMajor */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_CoreMajor",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_CoreMajor.png"))))
-		return E_FAIL;
-
-	/* For. Texture_UI_CoreMinor */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_CoreMinor",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_CoreMinor.png"))))
-		return E_FAIL;
-
 	/* For. Texture_UI_Focus */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Focus",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Focus.png"))))
 		return E_FAIL;
+
+	/* Cores */
+
+	/* For. Texture_UI_AttackCore0 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_AttackCore0",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AttackCore0.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_AttackCore1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_AttackCore1",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AttackCore1.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_AttackCore2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_AttackCore2",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AttackCore2.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_AttackCore3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_AttackCore3",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_AttackCore3.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_ArmorCore0 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_ArmorCore0",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_ArmorCore0.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_ArmorCore1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_ArmorCore1",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_ArmorCore1.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_ArmorCore2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_ArmorCore2",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_ArmorCore2.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_ArmorCore3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_ArmorCore3",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_ArmorCore3.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_HealthCore0 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_HealthCore0",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_HealthCore0.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_HealthCore1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_HealthCore1",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_HealthCore1.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_HealthCore2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_HealthCore2",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_HealthCore2.png"))))
+		return E_FAIL;
+
+	/* For. Texture_UI_HealthCore3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_HealthCore3",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_HealthCore3.png"))))
+		return E_FAIL;
+
+	/* ETC */
 
 	/* For. Texture_SwordTrail */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SwordTrail",
@@ -580,9 +636,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CCurrency::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For. Slot */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Slot",
-		CSlot::Create(m_pDevice, m_pContext))))
+	/* For. Attack_Core */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Attack_Core",
+		CAttackCore::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Armor_Core */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Armor_Core",
+		CArmorCore::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Health_Core */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Health_Core",
+		CHealthCore::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("네비게이션 로딩 중.");

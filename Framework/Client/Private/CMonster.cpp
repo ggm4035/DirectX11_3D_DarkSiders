@@ -4,6 +4,7 @@
 #include "CRoot.h"
 #include "CGameInstance.h"
 #include "CUI_HpBar.h"
+#include "CPlayer.h"
 #include "CAoE.h"
 #include "CSoul.h"
 
@@ -24,6 +25,14 @@ void CMonster::Get_Damaged(const CAttack* pAttack)
 
 	if (false == pAttack->isIgnoreDeffence())
 		Saturate(iDamage -= iDeffence, 0, iDamage);
+
+	m_pHealth->Damaged(iDamage);
+}
+
+void CMonster::Get_Skill_Damaged(const CAttack* pAttack)
+{
+	_int iDeffence = m_pDeffence->Get_Deffence();
+	_int iDamage = pAttack->Get_Skill_Damage();
 
 	m_pHealth->Damaged(iDamage);
 }
@@ -196,6 +205,19 @@ void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& T
 		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
 		m_pTransformCom->Repersive(vDir, TimeDelta);
 	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isSpawn = true;
+		m_isRangeInPlayer = true;
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
+	{
+		Collision.pOther->Get_Damaged(m_pAttack);
+	}
 }
 
 void CMonster::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -207,10 +229,33 @@ void CMonster::OnCollisionStay(CCollider::COLLISION Collision, const _double& Ti
 		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
 		m_pTransformCom->Repersive(vDir, TimeDelta);
 	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isRangeInPlayer = true;
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = true;
+	}
 }
 
 void CMonster::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isAbleAttack = false;
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isRangeInPlayer = false;
+	}
 }
 
 HRESULT CMonster::Add_Components()

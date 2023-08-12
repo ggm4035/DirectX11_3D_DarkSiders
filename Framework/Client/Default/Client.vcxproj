@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\CAoE.h" />
+    <ClInclude Include="..\Public\CArmorCore.h" />
     <ClInclude Include="..\Public\CBoss_Attack.h" />
     <ClInclude Include="..\Public\CBoss_Attacks.h" />
     <ClInclude Include="..\Public\CBoss_Attack_DB.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="..\Public\CFallenDog.h" />
     <ClInclude Include="..\Public\CGameManager.h" />
     <ClInclude Include="..\Public\CGather_Effect.h" />
+    <ClInclude Include="..\Public\CHealthCore.h" />
     <ClInclude Include="..\Public\CHollowLord.h" />
     <ClInclude Include="..\Public\CHUD.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -189,7 +191,6 @@
     <ClInclude Include="..\Public\CInven.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\CItem.h" />
     <ClInclude Include="..\Public\CJump.h" />
     <ClInclude Include="..\Public\CLeapAttack.h" />
     <ClInclude Include="..\Public\CMove.h" />
@@ -263,7 +264,7 @@
     <ClInclude Include="..\Public\CSky.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\CSlot.h" />
+    <ClInclude Include="..\Public\CAttackCore.h" />
     <ClInclude Include="..\Public\CSoul.h" />
     <ClInclude Include="..\Public\CStatic_Object.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -295,6 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\CAoE.cpp" />
+    <ClCompile Include="..\Private\CArmorCore.cpp" />
     <ClCompile Include="..\Private\CBoss_Attack.cpp" />
     <ClCompile Include="..\Private\CBoss_Attacks.cpp" />
     <ClCompile Include="..\Private\CBoss_Attack_DB.cpp" />
@@ -313,6 +315,7 @@
     <ClCompile Include="..\Private\CFallenDog.cpp" />
     <ClCompile Include="..\Private\CGameManager.cpp" />
     <ClCompile Include="..\Private\CGather_Effect.cpp" />
+    <ClCompile Include="..\Private\CHealthCore.cpp" />
     <ClCompile Include="..\Private\CHollowLord.cpp" />
     <ClCompile Include="..\Private\CHUD.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -320,7 +323,6 @@
     <ClCompile Include="..\Private\CInven.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\CItem.cpp" />
     <ClCompile Include="..\Private\CJump.cpp" />
     <ClCompile Include="..\Private\CLeapAttack.cpp" />
     <ClCompile Include="..\Private\CMove.cpp" />
@@ -393,7 +395,7 @@
     <ClCompile Include="..\Private\CSky.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\CSlot.cpp" />
+    <ClCompile Include="..\Private\CAttackCore.cpp" />
     <ClCompile Include="..\Private\CSoul.cpp" />
     <ClCompile Include="..\Private\CStatic_Object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

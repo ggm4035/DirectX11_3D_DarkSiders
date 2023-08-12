@@ -35,6 +35,7 @@ protected:
 
 public:
 	virtual void Get_Damaged(const CAttack* pAttack) override;
+	virtual void Get_Skill_Damaged(const CAttack* pAttack) override;
 	void Spawn() {
 		m_isSpawn = true;
 	}

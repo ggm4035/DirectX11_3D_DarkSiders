@@ -30,6 +30,7 @@ public:
 	CCollider* Find_Collider(const wstring& wstrColliderTag);
 
 	virtual void Get_Damaged(const class CAttack* pAttack) {}
+	virtual void Get_Skill_Damaged(const class CAttack* pAttack) {}
 	virtual void Dead_Motion(const _double& TimeDelta) {}
 
 	virtual void OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta) {}

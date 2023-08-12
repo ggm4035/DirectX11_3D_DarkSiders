@@ -25,10 +25,10 @@ HRESULT CHellHound::Initialize(const _uint& iLevelIndex, CComponent* pOwner, voi
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pAttack->Set_Damage(1);
+	m_pAttack->Set_Damage(15);
 	m_pDeffence->Set_Deffence(0);
-	m_pHealth->Set_Max_Hp(5);
-	m_pHealth->Set_HP(5);
+	m_pHealth->Set_Max_Hp(100);
+	m_pHealth->Set_HP(100);
 
 	return S_OK;
 }
@@ -87,48 +87,16 @@ void CHellHound::OnCollisionEnter(CCollider::COLLISION Collision, const _double&
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
-		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
-	{
-		Collision.pOther->Get_Damaged(m_pAttack);
-	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isSpawn = true;
-	}
 }
 
 void CHellHound::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isAbleAttack = true;
-	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isRangeInPlayer = true;
-	}
 }
 
 void CHellHound::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isAbleAttack = false;
-	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isRangeInPlayer = false;
-	}
+	CMonster::OnCollisionExit(Collision, TimeDelta);
 }
 
 HRESULT CHellHound::Add_Components()

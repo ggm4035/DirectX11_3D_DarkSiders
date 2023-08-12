@@ -154,6 +154,8 @@ void CPlayer::Late_Tick(const _double& TimeDelta)
 {
 	CGameObject3D::Late_Tick(TimeDelta);
 
+	m_pInven->Late_Tick(TimeDelta);
+
 	/* 충돌 이후 작업을 진행 (메시지 받은거 처리하는 구간임) */
 
 	On_Colisions(TimeDelta);
@@ -218,7 +220,10 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS ||
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC))
 	{
-		Collision.pOther->Get_Damaged(m_pAttack);
+		if(CPlayerAction::STATE_LEAP != m_pActionCom->Get_State())
+			Collision.pOther->Get_Damaged(m_pAttack);
+		else
+			Collision.pOther->Get_Skill_Damaged(m_pAttack);
 	}
 }
 
@@ -252,21 +257,22 @@ HRESULT CPlayer::Add_Components()
 	/* Status */
 
 	CHealth::HEALTHDESC HealthDesc;
-	HealthDesc.iMaxHP = 100;
-	HealthDesc.iHP = 100;
+	HealthDesc.iMaxHP = 500;
+	HealthDesc.iHP = 500;
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Health", L"Com_Health",
 		(CComponent**)&m_pHealth, this, &HealthDesc)))
 		return E_FAIL;
 
 	CAttack::ATTACKDESC AttackDesc;
-	AttackDesc.iDamage = 1;
+	AttackDesc.iDamage = 30;
+	AttackDesc.iSkillDamage = 100;
 	AttackDesc.isIgnoreDeffence = false;
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Attack", L"Com_Attack",
 		(CComponent**)&m_pAttack, this, &AttackDesc)))
 		return E_FAIL;
 
 	CDeffence::DEFFENCEDESC DeffenceDesc;
-	DeffenceDesc.iDeffence = 0;
+	DeffenceDesc.iDeffence = 10;
 	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Status_Deffence", L"Com_Deffence",
 		(CComponent**)&m_pDeffence, this, &DeffenceDesc)))
 		return E_FAIL;

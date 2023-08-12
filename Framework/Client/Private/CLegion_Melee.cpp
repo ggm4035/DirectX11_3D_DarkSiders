@@ -29,10 +29,10 @@ HRESULT CLegion_Melee::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	if (FAILED(Add_Parts()))
 		return E_FAIL;
 
-	m_pAttack->Set_Damage(1);
-	m_pDeffence->Set_Deffence(0);
-	m_pHealth->Set_Max_Hp(7);
-	m_pHealth->Set_HP(7);
+	m_pAttack->Set_Damage(15);
+	m_pDeffence->Set_Deffence(5);
+	m_pHealth->Set_Max_Hp(120);
+	m_pHealth->Set_HP(120);
 
 	return S_OK;
 }

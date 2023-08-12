@@ -10,6 +10,7 @@ public:
 	typedef struct tagAttackDesc
 	{
 		_int iDamage;
+		_int iSkillDamage;
 		_bool isIgnoreDeffence;
 	}ATTACKDESC;
 
@@ -25,8 +26,14 @@ public:
 	const _int& Get_Damage() const {
 		return m_iDamage;
 	}
+	const _int& Get_Skill_Damage() const {
+		return m_iSkillDamage;
+	}
 	void Set_Damage(const _int& iDamage) {
 		m_iDamage = iDamage;
+	}
+	void Set_Skill_Damage(const _int& iDamage) {
+		m_iSkillDamage = iDamage;
 	}
 
 public:
@@ -35,6 +42,7 @@ public:
 
 private:
 	_int m_iDamage = { 0 };
+	_int m_iSkillDamage = { 0 };
 	_bool m_isIgnoreDeffence = { false };
 
 public:

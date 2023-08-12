@@ -32,10 +32,10 @@ HRESULT CGoblin_Armor::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_pAttack->Set_Damage(1);
-	m_pDeffence->Set_Deffence(0);
-	m_pHealth->Set_Max_Hp(6);
-	m_pHealth->Set_HP(6);
+	m_pAttack->Set_Damage(20);
+	m_pDeffence->Set_Deffence(5);
+	m_pHealth->Set_Max_Hp(100);
+	m_pHealth->Set_HP(100);
 
 	return S_OK;
 }
@@ -93,49 +93,16 @@ void CGoblin_Armor::Dead_Motion(const _double& TimeDelta)
 void CGoblin_Armor::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
-		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
-	{
-		Collision.pOther->Get_Damaged(m_pAttack);
-	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isSpawn = true;
-	}
 }
 
 void CGoblin_Armor::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
 	CMonster::OnCollisionStay(Collision, TimeDelta);
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isAbleAttack = true;
-	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isRangeInPlayer = true;
-	}
 }
 
 void CGoblin_Armor::OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isAbleAttack = false;
-	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isRangeInPlayer = false;
-	}
+	CMonster::OnCollisionExit(Collision, TimeDelta);
 }
 
 HRESULT CGoblin_Armor::Add_Components()

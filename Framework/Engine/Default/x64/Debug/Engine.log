@@ -1,3 +1,102 @@
-﻿  CCollider_Manager.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CCollider_Manager.cpp(68,6): warning C4390: ';': 제어된 빈 문이 있습니다. 이 문이 필요합니까?
+﻿  CAnimation.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(366,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              _Ty=Engine::_uint
+          ]
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(377,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              _Ty=Engine::_uint
+          ]
+  CAttack.cpp
+  CCamera.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CCell.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CComponent.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CComponent_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameObject.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameObject3D.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLevel.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLevel_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CModel.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CModel.cpp(453,53): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CModel.cpp(531,21): warning C4244: 'return': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CStatus.cpp
+  CTrigger.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameInstance.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(13,21): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CInstance_Point.h(14,22): warning C4244: '초기화 중': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+     ..\Bin\Engine_d.lib 라이브러리 및 ..\Bin\Engine_d.exp 개체를 생성하고 있습니다.
+DirectXTKd.lib(BasicEffect.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(BasicEffect.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(CommonStates.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(CommonStates.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(DDSTextureLoader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(DDSTextureLoader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(BinaryReader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(BinaryReader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(EffectCommon.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(EffectCommon.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(pch.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(pch.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(SpriteBatch.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(SpriteBatch.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(PrimitiveBatch.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(PrimitiveBatch.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(SpriteFont.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(SpriteFont.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(VertexTypes.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(VertexTypes.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(WICTextureLoader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(WICTextureLoader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
   Engine.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine_d.dll

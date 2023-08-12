@@ -190,11 +190,11 @@
     <Filter Include="04. HUD">
       <UniqueIdentifier>{40e2addd-3321-4453-ae3c-6f334f6160b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\00. Player\Inventory\Slot">
-      <UniqueIdentifier>{e701c55a-0135-461c-8309-008f7b4e78bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\00. Player\Inventory\Items">
+    <Filter Include="02. GameObject\06. Effects\Soul">
       <UniqueIdentifier>{e2957dba-f1f6-42ca-81da-9ab35beeb7ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. Player\Inventory\Cores">
+      <UniqueIdentifier>{e701c55a-0135-461c-8309-008f7b4e78bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -411,11 +411,8 @@
     <ClInclude Include="..\Public\CBreakAbleObject.h">
       <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CItem.h">
-      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CSoul.h">
-      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
+      <Filter>02. GameObject\06. Effects\Soul</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CInven.h">
       <Filter>02. GameObject\00. Player\Inventory</Filter>
@@ -426,8 +423,14 @@
     <ClInclude Include="..\Public\CHUD.h">
       <Filter>04. HUD</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CSlot.h">
-      <Filter>02. GameObject\00. Player\Inventory\Slot</Filter>
+    <ClInclude Include="..\Public\CAttackCore.h">
+      <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CArmorCore.h">
+      <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CHealthCore.h">
+      <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -637,11 +640,8 @@
     <ClCompile Include="..\Private\CBreakAbleObject.cpp">
       <Filter>02. GameObject\02. Environment\01. Static_Object\BreakAble</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CItem.cpp">
-      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CSoul.cpp">
-      <Filter>02. GameObject\00. Player\Inventory\Items</Filter>
+      <Filter>02. GameObject\06. Effects\Soul</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CInven.cpp">
       <Filter>02. GameObject\00. Player\Inventory</Filter>
@@ -652,8 +652,14 @@
     <ClCompile Include="..\Private\CHUD.cpp">
       <Filter>04. HUD</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CSlot.cpp">
-      <Filter>02. GameObject\00. Player\Inventory\Slot</Filter>
+    <ClCompile Include="..\Private\CAttackCore.cpp">
+      <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CArmorCore.cpp">
+      <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CHealthCore.cpp">
+      <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

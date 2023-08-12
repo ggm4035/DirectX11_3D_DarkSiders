@@ -3,7 +3,9 @@
 #include "CGameInstance.h"
 #include "CCurrency.h"
 #include "CUI_Rect.h"
-#include "CSlot.h"
+#include "CAttackCore.h"
+#include "CArmorCore.h"
+#include "CHealthCore.h"
 
 #include "CHealth.h"
 #include "CAttack.h"
@@ -51,31 +53,57 @@ HRESULT CInven::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* p
 
 void CInven::Tick(const _double& TimeDelta)
 {
+	for (auto& Data : m_isOnMouse)
+		Data = false;
+
 	if (false == m_isPopEnd)
 		Activation(TimeDelta);
 
 	Tick_UI(TimeDelta);
-	
+
 	if (false == m_isEnable)
 		return;
-
-
 }
 
 void CInven::AfterFrustumTick(const _double& TimeDelta)
 {
-	/* 구조 꼬여서 ui는 latetick... */
+	m_pAttackCore->Late_Tick(this, TimeDelta);
+	m_pArmorCore->Late_Tick(this, TimeDelta);
+	m_pHealthCore->Late_Tick(this, TimeDelta);
+
 	m_pCharBox->Late_Tick(TimeDelta);
 	m_pPlayerIcon->Late_Tick(TimeDelta);
 	m_pAttackDS->Late_Tick(TimeDelta);
 	m_pDeffenceDS->Late_Tick(TimeDelta);
 	m_pHealthDS->Late_Tick(TimeDelta);
 
-	m_pMajor->Late_Tick(TimeDelta);
-	for (auto& pMinor : m_pMinors)
-		pMinor->Late_Tick(TimeDelta);
-
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+}
+
+void CInven::Late_Tick(const _double& TimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (true == m_isOnMouse[0])
+	{
+		if (pGameInstance->Key_Down(DIK_X))
+			m_pAttackCore->Upgrade(this, m_pPlayerAttack);
+	}
+
+	if (true == m_isOnMouse[1])
+	{
+		if (pGameInstance->Key_Down(DIK_X))
+			m_pArmorCore->Upgrade(this, m_pPlayerDeffence);
+	}
+
+	if (true == m_isOnMouse[2])
+	{
+		if (pGameInstance->Key_Down(DIK_X))
+			m_pHealthCore->Upgrade(this, m_pPlayerHealth);
+	}
+
+	Safe_Release(pGameInstance);
 }
 
 HRESULT CInven::Render()
@@ -92,18 +120,133 @@ HRESULT CInven::Render()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	_float2 vPosition = _float2(m_vPosition.x, m_vPosition.y);
+	_float2 vPosition = { 0.f, 0.f };
+	wstring wstrText = L"";
 
+	if (true == m_isOnMouse[0])
+	{
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		vPosition.x -= 180.f;
+		vPosition.y -= 5.f;
+
+		wstrText = L"진노석 파편을 모을수록 \n워의 공격력이 증가합니다.";
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		vPosition.x -= 185.f;
+		vPosition.y += 80.f;
+		wstrText = to_wstring(m_pAttackCore->Get_NeedSouls()) + L" 소울";
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		if (m_pCurrency->Get_Currency() >= m_pAttackCore->Get_NeedSouls())
+		{
+			wstrText = L"업그레이드 : X";
+			vPosition.x += 25.f;
+			vPosition.y += 80.f;
+		}
+		else
+		{
+			wstrText = L"소울이 부족합니다.";
+			vPosition.x -= 5.f;
+			vPosition.y += 80.f;
+		}
+
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+	}
+
+	if (true == m_isOnMouse[1])
+	{
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		vPosition.x -= 180.f;
+		vPosition.y -= 5.f;
+
+		wstrText = L"심연의 갑옷 파편을 모을수록 \n워의 방어력이 증가합니다.";
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		vPosition.x -= 185.f;
+		vPosition.y += 80.f;
+		wstrText = to_wstring(m_pArmorCore->Get_NeedSouls()) + L" 소울";
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		if (m_pCurrency->Get_Currency() >= m_pArmorCore->Get_NeedSouls())
+		{
+			wstrText = L"업그레이드 : X";
+			vPosition.x += 25.f;
+			vPosition.y += 80.f;
+		}
+		else
+		{
+			wstrText = L"소울이 부족합니다.";
+			vPosition.x -= 5.f;
+			vPosition.y += 80.f;
+		}
+
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+	}
+
+	if (true == m_isOnMouse[2])
+	{
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		vPosition.x -= 180.f;
+		vPosition.y -= 5.f;
+
+		wstrText = L"체력 파편을 모을수록 \n워의 체력이 증가합니다.";
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		vPosition.x -= 185.f;
+		vPosition.y += 80.f;
+		wstrText = to_wstring(m_pHealthCore->Get_NeedSouls()) + L" 소울";
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+
+		vPosition = _float2(m_vPosition.x, m_vPosition.y);
+		if (m_pCurrency->Get_Currency() >= m_pHealthCore->Get_NeedSouls())
+		{
+			wstrText = L"업그레이드 : X";
+			vPosition.x += 25.f;
+			vPosition.y += 80.f;
+		}
+		else
+		{
+			wstrText = L"소울이 부족합니다.";
+			vPosition.x -= 5.f;
+			vPosition.y += 80.f;
+		}
+
+		if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
+			XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.5f)))
+			return E_FAIL;
+	}
+
+	vPosition = _float2(m_vPosition.x, m_vPosition.y);
 	vPosition.x -= 15.f;
 	vPosition.y += 185.f;
 
-	wstring wstrText = to_wstring(m_pPlayerAttack->Get_Damage());
+	wstrText = to_wstring(m_pPlayerAttack->Get_Damage());
 	if (FAILED(pGameInstance->Render_Font(L"Font_135", wstrText, vPosition,
 		XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(), 0.4f)))
 		return E_FAIL;
 
 	vPosition = _float2(m_vPosition.x, m_vPosition.y);
-
 	vPosition.x -= 15.f;
 	vPosition.y += 220.f;
 
@@ -113,7 +256,6 @@ HRESULT CInven::Render()
 		return E_FAIL;
 
 	vPosition = _float2(m_vPosition.x, m_vPosition.y);
-
 	vPosition.x -= 15.f;
 	vPosition.y += 255.f;
 
@@ -149,28 +291,34 @@ HRESULT CInven::Add_Components()
 		(CComponent**)&m_pRendererCom, m_pOwner)))
 		return E_FAIL;
 
-	CSlot::SLOTDESC SlotDesc;
-	SlotDesc.m_fX = 0.f;
-	SlotDesc.m_fY = 0.f;
-	SlotDesc.m_fDepth = 0.f;
-	SlotDesc.m_fSizeX = 100.f;
-	SlotDesc.m_fSizeY = 100.f;
-	SlotDesc.wstrTextureTag = L"Texture_UI_CoreMajor";
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Slot", L"Core_Major",
-		(CComponent**)&m_pMajor, m_pOwner, &SlotDesc)))
+	CAttackCore::UIDESC Desc;
+	Desc.m_fX = 0.f;
+	Desc.m_fY = 0.f;
+	Desc.m_fDepth = 0.f;
+	Desc.m_fSizeX = 150.f;
+	Desc.m_fSizeY = 150.f;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Attack_Core", L"Attack_Core",
+		(CComponent**)&m_pAttackCore, nullptr, &Desc)))
 		return E_FAIL;
 
-	SlotDesc.wstrTextureTag = L"Texture_UI_CoreMinor";
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Slot", L"Core_Minor1",
-		(CComponent**)&m_pMinors[0], m_pOwner, &SlotDesc)))
+	Desc.m_fX = 0.f;
+	Desc.m_fY = 0.f;
+	Desc.m_fDepth = 0.f;
+	Desc.m_fSizeX = 150.f;
+	Desc.m_fSizeY = 150.f;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Armor_Core", L"Armor_Core",
+		(CComponent**)&m_pArmorCore, nullptr, &Desc)))
 		return E_FAIL;
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Slot", L"Core_Minor2",
-		(CComponent**)&m_pMinors[1], m_pOwner, &SlotDesc)))
+
+	Desc.m_fX = 0.f;
+	Desc.m_fY = 0.f;
+	Desc.m_fDepth = 0.f;
+	Desc.m_fSizeX = 150.f;
+	Desc.m_fSizeY = 150.f;
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Health_Core", L"Health_Core",
+		(CComponent**)&m_pHealthCore, nullptr, &Desc)))
 		return E_FAIL;
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Slot", L"Core_Minor3",
-		(CComponent**)&m_pMinors[2], m_pOwner, &SlotDesc)))
-		return E_FAIL;
-	
+
 	CUI_Rect::UIRECTDESC UIDesc;
 	UIDesc.m_fX = 100.f;
 	UIDesc.m_fY = 222.f;
@@ -179,16 +327,16 @@ HRESULT CInven::Add_Components()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_War";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 9;
+	UIDesc.iPassNum = 10;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"UI_Rect", L"UI_War",
 		(CComponent**)&m_pPlayerIcon, nullptr, &UIDesc)))
 		return E_FAIL;
 
-	UIDesc.m_fX = 100.f;
-	UIDesc.m_fY = 222.f;
-	UIDesc.m_fSizeX = 400.f;
-	UIDesc.m_fSizeY = 200.f;
+	UIDesc.m_fX = 0.f;
+	UIDesc.m_fY = 0.f;
+	UIDesc.m_fSizeX = 370.f;
+	UIDesc.m_fSizeY = 150.f;
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_CharBox";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
@@ -205,7 +353,7 @@ HRESULT CInven::Add_Components()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_AttackDS";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 10;
+	UIDesc.iPassNum = 9;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"UI_Rect", L"UI_AttackDS",
 		(CComponent**)&m_pAttackDS, nullptr, &UIDesc)))
@@ -218,7 +366,7 @@ HRESULT CInven::Add_Components()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_DeffenceDS";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 10;
+	UIDesc.iPassNum = 9;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"UI_Rect", L"UI_DeffenceDS",
 		(CComponent**)&m_pDeffenceDS, nullptr, &UIDesc)))
@@ -231,7 +379,7 @@ HRESULT CInven::Add_Components()
 	UIDesc.m_fDepth = 0.f;
 	UIDesc.wstrTextureTag = L"Texture_UI_HealthDS";
 	UIDesc.iTextureLevelIndex = LEVEL_GAMEPLAY;
-	UIDesc.iPassNum = 10;
+	UIDesc.iPassNum = 9;
 
 	if (FAILED(Add_Component(LEVEL_STATIC, L"UI_Rect", L"UI_HealthDS",
 		(CComponent**)&m_pHealthDS, nullptr, &UIDesc)))
@@ -270,7 +418,24 @@ HRESULT CInven::Set_ShaderResources()
 void CInven::Tick_UI(const _double& TimeDelta)
 {
 	_float3 vPosition = m_vPosition;
+	vPosition.x -= 160.f;
+	vPosition.y -= 200.f;
+	vPosition.z = 0.f;
+	m_pAttackCore->Tick(vPosition);
 
+	vPosition = m_vPosition;
+	vPosition.x -= 20.f;
+	vPosition.y -= 200.f;
+	vPosition.z = 0.f;
+	m_pArmorCore->Tick(vPosition);
+
+	vPosition = m_vPosition;
+	vPosition.x += 120.f;
+	vPosition.y -= 200.f;
+	vPosition.z = 0.f;
+	m_pHealthCore->Tick(vPosition);
+
+	vPosition = m_vPosition;
 	vPosition.x -= 120.f;
 	vPosition.y += 200.f;
 	vPosition.z = 0.f;
@@ -278,7 +443,7 @@ void CInven::Tick_UI(const _double& TimeDelta)
 
 	vPosition = m_vPosition;
 	vPosition.x -= 15.f;
-	vPosition.y += 200.f;
+	vPosition.y += 50.f;
 	vPosition.z = 0.01f;
 	m_pCharBox->Set_Position(vPosition);
 
@@ -299,30 +464,6 @@ void CInven::Tick_UI(const _double& TimeDelta)
 	vPosition.y += 265.f;
 	vPosition.z = 0.01f;
 	m_pHealthDS->Set_Position(vPosition);
-
-	vPosition = m_vPosition;
-	vPosition.x -= 10.f;
-	vPosition.y -= 50.f;
-	vPosition.z = 0.02f;
-	m_pMajor->Tick(vPosition);
-
-	vPosition = m_vPosition;
-	vPosition.x -= 130.f;
-	vPosition.y += 50.f;
-	vPosition.z = 0.02f;
-	m_pMinors[0]->Tick(vPosition);
-
-	vPosition = m_vPosition;
-	vPosition.x -= 10.f;
-	vPosition.y += 50.f;
-	vPosition.z = 0.02f;
-	m_pMinors[1]->Tick(vPosition);
-
-	vPosition = m_vPosition;
-	vPosition.x += 110.f;
-	vPosition.y += 50.f;
-	vPosition.z = 0.02f;
-	m_pMinors[2]->Tick(vPosition);
 }
 
 void CInven::Activation(const _double& TimeDelta)
@@ -375,15 +516,15 @@ void CInven::Free()
 	Safe_Release(m_pPlayerDeffence);
 	Safe_Release(m_pPlayerHealth);
 
+	Safe_Release(m_pAttackCore);
+	Safe_Release(m_pArmorCore);
+	Safe_Release(m_pHealthCore);
+
 	Safe_Release(m_pPlayerIcon);
 	Safe_Release(m_pCharBox);
 	Safe_Release(m_pAttackDS);
 	Safe_Release(m_pDeffenceDS);
 	Safe_Release(m_pHealthDS);
-
-	Safe_Release(m_pMajor);
-	for (auto& pMinor : m_pMinors)
-		Safe_Release(pMinor);
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pBufferCom);

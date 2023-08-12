@@ -31,10 +31,10 @@ HRESULT CLegion_Champion::Initialize(const _uint& iLevelIndex, CComponent* pOwne
 
 	m_pTransformCom->Get_Scaled();
 
-	m_pAttack->Set_Damage(1);
-	m_pDeffence->Set_Deffence(0);
-	m_pHealth->Set_Max_Hp(10);
-	m_pHealth->Set_HP(10);
+	m_pAttack->Set_Damage(30);
+	m_pDeffence->Set_Deffence(10);
+	m_pHealth->Set_Max_Hp(300);
+	m_pHealth->Set_HP(300);
 
 	return S_OK;
 }
