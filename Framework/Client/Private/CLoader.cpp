@@ -358,6 +358,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Inven.png"))))
 		return E_FAIL;
 
+	/* For. Texture_Dissolve */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Dissolve",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/DissolveMask.png"))))
+		return E_FAIL;
+
 	m_szLoading = TEXT("버퍼 로딩 중.");
 
 	/* VIBuffer_Trail */

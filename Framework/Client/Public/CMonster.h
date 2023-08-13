@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CNavigation;
 class CCollider;
 class CRenderer;
+class CTexture;
 class CShader;
 class CModel;
 class CRoot;
@@ -72,9 +73,11 @@ protected: /* Status */
 protected:
 	_bool m_isSpawn = { false };
 	_bool m_isRender = { true };
+	_bool m_isDissolve = { false };
 	_bool m_isAbleAttack = { false };
 	_bool m_isRangeInPlayer = { false };
 
+	_uint m_iPassNum = { 0 };
 	_float m_fTimeAcc = { 0.f };
 
 protected:
@@ -82,6 +85,7 @@ protected:
 	HRESULT Set_Shader_Resources();
 
 private:
+	CTexture* m_pDissolveTexture = { nullptr };
 	_float m_fHitTimeAcc = { 0.f };
 	_bool m_isSuperArmor = { false };
 	_bool m_isDeadMotionFirst = { true };

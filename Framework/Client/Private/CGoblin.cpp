@@ -65,6 +65,13 @@ void CGoblin::Late_Tick(const _double& TimeDelta)
 
 HRESULT CGoblin::Render()
 {
+	m_iPassNum = 0;
+
+	if (CHealth::HIT_NONE != m_pHealth->Get_Current_HitState())
+		m_iPassNum = 1;
+	if (true == m_pHealth->isDead())
+		m_iPassNum = 3;
+
 	if (FAILED(CMonster::Render()))
 		return E_FAIL;
 

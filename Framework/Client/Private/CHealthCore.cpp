@@ -146,6 +146,8 @@ const _uint& CHealthCore::Get_NeedSouls()
 	case 2:
 		return 10000;
 	}
+
+	return 0;
 }
 
 HRESULT CHealthCore::Add_Components()

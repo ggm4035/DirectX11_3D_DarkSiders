@@ -158,11 +158,6 @@ HRESULT CMonster::Render(/*const _uint& iPassIndex*/)
 	if (FAILED(CMonster::Set_Shader_Resources()))
 		return E_FAIL;
 
-	_uint iPassNum = { 0 };
-
-	if (CHealth::HIT_NONE != m_pHealth->Get_Current_HitState())
-		iPassNum = 1;
-
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint iMeshIndex = 0; iMeshIndex < iNumMeshes; ++iMeshIndex)
@@ -172,7 +167,7 @@ HRESULT CMonster::Render(/*const _uint& iPassIndex*/)
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", iMeshIndex, TYPE_DIFFUSE);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", iMeshIndex, TYPE_NORMALS);
 
-		if (FAILED(m_pShaderCom->Begin(iPassNum)))
+		if (FAILED(m_pShaderCom->Begin(m_iPassNum)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(iMeshIndex)))
@@ -190,7 +185,7 @@ void CMonster::Dead_Motion(const _double& TimeDelta)
 		{
 			pSoul->Get_Transform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		}
-
+		m_fTimeAcc = 0.f;
 		m_isDeadMotionFirst = false;
 	}
 	m_fHitTimeAcc += TimeDelta;
@@ -268,6 +263,10 @@ HRESULT CMonster::Add_Components()
 		L"Com_Renderer", (CComponent**)&m_pRendererCom, this)))
 		return E_FAIL;
 
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Texture_Dissolve",
+		L"Com_DissolveTex", (CComponent**)&m_pDissolveTexture, this)))
+		return E_FAIL;
+
 	/* Status */
 	CHealth::HEALTHDESC HealthDesc;
 	HealthDesc.iMaxHP = 1;
@@ -330,6 +329,9 @@ HRESULT CMonster::Set_Shader_Resources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeAcc", &m_fHitTimeAcc, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pDissolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

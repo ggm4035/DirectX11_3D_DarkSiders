@@ -194,6 +194,7 @@
     <ClInclude Include="..\Public\CJump.h" />
     <ClInclude Include="..\Public\CLeapAttack.h" />
     <ClInclude Include="..\Public\CMove.h" />
+    <ClInclude Include="..\Public\CObstacle.h" />
     <ClInclude Include="..\Public\CPattern_Attack.h" />
     <ClInclude Include="..\Public\CPattern_BackDash.h" />
     <ClInclude Include="..\Public\CPattern_Patrol.h" />
@@ -326,6 +327,7 @@
     <ClCompile Include="..\Private\CJump.cpp" />
     <ClCompile Include="..\Private\CLeapAttack.cpp" />
     <ClCompile Include="..\Private\CMove.cpp" />
+    <ClCompile Include="..\Private\CObstacle.cpp" />
     <ClCompile Include="..\Private\CPattern_Attack.cpp" />
     <ClCompile Include="..\Private\CLava.cpp" />
     <ClCompile Include="..\Private\CAction.cpp" />

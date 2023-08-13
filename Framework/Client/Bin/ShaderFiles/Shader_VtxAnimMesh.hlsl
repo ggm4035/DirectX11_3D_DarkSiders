@@ -5,6 +5,7 @@ matrix g_BoneMatrices[256]; /* 이 메시를 그리기위해 사용되는 뼈들의 행려 VTF */
 matrix g_LightViewMatrix, g_LightProjMatrix;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
+texture2D g_DissolveTexture;
 float g_fTimeAcc = 0.f;
 
 struct VS_IN
@@ -176,10 +177,39 @@ struct PS_OUT_SHADOW
 
 PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
 {
-    PS_OUT_SHADOW Out = (PS_OUT_SHADOW) 0;
-    
+    PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
+
     Out.vLightDepth = In.vProjPos.z / In.vProjPos.w;
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT)0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+    vector maskColor = g_DissolveTexture.Sample(LinearSampler, In.vTexUV);
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+    float3 vNormal = /*vNormalDesc.xyz;*/vNormalDesc.xyz * 2.f - 1.f; // 0 ~ 1 -> -1 ~ 1
+
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    float dissolveFactor = saturate((maskColor.r - g_fTimeAcc));
+
+    vNormal = mul(vNormal, WorldMatrix);
+
+    vDiffuse.a = dissolveFactor;//lerp(vDiffuse, float4(0.0, 0.0, 0.0, 0.0), dissolveFactor);
+
+    if (vDiffuse.a < 0.1f)
+        discard;
     
+    Out.vDiffuse = vDiffuse;
+
+    /* Out.vNormal unorm : 0 ~ 1 */
+    /* In.vNormal.xyz : -1 ~ 1 */
+    Out.vNormal = vector(vNormal, 0.f); /*vector(vNormal * 0.5f + 0.5f, 0.f);*/
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
+
     return Out;
 }
 
@@ -221,5 +251,18 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
+    }
+
+    pass Dissolve
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_DISSOLVE();
     }
 }

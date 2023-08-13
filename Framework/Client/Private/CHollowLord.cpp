@@ -96,6 +96,11 @@ void CHollowLord::Late_Tick(const _double& TimeDelta)
 
 HRESULT CHollowLord::Render()
 {
+	m_iPassNum = 0;
+
+	if (CHealth::HIT_NONE != m_pHealth->Get_Current_HitState())
+		m_iPassNum = 1;
+
 	if (FAILED(CMonster::Render()))
 		return E_FAIL;
 

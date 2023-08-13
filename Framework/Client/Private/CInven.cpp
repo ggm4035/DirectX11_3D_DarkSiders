@@ -143,7 +143,13 @@ HRESULT CInven::Render()
 			return E_FAIL;
 
 		vPosition = _float2(m_vPosition.x, m_vPosition.y);
-		if (m_pCurrency->Get_Currency() >= m_pAttackCore->Get_NeedSouls())
+		if (0 == m_pAttackCore->Get_NeedSouls())
+		{
+			wstrText = L"최고 레벨 입니다.";
+			vPosition.x += 23.f;
+			vPosition.y += 80.f;
+		}
+		else if (m_pCurrency->Get_Currency() >= m_pAttackCore->Get_NeedSouls())
 		{
 			wstrText = L"업그레이드 : X";
 			vPosition.x += 25.f;
@@ -181,7 +187,13 @@ HRESULT CInven::Render()
 			return E_FAIL;
 
 		vPosition = _float2(m_vPosition.x, m_vPosition.y);
-		if (m_pCurrency->Get_Currency() >= m_pArmorCore->Get_NeedSouls())
+		if (0 == m_pArmorCore->Get_NeedSouls())
+		{
+			wstrText = L"최고 레벨 입니다.";
+			vPosition.x += 23.f;
+			vPosition.y += 80.f;
+		}
+		else if (m_pCurrency->Get_Currency() >= m_pArmorCore->Get_NeedSouls())
 		{
 			wstrText = L"업그레이드 : X";
 			vPosition.x += 25.f;
@@ -219,7 +231,13 @@ HRESULT CInven::Render()
 			return E_FAIL;
 
 		vPosition = _float2(m_vPosition.x, m_vPosition.y);
-		if (m_pCurrency->Get_Currency() >= m_pHealthCore->Get_NeedSouls())
+		if (0 == m_pHealthCore->Get_NeedSouls())
+		{
+			wstrText = L"최고 레벨 입니다.";
+			vPosition.x += 23.f;
+			vPosition.y += 80.f;
+		}
+		else if (m_pCurrency->Get_Currency() >= m_pHealthCore->Get_NeedSouls())
 		{
 			wstrText = L"업그레이드 : X";
 			vPosition.x += 25.f;

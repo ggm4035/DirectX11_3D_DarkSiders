@@ -148,6 +148,8 @@ const _uint& CAttackCore::Get_NeedSouls()
 	case 2:
 		return 10000;
 	}
+
+	return 0;
 }
 
 HRESULT CAttackCore::Add_Components()

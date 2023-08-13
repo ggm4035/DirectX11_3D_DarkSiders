@@ -144,6 +144,8 @@ const _uint& CArmorCore::Get_NeedSouls()
 	case 2:
 		return 10000;
 	}
+
+	return 0;
 }
 
 HRESULT CArmorCore::Add_Components()

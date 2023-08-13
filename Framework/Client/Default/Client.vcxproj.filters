@@ -432,6 +432,9 @@
     <ClInclude Include="..\Public\CHealthCore.h">
       <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CObstacle.h">
+      <Filter>02. GameObject\02. Environment\00. Anim_Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -660,6 +663,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CHealthCore.cpp">
       <Filter>02. GameObject\00. Player\Inventory\Cores</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CObstacle.cpp">
+      <Filter>02. GameObject\02. Environment\00. Anim_Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
