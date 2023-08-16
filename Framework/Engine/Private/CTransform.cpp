@@ -41,7 +41,7 @@ void CTransform::Set_State(STATE _eState, _fvector _vState)
 	XMStoreFloat4(&vState, _vState);
 	memcpy(&m_WorldMatrix.m[_eState][0], &vState, sizeof vState);
 
-	switch (_eState)
+	/*switch (_eState)
 	{
 	case Engine::CTransform::STATE_RIGHT:
 		Organize_From_Right();
@@ -54,7 +54,7 @@ void CTransform::Set_State(STATE _eState, _fvector _vState)
 	case Engine::CTransform::STATE_LOOK:
 		Organize_From_Look();
 		break;
-	}
+	}*/
 }
 
 void CTransform::Reset_Jump()
@@ -215,7 +215,8 @@ _bool CTransform::Chase_Lerp(_fvector vTargetPosition, _double TimeDelta, _float
 	_vector        vDir = vTargetPosition - vPosition;
 	if (fMinDistance < XMVectorGetX(XMVector3Length(vDir)))
 	{
-		vPosition = XMVectorLerp(vPosition, vTargetPosition, TimeDelta * m_TransformDesc.SpeedPerSec);
+		vPosition = XMVectorLerp(vPosition, vTargetPosition, 
+			TimeDelta * m_TransformDesc.SpeedPerSec);
 		Set_State(STATE_POSITION, vPosition);
 		return true;
 	}

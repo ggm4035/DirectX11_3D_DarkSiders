@@ -32,6 +32,7 @@
 #include "CCurrency.h"
 
 #include "CUI_Overlay.h"
+#include "CUI_Sprite.h"
 #include "CUI_HpBar.h"
 #include "CHUD.h"
 
@@ -338,6 +339,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Sprites/RockChip.png"))))
 		return E_FAIL;
 
+	/* For. Texture_Impact */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Impact",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/Sprites/Impact.png"))))
+		return E_FAIL;
+
 	/* For. Texture_Soul */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Soul",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/Soul.png"))))
@@ -370,6 +376,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* VIBuffer_Sprite */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"VIBuffer_Sprite",
+		CVIBuffer_Sprite::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	m_szLoading = TEXT("이펙트 로딩 중.");
 
 	/* Stone_Effect */
@@ -397,6 +408,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. HUD */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"HUD",
 		CHUD::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. UI_Sprite */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Sprite",
+		CUI_Sprite::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_szLoading = TEXT("모델 로딩 중.");

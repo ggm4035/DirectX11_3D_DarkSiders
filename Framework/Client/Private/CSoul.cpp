@@ -100,6 +100,8 @@ void CSoul::Dead_Motion(const _double& TimeDelta)
 
 	Safe_Release(pGameInstance);
 
+	CGameInstance::GetInstance()->Play_Sound(L"general_soul_collect_01.ogg", CSound_Manager::SOUND_EFFECT_2, 0.1f, true);
+
 	m_isRemove = true;
 }
 

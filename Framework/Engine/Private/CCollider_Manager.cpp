@@ -29,12 +29,14 @@ void CCollider_Manager::Tick()
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_ENEMY);
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_BOSS);
 	Collision(CCollider::COL_PLAYER_ATK, CCollider::COL_STATIC);
+	Collision(CCollider::COL_PLAYER, CCollider::COL_STATIC);
 
 	Collision(CCollider::COL_ENEMY, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY, CCollider::COL_ENEMY);
 	Collision(CCollider::COL_ENEMY_ATK, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY_RANGE, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ENEMY_MELEE_RANGE, CCollider::COL_PLAYER);
+	Collision(CCollider::COL_ENEMY, CCollider::COL_STATIC);
 
 	Collision(CCollider::COL_TRIGGER, CCollider::COL_PLAYER);
 	Collision(CCollider::COL_ITEM, CCollider::COL_PLAYER);

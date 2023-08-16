@@ -2,6 +2,7 @@
 
 #include "CGameInstance.h"
 #include "CSoul.h"
+#include "CUI_Sprite.h"
 
 CBreakAbleObject::CBreakAbleObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject3D(pDevice, pContext)
@@ -145,6 +146,8 @@ void CBreakAbleObject::Dead_Motion(const _double& TimeDelta)
 			pSoul->Get_Transform()->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		}
 
+		CGameInstance::GetInstance()->Play_Sound(L"imp_fire_01.ogg", CSound_Manager::SOUND_EFFECT_1, 2.f, true);
+
 		m_isDeadMotionFirst = false;
 	}
 
@@ -159,6 +162,9 @@ void CBreakAbleObject::Dead_Motion(const _double& TimeDelta)
 		else
 			++iter;
 	}
+
+	m_pSprite->Tick(TimeDelta);
+	m_pSprite->Late_Tick(TimeDelta);
 
 	for (auto& pSoul : m_vecSouls)
 		pSoul->AfterFrustumTick(TimeDelta);
@@ -199,6 +205,30 @@ HRESULT CBreakAbleObject::Add_Components()
 
 		m_vecSouls.push_back(pSoul);
 	}
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CUI_Sprite::UISPRITEDESC SpriteDesc;
+	SpriteDesc.SpriteDesc.bRepeat = false;
+	SpriteDesc.SpriteDesc.fFrameSpeed = 0.1f;
+	SpriteDesc.SpriteDesc.iNumHeight = 2;
+	SpriteDesc.SpriteDesc.iNumWidth = 2;
+	SpriteDesc.m_fX = 0.f;
+	SpriteDesc.m_fY = 0.f;
+	SpriteDesc.m_fDepth = 0.f;
+	SpriteDesc.m_fSizeX = 70.f;
+	SpriteDesc.m_fSizeY = 70.f;
+	SpriteDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4Ptr();
+	SpriteDesc.vOffset = _float3(0.f, 1.f, 0.f);
+	SpriteDesc.iTextureLevel = LEVEL_GAMEPLAY;
+	SpriteDesc.wstrTextureTag = L"Texture_Impact";
+
+	m_pSprite = dynamic_cast<CUI_Sprite*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Sprite", L"UI_Sprite", this, &SpriteDesc));
+	if (nullptr == m_pSprite)
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -275,6 +305,8 @@ void CBreakAbleObject::Free()
 {
 	for (auto& pSoul : m_vecSouls)
 		Safe_Release(pSoul);
+
+	Safe_Release(m_pSprite);
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);

@@ -3,6 +3,10 @@
 #include "IMGUI_Defines.h"
 #include "CTrigger.h"
 
+BEGIN(Engine)
+class CRenderer;
+END
+
 BEGIN(Imgui)
 
 class CDummyTrigger final : public CTrigger
@@ -39,7 +43,7 @@ public:
 private:
     _bool m_isUpdate = { true };
 
-    class CRenderer* m_pRenderer = { nullptr };
+    CRenderer* m_pRenderer = { nullptr };
 
 private:
     virtual HRESULT Add_Components() override;

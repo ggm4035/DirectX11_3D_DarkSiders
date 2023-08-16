@@ -30,6 +30,7 @@ private:
 	_float4 m_vResponPosition;
 	_float m_fExplosionTimeAcc = { 0.f };
 	class CAoE* m_pAoe = { nullptr };
+	class CUI_Sprite* m_pSprite = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;

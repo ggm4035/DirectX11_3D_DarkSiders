@@ -7,6 +7,7 @@
 #include "CPlayer.h"
 
 #include "CAoE.h"
+#include "CUI_Sprite.h"
 #include "CSoul.h"
 
 CGoblin::CGoblin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -52,6 +53,9 @@ void CGoblin::Tick(const _double& TimeDelta)
 
 void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 {
+	if (false == m_isRender)
+		return;
+
 	CMonster::AfterFrustumTick(TimeDelta);
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pAoe);
@@ -69,8 +73,6 @@ HRESULT CGoblin::Render()
 
 	if (CHealth::HIT_NONE != m_pHealth->Get_Current_HitState())
 		m_iPassNum = 1;
-	if (true == m_pHealth->isDead())
-		m_iPassNum = 3;
 
 	if (FAILED(CMonster::Render()))
 		return E_FAIL;
@@ -109,6 +111,9 @@ void CGoblin::Dead_Motion(const _double& TimeDelta)
 
 	if (false == m_isRender)
 	{
+		m_pSprite->Tick(TimeDelta);
+		m_pSprite->Late_Tick(TimeDelta);
+
 		for (auto iter = m_vecSouls.begin(); iter != m_vecSouls.end();)
 		{
 			(*iter)->Tick(TimeDelta);
@@ -187,8 +192,8 @@ void CGoblin::OnCollisionExit(CCollider::COLLISION Collision, const _double& Tim
 
 HRESULT CGoblin::Add_Components()
 {
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_Goblin",
-		L"Com_Model", (CComponent**)&m_pModelCom, this)))
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_Goblin", L"Com_Model", 
+		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
 	CBounding_Sphere::SPHEREDESC SphereDesc;
@@ -252,8 +257,26 @@ HRESULT CGoblin::Add_Components()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	CAoE::AOEDESC AoeDesc;
+	CUI_Sprite::UISPRITEDESC SpriteDesc;
+	SpriteDesc.SpriteDesc.bRepeat = false;
+	SpriteDesc.SpriteDesc.fFrameSpeed = 0.5f;
+	SpriteDesc.SpriteDesc.iNumHeight = 6;
+	SpriteDesc.SpriteDesc.iNumWidth = 6;
+	SpriteDesc.m_fX = 0.f;
+	SpriteDesc.m_fY = 0.f;
+	SpriteDesc.m_fDepth = 0.f;
+	SpriteDesc.m_fSizeX = 60.f;
+	SpriteDesc.m_fSizeY = 60.f;
+	SpriteDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4Ptr();
+	SpriteDesc.vOffset = _float3(0.f, 1.f, 0.f);
+	SpriteDesc.iTextureLevel = LEVEL_GAMEPLAY;
+	SpriteDesc.wstrTextureTag = L"Texture_Explosion";
 
+	m_pSprite = dynamic_cast<CUI_Sprite*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"UI_Sprite", L"UI_Sprite", this, &SpriteDesc));
+	if (nullptr == m_pSprite)
+		return E_FAIL;
+
+	CAoE::AOEDESC AoeDesc;
 	AoeDesc.wstrTextureTag = L"Texture_UI_GenericCircle";
 	AoeDesc.iTextureLevel = LEVEL_GAMEPLAY;
 	AoeDesc.iPassNum = 4;
@@ -436,6 +459,7 @@ void CGoblin::Free()
 		Safe_Release(pSoul);
 
 	Safe_Release(m_pAoe);
+	Safe_Release(m_pSprite);
 
 	CMonster::Free();
 }

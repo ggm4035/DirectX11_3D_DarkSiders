@@ -146,7 +146,6 @@ HRESULT CInven::Render()
 		if (0 == m_pAttackCore->Get_NeedSouls())
 		{
 			wstrText = L"최고 레벨 입니다.";
-			vPosition.x += 23.f;
 			vPosition.y += 80.f;
 		}
 		else if (m_pCurrency->Get_Currency() >= m_pAttackCore->Get_NeedSouls())
@@ -190,7 +189,6 @@ HRESULT CInven::Render()
 		if (0 == m_pArmorCore->Get_NeedSouls())
 		{
 			wstrText = L"최고 레벨 입니다.";
-			vPosition.x += 23.f;
 			vPosition.y += 80.f;
 		}
 		else if (m_pCurrency->Get_Currency() >= m_pArmorCore->Get_NeedSouls())
@@ -234,7 +232,6 @@ HRESULT CInven::Render()
 		if (0 == m_pHealthCore->Get_NeedSouls())
 		{
 			wstrText = L"최고 레벨 입니다.";
-			vPosition.x += 23.f;
 			vPosition.y += 80.f;
 		}
 		else if (m_pCurrency->Get_Currency() >= m_pHealthCore->Get_NeedSouls())

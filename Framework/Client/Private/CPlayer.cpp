@@ -229,7 +229,8 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 
 void CPlayer::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pOtherCollider->Get_Tag() == L"Col_Attack_Roll" &&
+	if ((Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC || 
+		Collision.pOtherCollider->Get_Tag() == L"Col_Attack_Roll") &&
 		Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
 		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);

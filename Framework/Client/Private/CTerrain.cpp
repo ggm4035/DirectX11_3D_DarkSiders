@@ -63,7 +63,7 @@ void CTerrain::Tick(const _double& TimeDelta)
 		return;
 
 	if (CCell::OPT_LAVA == pPlayerNavigation->Get_Cur_Cell_Option() && 
-		m_fTimeAcc > 1.5f && false == pPlayerTransform->isJump())
+		m_fTimeAcc > 0.1f && false == pPlayerTransform->isJump())
 	{
 		m_fTimeAcc = 0.f;
 		pPlayer->Get_Damaged(m_pAttack);

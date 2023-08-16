@@ -42,9 +42,10 @@ void CDummyTrigger::Tick(const _double& TimeDelta)
 void CDummyTrigger::Late_Tick(const _double& TimeDelta)
 {
     CTrigger::Late_Tick(TimeDelta);
-
+#ifdef _DEBUG
     if (FAILED(m_pRenderer->Add_DebugGroup(m_pColliderCom)))
         return;
+#endif // _DEBUG
 }
 
 HRESULT CDummyTrigger::Add_Components()

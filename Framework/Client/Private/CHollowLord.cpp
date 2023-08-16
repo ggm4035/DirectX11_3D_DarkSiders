@@ -157,7 +157,7 @@ void CHollowLord::OnCollisionEnter(CCollider::COLLISION Collision, const _double
 		Collision.pOther->Get_Damaged(m_pAttack);
 	}
 
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Huge_Attack" &&
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack_Area" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
 		_float4 vPosition;
@@ -192,7 +192,7 @@ HRESULT CHollowLord::Add_Components()
 		return E_FAIL;
 
 	/* Col_Attack_LH */
-	AABBDesc.vExtents = _float3(4.f, 2.f, 4.f);
+	AABBDesc.vExtents = _float3(6.f, 2.f, 6.f);
 	AABBDesc.eGroup = CCollider::COL_BOSS_ATK;
 	AABBDesc.vOffset = _float3(-4.f, 7.f, 12.f);
 	AABBDesc.isEnable = false;
@@ -200,7 +200,7 @@ HRESULT CHollowLord::Add_Components()
 		return E_FAIL;
 
 	/* Col_Attack_RH */
-	AABBDesc.vExtents = _float3(4.f, 2.f, 4.f);
+	AABBDesc.vExtents = _float3(6.f, 2.f, 6.f);
 	AABBDesc.eGroup = CCollider::COL_BOSS_ATK;
 	AABBDesc.vOffset = _float3(4.f, 7.f, 12.f);
 	AABBDesc.isEnable = false;
@@ -208,9 +208,9 @@ HRESULT CHollowLord::Add_Components()
 		return E_FAIL;
 
 	/* Col_Attack_Area */
-	AABBDesc.vExtents = _float3(15.f, 2.f, 5.f);
+	AABBDesc.vExtents = _float3(15.f, 1.5f, 10.f);
 	AABBDesc.eGroup = CCollider::COL_BOSS_ATK;
-	AABBDesc.vOffset = _float3(0.f, 7.f, 20.f);
+	AABBDesc.vOffset = _float3(0.f, 6.f, 10.f);
 	AABBDesc.isEnable = false;
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_AABB", L"Col_Attack_Area", &AABBDesc)))
 		return E_FAIL;

@@ -60,13 +60,13 @@ public:
     void Set_RasterizerState(const D3D11_RASTERIZER_DESC& RasterizerDesc);
 
 private:
-    CRenderer* m_pRenderer = { nullptr };
-    CShader* m_pShaderCom = { nullptr };
+    CNavigation* m_pNavigationCom = { nullptr };
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer* m_pBufferCom = { nullptr };
-    CModel* m_pModelCom = { nullptr };
+    CRenderer* m_pRenderer = { nullptr };
     CCollider* m_pCollider = { nullptr };
-    CNavigation* m_pNavigationCom = { nullptr };
+    CShader* m_pShaderCom = { nullptr };
+    CModel* m_pModelCom = { nullptr };
 
 private:
     _bool m_isUpdate = { true };

@@ -51,6 +51,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pCollider = { nullptr };
 	CHealth* m_pHealth = { nullptr };
+	class CUI_Sprite* m_pSprite = { nullptr };
 
 	vector<class CSoul*> m_vecSouls;
 	_bool m_isDeadMotionFirst = { true };

@@ -217,7 +217,8 @@ void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& T
 
 void CMonster::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if (Collision.pOtherCollider->Get_Tag() == L"Col_Body" &&
+	if ((Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC ||
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body") &&
 		Collision.pMyCollider->Get_Tag() == L"Col_Body")
 	{
 		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);

@@ -124,14 +124,14 @@ void CAttackCore::Upgrade(class CInven* pInven, CAttack* pAttack)
 		_int iDamage = pAttack->Get_Damage();
 		pAttack->Set_Damage(iDamage + 30);
 		iDamage = pAttack->Get_Skill_Damage();
-		pAttack->Set_Skill_Damage(iDamage + 30);
+		pAttack->Set_Skill_Damage(iDamage + 100);
 	}
 	else
 	{
 		_int iDamage = pAttack->Get_Damage();
 		pAttack->Set_Damage(iDamage + 15);
 		iDamage = pAttack->Get_Skill_Damage();
-		pAttack->Set_Skill_Damage(iDamage + 15);
+		pAttack->Set_Skill_Damage(iDamage + 50);
 	}
 }
 

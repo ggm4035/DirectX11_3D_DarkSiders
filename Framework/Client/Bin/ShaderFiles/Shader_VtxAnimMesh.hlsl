@@ -194,12 +194,15 @@ PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
     float3 vNormal = /*vNormalDesc.xyz;*/vNormalDesc.xyz * 2.f - 1.f; // 0 ~ 1 -> -1 ~ 1
 
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    float dissolveFactor = saturate((maskColor.r - g_fTimeAcc));
-
+    float dissolveFactor = saturate(g_fTimeAcc - maskColor.r);
+    dissolveFactor = smoothstep(0.05, 0.95, dissolveFactor);
+    
     vNormal = mul(vNormal, WorldMatrix);
 
-    vDiffuse.a = dissolveFactor;//lerp(vDiffuse, float4(0.0, 0.0, 0.0, 0.0), dissolveFactor);
-
+    //vDiffuse.a = dissolveFactor;//
+    
+    vDiffuse = lerp(vDiffuse, float4(0.0, 0.0, 0.0, 0.0), dissolveFactor);
+    
     if (vDiffuse.a < 0.1f)
         discard;
     
