@@ -1,8 +1,17 @@
-
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix g_ViewMatrixInv, g_ProjMatrixInv;
+
+float g_Weights[13] =
+{
+    0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231,
+    1, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
+};
+
+float g_fTotal = 6.2108;
+float g_fTexWidth, g_fTexHeight;
+float g_fFocusPower, g_fFocusDetail;
 
 texture2D g_Texture;
+texture2D g_BlurTexture;
 
 sampler LinearSampler = sampler_state
 {
@@ -61,7 +70,55 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+    vector vPostProcessingTex = g_Texture.Sample(LinearSampler, In.vTexUV);
+    vector vBlurTex = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
+    
+    Out.vColor = vPostProcessingTex + vBlurTex;
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_BLUR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float2 vTexUV = 0.f;
+    float fTexU = 1.f / g_fTexWidth;
+    
+    vector vBlurTex = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
+    
+    if (2.f > vBlurTex.r + vBlurTex.g + vBlurTex.b)
+        discard;
+    
+    for (int i = -6; i < 6; ++i)
+    {
+        vTexUV = In.vTexUV + float2(fTexU * i, 0.f);
+        Out.vColor += g_Weights[6 + i] * g_BlurTexture.Sample(LinearSampler, vTexUV);
+    }
+    
+    Out.vColor /= g_fTotal;
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_ZOOMBLUR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    float2 vTexUV = 0.f;
+    
+    float2 fTexelSize = float2(1.f / g_fTexWidth, 1.f / g_fTexHeight);
+    float2 vFocus = In.vTexUV - float2(0.5f, 0.5f);
+    
+    for (int i = 0; i < g_fFocusDetail; ++i)
+    {
+        float fScale = 1.f - g_fFocusPower * fTexelSize.x * float(i);
+        vTexUV = vFocus * fScale + float2(0.5f, 0.5f);
+        Out.vColor += g_Texture.Sample(LinearSampler, vTexUV);
+    }
+    
+    Out.vColor *= 1.f / g_fFocusDetail;
+    Out.vColor.a = 1.f;
 
     return Out;
 }
@@ -93,7 +150,7 @@ BlendState BS_Default
 
 technique11 DefaultTechnique
 {
-    pass Default
+    pass Default // 0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Depth_Disable, 0);
@@ -104,5 +161,31 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass OneDimBlur // 1 1차원 블러
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Depth_Disable, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_BLUR();
+    }
+
+    pass ZoomBlur // 2
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Depth_Disable, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_ZOOMBLUR();
     }
 }

@@ -1,9 +1,4 @@
-﻿  CRenderer.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(30,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(37,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(40,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(43,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(48,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(51,6): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_PostProcessing.cso
   Engine.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine_d.dll

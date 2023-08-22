@@ -21,6 +21,7 @@ void CCamera_Free::On_Shake(SHAKE_TYPE eType, const _float& fForce, const _float
 	m_bShake = true;
 	m_fShakeForce = fForce;
 	m_fShakeTime = fTime;
+	//m_eCamState = CAM_NONLERP;
 }
 
 HRESULT CCamera_Free::Initialize_Prototype()
@@ -42,13 +43,14 @@ void CCamera_Free::Tick(const _double& TimeDelta)
 {
 	Mouse_Move(TimeDelta);
 
-	if (m_bShake)
-		Shake(TimeDelta);
-
 	switch (m_eCamState)
 	{
 	case Client::CCamera_Free::CAM_DEFAULT:
 		Default(TimeDelta);
+		break;
+
+	case Client::CCamera_Free::CAM_NONLERP:
+		NonLerp(TimeDelta);
 		break;
 
 	case Client::CCamera_Free::CAM_SUBBOSS:
@@ -64,6 +66,8 @@ void CCamera_Free::Tick(const _double& TimeDelta)
 		break;
 	}
 
+	if (m_bShake)
+		Shake_Random(TimeDelta);
 
 	CCamera::Tick(TimeDelta);
 }
@@ -176,55 +180,58 @@ void CCamera_Free::Default(const _double& TimeDelta)
 	Safe_Release(pGameInstance);
 }
 
-void CCamera_Free::Shake_X(const _float& fTimeDelta)
+void CCamera_Free::NonLerp(const _double& TimeDelta)
 {
-	static _float fX = 0.f, fY = 0.f;
+	m_fFar = 500.f;
 
-	fX += fTimeDelta * 5.f;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
-	fY = sinf(fX * 10.f) * sinf(fX * 10.f) * powf(0.4f, fX);
+	CTransform* pPlayerTransform = pGameInstance->Get_Player()->Get_Transform();
 
-	m_vEye.y += fY * m_fShakeForce;
-	m_vAt.y += fY * m_fShakeForce;
+	_matrix ParentMatrix = pPlayerTransform->Get_WorldMatrix();
 
-	if (fX > m_fShakeTime)
-	{
-		fX = 0.f;
-		fY = 0.f;
-		m_bShake = false;
-	}
+	ParentMatrix.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	ParentMatrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	ParentMatrix.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	_matrix WorldMatrix = XMMatrixTranslation(m_vOffsets.x, m_vOffsets.y, m_vOffsets.z) * XMMatrixRotationY(m_fRadian) * ParentMatrix;
+
+	m_pTransformCom->Chase(WorldMatrix.r[3], TimeDelta, 0.1f);
+
+	XMStoreFloat4(&m_vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	m_pTransformCom->LookAt(XMLoadFloat4(&m_vAt));
+
+	Safe_Release(pGameInstance);
 }
 
-void CCamera_Free::Shake_Y(const _float& fTimeDelta)
+void CCamera_Free::Shake_Random(const _float& fTimeDelta)
 {
-	static _float fX = 0.f, fY = 0.f;
+	static _uint iCount = { 0 };
+	if (0.f == m_fTimeAcc)
+		m_vOriginOffsets = m_vOffsets;
 
-	fX += fTimeDelta * 5.f;
+	m_fTimeAcc += fTimeDelta;
 
-	fY = sinf(fX * 10.f) * sinf(fX * 10.f) * powf(0.4f, fX);
-
-	m_vEye.y += fY * m_fShakeForce;
-	m_vAt.y += fY * m_fShakeForce;
-
-	if (fX > m_fShakeTime)
+	if (0 == iCount % 2)
 	{
-		fX = 0.f;
-		fY = 0.f;
-		m_bShake = false;
+		_vector vRandom = CGameInstance::GetInstance()->Get_RandomVectorInSphere(m_fShakeForce);
+
+		vRandom += XMLoadFloat3(&m_vOffsets);
+		XMStoreFloat3(&m_vOffsets, vRandom);
 	}
-}
+	else
+		m_vOffsets = m_vOriginOffsets;
 
-void CCamera_Free::Shake(const _float& fTimeDelta)
-{
-	switch (m_eType)
+	++iCount;
+
+	if (m_fTimeAcc > m_fShakeTime)
 	{
-	case SHAKE_X:
-		Shake_X(fTimeDelta);
-		break;
-
-	case SHAKE_Y:
-		Shake_Y(fTimeDelta);
-		break;
+		iCount = 0;
+		m_fTimeAcc = 0.f;
+		m_vOffsets = m_vOriginOffsets;
+		m_bShake = false;
+		//m_eCamState = CAM_DEFAULT;
 	}
 }
 

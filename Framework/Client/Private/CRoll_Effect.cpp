@@ -27,9 +27,6 @@ void CRoll_Effect::Tick(const _double& TimeDelta)
 {
 	CTransform* pTransform = dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Transform();
 	_vector vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
-	/*vPosition.m128_f32[0] = vPosition.m128_f32[0] + GetRandomFloat(-1.f, 1.f);
-	vPosition.m128_f32[2] = vPosition.m128_f32[2] + GetRandomFloat(-1.f, 1.f);*/
-
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	vector<_float4x4> ParticleMatrices;
@@ -62,7 +59,7 @@ void CRoll_Effect::Tick(const _double& TimeDelta)
 
 		XMStoreFloat4(&vPos, XMLoadFloat4(&vPos) + vVelocity * _float(TimeDelta));
 
-		XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixScaling(0.4f, 0.4f, 0.4f) * XMMatrixTranslation(vPos.x, vPos.y, vPos.z));
+		XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixTranslation(vPos.x, vPos.y, vPos.z));
 
 		ParticleMatrices.push_back(Particle.WorldMatrix);
 	}
@@ -91,18 +88,24 @@ HRESULT CRoll_Effect::Render()
 	return S_OK;
 }
 
-void CRoll_Effect::Reset_Particle(STONEPARTICLE& Particle, _fvector vLook)
+void CRoll_Effect::Reset_Particle(STONEPARTICLE& Particle, _fvector _vLook)
 {
 	Particle.dGenTime = GetRandomFloat(0.f, 1.f);
 	Particle.dAge = 0.f;
 	Particle.dLifeTime = 1.f;
 	Particle.isAlive = true;
 
-	Particle.vVelocity = _float4(-vLook.m128_f32[0] * 10.f, GetRandomFloat(15.f, 20.f), -vLook.m128_f32[2] * 10.f, 0.f);
+	Particle.vVelocity = _float4(-_vLook.m128_f32[0] * 10.f, GetRandomFloat(15.f, 20.f), -_vLook.m128_f32[2] * 10.f, 0.f);
 
 	Particle.vAccel = _float4(0.f, GetRandomFloat(-35.f, -45.f), 0.f, 0.f);
 
+	CTransform* pTransform = dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Transform();
+	_vector vLook = XMVector3Normalize(pTransform->Get_State(CTransform::STATE_LOOK)) * 3.6f;
+	_vector vRight = XMVector3Normalize(pTransform->Get_State(CTransform::STATE_RIGHT));
+	vLook += vRight * GetRandomFloat(-2.f, 2.f);
 	XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixIdentity());
+	_float4 vPosition = _float4(vLook.m128_f32[0], vLook.m128_f32[1], vLook.m128_f32[2], 1.f);
+	memcpy(&Particle.WorldMatrix._41, &vPosition, sizeof(_float4));
 }
 
 HRESULT CRoll_Effect::Add_Components()

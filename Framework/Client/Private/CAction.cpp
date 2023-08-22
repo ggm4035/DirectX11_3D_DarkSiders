@@ -36,7 +36,10 @@ HRESULT CAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 			_float* pTimeAcc = { nullptr };
 			pBlackBoard->Get_Type(L"fTimeAcc", pTimeAcc);
 			if (nullptr == pTimeAcc)
+			{
+				MSG_BOX("is Not fTimeAcc");
 				return false;
+			}
 
 			_float fInterval = *pTimeAcc - m_fPreTimeAcc;
 			if (m_fLimit > fInterval)
@@ -121,6 +124,7 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 
 		m_isFirst = true;
 		m_isFinishBehaviors = false;
+		m_isStopBehavior = false;
 
 		_float* pTimeAcc = { nullptr };
 		m_pBlackBoard->Get_Type(L"fTimeAcc", pTimeAcc);

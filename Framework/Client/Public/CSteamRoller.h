@@ -31,6 +31,7 @@ public:
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 private:
+	_bool m_isFirstSpawn = { true };
 	_float4 m_vResponPosition;
 	class CUI_Rect* m_pMonsterUI[3] = { nullptr };
 

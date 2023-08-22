@@ -43,7 +43,7 @@ HRESULT CWheelWind::Tick(const _double& TimeDelta)
 		CGameInstance::GetInstance()->Play_Sound(L"en_legionchampion_atk_whirlwind_whoosh_02.ogg", CSound_Manager::SOUND_PLAYER, 0.4f, true);
 		m_fTick += 0.4f;
 	}
-
+	
 	HRESULT hr = S_OK;
 
 	for (auto& BehaviorDesc : m_BehaviorList)
@@ -54,7 +54,7 @@ HRESULT CWheelWind::Tick(const _double& TimeDelta)
 		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		Reset();
 	}
-
+	
 	return S_OK;
 }
 

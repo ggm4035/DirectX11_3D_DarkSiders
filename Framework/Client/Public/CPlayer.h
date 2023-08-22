@@ -74,6 +74,8 @@ private: /* Status */
 private:
 	class CInven* m_pInven = { nullptr };
 
+	_float m_fTimeAcc = { 0.f };
+
 private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Add_Parts();

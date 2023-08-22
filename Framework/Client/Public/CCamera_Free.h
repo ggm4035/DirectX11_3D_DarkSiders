@@ -8,8 +8,8 @@ BEGIN(Client)
 class CCamera_Free final : public CCamera
 {
 public:
-	enum CAM_STATE { CAM_DEFAULT, CAM_SUBBOSS, CAM_FINALBOSS, CAM_FREE, CAM_END };
-	enum SHAKE_TYPE { SHAKE_X, SHAKE_Y, SHAKE_LR, SHAKE_END };
+	enum CAM_STATE { CAM_DEFAULT, CAM_NONLERP, CAM_SUBBOSS, CAM_FINALBOSS, CAM_FREE, CAM_END };
+	enum SHAKE_TYPE { SHAKE_X, SHAKE_Y, SHAKE_RANDOM, SHAKE_END };
 
 private:
 	explicit CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -33,7 +33,9 @@ private:
 	_float m_fRadian = { 0.f };
 	_float m_fShakeForce = { 0.f };
 	_float m_fShakeTime = { 0.f };
+	_float m_fTimeAcc = { 0.f };
 	_float3 m_vOffsets;
+	_float3 m_vOriginOffsets;
 	_bool m_isSceneEnd = { false };
 	_bool m_bShake = { false };
 
@@ -45,10 +47,9 @@ private:
 	void FinalBoss(const _double& TimeDelta);
 	void SubBoss(const _double& TimeDelta);
 	void Default(const _double& TimeDelta);
+	void NonLerp(const _double& TimeDelta);
 
-	void Shake_X(const _float& fTimeDelta);
-	void Shake_Y(const _float& fTimeDelta);
-	void Shake(const _float& fTimeDelta);
+	void Shake_Random(const _float& fTimeDelta);
 
 private:
 	virtual HRESULT Add_Components() override;

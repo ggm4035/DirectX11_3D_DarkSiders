@@ -33,6 +33,12 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_PostProcessing"), TEXT("Target_PostProcessing"))))
 		return E_FAIL;
 
+	/* MRT_Blur */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Blur"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur"), TEXT("Target_Blur"))))
+		return E_FAIL;
+
 	/* MRT_GameObject RenderTargets */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Diffuse"), m_pDevice, m_pContext,
 		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
@@ -52,8 +58,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	/* MRT_Shadow RenderTargets */
-	/*if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_LightDepth"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
-		return E_FAIL;*/
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_LightDepth"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
@@ -67,8 +73,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Specular"))))
 		return E_FAIL;
 
-	/*if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Shadow"), TEXT("Target_LightDepth"))))
-		return E_FAIL;*/
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Shadow"), TEXT("Target_LightDepth"))))
+		return E_FAIL;
 
 	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements);
 	if (nullptr == m_pShader)
@@ -101,8 +107,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_PostProcessing"), 300.f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
-	/*if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_LightDepth"), 500.f, 100.f, 200.f, 200.f)))
-		return E_FAIL;*/
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_LightDepth"), 500.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 300.f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
 #endif // _DEBUG
 
 	return S_OK;
@@ -130,8 +138,8 @@ HRESULT CRenderer::Draw_RenderGroup()
 		return E_FAIL;
 	if (FAILED(Render_Light()))
 		return E_FAIL;
-	/*if (FAILED(Render_Shadow()))
-		return E_FAIL;*/
+	if (FAILED(Render_Shadow()))
+		return E_FAIL;
 	if (FAILED(Render_Deferred()))
 		return E_FAIL;
 	if (FAILED(Render_NonLight()))
@@ -141,6 +149,8 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	m_pTarget_Manager->End_MRT(m_pContext);
 
+	if (FAILED(Render_Blur()))
+		return E_FAIL;
 	if (FAILED(Render_PostProcessing()))
 		return E_FAIL;
 
@@ -344,9 +354,12 @@ HRESULT CRenderer::Render_Blend()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_PostProcessing()
+HRESULT CRenderer::Render_Blur()
 {
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_Texture")))
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Blur")))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_BlurTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
@@ -356,7 +369,60 @@ HRESULT CRenderer::Render_PostProcessing()
 	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pPostProcessingShader->Begin(0)))
+	_uint iNumViewport = { 1 };
+
+	D3D11_VIEWPORT ViewportDesc;
+	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
+
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fTexWidth", &ViewportDesc.Width, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fTexHeight", &ViewportDesc.Height, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Begin(PASS_BLUR)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_PostProcessing()
+{
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_Texture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Blur"), m_pPostProcessingShader, "g_BlurTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	_uint iNumViewport = { 1 };
+
+	D3D11_VIEWPORT ViewportDesc;
+	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
+
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fTexWidth", &ViewportDesc.Width, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fTexHeight", &ViewportDesc.Height, sizeof(_float))))
+		return E_FAIL;
+
+	_float fData = 10.f;
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fFocusPower", &fData, sizeof(_float))))
+		return E_FAIL;
+	fData = 7.f;
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fFocusDetail", &fData, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Begin(m_ePass)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBuffer->Render()))
@@ -452,6 +518,8 @@ HRESULT CRenderer::Render_Debug()
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_PostProcessing"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Blur"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 
 	for (auto& pDebugCom : m_DebugObject)

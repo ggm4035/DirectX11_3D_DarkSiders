@@ -8,10 +8,16 @@ class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_NONBLEND, RENDER_NONLIGHT, RENDER_BLEND, RENDER_SHADOW, RENDER_UI, RENDER_END };
+	enum POSTSHADERPASS { PASS_POSTPROCESSING, PASS_BLUR, PASS_ZOOMBLUR, PASS_END };
 
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CRenderer() = default;
+
+public:
+	void Set_Pass(POSTSHADERPASS ePass) {
+		m_ePass = ePass;
+	}
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -29,6 +35,7 @@ private:
 	HRESULT Render_Deferred();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blend();
+	HRESULT Render_Blur();
 	HRESULT Render_PostProcessing();
 	HRESULT Render_UI();
 
@@ -43,6 +50,7 @@ private:
 	_float4x4 m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 private:
+	POSTSHADERPASS m_ePass = { PASS_POSTPROCESSING };
 	list<class CGameObject*> m_RenderObjects[RENDER_END];
 
 public:

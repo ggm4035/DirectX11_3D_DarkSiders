@@ -42,18 +42,56 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 void CSteamRoller::Tick(const _double& TimeDelta)
 {
-	return;
-
 	CMonster::Tick(TimeDelta);
 
 	for (auto UI : m_pMonsterUI)
 		UI->Tick(TimeDelta);
+
+	if (true == m_isFirstSpawn && true == m_isSpawn)
+	{
+		static _bool bCheck[3] = { false, false, false };
+		static _float fTimeAcc = { 0.f };
+		fTimeAcc += TimeDelta;
+
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		Safe_AddRef(pGameInstance);
+
+		if (false == bCheck[0] && fTimeAcc > 1.f)
+		{
+			pGameInstance->Play_Sound(L"en_steamroller_attack_impact_01.ogg", CSound_Manager::SOUND_EFFECT_1, 0.4f, true);
+			bCheck[0] = true;
+		}
+
+		if (false == bCheck[1] && fTimeAcc > 2.f)
+		{
+			pGameInstance->Play_Sound(L"en_steamroller_attack_impact_02.ogg", CSound_Manager::SOUND_EFFECT_1, 0.4f, true);
+			bCheck[1] = true;
+		}
+
+		Safe_Release(pGameInstance);
+
+		if (fTimeAcc > 3.4f)
+		{
+			if (false == bCheck[2])
+			{
+				pGameInstance->Play_Sound(L"en_steamroller_attack_impact_02.ogg", CSound_Manager::SOUND_EFFECT_1, 0.4f, true);
+				pGameInstance->Play_Sound(L"en_steamroller_roar_enrage.ogg", CSound_Manager::SOUND_ENEMY, 0.4f, true);
+				bCheck[2] = true;
+			}
+
+			m_pRendererCom->Set_Pass(CRenderer::PASS_ZOOMBLUR);
+		}
+
+		if (fTimeAcc > 4.9f)
+		{
+			m_pRendererCom->Set_Pass(CRenderer::PASS_POSTPROCESSING);
+			m_isFirstSpawn = false;
+		}
+	}
 }
 
 void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
 {
-	return;
-
 	if (false == m_isSpawn)
 		return;
 
@@ -83,8 +121,6 @@ void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
 
 void CSteamRoller::Late_Tick(const _double& TimeDelta)
 {
-	return;
-
 	if (false == m_isSpawn)
 		return;
 
@@ -101,7 +137,13 @@ HRESULT CSteamRoller::Render()
 	if (CHealth::HIT_NONE != m_pHealth->Get_Current_HitState())
 		m_iPassNum = 1;
 	if (true == m_pHealth->isDead())
-		m_iPassNum = 3;
+	{
+		static _float fTimeAcc = { 0.f };
+		fTimeAcc += 0.016f;
+
+		if (fTimeAcc > 0.9f)
+			m_iPassNum = 3;
+	}
 
 	if (FAILED(CMonster::Render()))
 		return E_FAIL;

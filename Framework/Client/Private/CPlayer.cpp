@@ -96,10 +96,12 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 void CPlayer::Tick(const _double& TimeDelta)
 {
+	m_fTimeAcc += TimeDelta;
+
 	if (CGameInstance::GetInstance()->Key_Down(DIK_F3))
 		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->Set_CamState(CCamera_Free::CAM_FREE);
 	if (CGameInstance::GetInstance()->Key_Down(DIK_2))
-		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->On_Shake(CCamera_Free::SHAKE_Y, 5.f, 2.f);
+		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->On_Shake(CCamera_Free::SHAKE_Y, 1.f, 0.4f);
 
 	if (CGameInstance::GetInstance()->Key_Down(DIK_I))
 		m_pInven->ToggleSwitch();
@@ -139,7 +141,7 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 		m_pInven->AfterFrustumTick(TimeDelta);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-		//m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 
 #ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
@@ -337,6 +339,8 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(m_pRoot->Add_Type(L"pTransform", m_pTransformCom)))
 		return E_FAIL;
 	if (FAILED(m_pRoot->Add_Type(L"pHealth", m_pHealth)))
+		return E_FAIL;
+	if (FAILED(m_pRoot->Add_Type(L"fTimeAcc", &m_fTimeAcc)))
 		return E_FAIL;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
