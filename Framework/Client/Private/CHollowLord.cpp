@@ -355,7 +355,7 @@ CHollowLord* CHollowLord::Clone(const _uint& iLevelIndex, CComponent* pOwner, vo
 
 void CHollowLord::Free()
 {
-	for (auto UI : m_pMonsterUI)
+	for (auto& UI : m_pMonsterUI)
 		Safe_Release(UI);
 
 	CMonster::Free();

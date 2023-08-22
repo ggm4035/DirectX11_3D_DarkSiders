@@ -54,10 +54,10 @@ HRESULT CPattern_Attack::Initialize(const _uint& iLevelIndex, CComponent* pOwner
 			if (nullptr == pHealth)
 				return false;
 
-			if (CHealth::HIT_NONE == pHealth->Get_Current_HitState())
-				return true;
+			if (CHealth::HIT_NONE != pHealth->Get_Current_HitState())
+				return false;
 
-			return false;
+			return true;
 		});
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool

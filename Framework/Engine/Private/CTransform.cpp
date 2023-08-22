@@ -35,6 +35,19 @@ _float3 CTransform::Get_Scaled()
 		XMVector3Length(Get_State(STATE_LOOK)).m128_f32[0]);
 }
 
+void CTransform::Set_Scales(const _float3& _vScale)
+{
+	_float3 vScale = Get_Scaled();
+
+	_vector vRight = Get_State(STATE_RIGHT) / vScale.x * _vScale.x;
+	_vector vUp = Get_State(STATE_UP) / vScale.y * _vScale.y;
+	_vector vLook = Get_State(STATE_LOOK) / vScale.z * _vScale.z;
+
+	Set_State(STATE_RIGHT, vRight);
+	Set_State(STATE_UP, vUp);
+	Set_State(STATE_LOOK, vLook);
+}
+
 void CTransform::Set_State(STATE _eState, _fvector _vState)
 {
 	_float4 vState;

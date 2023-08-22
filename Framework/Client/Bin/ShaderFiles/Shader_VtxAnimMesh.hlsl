@@ -201,7 +201,7 @@ PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
 
     //vDiffuse.a = dissolveFactor;//
     
-    vDiffuse = lerp(vDiffuse, float4(0.0, 0.0, 0.0, 0.0), dissolveFactor);
+    vDiffuse = lerp(vDiffuse, float4(1.0, 0.0, 0.0, 0.0), dissolveFactor);
     
     if (vDiffuse.a < 0.1f)
         discard;

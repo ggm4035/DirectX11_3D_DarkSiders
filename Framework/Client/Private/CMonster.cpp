@@ -79,15 +79,23 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 	if (nullptr != pArg)
 	{
-		m_pTransformCom->Set_Matrix(reinterpret_cast<MONSTERDESC*>(pArg)->WorldMatrix);
-		m_pTransformCom->Set_Angle(reinterpret_cast<MONSTERDESC*>(pArg)->vAngle);
+		MONSTERDESC Desc = *static_cast<MONSTERDESC*>(pArg);
+		m_pTransformCom->Set_Matrix(Desc.WorldMatrix);
+		m_pTransformCom->Set_Angle(Desc.vAngle);
 
 		CNavigation::NAVIGATIONDESC NaviDesc;
-		NaviDesc.iCurrentIndex = reinterpret_cast<MONSTERDESC*>(pArg)->iNavigationIndex;
+		NaviDesc.iCurrentIndex = Desc.iNavigationIndex;
 		if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Navigation", L"Com_Navigation",
 			(CComponent**)&m_pNavigationCom, this, &NaviDesc)))
 			return E_FAIL;
 		m_pTransformCom->Bind_Navigation(m_pNavigationCom);
+		m_isSpawn = Desc.isSpawn;
+		if (true == m_isSpawn)
+		{
+			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPosition.m128_f32[1] = vPosition.m128_f32[1] - 2.f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+		}
 	}
 
 	return S_OK;
@@ -137,8 +145,8 @@ void CMonster::AfterFrustumTick(const _double& TimeDelta)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pHealthBar);
 
 #ifdef _DEBUG
-		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
-			return;
+		/*if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
+			return;*/
 #endif
 	}
 
@@ -350,9 +358,14 @@ void CMonster::Free()
 
 	Safe_Release(m_pHealthBar);
 
+	for (auto& pSoul : m_vecSouls)
+		Safe_Release(pSoul);
+
 	Safe_Release(m_pHealth);
 	Safe_Release(m_pAttack);
 	Safe_Release(m_pDeffence);
+
+	Safe_Release(m_pDissolveTexture);
 
 	CGameObject3D::Free();
 }

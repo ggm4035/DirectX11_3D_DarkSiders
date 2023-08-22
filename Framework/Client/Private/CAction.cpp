@@ -30,6 +30,21 @@ HRESULT CAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 		return E_FAIL;
 	Safe_AddRef(m_pModel);
 
+	/* 쿨타임 */
+	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_float* pTimeAcc = { nullptr };
+			pBlackBoard->Get_Type(L"fTimeAcc", pTimeAcc);
+			if (nullptr == pTimeAcc)
+				return false;
+
+			_float fInterval = *pTimeAcc - m_fPreTimeAcc;
+			if (m_fLimit > fInterval)
+				return false;
+
+			return true;
+		});
+
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
 			if (true == m_isOneTimeAction &&
@@ -57,28 +72,65 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
-		CGameInstance::GetInstance()->Play_Sound(m_wstrSoundTag.c_str(), CSound_Manager::SOUND_ENEMY, 0.5f);
+		if (0 < m_wstrSoundTag.size())
+		{
+			CGameInstance::GetInstance()->Play_Sound(m_wstrSoundTag.c_str(), CSound_Manager::SOUND_ENEMY, 0.5f);
+		}
+		if (0 < m_wstrBgmTag.size())
+		{
+			CGameInstance::GetInstance()->Play_BGM(m_wstrBgmTag.c_str(), 0.5f,
+				CSound_Manager::SOUND_SUB_BGM);
+		}
 		m_pModel->Change_Animation(m_strAnimationTag, m_isLerp);
 		m_isFirst = false;
 	}
 
 	/* 행동 체크 */
-	for (auto& BehaviorDesc : m_BehaviorList)
+	if (false == m_isStopBehavior)
 	{
-		BehaviorDesc.result = BehaviorDesc.pBehavior->Tick(TimeDelta);
-		if (BEHAVIOR_RUNNING == BehaviorDesc.result)
-			m_isFinishBehaviors = false;
+		for (auto& BehaviorDesc : m_BehaviorList)
+		{
+			BehaviorDesc.result = BehaviorDesc.pBehavior->Tick(TimeDelta);
+			if (BEHAVIOR_RUNNING == BehaviorDesc.result)
+				m_isFinishBehaviors = false;
+		}
+	}
+	if (true == m_isFinishBehaviors)
+	{
+		m_isStopBehavior = true;
 	}
 
-	if (true == m_isFinishBehaviors ||
-		true == m_pModel->isAbleChangeAnimation() ||
-		true == m_pModel->isFinishedAnimation())
+	_bool bCheck = { false };
+
+	if (false == m_pModel->isLoopAnimation())
+	{
+		if (true == m_pModel->isAbleChangeAnimation() ||
+			true == m_pModel->isFinishedAnimation())
+			bCheck = true;
+	}
+	
+	else if(true == m_isFinishBehaviors)
+	{
+		bCheck = true;
+	}
+
+	if (true == bCheck)
 	{
 		if (true == m_isOneTimeAction)
 			m_isFirstAction = false;
 
 		m_isFirst = true;
 		m_isFinishBehaviors = false;
+
+		_float* pTimeAcc = { nullptr };
+		m_pBlackBoard->Get_Type(L"fTimeAcc", pTimeAcc);
+		if (nullptr == pTimeAcc)
+			return E_FAIL;
+
+		m_fPreTimeAcc = *pTimeAcc;
+
+		if(0 < m_wstrBgmTag.size())
+			CGameInstance::GetInstance()->Stop_Sound(CSound_Manager::SOUND_SUB_BGM);
 
 		return BEHAVIOR_SUCCESS;
 	}

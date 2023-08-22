@@ -292,8 +292,5 @@ CLegion_Melee* CLegion_Melee::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CLegion_Melee::Free()
 {
-	for (auto& pSoul : m_vecSouls)
-		Safe_Release(pSoul);
-
 	CMonster::Free();
 }

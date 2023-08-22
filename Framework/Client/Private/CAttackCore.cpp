@@ -67,10 +67,10 @@ void CAttackCore::Late_Tick(CInven* pInven, const _double& TimeDelta)
 
 	RECT rcUI;
 	SetRect(&rcUI,
-		m_vPosition.x - fSizeX * 0.5f,
-		m_vPosition.y - fSizeY * 0.5f,
-		m_vPosition.x + fSizeX * 0.5f,
-		m_vPosition.y + fSizeY * 0.5f);
+		_int(m_vPosition.x - fSizeX * 0.5f),
+		_int(m_vPosition.y - fSizeY * 0.5f),
+		_int(m_vPosition.x + fSizeX * 0.5f),
+		_int(m_vPosition.y + fSizeY * 0.5f));
 
 	if (PtInRect(&rcUI, ptMouse))
 	{
@@ -241,12 +241,10 @@ void CAttackCore::Free()
 	Safe_Release(m_pFocus);
 
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pBufferCom);
-
 	for (auto& pTexture : m_pTextures)
 		Safe_Release(pTexture);
-
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pBufferCom);
 
 	CGameObjectUI::Free();
 }

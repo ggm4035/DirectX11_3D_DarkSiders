@@ -129,7 +129,7 @@ public: /* For.Collider_Manager */
 public: /* For. Sound_Manager */
 	HRESULT isPlaying(CSound_Manager::SOUNDCHANNEL eChannel, OUT _bool& Out);
 	HRESULT Play_Sound(const _tchar* pSoundTag, CSound_Manager::SOUNDCHANNEL eChannel, _float fVolume, _bool bForcePlay = false);
-	HRESULT Play_BGM(const _tchar* pSoundTag, _float fVolume);
+	HRESULT Play_BGM(const _tchar* pSoundTag, _float fVolume, CSound_Manager::SOUNDCHANNEL eChannel = CSound_Manager::SOUND_BGM);
 	HRESULT Stop_Sound(CSound_Manager::SOUNDCHANNEL eChannel);
 	HRESULT Pause_Sound(CSound_Manager::SOUNDCHANNEL eChannel);
 	HRESULT Restart_Sound(CSound_Manager::SOUNDCHANNEL eChannel);

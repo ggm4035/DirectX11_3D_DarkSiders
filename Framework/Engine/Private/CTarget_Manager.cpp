@@ -66,6 +66,32 @@ HRESULT CTarget_Manager::Begin_MRT(ID3D11DeviceContext* pContext, wstring wstrMR
 	return S_OK;
 }
 
+HRESULT CTarget_Manager::Begin_BaseMRT(ID3D11DeviceContext* pContext, wstring wstrMRTTag)
+{
+	auto pMRT = Find_MRT(wstrMRTTag);
+	if (pMRT == nullptr)
+	{
+		MSG_BOX("MRT is nullptr");
+		return E_FAIL;
+	}
+	
+	pContext->OMGetRenderTargets(1, &m_pBaseRenderTargetView, &m_pDepthStencilView);
+
+	ID3D11RenderTargetView* pRTVs[8] = { nullptr };
+
+	_uint iNumRTV = { 0 };
+	for (auto& pRenderTarget : *pMRT)
+	{
+		pRenderTarget->Clear();
+		pRTVs[iNumRTV++] = pRenderTarget->Get_RTV();
+	}
+
+	if (iNumRTV <= 8)
+		pContext->OMSetRenderTargets(iNumRTV, pRTVs, m_pDepthStencilView);
+
+	return S_OK;
+}
+
 HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext)
 {
 	ID3D11RenderTargetView* pRTVs[8] = { m_pBackBufferView };
@@ -73,6 +99,18 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext)
 	pContext->OMSetRenderTargets(8, pRTVs, m_pDepthStencilView);
 
 	Safe_Release(m_pBackBufferView);
+	Safe_Release(m_pDepthStencilView);
+
+	return S_OK;
+}
+
+HRESULT CTarget_Manager::End_BaseMRT(ID3D11DeviceContext* pContext)
+{
+	ID3D11RenderTargetView* pRTVs[8] = { m_pBaseRenderTargetView };
+
+	pContext->OMSetRenderTargets(8, pRTVs, m_pDepthStencilView);
+
+	Safe_Release(m_pBaseRenderTargetView);
 	Safe_Release(m_pDepthStencilView);
 
 	return S_OK;

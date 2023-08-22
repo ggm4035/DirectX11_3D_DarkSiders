@@ -105,7 +105,9 @@ void CPlayer::Tick(const _double& TimeDelta)
 		m_pInven->ToggleSwitch();
 
 	CGameObject3D::Tick(TimeDelta);
-
+	
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//cout << vPos.m128_f32[0] << ", " << vPos.m128_f32[1] << ", " << vPos.m128_f32[2] << endl;
 	m_pActionCom->Tick(TimeDelta);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
@@ -137,7 +139,7 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 		m_pInven->AfterFrustumTick(TimeDelta);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
+		//m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 
 #ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))

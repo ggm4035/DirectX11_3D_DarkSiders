@@ -23,8 +23,10 @@
 #include "CMove.h"
 #include "CJump.h"
 #include "CDead.h"
+#include "CSpawns.h"
 #include "CFollow.h"
 #include "CAction.h"
+#include "CMonoEffect.h"
 #include "CRandomLook.h"
 #include "CLookAtTarget.h"
 

@@ -37,7 +37,7 @@ public:
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
 	virtual void AfterFrustumTick(const _double& TimeDelta) override;
-	virtual void Late_Tick(const _double& TimeDelta) override;
+	virtual void Late_Tick(const _double& TimeDelta) override {}
 	virtual HRESULT Render();
 
 public:
@@ -48,6 +48,8 @@ public:
 private:
 	vector<STONEPARTICLE> m_vecParticles;
 	_uint m_iNumParticles = { 0 };
+	_uint m_iCount = { 0 };
+	_bool m_isFinishEffect = { false };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

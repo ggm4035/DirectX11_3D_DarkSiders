@@ -3,6 +3,8 @@
 #include "CBlackBoard.h"
 #include "CGameInstance.h"
 
+#include "CRoll_Effect.h"
+#include "CMonoEffect.h"
 #include "CAction.h"
 #include "CFollow.h"
 
@@ -19,6 +21,10 @@ CPattern_Roll::CPattern_Roll(const CPattern_Roll& rhs)
 HRESULT CPattern_Roll::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
 	if (FAILED(CSequence::Initialize(iLevelIndex, pOwner, pArg)))
+		return E_FAIL;
+
+	m_pEffect = dynamic_cast<CRoll_Effect*>(CGameInstance::GetInstance()->Clone_Component(LEVEL_GAMEPLAY, L"Roll_Effect", m_pOwner));
+	if (nullptr == m_pEffect)
 		return E_FAIL;
 
 	Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
@@ -40,6 +46,8 @@ HRESULT CPattern_Roll::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 HRESULT CPattern_Roll::Tick(const _double& TimeDelta)
 {
+	CTransform* pTransform = dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Transform();
+
 	HRESULT hr = CSequence::Tick(TimeDelta);
 
 	_float* pTimeAcc = { nullptr };
@@ -71,15 +79,20 @@ HRESULT CPattern_Roll::Assemble_Childs()
 	CFollow* pFollow = dynamic_cast<CFollow*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Follow", m_pOwner));
 	if (nullptr == pFollow)
 		return E_FAIL;
+	CMonoEffect* pMonoEffect = dynamic_cast<CMonoEffect*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_MonoEffect", m_pOwner));
+	if (nullptr == pMonoEffect)
+		return E_FAIL;
 
 	pStart->Bind_AnimationTag("Roll_Start");
 	pRunning->Bind_AnimationTag("Rolling");
+	pRunning->Bind_BgmTag(L"en_steamroller_roll_loop.ogg");
 	pRunning->NotLerp();
 	pEnd->Bind_AnimationTag("Roll_Stop");
 
 	pFollow->Bind_Move_Speed(2.f);
 	pFollow->Bind_Turn_Speed(2.f);
 	pFollow->Set_Timer(10.f);
+	pMonoEffect->Bind_Effect(m_pEffect);
 
 	if (FAILED(Assemble_Behavior(L"Tsk_Roll_Start", pStart)))
 		return E_FAIL;
@@ -89,6 +102,8 @@ HRESULT CPattern_Roll::Assemble_Childs()
 		return E_FAIL;
 
 	if (pRunning->Assemble_Behavior(L"Tsk_Follow", pFollow))
+		return E_FAIL;
+	if (pRunning->Assemble_Behavior(L"Tsk_MonoEffect", pMonoEffect))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -124,5 +139,8 @@ CPattern_Roll* CPattern_Roll::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CPattern_Roll::Free()
 {
+	if(true == m_isCloned)
+		Safe_Release(m_pEffect);
+
 	CSequence::Free();
 }

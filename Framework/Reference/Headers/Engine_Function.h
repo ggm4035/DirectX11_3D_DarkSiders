@@ -25,6 +25,12 @@ namespace Engine
 		return (1 - t) * a + t * b;
 	}
 
+	// 극한함수 A : 극한 값
+	// k : 함수의 형태(경사도), c 수렴 속도
+	static float limitFunc(float x, float A, float k, float c) {
+		return A / (1.0 + exp(-k * (x - c)));
+	}
+
 	////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////Template 함수//////////////////////////
 

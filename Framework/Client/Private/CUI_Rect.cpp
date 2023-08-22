@@ -27,7 +27,6 @@ HRESULT CUI_Rect::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 
 	m_iPassNum = Desc.iPassNum;
 	m_pHealth = Desc.pHealth;
-	Safe_AddRef(m_pHealth);
 	m_pCoolTime = Desc.pCoolTime;
 
 	if (FAILED(CGameObjectUI::Initialize(iLevelIndex, pOwner, pArg)))
@@ -158,6 +157,6 @@ void CUI_Rect::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pBufferCom);
-	Safe_Release(m_pHealth);
+
 	CGameObjectUI::Free();
 }

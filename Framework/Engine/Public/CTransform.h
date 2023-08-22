@@ -51,6 +51,7 @@ public:
 	_bool isJump() const {
 		return m_isJump;
 	}
+	void Set_Scales(const _float3& _vScale);
 	void Set_State(STATE _eState, _fvector _vState);
 	void Set_Angle(const _float3& vAngle) {
 		m_vAngle = vAngle;
@@ -61,7 +62,6 @@ public:
 	void Reset_Jump();
 
 public:
-	/* Imgui Tool Only*/
 	void Set_Matrix(const _float4x4& fMatrix) {
 		m_WorldMatrix = fMatrix;
 	}

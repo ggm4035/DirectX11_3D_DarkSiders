@@ -193,6 +193,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\CJump.h" />
     <ClInclude Include="..\Public\CLeapAttack.h" />
+    <ClInclude Include="..\Public\CMonoEffect.h" />
     <ClInclude Include="..\Public\CMove.h" />
     <ClInclude Include="..\Public\CObstacle.h" />
     <ClInclude Include="..\Public\CPattern_Attack.h" />
@@ -262,11 +263,15 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CRandomSelector.h" />
+    <ClInclude Include="..\Public\CRoll_Effect.h" />
     <ClInclude Include="..\Public\CSky.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CAttackCore.h" />
     <ClInclude Include="..\Public\CSoul.h" />
+    <ClInclude Include="..\Public\CSpawn.h" />
+    <ClInclude Include="..\Public\CSpawnMonster.h" />
+    <ClInclude Include="..\Public\CSpawns.h" />
     <ClInclude Include="..\Public\CStatic_Object.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -327,6 +332,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\CJump.cpp" />
     <ClCompile Include="..\Private\CLeapAttack.cpp" />
+    <ClCompile Include="..\Private\CMonoEffect.cpp" />
     <ClCompile Include="..\Private\CMove.cpp" />
     <ClCompile Include="..\Private\CObstacle.cpp" />
     <ClCompile Include="..\Private\CPattern_Attack.cpp" />
@@ -395,11 +401,15 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CRandomSelector.cpp" />
+    <ClCompile Include="..\Private\CRoll_Effect.cpp" />
     <ClCompile Include="..\Private\CSky.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CAttackCore.cpp" />
     <ClCompile Include="..\Private\CSoul.cpp" />
+    <ClCompile Include="..\Private\CSpawn.cpp" />
+    <ClCompile Include="..\Private\CSpawnMonster.cpp" />
+    <ClCompile Include="..\Private\CSpawns.cpp" />
     <ClCompile Include="..\Private\CStatic_Object.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

@@ -31,6 +31,7 @@ public:
 private:
 	_float m_fPreTimeAcc = { 0.f };
 	_float m_fLimit = { 0.f };
+	class CRoll_Effect* m_pEffect = { nullptr };
 
 public:
 	static CPattern_Roll* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

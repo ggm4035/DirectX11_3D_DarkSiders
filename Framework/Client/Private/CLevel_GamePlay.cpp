@@ -215,6 +215,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 		MonsterDesc.SpeedPerSec = 3.f;
 		MonsterDesc.RotationPerSec = XMConvertToRadians(90.f);
 		MonsterDesc.iNavigationIndex = Data.iNavigationIndex;
+		MonsterDesc.isSpawn = false;
 		
 		wstring wstrObjTag = Data.BinaryData.szTag;
 

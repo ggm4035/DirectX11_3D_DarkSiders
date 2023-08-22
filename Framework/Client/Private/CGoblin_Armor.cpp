@@ -319,8 +319,5 @@ CGoblin_Armor* CGoblin_Armor::Clone(const _uint& iLevelIndex, CComponent* pOwner
 
 void CGoblin_Armor::Free()
 {
-	for (auto& pSoul : m_vecSouls)
-		Safe_Release(pSoul);
-
 	CMonster::Free();
 }

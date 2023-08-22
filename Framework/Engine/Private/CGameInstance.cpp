@@ -599,12 +599,12 @@ HRESULT CGameInstance::Play_Sound(const _tchar* pSoundTag, CSound_Manager::SOUND
 	return m_pSound_Manager->Play_Sound(pSoundTag, eChannel, fVolume, bForcePlay);
 }
 
-HRESULT CGameInstance::Play_BGM(const _tchar* pSoundTag, _float fVolume)
+HRESULT CGameInstance::Play_BGM(const _tchar* pSoundTag, _float fVolume, CSound_Manager::SOUNDCHANNEL eChannel)
 {
 	if (nullptr == m_pSound_Manager)
 		return E_FAIL;
 
-	return m_pSound_Manager->Play_BGM(pSoundTag, fVolume);
+	return m_pSound_Manager->Play_BGM(pSoundTag, fVolume, eChannel);
 }
 
 HRESULT CGameInstance::Stop_Sound(CSound_Manager::SOUNDCHANNEL eChannel)

@@ -96,13 +96,13 @@ HRESULT CMainApp::Render()
 
 	if (1.f < m_TimeAcc)
 	{
-		//m_wstrFPS = L"FPS : " + to_wstring(m_iRanderCount);
+		m_wstrFPS = L"FPS : " + to_wstring(m_iRanderCount);
 
 		m_TimeAcc = 0.f;
 		m_iRanderCount = 0;
 	}
 
-	//m_pGameInstance->Render_Font(L"Font_135", m_wstrFPS, _float2());
+	m_pGameInstance->Render_Font(L"Font_135", m_wstrFPS, _float2());
 
 	m_pGameInstance->Present();
 
@@ -300,6 +300,16 @@ HRESULT CMainApp::Ready_Behaviors()
 	/* Tsk_Move */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Move",
 		CMove::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_Spawns */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_Spawns",
+		CSpawns::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Tsk_MonoEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Tsk_MonoEffect",
+		CMonoEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* ==== Boss Actions ==== */

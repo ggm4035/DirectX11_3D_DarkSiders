@@ -254,8 +254,5 @@ CHellHound* CHellHound::Clone(const _uint& iLevelIndex, CComponent* pOwner, void
 
 void CHellHound::Free()
 {
-	for (auto& pSoul : m_vecSouls)
-		Safe_Release(pSoul);
-
 	CMonster::Free();
 }

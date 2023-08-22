@@ -196,6 +196,12 @@
     <Filter Include="02. GameObject\00. Player\Inventory\Cores">
       <UniqueIdentifier>{e701c55a-0135-461c-8309-008f7b4e78bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\99. ETC\Spawn">
+      <UniqueIdentifier>{53e70746-aeca-43d3-a1bc-780af6d5c6b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. Monster\07. SpawnMonster">
+      <UniqueIdentifier>{7bec4157-a7d6-426a-841e-616243b4fdb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -438,6 +444,21 @@
     <ClInclude Include="..\Public\CUI_Sprite.h">
       <Filter>02. GameObject\04. UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CSpawnMonster.h">
+      <Filter>02. GameObject\01. Monster\07. SpawnMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSpawn.h">
+      <Filter>02. GameObject\99. ETC\Spawn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSpawns.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CRoll_Effect.h">
+      <Filter>02. GameObject\06. Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CMonoEffect.h">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -672,6 +693,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\CUI_Sprite.cpp">
       <Filter>02. GameObject\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSpawnMonster.cpp">
+      <Filter>02. GameObject\01. Monster\07. SpawnMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSpawn.cpp">
+      <Filter>02. GameObject\99. ETC\Spawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSpawns.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CRoll_Effect.cpp">
+      <Filter>02. GameObject\06. Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CMonoEffect.cpp">
+      <Filter>03. MonoBehaviors\Movement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

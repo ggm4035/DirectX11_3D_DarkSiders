@@ -30,7 +30,6 @@ public:
 
 public:
 	void Tick(const _double& TimeDelta);
-	void BossSoundCheck();
 
 private:
 	class CCursor* m_pCursor = { nullptr };
@@ -38,12 +37,6 @@ private:
 	_bool m_isSubBossDead = { false };
 	_bool m_isFinalBossDead = { false };
 	_bool m_isFirst = { false };
-
-private:
-	_bool m_isPop = { false };
-
-private:
-	void PopUpMenu(const _double& TimeDelta);
 
 public:
 	virtual void Free() override;

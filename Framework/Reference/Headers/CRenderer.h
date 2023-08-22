@@ -29,6 +29,7 @@ private:
 	HRESULT Render_Deferred();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blend();
+	HRESULT Render_PostProcessing();
 	HRESULT Render_UI();
 
 private:
@@ -36,6 +37,7 @@ private:
 	class CLight_Manager* m_pLight_Manager = { nullptr };
 
 	class CShader* m_pShader = { nullptr };
+	class CShader* m_pPostProcessingShader = { nullptr };
 	class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 
 	_float4x4 m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;

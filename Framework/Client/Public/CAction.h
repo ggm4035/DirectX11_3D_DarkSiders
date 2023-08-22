@@ -29,6 +29,12 @@ public:
 	void Bind_SoundTag(const wstring& wstrSoundTag) {
 		m_wstrSoundTag = wstrSoundTag;
 	}
+	void Bind_BgmTag(const wstring& wstrSoundTag) {
+		m_wstrBgmTag = wstrSoundTag;
+	}
+	void Set_CoolTime(const _float& fTime) {
+		m_fLimit = fTime;
+	}
 	/* 단 한번만 실행하는 액션으로 설정 */
 	void Just_One_Time_Action() {
 		m_isOneTimeAction = true;
@@ -38,14 +44,21 @@ public:
 	}
 
 private:
+	// 객체에서 가져온 TimeAcc를 저장하기 위한 변수
+	// 쿨타임 체크용도로도 사용 가능할 듯 
+	_float m_fPreTimeAcc = { 0.f };
+	_float m_fLimit = { 0.f };
+
 	string m_strAnimationTag = { "" };
 	wstring m_wstrSoundTag = { L"" };
+	wstring m_wstrBgmTag = { L"" };
 
 	_bool m_isFinishBehaviors = { false };
 	_bool m_isOneTimeAction = { false };
 	_bool m_isFirstAction = { true };
 	_bool m_isFirst = { true };
 	_bool m_isLerp = { true };
+	_bool m_isStopBehavior = { false };
 
 private:
 	CModel* m_pModel = { nullptr };

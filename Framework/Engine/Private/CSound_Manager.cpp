@@ -82,18 +82,18 @@ HRESULT CSound_Manager::Play_Sound(const _tchar* pSoundTag, SOUNDCHANNEL eChanne
 	return S_OK;
 }
 
-HRESULT CSound_Manager::Play_BGM(const _tchar* pSoundTag, _float fVolume)
+HRESULT CSound_Manager::Play_BGM(const _tchar* pSoundTag, _float fVolume, SOUNDCHANNEL eChannel)
 {
 	FMOD::Sound* pSound = Find_Sound(pSoundTag);
 
 	if (nullptr == pSound)
 		return E_FAIL;
 
-	if (FMOD_OK != m_pSystem->playSound(pSound, nullptr, false, &m_Channels[SOUND_BGM]))
+	if (FMOD_OK != m_pSystem->playSound(pSound, nullptr, false, &m_Channels[eChannel]))
 		return E_FAIL;
 
-	m_Channels[SOUND_BGM]->setMode(FMOD_LOOP_NORMAL);
-	m_Channels[SOUND_BGM]->setVolume(fVolume);
+	m_Channels[eChannel]->setMode(FMOD_LOOP_NORMAL);
+	m_Channels[eChannel]->setVolume(fVolume);
 	m_pSystem->update();
 
 	return S_OK;

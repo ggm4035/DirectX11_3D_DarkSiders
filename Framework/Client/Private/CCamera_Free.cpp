@@ -242,6 +242,11 @@ void CCamera_Free::Key_Input(const _double& TimeDelta)
 		m_pTransformCom->Cam_Straight(TimeDelta);
 
 	CCursor* pCursor = CGameManager::GetInstance()->Get_Cursor();
+	if (nullptr == pCursor)
+	{
+		MSG_BOX("Cursor is nullptr");
+		return;
+	}
 
 	if (pGameInstance->Mouse_Pressing(CInput_Device::DIM_RB))
 	{
@@ -272,6 +277,11 @@ void CCamera_Free::Mouse_Move(const _double& TimeDelta)
 	Safe_AddRef(pGameInstance);
 
 	CCursor* pCursor = CGameManager::GetInstance()->Get_Cursor();
+	if (nullptr == pCursor)
+	{
+		MSG_BOX("Cursor is nullptr");
+		return;
+	}
 
 	if (pGameInstance->Mouse_Pressing(CInput_Device::DIM_RB))
 	{

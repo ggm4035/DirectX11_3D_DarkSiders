@@ -8,6 +8,7 @@
 #include "CTerrain.h"
 #include "CLava.h"
 #include "CAoE.h"
+#include "CSpawn.h"
 #include "CSky.h"
 #include "CCamera_Free.h"
 #include "CGoblin.h"
@@ -26,6 +27,7 @@
 #include "CHealthCore.h"
 
 #include "CStone_Effect.h"
+#include "CRoll_Effect.h"
 #include "CSoul.h"
 
 #include "CInven.h"
@@ -133,6 +135,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	/* 게임 플레이용 자원을 생성한다. */
 
+#pragma region Textures
+
 	m_szLoading = TEXT("텍스쳐 로딩 중.");
 
 	/* For. Texture_Terrain */
@@ -225,9 +229,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_BossHpBar.png"))))
 		return E_FAIL;
 
-	/* For. Texture_UI_Spawn */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_UI_Spawn",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Spawn.png"))))
+	/* For. Texture_Spawn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Spawn",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/Spawn.png"))))
 		return E_FAIL;
 
 	/* For. Texture_UI_War */
@@ -369,6 +373,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/DissolveMask.png"))))
 		return E_FAIL;
 
+#pragma endregion
+
 	m_szLoading = TEXT("버퍼 로딩 중.");
 
 	/* VIBuffer_Trail */
@@ -386,6 +392,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* Stone_Effect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Stone_Effect",
 		CStone_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Roll_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Roll_Effect",
+		CRoll_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* Soul */
@@ -414,6 +425,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Sprite",
 		CUI_Sprite::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma region Models
 
 	m_szLoading = TEXT("모델 로딩 중.");
 
@@ -635,6 +648,8 @@ HRESULT CLoader::Load_Level_GamePlay()
 		return E_FAIL;
 	Safe_Delete_BinaryData(Data);
 
+#pragma endregion
+
 	m_szLoading = TEXT("스테이터스 로딩 중.");
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Status_Health",
@@ -748,6 +763,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. AOE */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"AOE",
 		CAoE::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Spawn */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Spawn",
+		CSpawn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. Trigger_Free */

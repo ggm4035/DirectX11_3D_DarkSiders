@@ -26,7 +26,7 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
+	
 	if (FAILED(Ready_UI()))
 		return E_FAIL;
 
@@ -42,14 +42,18 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 
 void CSteamRoller::Tick(const _double& TimeDelta)
 {
+	return;
+
 	CMonster::Tick(TimeDelta);
-	
+
 	for (auto UI : m_pMonsterUI)
 		UI->Tick(TimeDelta);
 }
 
 void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
 {
+	return;
+
 	if (false == m_isSpawn)
 		return;
 
@@ -79,6 +83,8 @@ void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
 
 void CSteamRoller::Late_Tick(const _double& TimeDelta)
 {
+	return;
+
 	if (false == m_isSpawn)
 		return;
 
@@ -176,12 +182,6 @@ void CSteamRoller::OnCollisionStay(CCollider::COLLISION Collision, const _double
 		m_isAbleAttack = true;
 	}
 
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isRangeInPlayer = true;
-	}
-
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack_Roll" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
@@ -203,12 +203,6 @@ void CSteamRoller::OnCollisionExit(CCollider::COLLISION Collision, const _double
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
 		m_isAbleAttack = false;
-	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isRangeInPlayer = false;
 	}
 }
 
@@ -353,10 +347,16 @@ HRESULT CSteamRoller::Make_AI()
 	CPattern_Roll* pPattern_Roll = dynamic_cast<CPattern_Roll*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Roll", this));
 	if (nullptr == pPattern_Roll)
 		return E_FAIL;
+	CAction* pAction_Spawns = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Spawns)
+		return E_FAIL;
 	CAction* pAction_Follow = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Follow)
 		return E_FAIL;
 
+	CSpawns* pTsk_Spawns = dynamic_cast<CSpawns*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Spawns", this));
+	if (nullptr == pTsk_Spawns)
+		return E_FAIL;
 	CLookAtTarget* pLookAtTarget = dynamic_cast<CLookAtTarget*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_LookAtTarget", this));
 	if (nullptr == pLookAtTarget)
 		return E_FAIL;
@@ -374,7 +374,15 @@ HRESULT CSteamRoller::Make_AI()
 	pSequence_Hit->Not_Look();
 	pSequence_Hit->Not_Impact();
 	pPattern_Roll->Set_CoolTime(15.f);
+	pAction_Spawns->Set_CoolTime(20.f);
+	pAction_Spawns->Bind_AnimationTag("Enrage");
 	pAction_Follow->Bind_AnimationTag("Walk_F");
+
+	pTsk_Spawns->Set_NavigationIndex(444);
+	pTsk_Spawns->Set_NumMonster(12);
+	pTsk_Spawns->Set_SpawnRange(170.f, 195.f, 2.f, 345.f, 375.f);
+	pTsk_Spawns->Add_ModelTag(L"Monster_Goblin");
+
 	pBoss_Attack->Add_Attack_AnimTag("Attack_1");
 	pBoss_Attack->Add_Attack_AnimTag("Attack_2");
 	pBoss_Attack->Add_Attack_AnimTag("Attack_3");
@@ -426,11 +434,15 @@ HRESULT CSteamRoller::Make_AI()
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Roll", pPattern_Roll)))
 		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Spawns", pAction_Spawns)))
+		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Action_Follow", pAction_Follow)))
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pSequence)))
 		return E_FAIL;
 
+	if (FAILED(pAction_Spawns->Assemble_Behavior(L"Tsk_Spawns", pTsk_Spawns)))
+		return E_FAIL;
 	if (FAILED(pAction_Follow->Assemble_Behavior(L"Tsk_Follow", pFollow)))
 		return E_FAIL;
 	if (FAILED(pSequence->Assemble_Behavior(L"Tsk_Look", pLookAtTarget)))
@@ -449,6 +461,26 @@ HRESULT CSteamRoller::Make_AI()
 
 	return S_OK;
 }
+
+//void CSteamRoller::Spawn()
+//{
+//	_float4x4 WorldMatrix;
+//	_float4 vPosition = _float4(GetRandomFloat(173.f, 190.f), 2.f, GetRandomFloat(350.f, 370.f), 1.f);
+//	XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
+//	memcpy(&WorldMatrix._41, &vPosition, sizeof(_float4));
+//
+//	CMonster::MONSTERDESC MonsterDesc;
+//	MonsterDesc.WorldMatrix = WorldMatrix;
+//	MonsterDesc.vAngle = _float3();
+//	MonsterDesc.SpeedPerSec = 3.f;
+//	MonsterDesc.RotationPerSec = XMConvertToRadians(90.f);
+//	MonsterDesc.iNavigationIndex = 444;
+//	MonsterDesc.isSpawn = true;
+//
+//	if (FAILED(CGameInstance::GetInstance()->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_Goblin",
+//		L"Monster_Goblin", L"Layer_Monster", &MonsterDesc)))
+//		return;
+//}
 
 CSteamRoller* CSteamRoller::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -476,9 +508,6 @@ CSteamRoller* CSteamRoller::Clone(const _uint& iLevelIndex, CComponent* pOwner, 
 
 void CSteamRoller::Free()
 {
-	for (auto& pSoul : m_vecSouls)
-		Safe_Release(pSoul);
-
 	for (auto UI : m_pMonsterUI)
 		Safe_Release(UI);
 

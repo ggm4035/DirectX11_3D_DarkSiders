@@ -54,7 +54,7 @@ void CStatic_Object::AfterFrustumTick(const _double& TimeDelta)
 		true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f))
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
+		//m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 	}
 
 	Safe_Release(pGameInstance);

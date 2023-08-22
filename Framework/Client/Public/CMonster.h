@@ -27,6 +27,7 @@ public:
 		_float4x4 WorldMatrix;
 		_float3 vAngle;
 		_uint iNavigationIndex = { 0 };
+		_bool isSpawn = { false };
 	}MONSTERDESC;
 
 protected:

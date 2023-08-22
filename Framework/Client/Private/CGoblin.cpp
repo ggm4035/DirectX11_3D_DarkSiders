@@ -7,6 +7,7 @@
 #include "CPlayer.h"
 
 #include "CAoE.h"
+#include "CSpawn.h"
 #include "CUI_Sprite.h"
 #include "CSoul.h"
 
@@ -49,6 +50,18 @@ void CGoblin::Tick(const _double& TimeDelta)
 		vPosition.m128_f32[1] = vPosition.m128_f32[1] - 2.f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	}
+	else
+	{
+		m_fSpawnTimeAcc += TimeDelta;
+
+		if (2.f < m_fSpawnTimeAcc)
+			return;
+
+		_matrix Matrix = /*XMMatrixScaling(2.f, 2.f, 2.f) * */XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, 0.1f, 0.f) * m_pTransformCom->Get_WorldMatrix();
+		_float4x4 WorldMatrix;
+		XMStoreFloat4x4(&WorldMatrix, Matrix);
+		m_pSpawn->Tick(WorldMatrix, TimeDelta);
+	}
 }
 
 void CGoblin::AfterFrustumTick(const _double& TimeDelta)
@@ -57,14 +70,17 @@ void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 		return;
 
 	CMonster::AfterFrustumTick(TimeDelta);
-
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, m_pAoe);
 }
 
 /* 여기는 콜라이더가 객체의 상태를 변경(On_Collision) */
 void CGoblin::Late_Tick(const _double& TimeDelta)
 {
 	CMonster::Late_Tick(TimeDelta);
+
+	if (2.f < m_fSpawnTimeAcc)
+		return;
+
+	m_pSpawn->Late_Tick(TimeDelta);
 }
 
 HRESULT CGoblin::Render()
@@ -92,6 +108,7 @@ void CGoblin::Dead_Motion(const _double& TimeDelta)
 		_float4x4 WorldMatrix;
 		XMStoreFloat4x4(&WorldMatrix, Matrix);
 		m_pAoe->Tick(WorldMatrix);
+		m_pAoe->Late_Tick(TimeDelta);
 	}
 	
 	if (true == m_isRender && 2.f <= m_fExplosionTimeAcc)
@@ -136,7 +153,20 @@ void CGoblin::Dead_Motion(const _double& TimeDelta)
 
 void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CMonster::OnCollisionEnter(Collision, TimeDelta);
+	if (Collision.pOtherCollider->Get_Tag() == L"Col_Body" &&
+		Collision.pMyCollider->Get_Tag() == L"Col_Body")
+	{
+		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
+		m_pTransformCom->Repersive(vDir, TimeDelta);
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isSpawn = true;
+		m_isRangeInPlayer = true;
+	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Attack" &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
@@ -151,17 +181,19 @@ void CGoblin::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		dynamic_cast<CPlayer*>(Collision.pOther)->Get_Damaged_Knockback(vPosition, m_pAttack);
 	}
-
-	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
-		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
-	{
-		m_isSpawn = true;
-	}
 }
 
 void CGoblin::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CMonster::OnCollisionStay(Collision, TimeDelta);
+	if ((Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC ||
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body") &&
+		Collision.pMyCollider->Get_Tag() == L"Col_Body")
+	{
+		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
+		m_pTransformCom->Repersive(vDir, TimeDelta);
+	}
+
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
 	{
@@ -286,6 +318,10 @@ HRESULT CGoblin::Add_Components()
 	if (nullptr == m_pAoe)
 		return E_FAIL;
 
+	m_pSpawn = dynamic_cast<CSpawn*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Spawn", L"Spawn", this, nullptr));
+	if (nullptr == m_pSpawn)
+		return E_FAIL;
+
 	Safe_Release(pGameInstance);
 
 	return S_OK;
@@ -327,8 +363,8 @@ HRESULT CGoblin::Make_AI()
 	CAction* pAction_Explosion = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Explosion)
 		return E_FAIL;
-	CPattern_Attack* pPattern_Attack = dynamic_cast<CPattern_Attack*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_Attack", this));
-	if (nullptr == pPattern_Attack)
+	CSelector* pAttack = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
+	if (nullptr == pAttack)
 		return E_FAIL;
 
 	CJump* pJump = dynamic_cast<CJump*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Jump", this));
@@ -350,9 +386,6 @@ HRESULT CGoblin::Make_AI()
 	pAction_Explosion_Start->Bind_AnimationTag("Explosion_Start");
 	pAction_Explosion_Run->Bind_AnimationTag("Explosion_Run");
 	pAction_Explosion->Bind_AnimationTag("Explosion_Dead");
-	pPattern_Attack->Bind_FollowAnimTag("Run");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
 	pJump->Bind_Jump_Force(0.7f);
 	pMove->Bind_Move_Force(0.5f);
 	pFollow->Set_Timer(5.f);
@@ -398,7 +431,7 @@ HRESULT CGoblin::Make_AI()
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Explosion", pSequence_Explosion)))
 		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Pattern_Attack", pPattern_Attack)))
+	if (FAILED(pSelector->Assemble_Behavior(L"Attack", pAttack)))
 		return E_FAIL;
 
 	if (FAILED(pSequence_Spawn->Assemble_Behavior(L"Tsk_RandomLook", pRandomLook)))
@@ -421,12 +454,114 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(pAction_Explosion->Assemble_Behavior(L"Tsk_Dead", pDead)))
 		return E_FAIL;
 
-	if (FAILED(pPattern_Attack->Assemble_Childs()))
+	if (FAILED(Make_Attack(pAttack)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 
 	return S_OK;
+}
+
+HRESULT CGoblin::Make_Attack(CSelector* pSelector)
+{
+	if (nullptr == pSelector)
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CSequence* pSequence_Attack = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
+	if (nullptr == pSequence_Attack)
+		return E_FAIL;
+	CRandomSelector* pRandom_Attack = dynamic_cast<CRandomSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"RandomSelector", this));
+	if (nullptr == pRandom_Attack)
+		return E_FAIL;
+
+	/* Action */
+	CAction* pAction_Follow = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Follow)
+		return E_FAIL;
+	CAction* pAction_LookAt = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_LookAt)
+		return E_FAIL;
+
+	CAction* pAction_Attack1 = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Attack1)
+		return E_FAIL;
+	CAction* pAction_Attack2 = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Attack2)
+		return E_FAIL;
+
+	/* Movement */
+	CFollow* pFollow = dynamic_cast<CFollow*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Follow", this));
+	if (nullptr == pFollow)
+		return E_FAIL;
+	CLookAtTarget* pLookAtTarget = dynamic_cast<CLookAtTarget*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_LookAtTarget", this));
+	if (nullptr == pLookAtTarget)
+		return E_FAIL;
+
+	pSelector->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			_bool* pIsSpawn = { nullptr };
+			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
+			if (nullptr == pIsSpawn)
+				return false;
+
+			return *pIsSpawn;
+		});
+
+	pAction_Follow->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			if (true == m_pModelCom->isLoopAnimation() ||
+				true == m_pModelCom->isFinishedAnimation())
+				return true;
+
+			return false;
+		});
+
+	pSelector->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
+				return false;
+
+			if (CHealth::HIT_NONE != pHealth->Get_Current_HitState())
+				return false;
+
+			return true;
+		});
+
+	pAction_Follow->Bind_AnimationTag("Run");
+	pAction_LookAt->Bind_AnimationTag("Run");
+
+	pFollow->Bind_Move_Speed(0.9f);
+	pFollow->Bind_Turn_Speed(5.f);
+	pLookAtTarget->Set_Timer(1.5f);
+
+	pAction_Attack1->Bind_AnimationTag("Attack_1");
+	pAction_Attack2->Bind_AnimationTag("Attack_2");
+
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Follow", pAction_Follow)))
+		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Attack", pSequence_Attack)))
+		return E_FAIL;
+
+	if (FAILED(pAction_Follow->Assemble_Behavior(L"Tsk_Follow", pFollow)))
+		return E_FAIL;
+	if (FAILED(pSequence_Attack->Assemble_Behavior(L"Action_LookAt", pAction_LookAt)))
+		return E_FAIL;
+	if (FAILED(pSequence_Attack->Assemble_Behavior(L"Random_Attack", pRandom_Attack)))
+		return E_FAIL;
+
+	if (FAILED(pAction_LookAt->Assemble_Behavior(L"Tsk_LookAtTarget", pLookAtTarget)))
+		return E_FAIL;
+	if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr("Attack_1"), pAction_Attack1)))
+		return E_FAIL;
+	if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr("Attack_2"), pAction_Attack2)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 }
 
 CGoblin* CGoblin::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -455,10 +590,8 @@ CGoblin* CGoblin::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg
 
 void CGoblin::Free()
 {
-	for (auto& pSoul : m_vecSouls)
-		Safe_Release(pSoul);
-
 	Safe_Release(m_pAoe);
+	Safe_Release(m_pSpawn);
 	Safe_Release(m_pSprite);
 
 	CMonster::Free();

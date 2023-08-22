@@ -3,11 +3,6 @@
 #include "CBehavior.h"
 #include "Client_Defines.h"
 
-BEGIN(Engine)
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
 
 class CWait final : public CBehavior
@@ -28,7 +23,6 @@ public:
 	virtual HRESULT Tick(const _double& TimeDelta);
 
 private:
-	CModel* m_pModel = { nullptr };
 	_float m_fTimeAcc = { 0.f };
 	_float m_fLimit = { 0.f };
 

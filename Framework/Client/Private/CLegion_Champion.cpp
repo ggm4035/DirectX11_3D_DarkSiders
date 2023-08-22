@@ -330,8 +330,5 @@ CLegion_Champion* CLegion_Champion::Clone(const _uint& iLevelIndex, CComponent* 
 
 void CLegion_Champion::Free()
 {
-	for (auto& pSoul : m_vecSouls)
-		Safe_Release(pSoul);
-
 	CMonster::Free();
 }

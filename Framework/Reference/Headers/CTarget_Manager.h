@@ -18,8 +18,10 @@ public:
 	HRESULT Add_MRT(const wstring& wstrMRTTag, const wstring& wstrTargetTag);
 	/* pMRTTag에 추가되어있는 렌더타겟들을 장치에 바인딩한다. */
 	HRESULT Begin_MRT(ID3D11DeviceContext* pContext, wstring wstrMRTTag);
+	HRESULT Begin_BaseMRT(ID3D11DeviceContext* pContext, wstring wstrMRTTag);
 	/* 원래상태로 복구한다. (0번째에 백버퍼가 바인딩 된 상태로 돌려준다. */
 	HRESULT End_MRT(ID3D11DeviceContext* pContext);
+	HRESULT End_BaseMRT(ID3D11DeviceContext* pContext);
 	HRESULT Bind_ShaderResourceView(const wstring& wstrTargetTag, class CShader* pShader, const string& wstrConstantName);
 	HRESULT Clear_RenderTargetView(ID3D11DeviceContext* pContext, const wstring& wstrTargetTag, const _float4& vClearColor);
 
@@ -29,6 +31,7 @@ private:
 
 private:
 	ID3D11RenderTargetView* m_pBackBufferView = { nullptr };
+	ID3D11RenderTargetView* m_pBaseRenderTargetView = { nullptr };
 	ID3D11DepthStencilView* m_pDepthStencilView = { nullptr };
 
 private:
@@ -43,7 +46,6 @@ public:
 	HRESULT Ready_Debug(const wstring& wstrTargetTag, const _float& fX, const _float& fY, const _float& fSizeX, const _float& fSizeY);
 	HRESULT Render(const wstring& wstrMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 #endif
-
 };
 
 END

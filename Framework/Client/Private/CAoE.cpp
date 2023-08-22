@@ -45,6 +45,7 @@ void CAoE::AfterFrustumTick(const _double& TimeDelta)
 
 void CAoE::Late_Tick(const _double& TimeDelta)
 {
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
 }
 
 HRESULT CAoE::Render()

@@ -1,10 +1,8 @@
-
 #include "CWait.h"
 
 #include "CGameObject3D.h"
 #include "CBlackBoard.h"
 #include "CTransform.h"
-#include "CModel.h"
 
 CWait::CWait(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBehavior(pDevice, pContext)
@@ -20,15 +18,6 @@ HRESULT CWait::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pA
 {
 	if (FAILED(CBehavior::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
-
-	CGameObject3D* pGameObject = dynamic_cast<CGameObject3D*>(m_pOwner);
-	if (nullptr == pGameObject)
-		return E_FAIL;
-
-	m_pModel = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Model"));
-	if (nullptr == m_pModel)
-		return E_FAIL;
-	Safe_AddRef(m_pModel);
 
 	return S_OK;
 }
@@ -77,8 +66,5 @@ CWait* CWait::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 
 void CWait::Free()
 {
-	if(true == m_isCloned)
-		Safe_Release(m_pModel);
-
 	CBehavior::Free();
 }

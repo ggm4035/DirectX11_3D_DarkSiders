@@ -43,9 +43,9 @@ HRESULT CInven::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* p
 		m_pPlayerDeffence = Desc.pDeffence;
 		m_pPlayerHealth = Desc.pHealth;
 
-		Safe_AddRef(m_pPlayerAttack);
+		/*Safe_AddRef(m_pPlayerAttack);
 		Safe_AddRef(m_pPlayerDeffence);
-		Safe_AddRef(m_pPlayerHealth);
+		Safe_AddRef(m_pPlayerHealth);*/
 	}
 
 	return S_OK;
@@ -527,9 +527,9 @@ void CInven::Free()
 {
 	Safe_Release(m_pCurrency);
 
-	Safe_Release(m_pPlayerAttack);
+	/*Safe_Release(m_pPlayerAttack);
 	Safe_Release(m_pPlayerDeffence);
-	Safe_Release(m_pPlayerHealth);
+	Safe_Release(m_pPlayerHealth);*/
 
 	Safe_Release(m_pAttackCore);
 	Safe_Release(m_pArmorCore);
@@ -542,9 +542,9 @@ void CInven::Free()
 	Safe_Release(m_pHealthDS);
 
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pBufferCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pBufferCom);
 
 	CGameObjectUI::Free();
 }

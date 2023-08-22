@@ -21,10 +21,17 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
-	_uint		iNumViews = { 1 };
-	D3D11_VIEWPORT		ViewportDesc;
+	_uint iNumViews = { 1 };
+	D3D11_VIEWPORT ViewportDesc;
 
 	m_pContext->RSGetViewports(&iNumViews, &ViewportDesc);
+
+	/* MRT_PostProcessing */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_PostProcessing"), m_pDevice, m_pContext,
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_PostProcessing"), TEXT("Target_PostProcessing"))))
+		return E_FAIL;
 
 	/* MRT_GameObject RenderTargets */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Diffuse"), m_pDevice, m_pContext,
@@ -44,6 +51,10 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Specular"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/* MRT_Shadow RenderTargets */
+	/*if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_LightDepth"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;*/
+
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
@@ -56,8 +67,15 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Specular"))))
 		return E_FAIL;
 
+	/*if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Shadow"), TEXT("Target_LightDepth"))))
+		return E_FAIL;*/
+
 	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements);
 	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	m_pPostProcessingShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_PostProcessing.hlsl"), VTXPOSTEX_DECL::Elements, VTXPOSTEX_DECL::iNumElements);
+	if (nullptr == m_pPostProcessingShader)
 		return E_FAIL;
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
@@ -81,6 +99,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_PostProcessing"), 300.f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_LightDepth"), 500.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;*/
 #endif // _DEBUG
 
 	return S_OK;
@@ -100,22 +122,26 @@ void CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameObje
 
 HRESULT CRenderer::Draw_RenderGroup()
 {
+	m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_PostProcessing");
+
 	if (FAILED(Render_Priority()))
 		return E_FAIL;
-
 	if (FAILED(Render_NonBlend()))
 		return E_FAIL;
-
 	if (FAILED(Render_Light()))
 		return E_FAIL;
-
+	/*if (FAILED(Render_Shadow()))
+		return E_FAIL;*/
 	if (FAILED(Render_Deferred()))
 		return E_FAIL;
-
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;
-
 	if (FAILED(Render_Blend()))
+		return E_FAIL;
+
+	m_pTarget_Manager->End_MRT(m_pContext);
+
+	if (FAILED(Render_PostProcessing()))
 		return E_FAIL;
 
 	if (FAILED(Render_UI()))
@@ -150,7 +176,7 @@ HRESULT CRenderer::Render_NonBlend()
 		return E_FAIL;
 
 	/* Diffuse(0) + Normal(1) */
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_GameObjects"))))
+	if (FAILED(m_pTarget_Manager->Begin_BaseMRT(m_pContext, TEXT("MRT_GameObjects"))))
 		return E_FAIL;
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_NONBLEND])
@@ -163,7 +189,7 @@ HRESULT CRenderer::Render_NonBlend()
 
 	m_RenderObjects[RENDER_NONBLEND].clear();
 
-	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+	if (FAILED(m_pTarget_Manager->End_BaseMRT(m_pContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -175,7 +201,7 @@ HRESULT CRenderer::Render_Light()
 		return E_FAIL;
 
 	/* Shade(0) + Specular(1) */
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Lights"))))
+	if (FAILED(m_pTarget_Manager->Begin_BaseMRT(m_pContext, TEXT("MRT_Lights"))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
@@ -211,7 +237,7 @@ HRESULT CRenderer::Render_Light()
 	/* 빛 정보를 던진다. */
 	m_pLight_Manager->Render_Lights(m_pShader, m_pVIBuffer);
 
-	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+	if (FAILED(m_pTarget_Manager->End_BaseMRT(m_pContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -219,7 +245,7 @@ HRESULT CRenderer::Render_Light()
 
 HRESULT CRenderer::Render_Shadow()
 {
-	if(FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Shadow")))
+	if(FAILED(m_pTarget_Manager->Begin_BaseMRT(m_pContext, L"MRT_Shadow")))
 		return E_FAIL;
 
 	CTarget_Manager* pTarget_Manager = CTarget_Manager::GetInstance();
@@ -240,7 +266,7 @@ HRESULT CRenderer::Render_Shadow()
 
 	m_RenderObjects[RENDER_SHADOW].clear();
 
-	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+	if (FAILED(m_pTarget_Manager->End_BaseMRT(m_pContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -318,6 +344,27 @@ HRESULT CRenderer::Render_Blend()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_PostProcessing()
+{
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_Texture")))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Begin(0)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_UI()
 {
 	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
@@ -370,6 +417,7 @@ void CRenderer::Free()
 	Safe_Release(m_pLight_Manager);
 
 	Safe_Release(m_pShader);
+	Safe_Release(m_pPostProcessingShader);
 	Safe_Release(m_pVIBuffer);
 
 	CComponent::Free();
@@ -392,31 +440,19 @@ HRESULT CRenderer::Render_Debug()
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
-	for (auto& pDebugCom : m_DebugObject)
-	{
-		pDebugCom->Render();
-		Safe_Release(pDebugCom);
-	}
-
-	m_DebugObject.clear();
-
-#ifdef _DEBUG
-
 	if (FAILED(m_pShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	/*if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;*/
-
-#endif // _DEBUG
-
-	return S_OK;
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_PostProcessing"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 
 	for (auto& pDebugCom : m_DebugObject)
 	{

@@ -10,8 +10,8 @@ public:
 	typedef struct tagPointInstanceDesc : public CVIBuffer_Instancing::INSTANCEDESC
 	{
 		_float fFrameSpeed = 0.f; // 초 단위로 넣으면 된다.
-		_uint iNumWidth = 1.f;
-		_uint iNumHeight = 1.f;
+		_uint iNumWidth = 1;
+		_uint iNumHeight = 1;
 	}POINTINSTDESC;
 
 private:

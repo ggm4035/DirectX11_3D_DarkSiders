@@ -12,6 +12,9 @@
     <ContentFile>
       <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Navigation.cso</FullPath>
     </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_PostProcessing.cso</FullPath>
+    </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />

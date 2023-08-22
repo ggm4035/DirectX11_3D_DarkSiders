@@ -204,11 +204,12 @@ CGameObject3D* CTerrain::Clone(const _uint& iLevelIndex, CComponent* pOwner, voi
 void CTerrain::Free()
 {
 	Safe_Release(m_pBufferCom);
-	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pNmTextureCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pNavigationCom);
+
 	Safe_Release(m_pAttack);
 
 	CGameObject3D::Free();
