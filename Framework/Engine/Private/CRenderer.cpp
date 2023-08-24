@@ -4,6 +4,7 @@
 #include "CLight_Manager.h"
 
 #include "CShader.h"
+#include "CTexture.h"
 #include "CPipeLine.h"
 #include "CVIBuffer_Rect.h"
 
@@ -43,12 +44,6 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Blur"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur"), TEXT("Target_Blur"))))
-		return E_FAIL;
-
-	/* MRT_Focus */
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Brightness"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Focus"), TEXT("Target_Brightness"))))
 		return E_FAIL;
 
 	/* MRT_GameObject RenderTargets */
@@ -105,6 +100,10 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_WorldMatrix._22 = ViewportDesc.Height;
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+
+	m_pFocusTexture = CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/Screen_Focus.png");
+	if (nullptr == m_pFocusTexture)
+		return E_FAIL;
 
 #ifdef _DEBUG
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.f, 100.f, 200.f, 200.f)))
@@ -167,6 +166,8 @@ HRESULT CRenderer::Draw_RenderGroup()
 		return E_FAIL;
 	if (FAILED(Render_PostProcessing()))
 		return E_FAIL;
+	/*if (FAILED(Render_Focus()))
+		return E_FAIL;*/
 
 	if (FAILED(Render_UI()))
 		return E_FAIL;
@@ -428,6 +429,9 @@ HRESULT CRenderer::Render_Blur()
 
 HRESULT CRenderer::Render_PostProcessing()
 {
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_PostProcessing")))
+		return E_FAIL;
+
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_Texture")))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Blur"), m_pPostProcessingShader, "g_BlurTexture")))
@@ -456,6 +460,36 @@ HRESULT CRenderer::Render_PostProcessing()
 		return E_FAIL;
 
 	if (FAILED(m_pPostProcessingShader->Begin(m_ePass)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Focus()
+{
+	if (PASS_POSTPROCESSING == m_ePass)
+		return S_OK;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_Texture")))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pFocusTexture->Bind_ShaderResource(m_pPostProcessingShader, "g_FocusTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Begin(PASS_FOCUS)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBuffer->Render()))
@@ -518,6 +552,8 @@ void CRenderer::Free()
 	Safe_Release(m_pShader);
 	Safe_Release(m_pPostProcessingShader);
 	Safe_Release(m_pVIBuffer);
+
+	Safe_Release(m_pFocusTexture);
 
 	CComponent::Free();
 }

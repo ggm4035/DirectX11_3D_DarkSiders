@@ -11,6 +11,7 @@ float g_fFocusPower, g_fFocusDetail;
 
 texture2D g_Texture;
 texture2D g_BlurTexture;
+texture2D g_FocusTexture;
 
 sampler LinearSampler = sampler_state
 {
@@ -124,6 +125,21 @@ PS_OUT PS_MAIN_ZOOMBLUR(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_FOCUS(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vPostTex = g_Texture.Sample(LinearSampler, In.vTexUV);
+    vector vFocusTex = g_FocusTexture.Sample(LinearSampler, In.vTexUV);
+    
+    float3 vGray = (vPostTex.r + vPostTex.g + vPostTex.b) / 3.f;
+    Out.vColor.rgb = lerp(vPostTex.rgb, vGray, vFocusTex.r);
+    
+    Out.vColor.a = 1.f;
+    
+    return Out;
+}
+
 RasterizerState RS_Default
 {
     FillMode = Solid;
@@ -188,5 +204,18 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_ZOOMBLUR();
+    }
+
+    pass Focus // 3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Depth_Disable, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_FOCUS();
     }
 }

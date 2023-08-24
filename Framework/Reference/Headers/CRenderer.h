@@ -8,7 +8,7 @@ class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_NONBLEND, RENDER_NONLIGHT, RENDER_BLEND, RENDER_SHADOW, RENDER_EFFECT, RENDER_UI, RENDER_END };
-	enum POSTSHADERPASS { PASS_POSTPROCESSING, PASS_BLUR, PASS_ZOOMBLUR, PASS_END };
+	enum POSTSHADERPASS { PASS_POSTPROCESSING, PASS_BLUR, PASS_ZOOMBLUR, PASS_FOCUS, PASS_END };
 
 private:
 	explicit CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -43,6 +43,7 @@ private:
 	HRESULT Render_Effect();
 	HRESULT Render_Blur();
 	HRESULT Render_PostProcessing();
+	HRESULT Render_Focus();
 	HRESULT Render_UI();
 
 private:
@@ -56,6 +57,7 @@ private:
 	_float4x4 m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 	_float m_fBlurPower = { 0.f };
 	_float m_fBlurDetail = { 0.f };
+	class CTexture* m_pFocusTexture = { nullptr };
 
 private:
 	POSTSHADERPASS m_ePass = { PASS_POSTPROCESSING };
