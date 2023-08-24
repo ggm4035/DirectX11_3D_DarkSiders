@@ -33,10 +33,22 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_PostProcessing"), TEXT("Target_PostProcessing"))))
 		return E_FAIL;
 
+	/* MRT_Effect */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Effect"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Effect"), TEXT("Target_Effect"))))
+		return E_FAIL;
+
 	/* MRT_Blur */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Blur"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur"), TEXT("Target_Blur"))))
+		return E_FAIL;
+
+	/* MRT_Focus */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Brightness"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Focus"), TEXT("Target_Brightness"))))
 		return E_FAIL;
 
 	/* MRT_GameObject RenderTargets */
@@ -149,6 +161,8 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	m_pTarget_Manager->End_MRT(m_pContext);
 
+	if (FAILED(Render_Effect()))
+		return E_FAIL;
 	if (FAILED(Render_Blur()))
 		return E_FAIL;
 	if (FAILED(Render_PostProcessing()))
@@ -354,12 +368,33 @@ HRESULT CRenderer::Render_Blend()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Effect()
+{
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Effect")))
+		return E_FAIL;
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_EFFECT])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjects[RENDER_EFFECT].clear();
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_Blur()
 {
 	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Blur")))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_BlurTexture")))
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Effect"), m_pPostProcessingShader, "g_Texture")))
 		return E_FAIL;
 
 	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
@@ -415,11 +450,9 @@ HRESULT CRenderer::Render_PostProcessing()
 	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fTexHeight", &ViewportDesc.Height, sizeof(_float))))
 		return E_FAIL;
 
-	_float fData = 10.f;
-	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fFocusPower", &fData, sizeof(_float))))
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fFocusPower", &m_fBlurPower, sizeof(_float))))
 		return E_FAIL;
-	fData = 7.f;
-	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fFocusDetail", &fData, sizeof(_float))))
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fFocusDetail", &m_fBlurDetail, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pPostProcessingShader->Begin(m_ePass)))

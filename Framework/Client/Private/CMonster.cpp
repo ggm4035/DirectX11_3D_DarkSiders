@@ -14,7 +14,7 @@ CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CMonster::CMonster(const CMonster& rhs)
-	:CGameObject3D(rhs)
+	: CGameObject3D(rhs)
 {
 }
 
@@ -197,6 +197,7 @@ void CMonster::Dead_Motion(const _double& TimeDelta)
 		m_isDeadMotionFirst = false;
 	}
 	m_fHitTimeAcc += TimeDelta;
+	m_fDissolveTimeAcc += TimeDelta;
 }
 
 void CMonster::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
@@ -338,6 +339,8 @@ HRESULT CMonster::Set_Shader_Resources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeAcc", &m_fHitTimeAcc, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveTimeAcc", &m_fDissolveTimeAcc, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pDissolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture")))

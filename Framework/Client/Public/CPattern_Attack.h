@@ -2,6 +2,7 @@
 
 #include "CRandomSelector.h"
 #include "Client_Defines.h"
+#include "CAction.h"
 
 BEGIN(Engine)
 class CModel;
@@ -11,6 +12,13 @@ BEGIN(Client)
 
 class CPattern_Attack final : public CSelector
 {
+public:
+	typedef struct tagAttackDesc
+	{
+		string strAttackAnimTag;
+		vector<CAction::SOUNDDESC> Sounds;
+	}ATTACKDESC;
+
 private:
 	explicit CPattern_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CPattern_Attack(const CPattern_Attack& rhs);
@@ -29,8 +37,8 @@ public:
 	void Bind_FollowAnimTag(const string& strAnimationTag) {
 		m_strAnimationTag = strAnimationTag;
 	}
-	void Add_Attack_AnimTag(const string& strAnimationTag) {
-		m_AttackAnimTagList.push_back(strAnimationTag);
+	void Add_Attack(const ATTACKDESC& AttackDesc) {
+		m_Attacks.push_back(AttackDesc);
 	}
 
 private:
@@ -39,7 +47,7 @@ private:
 	_float m_fPreTimeAcc = { 0.f };
 	_float m_fLimit = { 0.f };
 	string m_strAnimationTag = { "" };
-	list<string> m_AttackAnimTagList;
+	vector<ATTACKDESC> m_Attacks;
 
 private:
 	CModel* m_pModel = { nullptr };

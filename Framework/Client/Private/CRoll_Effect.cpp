@@ -100,7 +100,7 @@ void CRoll_Effect::Reset_Particle(STONEPARTICLE& Particle, _fvector _vLook)
 	Particle.vAccel = _float4(0.f, GetRandomFloat(-35.f, -45.f), 0.f, 0.f);
 
 	CTransform* pTransform = dynamic_cast<CGameObject3D*>(m_pOwner)->Get_Transform();
-	_vector vLook = XMVector3Normalize(pTransform->Get_State(CTransform::STATE_LOOK)) * 3.6f;
+	_vector vLook = XMVector3Normalize(pTransform->Get_State(CTransform::STATE_LOOK)) * 3.2f;
 	_vector vRight = XMVector3Normalize(pTransform->Get_State(CTransform::STATE_RIGHT));
 	vLook += vRight * GetRandomFloat(-2.f, 2.f);
 	XMStoreFloat4x4(&Particle.WorldMatrix, XMMatrixIdentity());

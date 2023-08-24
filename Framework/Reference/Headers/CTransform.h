@@ -97,6 +97,10 @@ public:
 	void Cam_Left(const _double& TimeDelta);
 	void Cam_Up(const _double& TimeDelta);
 
+	void Organize_From_Right();
+	void Organize_From_Up();
+	void Organize_From_Look();
+
 private:
 	class CNavigation* m_pNavigation = { nullptr };
 	_float4x4 m_WorldMatrix;
@@ -111,9 +115,6 @@ private: /* For. Jump */
 
 private:
 	void Move_Stop_Sliding(const _double& TimeDelta);
-	void Organize_From_Right();
-	void Organize_From_Up();
-	void Organize_From_Look();
 
 public:
 	static CTransform* Create(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);

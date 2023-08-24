@@ -247,7 +247,9 @@ HRESULT CLegion_Champion::Make_AI()
 	pHit->Not_Impact();
 	pPattern_Wheel->Set_CoolTime(15.f);
 	pPattern_Attack->Bind_FollowAnimTag("Run");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
+	CPattern_Attack::ATTACKDESC Desc;
+	Desc.strAttackAnimTag = "Attack_1";
+	pPattern_Attack->Add_Attack(Desc);/* Sound Ãß°¡ */
 
 	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{

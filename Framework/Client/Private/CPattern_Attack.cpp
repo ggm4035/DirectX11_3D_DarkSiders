@@ -4,7 +4,6 @@
 #include "CGameInstance.h"
 
 #include "CLookAtTarget.h"
-#include "CAction.h"
 #include "CFollow.h"
 #include "CSequence.h"
 
@@ -158,15 +157,18 @@ HRESULT CPattern_Attack::Assemble_Childs()
 	if (FAILED(pAction_LookAt->Assemble_Behavior(L"Tsk_LookAtTarget", pLookAtTarget)))
 		return E_FAIL;
 
-	for (auto& strAnimTag : m_AttackAnimTagList)
+	for (auto& Desc : m_Attacks)
 	{
 		CAction* pAction_Attack = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 		if (nullptr == pAction_Attack)
 			return E_FAIL;
 
-		pAction_Attack->Bind_AnimationTag(strAnimTag);
-		if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr(strAnimTag), pAction_Attack)))
+		pAction_Attack->Bind_AnimationTag(Desc.strAttackAnimTag);
+		if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr(Desc.strAttackAnimTag), pAction_Attack)))
 			return E_FAIL;
+
+		for (auto& Sound : Desc.Sounds)
+			pAction_Attack->Add_Sound(Sound);
 	}
 
 	Safe_Release(pGameInstance);

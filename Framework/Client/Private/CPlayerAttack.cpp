@@ -84,38 +84,38 @@ HRESULT CPlayerAttack::Tick(const _double& TimeDelta)
 		{
 		case 0:
 			pAction->Set_State(CPlayerAction::STATE_LATK_1);
-			pGameInstance->Play_Sound(L"char_war_attack_2_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+			pGameInstance->Play_Sound(L"char_war_attack_2_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 			break;
 		case 1:
 			pAction->Set_State(CPlayerAction::STATE_LATK_2);
-			pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+			pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 			break;
 		case 2:
 			pAction->Set_State(CPlayerAction::STATE_LATK_3);
-			pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+			pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 			break;
 		case 3:
 			pAction->Set_State(CPlayerAction::STATE_LATK_4);
-			pGameInstance->Play_Sound(L"char_war_attack_4_b_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+			pGameInstance->Play_Sound(L"char_war_attack_4_b_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 			m_iCombo = -1;
 			break;
 		}
 		break;
 
 	case Client::CPlayerAction::STATE_LATK_1:
-		pGameInstance->Play_Sound(L"char_war_attack_2_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+		pGameInstance->Play_Sound(L"char_war_attack_2_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_2);
 		break;
 	case Client::CPlayerAction::STATE_LATK_2:
-		pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+		pGameInstance->Play_Sound(L"char_war_attack_3_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_3);
 		break;
 	case Client::CPlayerAction::STATE_LATK_3:
-		pGameInstance->Play_Sound(L"char_war_attack_4_b_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+		pGameInstance->Play_Sound(L"char_war_attack_4_b_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_4);
 		break;
 	case Client::CPlayerAction::STATE_LATK_4:
-		pGameInstance->Play_Sound(L"char_war_attack_1_02.ogg", CSound_Manager::SOUND_PLAYER, 0.5f, true);
+		pGameInstance->Play_Sound(L"char_war_attack_1_02.ogg", CSound_Manager::SOUND_PLAYER, 0.35f, true);
 		pAction->Set_State(CPlayerAction::STATE_LATK_1);
 		break;
 	}

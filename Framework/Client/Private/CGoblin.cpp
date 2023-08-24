@@ -502,6 +502,19 @@ HRESULT CGoblin::Make_Attack(CSelector* pSelector)
 
 	pSelector->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
+			CHealth* pHealth = { nullptr };
+			pBlackBoard->Get_Type(L"pHealth", pHealth);
+			if (nullptr == pHealth)
+				return false;
+
+			if (CHealth::HIT_NONE != pHealth->Get_Current_HitState())
+				return false;
+
+			return true;
+		});
+
+	pSelector->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+		{
 			_bool* pIsSpawn = { nullptr };
 			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
 			if (nullptr == pIsSpawn)
@@ -519,17 +532,15 @@ HRESULT CGoblin::Make_Attack(CSelector* pSelector)
 			return false;
 		});
 
-	pSelector->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
+	pAction_Follow->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
-			CHealth* pHealth = { nullptr };
-			pBlackBoard->Get_Type(L"pHealth", pHealth);
-			if (nullptr == pHealth)
+			_bool* pIsAbleAttack = { nullptr };
+
+			pBlackBoard->Get_Type(L"isAbleAttack", pIsAbleAttack);
+			if (nullptr == pIsAbleAttack)
 				return false;
 
-			if (CHealth::HIT_NONE != pHealth->Get_Current_HitState())
-				return false;
-
-			return true;
+			return !(*pIsAbleAttack);
 		});
 
 	pAction_Follow->Bind_AnimationTag("Run");

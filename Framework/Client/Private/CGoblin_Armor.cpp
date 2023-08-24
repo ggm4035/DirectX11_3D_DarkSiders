@@ -221,8 +221,11 @@ HRESULT CGoblin_Armor::Make_AI()
 	pAction_Detect->Bind_AnimationTag("Sit_End");
 	pAction_Detect->Just_One_Time_Action();
 	pPattern_Attack->Bind_FollowAnimTag("Run");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
+	CPattern_Attack::ATTACKDESC Desc;
+	Desc.strAttackAnimTag = "Attack_1";
+	pPattern_Attack->Add_Attack(Desc);
+	Desc.strAttackAnimTag = "Attack_2"; /* Sound Ãß°¡ */
+	pPattern_Attack->Add_Attack(Desc);
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))

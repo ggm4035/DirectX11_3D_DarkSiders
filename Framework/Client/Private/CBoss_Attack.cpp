@@ -3,7 +3,6 @@
 #include "CBlackBoard.h"
 #include "CGameInstance.h"
 
-#include "CAction.h"
 #include "CSequence.h"
 
 CBoss_Attack::CBoss_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -88,15 +87,18 @@ HRESULT CBoss_Attack::Assemble_Childs()
 	if (FAILED(Assemble_Behavior(L"Random_Attack", pRandom_Attack)))
 		return E_FAIL;
 
-	for (auto& strAnimTag : m_AttackAnimTagList)
+	for (auto& Desc : m_Attacks)
 	{
 		CAction* pAction_Attack = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", m_pOwner));
 		if (nullptr == pAction_Attack)
 			return E_FAIL;
 
-		pAction_Attack->Bind_AnimationTag(strAnimTag);
-		if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr(strAnimTag), pAction_Attack)))
+		pAction_Attack->Bind_AnimationTag(Desc.strAttackAnimTag);
+		if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr(Desc.strAttackAnimTag), pAction_Attack)))
 			return E_FAIL;
+
+		for (auto& Sound : Desc.Sounds)
+			pAction_Attack->Add_Sound(Sound);
 	}
 
 	Safe_Release(pGameInstance);

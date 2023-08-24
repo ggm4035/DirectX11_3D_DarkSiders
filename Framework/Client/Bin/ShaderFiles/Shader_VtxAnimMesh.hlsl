@@ -7,6 +7,8 @@ texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DissolveTexture;
 float g_fTimeAcc = 0.f;
+float g_fThickness = 0.05f;
+float g_fDissolveTimeAcc = 0.f;
 
 struct VS_IN
 {
@@ -177,7 +179,7 @@ struct PS_OUT_SHADOW
 
 PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
 {
-    PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
+    PS_OUT_SHADOW Out = (PS_OUT_SHADOW) 0;
 
     Out.vLightDepth = In.vProjPos.z / In.vProjPos.w;
 
@@ -186,31 +188,32 @@ PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
 
 PS_OUT PS_MAIN_DISSOLVE(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT)0;
+    PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
     vector maskColor = g_DissolveTexture.Sample(LinearSampler, In.vTexUV);
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-    float3 vNormal = /*vNormalDesc.xyz;*/vNormalDesc.xyz * 2.f - 1.f; // 0 ~ 1 -> -1 ~ 1
-
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f; // 0 ~ 1 -> -1 ~ 1
+    
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    float dissolveFactor = saturate(g_fTimeAcc - maskColor.r);
-    dissolveFactor = smoothstep(0.05, 0.95, dissolveFactor);
+    float fProgress = saturate(1.5f - g_fDissolveTimeAcc);
+    float fDissolveFactor = (maskColor.r - fProgress) / g_fThickness;
+    
+    if (maskColor.r > fProgress + g_fThickness)
+    {
+        discard;
+    }
+    else if (maskColor.r > fProgress)
+    {
+        vDiffuse = lerp(vDiffuse, float4(1.0, 0.0, 0.0, 1.0), fDissolveFactor);
+    }
     
     vNormal = mul(vNormal, WorldMatrix);
-
-    //vDiffuse.a = dissolveFactor;//
-    
-    vDiffuse = lerp(vDiffuse, float4(1.0, 0.0, 0.0, 0.0), dissolveFactor);
-    
-    if (vDiffuse.a < 0.1f)
-        discard;
     
     Out.vDiffuse = vDiffuse;
-
     /* Out.vNormal unorm : 0 ~ 1 */
     /* In.vNormal.xyz : -1 ~ 1 */
-    Out.vNormal = vector(vNormal, 0.f); /*vector(vNormal * 0.5f + 0.5f, 0.f);*/
+    Out.vNormal = vector(vNormal, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w, 0.f, 0.f);
 
     return Out;

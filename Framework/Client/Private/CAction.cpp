@@ -73,12 +73,10 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 	if (0 != m_BehaviorList.size())
 		m_isFinishBehaviors = true;
 
+	PlaySounds(TimeDelta);
+
 	if (true == m_isFirst)
 	{
-		if (0 < m_wstrSoundTag.size())
-		{
-			CGameInstance::GetInstance()->Play_Sound(m_wstrSoundTag.c_str(), CSound_Manager::SOUND_ENEMY, 0.5f);
-		}
 		if (0 < m_wstrBgmTag.size())
 		{
 			CGameInstance::GetInstance()->Play_BGM(m_wstrBgmTag.c_str(), 0.5f,
@@ -131,10 +129,13 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 		if (nullptr == pTimeAcc)
 			return E_FAIL;
 
+		m_fTimeAcc = 0.f;
 		m_fPreTimeAcc = *pTimeAcc;
 
 		if(0 < m_wstrBgmTag.size())
 			CGameInstance::GetInstance()->Stop_Sound(CSound_Manager::SOUND_SUB_BGM);
+		for (auto& Sound : m_Sounds)
+			Sound.isPlaySound = false;
 
 		return BEHAVIOR_SUCCESS;
 	}
@@ -153,6 +154,24 @@ CAction* CAction::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	}
 
 	return pInstance;
+}
+
+void CAction::PlaySounds(const _double& TimeDelta)
+{
+	m_fTimeAcc += TimeDelta;
+
+	for (auto& Desc : m_Sounds)
+	{
+		if (true == Desc.isPlaySound)
+			continue;
+
+		if (Desc.fTime > m_fTimeAcc)
+			continue;
+
+		if (FAILED(CGameInstance::GetInstance()->Play_Sound(Desc.wstrSoundTag.c_str(), Desc.eChennel, Desc.fVolum, true)))
+			return;
+		Desc.isPlaySound = true;
+	}
 }
 
 CAction* CAction::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)

@@ -18,7 +18,6 @@
 #include "CLegion_Champion.h"
 #include "CSteamRoller.h"
 #include "CHollowLord.h"
-#include "CFallenDog.h"
 #include "CWeapon.h"
 #include "CTrigger_Free.h"
 #include "CSwordTrail.h"
@@ -33,7 +32,7 @@
 #include "CInven.h"
 #include "CCurrency.h"
 
-#include "CUI_Overlay.h"
+#include "CUI_Focus.h"
 #include "CUI_Sprite.h"
 #include "CUI_HpBar.h"
 #include "CHUD.h"
@@ -264,6 +263,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_Focus.png"))))
 		return E_FAIL;
 
+	/* For. Texture_Screen_Focus */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Screen_Focus",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/Screen_Focus.png"))))
+		return E_FAIL;
+
 	/* Cores */
 
 	/* For. Texture_UI_AttackCore0 */
@@ -406,9 +410,9 @@ HRESULT CLoader::Load_Level_GamePlay()
 
 	m_szLoading = TEXT("UI ·Îµù Áß.");
 
-	/* For. UI_Overlay */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Overlay",
-		CUI_Overlay::Create(m_pDevice, m_pContext))))
+	/* For. UI_Focus */
+	if (FAILED(m_pGameInstance->Add_Prototype(L"UI_Focus",
+		CUI_Focus::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For. UI_HpBar */
@@ -720,11 +724,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CSteamRoller::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For. Monster_FallenDog */
-	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_FallenDog",
-		CFallenDog::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* For. Monster_Goblin */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Goblin",
 		CGoblin::Create(m_pDevice, m_pContext))))
@@ -734,7 +733,7 @@ HRESULT CLoader::Load_Level_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_Goblin_Armor",
 		CGoblin_Armor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	
 	/* For. Monster_HellHound */
 	if (FAILED(m_pGameInstance->Add_Prototype(L"Monster_HellHound",
 		CHellHound::Create(m_pDevice, m_pContext))))

@@ -257,8 +257,11 @@ HRESULT CSpawnMonster::Make_AI()
 	pAction_Spawn->Bind_AnimationTag("Spawn");
 	pAction_Spawn->Just_One_Time_Action();
 	pPattern_Attack->Bind_FollowAnimTag("Run");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
+	CPattern_Attack::ATTACKDESC Desc;
+	Desc.strAttackAnimTag = "Attack_1";
+	pPattern_Attack->Add_Attack(Desc);
+	Desc.strAttackAnimTag = "Attack_2";
+	pPattern_Attack->Add_Attack(Desc);
 	pJump->Bind_Jump_Force(0.7f);
 	pMove->Bind_Move_Force(0.5f);
 	pFollow->Set_Timer(5.f);

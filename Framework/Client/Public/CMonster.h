@@ -90,6 +90,7 @@ private:
 	_float m_fHitTimeAcc = { 0.f };
 	_bool m_isSuperArmor = { false };
 	_bool m_isDeadMotionFirst = { true };
+	_float m_fDissolveTimeAcc = { 0.f };
 
 public:
 	virtual void Free() override;

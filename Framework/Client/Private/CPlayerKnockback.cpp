@@ -56,6 +56,7 @@ HRESULT CPlayerKnockback::Tick(const _double& TimeDelta)
 
 	_vector vLook = pTransform->Get_State(CTransform::STATE_LOOK);
 	pTransform->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(XMVectorSetY(vLook, 0.f)));
+	pTransform->Organize_From_Look();
 
 	if (hr == BEHAVIOR_SUCCESS)
 		m_isFirst = true;

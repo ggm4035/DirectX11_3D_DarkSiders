@@ -131,7 +131,7 @@ float4 PS_MAIN_FADEIN(PS_IN In) : SV_TARGET0
 	
     vColor = vector(0.f, 0.f, 0.f, 1.f);
     
-    vColor.a = saturate(vColor.a - (g_fTimeAcc - 2.5f));
+    vColor.a = saturate(vColor.a - (g_fTimeAcc - 3.2f));
     
     if (vColor.a < 0.01f)
         discard;

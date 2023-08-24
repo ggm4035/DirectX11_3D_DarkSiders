@@ -32,6 +32,9 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 	CHealth* pHealth = { nullptr };
 	if (FAILED(m_pBlackBoard->Get_Type(L"pHealth", pHealth)))
 		return E_FAIL;
+	CTransform* pTransform = { nullptr };
+	if (FAILED(m_pBlackBoard->Get_Type(L"pTransform", pTransform)))
+		return E_FAIL;
 
 	if (CPlayerAction::STATE_WHEEL == pAction->Get_State() ||
 		CPlayerAction::STATE_LEAP == pAction->Get_State())
@@ -52,6 +55,10 @@ HRESULT CPlayerHit::Tick(const _double& TimeDelta)
 	switch (eCurHitState)
 	{
 	case CHealth::HIT_ENTER:
+		_vector vLook = pTransform->Get_State(CTransform::STATE_LOOK);
+		pTransform->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(XMVectorSetY(vLook, 0.f)));
+		pTransform->Organize_From_Look();
+
 		dynamic_cast<CWeapon*>(pOwner->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		pAction->Set_State(CPlayerAction::STATE_HIT);
 		pHealth->Set_HitState(CHealth::HIT_STAY);

@@ -1,12 +1,11 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
-float g_Weights[13] =
+float g_Weights[23] =
 {
-    0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231,
-    1, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
+    0.0011, 0.0123, 0.0561, 0.1353, 0.278, 0.3001, 0.4868, 0.6666, 0.7261, 0.8712, 0.9231,
+    0.9986, 0.9231, 0.8712, 0.7261, 0.6666, 0.4868, 0.3001, 0.278, 0.1353, 0.0561, 0.0123, 0.0011
 };
 
-float g_fTotal = 6.2108;
 float g_fTexWidth, g_fTexHeight;
 float g_fFocusPower, g_fFocusDetail;
 
@@ -84,19 +83,18 @@ PS_OUT PS_MAIN_BLUR(PS_IN In)
 
     float2 vTexUV = 0.f;
     float fTexU = 1.f / g_fTexWidth;
+    float fTotal = 0.f;
     
-    vector vBlurTex = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
+    vector vBlurTex = g_Texture.Sample(LinearSampler, In.vTexUV);
     
-    if (2.5f > vBlurTex.r + vBlurTex.g + vBlurTex.b)
-        discard;
-    
-    for (int i = -6; i < 6; ++i)
+    for (int i = -11; i < 11; ++i)
     {
         vTexUV = In.vTexUV + float2(fTexU * i, 0.f);
-        Out.vColor += g_Weights[6 + i] * g_BlurTexture.Sample(LinearSampler, vTexUV);
+        Out.vColor += g_Weights[11 + i] * g_Texture.Sample(LinearSampler, vTexUV);
+        fTotal += g_Weights[11 + i];
     }
     
-    Out.vColor /= g_fTotal;
+    Out.vColor /= fTotal;
 
     return Out;
 }
@@ -105,14 +103,15 @@ PS_OUT PS_MAIN_ZOOMBLUR(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
+    vector vBlurTex = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
     float2 vTexUV = 0.f;
     
     float2 fTexelSize = float2(1.f / g_fTexWidth, 1.f / g_fTexHeight);
     float2 vFocus = In.vTexUV - float2(0.5f, 0.5f);
     
-    for (int i = 0; i < g_fFocusDetail; ++i)
+    for (float i = 0.f; i < g_fFocusDetail; i += 1.f)
     {
-        float fScale = 1.f - g_fFocusPower * fTexelSize.x * float(i);
+        float fScale = 1.f - g_fFocusPower * fTexelSize.x * i;
         vTexUV = vFocus * fScale + float2(0.5f, 0.5f);
         Out.vColor += g_Texture.Sample(LinearSampler, vTexUV);
     }
@@ -120,6 +119,8 @@ PS_OUT PS_MAIN_ZOOMBLUR(PS_IN In)
     Out.vColor *= 1.f / g_fFocusDetail;
     Out.vColor.a = 1.f;
 
+    Out.vColor += vBlurTex;
+    
     return Out;
 }
 

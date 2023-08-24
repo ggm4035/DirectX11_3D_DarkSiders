@@ -434,41 +434,6 @@ void CTransform::BillBoard(const _double& TimeDelta)
 	memcpy(&m_WorldMatrix.m[STATE_LOOK][0], &vLook, sizeof(_float4));
 }
 
-void CTransform::Move_Stop_Sliding(const _double& TimeDelta)
-{
-	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vLook = Get_State(STATE_LOOK);
-
-	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
-
-	CNavigation::RETURNDESC RetDesc;
-	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
-
-	if (nullptr != m_pNavigation)
-		RetDesc = m_pNavigation->is_Move(vPosition);
-
-	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
-	{
-		/* 슬라이딩 */
-		_float fForce = XMVector3Dot(XMVector3Normalize(vLook), XMVector3Normalize(XMLoadFloat3(&RetDesc.vSlide))).m128_f32[0];
-		_vector vDir = XMLoadFloat3(&RetDesc.vSlide);
-
-		vPosition = Get_State(STATE_POSITION);
-
-		if (90.f < acosf(fForce))
-			vDir *= -1.f;
-
-		XMStoreFloat3(&m_vMoveDir, vDir);
-		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
-	}
-
-	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
-		return;
-
-	XMStoreFloat3(&m_vMoveDir, vLook);
-	Set_State(STATE_POSITION, vPosition);
-}
-
 void CTransform::Organize_From_Right()
 {
 	_float3 vScaled = Get_Scaled();
@@ -515,6 +480,41 @@ void CTransform::Organize_From_Look()
 	memcpy(&m_WorldMatrix.m[STATE_RIGHT][0], &vRight, sizeof(_float4));
 	memcpy(&m_WorldMatrix.m[STATE_UP][0], &vUp, sizeof(_float4));
 	memcpy(&m_WorldMatrix.m[STATE_LOOK][0], &vLook, sizeof(_float4));
+}
+
+void CTransform::Move_Stop_Sliding(const _double& TimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.SpeedPerSec * TimeDelta;
+
+	CNavigation::RETURNDESC RetDesc;
+	RetDesc.eMoveType = CNavigation::TYPE_MOVE;
+
+	if (nullptr != m_pNavigation)
+		RetDesc = m_pNavigation->is_Move(vPosition);
+
+	if (CNavigation::TYPE_SLIDING == RetDesc.eMoveType)
+	{
+		/* 슬라이딩 */
+		_float fForce = XMVector3Dot(XMVector3Normalize(vLook), XMVector3Normalize(XMLoadFloat3(&RetDesc.vSlide))).m128_f32[0];
+		_vector vDir = XMLoadFloat3(&RetDesc.vSlide);
+
+		vPosition = Get_State(STATE_POSITION);
+
+		if (90.f < acosf(fForce))
+			vDir *= -1.f;
+
+		XMStoreFloat3(&m_vMoveDir, vDir);
+		vPosition += vDir * m_TransformDesc.SpeedPerSec * fForce * TimeDelta;
+	}
+
+	else if (CNavigation::TYPE_STOP == RetDesc.eMoveType)
+		return;
+
+	XMStoreFloat3(&m_vMoveDir, vLook);
+	Set_State(STATE_POSITION, vPosition);
 }
 
 CTransform* CTransform::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

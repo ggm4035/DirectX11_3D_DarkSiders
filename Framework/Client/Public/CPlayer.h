@@ -75,12 +75,14 @@ private:
 	class CInven* m_pInven = { nullptr };
 
 	_float m_fTimeAcc = { 0.f };
+	_bool m_isRenderZoom = { false };
 
 private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Add_Parts();
 	HRESULT Set_Shader_Resources();
 	HRESULT Set_Shader_Shadow_Resources();
+	void Set_ZommBlur(const _double& TimeDelta);
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

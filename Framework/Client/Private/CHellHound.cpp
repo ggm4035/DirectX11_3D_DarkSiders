@@ -199,8 +199,11 @@ HRESULT CHellHound::Make_AI()
 	pHit->Bind_SoundTag(L"en_hellhound_impact_vo_02.ogg");
 	pPattern_Attack->Set_CoolTime(1.f);
 	pPattern_Attack->Bind_FollowAnimTag("Run");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_1");
-	pPattern_Attack->Add_Attack_AnimTag("Attack_2");
+	CPattern_Attack::ATTACKDESC Desc;
+	Desc.strAttackAnimTag = "Attack_1";
+	pPattern_Attack->Add_Attack(Desc);
+	Desc.strAttackAnimTag = "Attack_2";
+	pPattern_Attack->Add_Attack(Desc);
 
 	/* Assemble */
 	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))

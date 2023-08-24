@@ -44,8 +44,8 @@ void CLava::Tick(const _double& TimeDelta)
 
 void CLava::Late_Tick(const _double& TimeDelta)
 {
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 }
 
 HRESULT CLava::Render()

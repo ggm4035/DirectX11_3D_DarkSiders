@@ -2,6 +2,7 @@
 
 #include "CRandomSelector.h"
 #include "Client_Defines.h"
+#include "CAction.h"
 
 BEGIN(Engine)
 class CModel;
@@ -11,6 +12,13 @@ BEGIN(Client)
 
 class CBoss_Attack final : public CSelector
 {
+public:
+	typedef struct tagAttackDesc
+	{
+		string strAttackAnimTag;
+		vector<CAction::SOUNDDESC> Sounds;
+	}ATTACKDESC;
+
 private:
 	explicit CBoss_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CBoss_Attack(const CBoss_Attack& rhs);
@@ -26,8 +34,8 @@ public:
 	void Set_CoolTime(const _float& fTime) {
 		m_fLimit = fTime;
 	}
-	void Add_Attack_AnimTag(const string& strAnimationTag) {
-		m_AttackAnimTagList.push_back(strAnimationTag);
+	void Add_Attack(const ATTACKDESC& AttackDesc) {
+		m_Attacks.push_back(AttackDesc);
 	}
 
 private:
@@ -35,7 +43,7 @@ private:
 	// 쿨타임 체크용도로도 사용 가능할 듯 
 	_float m_fPreTimeAcc = { 0.f };
 	_float m_fLimit = { 0.f };
-	list<string> m_AttackAnimTagList;
+	vector<ATTACKDESC> m_Attacks;
 
 private:
 	CModel* m_pModel = { nullptr };

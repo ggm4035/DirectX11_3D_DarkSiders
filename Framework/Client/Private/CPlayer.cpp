@@ -103,6 +103,11 @@ void CPlayer::Tick(const _double& TimeDelta)
 	if (CGameInstance::GetInstance()->Key_Down(DIK_2))
 		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->On_Shake(CCamera_Free::SHAKE_Y, 1.f, 0.4f);
 
+	if (true == m_isRenderZoom)
+	{
+		Set_ZommBlur(TimeDelta);
+	}
+
 	if (CGameInstance::GetInstance()->Key_Down(DIK_I))
 		m_pInven->ToggleSwitch();
 
@@ -224,6 +229,7 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS ||
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC))
 	{
+		m_isRenderZoom = true;
 		if(CPlayerAction::STATE_LEAP != m_pActionCom->Get_State())
 			Collision.pOther->Get_Damaged(m_pAttack);
 		else
@@ -458,6 +464,30 @@ HRESULT CPlayer::Set_Shader_Shadow_Resources()
 	Safe_Release(pGameInstance);
 
 	return S_OK;
+}
+
+void CPlayer::Set_ZommBlur(const _double& TimeDelta)
+{
+	static _bool isFirst = { true };
+	static _float fTimeAcc = { 0.f };
+
+	fTimeAcc += TimeDelta * 25.f;
+
+	if (true == isFirst)
+	{
+		m_pRendererCom->Set_Pass(CRenderer::PASS_ZOOMBLUR);
+		isFirst = false;
+	}
+
+	m_pRendererCom->Set_ZoomInBlurData(5.f - fTimeAcc, 7.f);
+
+	if (5.f < fTimeAcc)
+	{
+		fTimeAcc = 0.f;
+		isFirst = true;
+		m_isRenderZoom = false;
+		m_pRendererCom->Set_Pass(CRenderer::PASS_POSTPROCESSING);
+	}
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

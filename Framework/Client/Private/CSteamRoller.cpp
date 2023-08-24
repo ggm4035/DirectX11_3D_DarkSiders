@@ -80,6 +80,7 @@ void CSteamRoller::Tick(const _double& TimeDelta)
 			}
 
 			m_pRendererCom->Set_Pass(CRenderer::PASS_ZOOMBLUR);
+			m_pRendererCom->Set_ZoomInBlurData(10.f, 7.f);
 		}
 
 		if (fTimeAcc > 4.9f)
@@ -206,7 +207,9 @@ void CSteamRoller::OnCollisionEnter(CCollider::COLLISION Collision, const _doubl
 {
 	CMonster::OnCollisionEnter(Collision, TimeDelta);
 
-	if ((Collision.pMyCollider->Get_Tag() == L"Col_Attack" ||
+	if ((Collision.pMyCollider->Get_Tag() == L"Attack_1" || 
+		Collision.pMyCollider->Get_Tag() == L"Attack_2" || 
+		Collision.pMyCollider->Get_Tag() == L"Attack_3" ||
 		Collision.pMyCollider->Get_Tag() == L"Col_Attack_Roll") &&
 		Collision.pOtherCollider->Get_Tag() == L"Col_Body")
 	{
@@ -282,12 +285,28 @@ HRESULT CSteamRoller::Add_Components()
 	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_Sphere", L"Col_Attack_Roll", &SphereDesc)))
 		return E_FAIL;
 
-	/* Add_Col_Attack */
+	/* Attack_1 */
 	OBBDesc.vExtents = _float3(1.5f, 1.f, 1.5f);
 	OBBDesc.eGroup = CCollider::COL_ENEMY_ATK;
-	OBBDesc.vOffset = _float3(0.f, 0.5f, 2.f);
+	OBBDesc.vOffset = _float3(0.f, 0.5f, 2.5f);
 	OBBDesc.isEnable = false;
-	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Col_Attack", &OBBDesc)))
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Attack_1", &OBBDesc)))
+		return E_FAIL;
+
+	/* Attack_2 */
+	OBBDesc.vExtents = _float3(1.5f, 1.f, 1.5f);
+	OBBDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	OBBDesc.vOffset = _float3(0.f, 0.5f, 2.5f);
+	OBBDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Attack_2", &OBBDesc)))
+		return E_FAIL;
+
+	/* Attack_3 */
+	OBBDesc.vExtents = _float3(1.5f, 1.f, 1.5f);
+	OBBDesc.eGroup = CCollider::COL_ENEMY_ATK;
+	OBBDesc.vOffset = _float3(0.f, 0.5f, 2.5f);
+	OBBDesc.isEnable = false;
+	if (FAILED(Add_Collider(LEVEL_STATIC, L"Collider_OBB", L"Attack_3", &OBBDesc)))
 		return E_FAIL;
 
 	CSoul::SOULDESC tSoulDesc;
@@ -425,9 +444,48 @@ HRESULT CSteamRoller::Make_AI()
 	pTsk_Spawns->Set_SpawnRange(170.f, 195.f, 2.f, 345.f, 375.f);
 	pTsk_Spawns->Add_ModelTag(L"Monster_Goblin");
 
-	pBoss_Attack->Add_Attack_AnimTag("Attack_1");
-	pBoss_Attack->Add_Attack_AnimTag("Attack_2");
-	pBoss_Attack->Add_Attack_AnimTag("Attack_3");
+	CAction::SOUNDDESC SoundDesc;
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_1;
+	SoundDesc.fTime = 1.f;
+	SoundDesc.fVolum = 0.4f;
+	SoundDesc.isPlaySound = false;
+	SoundDesc.wstrSoundTag = L"en_steamroller_attack_impact_01.ogg";
+	pAction_Spawns->Add_Sound(SoundDesc);
+	SoundDesc.fTime = 2.f;
+	SoundDesc.wstrSoundTag = L"en_steamroller_attack_impact_02.ogg";
+	pAction_Spawns->Add_Sound(SoundDesc);
+	SoundDesc.fTime = 3.4f;
+	SoundDesc.wstrSoundTag = L"en_steamroller_attack_impact_03.ogg";
+	pAction_Spawns->Add_Sound(SoundDesc);
+	SoundDesc.eChennel = CSound_Manager::SOUND_ENEMY;
+	SoundDesc.fTime = 3.4f;
+	SoundDesc.wstrSoundTag = L"en_steamroller_roar_enrage.ogg";
+	 
+	pAction_Spawns->Add_Sound(SoundDesc);
+
+	CBoss_Attack::ATTACKDESC AttackDesc;
+	AttackDesc.strAttackAnimTag = "Attack_1";
+	SoundDesc.eChennel = CSound_Manager::SOUND_ENEMY;
+	SoundDesc.fVolum = 0.5f;
+	SoundDesc.fTime = 1.f;
+	SoundDesc.wstrSoundTag = L"en_steamroller_swing_01.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	pBoss_Attack->Add_Attack(AttackDesc);
+	AttackDesc.strAttackAnimTag = "Attack_2";
+	SoundDesc.wstrSoundTag = L"en_steamroller_swing_02.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	pBoss_Attack->Add_Attack(AttackDesc);
+	AttackDesc.strAttackAnimTag = "Attack_3";
+	SoundDesc.fTime = 1.5f;
+	SoundDesc.wstrSoundTag = L"en_steamroller_swing_03.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_1;
+	SoundDesc.fTime = 2.f;
+	SoundDesc.fVolum = 0.4f;
+	SoundDesc.isPlaySound = false;
+	SoundDesc.wstrSoundTag = L"en_steamroller_attack_impact_01.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	pBoss_Attack->Add_Attack(AttackDesc);
 
 	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{

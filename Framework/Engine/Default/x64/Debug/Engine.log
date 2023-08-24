@@ -1,4 +1,284 @@
 ﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
   
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Deferred.cso
+FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Navigation.cso
+FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
   compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_PostProcessing.cso
+  CAnimation.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(366,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              _Ty=Engine::_uint
+          ]
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CAnimation.cpp(377,57): warning C4267: '=': 'size_t'에서 '_Ty'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              _Ty=Engine::_uint
+          ]
+  CApplication.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CAttack.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CBase.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CBehavior.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CBlackBoard.cpp
+  CBone.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CBounding.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CBounding_AABB.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CBounding_OBB.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CBounding_Sphere.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CCalculator.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CCamera.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CCell.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CChannel.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CCollider.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CCollider_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CCollider_Manager.cpp(70,6): warning C4390: ';': 제어된 빈 문이 있습니다. 이 문이 필요합니까?
+  CCollision.cpp
+  CComponent.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CComponent_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CCollider.cpp(226): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+  컴파일하고 있습니다...
+  CDecoration.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CDeffence.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CFileInfo.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(95,51): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(134,86): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(159,56): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(179,57): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(187,49): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(193,40): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(203,49): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(220,85): warning C4267: '초기화 중': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CFileInfo.cpp(735,48): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CFont.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CFont_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CFrustum.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameInstance.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameObject.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameObjectUI.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGameObject3D.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CGraphic_Device.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CHealth.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CInput_Device.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CInstance_Point.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CInstance_Point.cpp(99,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLayer.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLevel.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLevel_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLight.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CLight_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CMesh.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+  컴파일하고 있습니다...
+  CModel.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CModel.cpp(453,53): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CModel.cpp(531,21): warning C4244: 'return': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CNavigation.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(54,111): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(77,119): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CNavigation.cpp(338,115): warning C4267: '인수': 'size_t'에서 'const Engine::_int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CObject_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CParts.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPipeLine.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CQuardTree.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CRenderer.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(30,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(37,6): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(43,6): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(49,6): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(55,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(58,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(61,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(66,1): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(69,6): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CRenderer.cpp(73,6): warning C4244: '인수': 'FLOAT'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CRenderTarget.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CRoot.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CSelector.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CSequence.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CShader.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CSound_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CStatus.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTarget_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTexture.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTransform.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(129,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(129,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(173,43): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(173,58): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(192,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(192,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(218,64): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(218,79): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(232,14): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(247,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(329,86): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(351,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(351,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(361,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(361,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(371,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(371,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(381,59): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(381,74): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(391,56): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(391,71): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(402,16): warning C4244: '초기화 중': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(490,58): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(490,73): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(510,38): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CTransform.cpp(510,62): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTrigger.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CVIBuffer.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CVIBuffer_Coordnate.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(25): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\CHealth.h(32): warning C4172: 지역 변수 또는 임시의 주소를 반환하고 있습니다.
+  컴파일하고 있습니다...
+  CVIBuffer_Cube.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CVIBuffer_Cell.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CVIBuffer_Instancing.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CVIBuffer_Rect.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CViBuffer_Sprite.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CViBuffer_Sprite.cpp(131,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CVIBuffer_Terrain.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(51,75): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Private\CVIBuffer_Terrain.cpp(51,67): warning C4244: '인수': 'Engine::_uint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CVIBuffer_Trail.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  DebugDraw.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Timer.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Timer_Manager.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Engine_Struct.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Public\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+     ..\Bin\Engine_d.lib 라이브러리 및 ..\Bin\Engine_d.exp 개체를 생성하고 있습니다.
+Effects11d.lib(d3dxGlobal.obj) : warning LNK4099: 'Effects11d.pdb' PDB를 'Effects11d.lib(d3dxGlobal.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Effects11d.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+Effects11d.lib(EffectAPI.obj) : warning LNK4099: 'Effects11d.pdb' PDB를 'Effects11d.lib(EffectAPI.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Effects11d.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+Effects11d.lib(EffectLoad.obj) : warning LNK4099: 'Effects11d.pdb' PDB를 'Effects11d.lib(EffectLoad.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Effects11d.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+Effects11d.lib(EffectNonRuntime.obj) : warning LNK4099: 'Effects11d.pdb' PDB를 'Effects11d.lib(EffectNonRuntime.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Effects11d.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+Effects11d.lib(EffectReflection.obj) : warning LNK4099: 'Effects11d.pdb' PDB를 'Effects11d.lib(EffectReflection.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Effects11d.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+Effects11d.lib(EffectRuntime.obj) : warning LNK4099: 'Effects11d.pdb' PDB를 'Effects11d.lib(EffectRuntime.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Effects11d.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(BasicEffect.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(BasicEffect.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(CommonStates.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(CommonStates.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(DDSTextureLoader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(DDSTextureLoader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(BinaryReader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(BinaryReader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(EffectCommon.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(EffectCommon.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(pch.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(pch.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(SpriteBatch.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(SpriteBatch.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(PrimitiveBatch.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(PrimitiveBatch.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(SpriteFont.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(SpriteFont.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(VertexTypes.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(VertexTypes.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+DirectXTKd.lib(WICTextureLoader.obj) : warning LNK4099: 'DirectXTK.pdb' PDB를 'DirectXTKd.lib(WICTextureLoader.obj)' 또는 'C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\DirectXTK.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
   Engine.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine_d.dll

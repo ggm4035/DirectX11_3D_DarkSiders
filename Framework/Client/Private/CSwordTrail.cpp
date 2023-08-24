@@ -54,7 +54,8 @@ void CSwordTrail::Tick(const _float4x4& WorldMatrix, const _double& TimeDelta)
 
 void CSwordTrail::AfterFrustumTick(const _double& TimeDelta)
 {
-	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_BLEND, this);
+	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	m_pRenderer->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 }
 
 void CSwordTrail::Late_Tick(const _double& TimeDelta)

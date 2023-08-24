@@ -24,6 +24,7 @@
     <ProjectGuid>{64c48c31-a627-4d6a-b775-d34e8f2d82c3}</ProjectGuid>
     <RootNamespace>Client</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Client</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -180,7 +181,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\CCursor.h" />
     <ClInclude Include="..\Public\CDead.h" />
-    <ClInclude Include="..\Public\CFallenDog.h" />
     <ClInclude Include="..\Public\CGameManager.h" />
     <ClInclude Include="..\Public\CGather_Effect.h" />
     <ClInclude Include="..\Public\CHealthCore.h" />
@@ -269,6 +269,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\CAttackCore.h" />
     <ClInclude Include="..\Public\CSoul.h" />
+    <ClInclude Include="..\Public\CSpark_Effect.h" />
     <ClInclude Include="..\Public\CSpawn.h" />
     <ClInclude Include="..\Public\CSpawnMonster.h" />
     <ClInclude Include="..\Public\CSpawns.h" />
@@ -283,7 +284,7 @@
     <ClInclude Include="..\Public\CSteamRoller.h" />
     <ClInclude Include="..\Public\CTrigger_Free.h" />
     <ClInclude Include="..\Public\CUI_HpBar.h" />
-    <ClInclude Include="..\Public\CUI_Overlay.h" />
+    <ClInclude Include="..\Public\CUI_Focus.h" />
     <ClInclude Include="..\Public\CUI_Rect.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -319,7 +320,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CCursor.cpp" />
     <ClCompile Include="..\Private\CDead.cpp" />
-    <ClCompile Include="..\Private\CFallenDog.cpp" />
     <ClCompile Include="..\Private\CGameManager.cpp" />
     <ClCompile Include="..\Private\CGather_Effect.cpp" />
     <ClCompile Include="..\Private\CHealthCore.cpp" />
@@ -407,6 +407,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\CAttackCore.cpp" />
     <ClCompile Include="..\Private\CSoul.cpp" />
+    <ClCompile Include="..\Private\CSpark_Effect.cpp" />
     <ClCompile Include="..\Private\CSpawn.cpp" />
     <ClCompile Include="..\Private\CSpawnMonster.cpp" />
     <ClCompile Include="..\Private\CSpawns.cpp" />
@@ -421,7 +422,7 @@
     <ClCompile Include="..\Private\CSteamRoller.cpp" />
     <ClCompile Include="..\Private\CTrigger_Free.cpp" />
     <ClCompile Include="..\Private\CUI_HpBar.cpp" />
-    <ClCompile Include="..\Private\CUI_Overlay.cpp" />
+    <ClCompile Include="..\Private\CUI_Focus.cpp" />
     <ClCompile Include="..\Private\CUI_Rect.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -448,6 +449,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PostProcessing.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Vtx.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCol.hlsl" />
