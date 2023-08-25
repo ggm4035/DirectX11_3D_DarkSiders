@@ -45,11 +45,6 @@ void CHollowLord::Tick(const _double& TimeDelta)
 {
 	CMonster::Tick(TimeDelta);
 
-	if (CGameInstance::GetInstance()->Key_Down(DIK_T))
-	{
-		m_isSpawn = true;
-	}
-
 	for (auto UI : m_pMonsterUI)
 		UI->Tick(TimeDelta);
 }
@@ -71,8 +66,8 @@ void CHollowLord::AfterFrustumTick(const _double& TimeDelta)
 			return;
 		}
 
-		if (nullptr != m_pRendererCom)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 
 #ifdef _DEBUG
 		if (true == m_isRender && FAILED(Add_Colliders_Debug_Render_Group(m_pRendererCom)))
@@ -290,13 +285,38 @@ HRESULT CHollowLord::Make_AI()
 	CAction_Hit* pAction_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
 	if (nullptr == pAction_Hit)
 		return E_FAIL;
+	CAction* pAction_Spawns = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Spawns)
+		return E_FAIL;
 	CBoss_Attacks* pBoss_Attacks = dynamic_cast<CBoss_Attacks*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Boss_Attacks", this));
 	if (nullptr == pBoss_Attacks)
+		return E_FAIL;
+
+	CSpawns* pTsk_Spawns = dynamic_cast<CSpawns*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Spawns", this));
+	if (nullptr == pTsk_Spawns)
 		return E_FAIL;
 
 	pAction_Rest->Bind_AnimationTag("Idle");
 	pAction_Hit->Not_Impact();
 	pAction_Hit->Not_Look();
+	pAction_Spawns->Set_CoolTime(20.f);
+	pAction_Spawns->Bind_AnimationTag("Breath");
+
+	CAction::SOUNDDESC SoundDesc;
+	SoundDesc.eChennel = CSound_Manager::SOUND_BOSSEFFECT_1;
+	SoundDesc.fTime = 0.01f;
+	SoundDesc.fVolum = 0.4f;
+	SoundDesc.isPlaySound = false;
+	SoundDesc.wstrSoundTag = L"en_hollowlord_atk_barrage_vo_01.ogg";
+	pAction_Spawns->Add_Sound(SoundDesc);
+
+	pTsk_Spawns->Set_NavigationIndex(618);
+	pTsk_Spawns->Set_NumMonster(20);
+	pTsk_Spawns->Set_SpawnRange(222.f, 244.f, 46.72f, 140.f, 160.f);
+	pTsk_Spawns->Add_ModelTag(L"Monster_Goblin");
+	pTsk_Spawns->Add_ModelTag(L"Monster_Goblin_Armor"); 
+	pTsk_Spawns->Add_ModelTag(L"Monster_Legion_Melee");
+	pTsk_Spawns->Add_ModelTag(L"Monster_HellHound");
 
 	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
@@ -316,7 +336,12 @@ HRESULT CHollowLord::Make_AI()
 		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pAction_Hit)))
 		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Spawns", pAction_Spawns)))
+		return E_FAIL;
 	if (FAILED(pSelector->Assemble_Behavior(L"Boss_Attacks", pBoss_Attacks)))
+		return E_FAIL;
+
+	if (FAILED(pAction_Spawns->Assemble_Behavior(L"Tsk_Spawns", pTsk_Spawns)))
 		return E_FAIL;
 
 	if (FAILED(pAction_Hit->Assemble_Childs()))

@@ -5,6 +5,7 @@
 #include "CBlackBoard.h"
 #include "CGameObject3D.h"
 #include "CModel.h"
+#include "CQuake_Effect.h"
 
 CAction::CAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBehavior(pDevice, pContext)
@@ -73,7 +74,10 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 	if (0 != m_BehaviorList.size())
 		m_isFinishBehaviors = true;
 
+	m_fTimeAcc += TimeDelta;
+
 	PlaySounds(TimeDelta);
+	PlayEffects(TimeDelta);
 
 	if (true == m_isFirst)
 	{
@@ -136,6 +140,8 @@ HRESULT CAction::Tick(const _double& TimeDelta)
 			CGameInstance::GetInstance()->Stop_Sound(CSound_Manager::SOUND_SUB_BGM);
 		for (auto& Sound : m_Sounds)
 			Sound.isPlaySound = false;
+		for (auto& Effect : m_Effects)
+			Effect.isPlayEffect = false;
 
 		return BEHAVIOR_SUCCESS;
 	}
@@ -158,8 +164,6 @@ CAction* CAction::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 void CAction::PlaySounds(const _double& TimeDelta)
 {
-	m_fTimeAcc += TimeDelta;
-
 	for (auto& Desc : m_Sounds)
 	{
 		if (true == Desc.isPlaySound)
@@ -168,9 +172,34 @@ void CAction::PlaySounds(const _double& TimeDelta)
 		if (Desc.fTime > m_fTimeAcc)
 			continue;
 
-		if (FAILED(CGameInstance::GetInstance()->Play_Sound(Desc.wstrSoundTag.c_str(), Desc.eChennel, Desc.fVolum, true)))
+		if (FAILED(CGameInstance::GetInstance()->Play_Sound(Desc.wstrSoundTag.c_str(), Desc.eChennel, Desc.fVolum, Desc.bForcePlay)))
 			return;
 		Desc.isPlaySound = true;
+	}
+}
+
+void CAction::PlayEffects(const _double& TimeDelta)
+{
+	for (auto& Desc : m_Effects)
+	{
+		if (true == Desc.isPlayEffect)
+			continue;
+
+		if (Desc.fTime > m_fTimeAcc)
+			continue;
+
+		CQuake_Effect* pEffect = { nullptr };
+		m_pBlackBoard->Get_Type(L"Quake_Effect", pEffect);
+		if (nullptr != pEffect)
+		{
+			CTransform* pTransform = { nullptr };
+			if (FAILED(m_pBlackBoard->Get_Type(L"pTransform", pTransform)))
+				continue;
+
+			pEffect->Render_Effect(XMLoadFloat4(Desc.pPosition));
+			Desc.isPlayEffect = true;
+			continue;
+		}
 	}
 }
 

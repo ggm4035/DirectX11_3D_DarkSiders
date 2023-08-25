@@ -8,6 +8,7 @@ float g_Weights[23] =
 
 float g_fTexWidth, g_fTexHeight;
 float g_fFocusPower, g_fFocusDetail;
+float g_fAlpha;
 
 texture2D g_Texture;
 texture2D g_BlurTexture;
@@ -132,6 +133,7 @@ PS_OUT PS_MAIN_FOCUS(PS_IN In)
     vector vPostTex = g_Texture.Sample(LinearSampler, In.vTexUV);
     vector vFocusTex = g_FocusTexture.Sample(LinearSampler, In.vTexUV);
     
+    vFocusTex.r *= g_fAlpha;
     float3 vGray = (vPostTex.r + vPostTex.g + vPostTex.b) / 3.f;
     Out.vColor.rgb = lerp(vPostTex.rgb, vGray, vFocusTex.r);
     

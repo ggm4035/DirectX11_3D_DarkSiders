@@ -34,6 +34,11 @@ private:
 	_bool m_isFirstSpawn = { true };
 	_float4 m_vResponPosition;
 	class CUI_Rect* m_pMonsterUI[3] = { nullptr };
+	class CQuake_Effect* m_pEffect = { nullptr };
+
+	_float4 m_vEffectPos1;
+	_float4 m_vEffectPos2;
+	_float4 m_vEffectPos3;
 
 private:
 	virtual HRESULT Add_Components() override;

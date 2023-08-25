@@ -53,13 +53,14 @@ HRESULT CPlayerJump::Tick(const _double& TimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
+
 	switch (pAction->Get_State())
 	{
 	case Client::CPlayerAction::STATE_LATK_1:
 	case Client::CPlayerAction::STATE_LATK_2:
 	case Client::CPlayerAction::STATE_LATK_3:
 	case Client::CPlayerAction::STATE_LATK_4:
-		dynamic_cast<CWeapon*>(dynamic_cast<CPlayer*>(m_pOwner)->Get_Parts(L"Weapon"))->Off_SwordTrail();
 		break;
 
 	case Client::CPlayerAction::STATE_RUN:

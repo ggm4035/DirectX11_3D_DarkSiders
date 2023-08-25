@@ -46,6 +46,12 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur"), TEXT("Target_Blur"))))
 		return E_FAIL;
 
+	/* MRT_PreBackBuffer */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_PreBackBuffer"), m_pDevice, m_pContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_PreBackBuffer"), TEXT("Target_PreBackBuffer"))))
+		return E_FAIL;
+
 	/* MRT_GameObject RenderTargets */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Diffuse"), m_pDevice, m_pContext,
 		 ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
@@ -166,8 +172,8 @@ HRESULT CRenderer::Draw_RenderGroup()
 		return E_FAIL;
 	if (FAILED(Render_PostProcessing()))
 		return E_FAIL;
-	/*if (FAILED(Render_Focus()))
-		return E_FAIL;*/
+	if (FAILED(Render_Focus()))
+		return E_FAIL;
 
 	if (FAILED(Render_UI()))
 		return E_FAIL;
@@ -429,7 +435,7 @@ HRESULT CRenderer::Render_Blur()
 
 HRESULT CRenderer::Render_PostProcessing()
 {
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_PostProcessing")))
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_PreBackBuffer")))
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_Texture")))
@@ -473,10 +479,7 @@ HRESULT CRenderer::Render_PostProcessing()
 
 HRESULT CRenderer::Render_Focus()
 {
-	if (PASS_POSTPROCESSING == m_ePass)
-		return S_OK;
-
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PostProcessing"), m_pPostProcessingShader, "g_Texture")))
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_PreBackBuffer"), m_pPostProcessingShader, "g_Texture")))
 		return E_FAIL;
 
 	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_WorldMatrix", &m_WorldMatrix)))
@@ -484,6 +487,9 @@ HRESULT CRenderer::Render_Focus()
 	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pPostProcessingShader->Bind_Float4x4("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pPostProcessingShader->Bind_RawValue("g_fAlpha", &m_fFocusAlpha, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pFocusTexture->Bind_ShaderResource(m_pPostProcessingShader, "g_FocusTexture")))

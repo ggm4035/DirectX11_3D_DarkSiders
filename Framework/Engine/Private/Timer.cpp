@@ -38,7 +38,7 @@ void Engine::CTimer::Update_Timer(void)
 
 CTimer * CTimer::Create(void)
 {
-	CTimer *	pInstance = new CTimer;
+	CTimer*	pInstance = new CTimer;
 
 	if (FAILED(pInstance->Ready_Timer()))
 		Safe_Release(pInstance);

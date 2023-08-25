@@ -33,6 +33,7 @@ public:
 private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Make_AI();
+	HRESULT Make_SpawnAI();
 
 public:
 	static CHellHound* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

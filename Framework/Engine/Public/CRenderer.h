@@ -22,6 +22,9 @@ public:
 		m_fBlurPower = fPower;
 		m_fBlurDetail = fDetail;
 	}
+	void Set_Focus_Alpha(const _float& fAlpha) {
+		m_fFocusAlpha = fAlpha;
+	}
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -57,6 +60,8 @@ private:
 	_float4x4 m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 	_float m_fBlurPower = { 0.f };
 	_float m_fBlurDetail = { 0.f };
+
+	_float m_fFocusAlpha = { 0.f };
 	class CTexture* m_pFocusTexture = { nullptr };
 
 private:

@@ -73,7 +73,6 @@ private: /* Status */
 
 private:
 	class CInven* m_pInven = { nullptr };
-
 	_float m_fTimeAcc = { 0.f };
 	_bool m_isRenderZoom = { false };
 

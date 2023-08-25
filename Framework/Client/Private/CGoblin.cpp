@@ -1,4 +1,3 @@
-
 #include "CGoblin.h"
 
 #include "MonoBehavior_Defines.h"
@@ -28,8 +27,6 @@ HRESULT CGoblin::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
-	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pAttack->Set_Damage(15);
 	m_pDeffence->Set_Deffence(0);
@@ -76,11 +73,6 @@ void CGoblin::AfterFrustumTick(const _double& TimeDelta)
 void CGoblin::Late_Tick(const _double& TimeDelta)
 {
 	CMonster::Late_Tick(TimeDelta);
-
-	if (2.f < m_fSpawnTimeAcc)
-		return;
-
-	m_pSpawn->Late_Tick(TimeDelta);
 }
 
 HRESULT CGoblin::Render()
@@ -110,7 +102,7 @@ void CGoblin::Dead_Motion(const _double& TimeDelta)
 		m_pAoe->Tick(WorldMatrix);
 		m_pAoe->Late_Tick(TimeDelta);
 	}
-	
+
 	if (true == m_isRender && 2.f <= m_fExplosionTimeAcc)
 	{
 		CGameInstance::GetInstance()->Play_Sound(L"en_fleamag_explode_01.ogg", CSound_Manager::SOUND_ENEMY, 2.f, true);
@@ -224,7 +216,7 @@ void CGoblin::OnCollisionExit(CCollider::COLLISION Collision, const _double& Tim
 
 HRESULT CGoblin::Add_Components()
 {
-	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_Goblin", L"Com_Model", 
+	if (FAILED(Add_Component(LEVEL_GAMEPLAY, L"Model_Goblin", L"Com_Model",
 		(CComponent**)&m_pModelCom, this)))
 		return E_FAIL;
 
@@ -318,10 +310,6 @@ HRESULT CGoblin::Add_Components()
 	if (nullptr == m_pAoe)
 		return E_FAIL;
 
-	m_pSpawn = dynamic_cast<CSpawn*>(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Spawn", L"Spawn", this, nullptr));
-	if (nullptr == m_pSpawn)
-		return E_FAIL;
-
 	Safe_Release(pGameInstance);
 
 	return S_OK;
@@ -363,7 +351,7 @@ HRESULT CGoblin::Make_AI()
 	CAction* pAction_Explosion = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
 	if (nullptr == pAction_Explosion)
 		return E_FAIL;
-	CSelector* pAttack = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
+	CPattern_FollowAtk* pAttack = dynamic_cast<CPattern_FollowAtk*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_FollowAtk", this));
 	if (nullptr == pAttack)
 		return E_FAIL;
 
@@ -380,9 +368,16 @@ HRESULT CGoblin::Make_AI()
 	if (nullptr == pDead)
 		return E_FAIL;
 
+	CAction::SOUNDDESC SoundDesc;
 	pHit->Bind_SoundTag(L"en_fleamag_impact_01.ogg");
 	pAction_Spawn->Bind_AnimationTag("Spawn");
 	pAction_Spawn->Just_One_Time_Action();
+	SoundDesc.isPlaySound = false;
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_2;
+	SoundDesc.fVolum = 0.1f;
+	SoundDesc.fTime = 0.01f;
+	SoundDesc.wstrSoundTag = L"en_fleamag_spawn_04.ogg";
+	pAction_Spawn->Add_Sound(SoundDesc);
 	pAction_Explosion_Start->Bind_AnimationTag("Explosion_Start");
 	pAction_Explosion_Run->Bind_AnimationTag("Explosion_Run");
 	pAction_Explosion->Bind_AnimationTag("Explosion_Dead");
@@ -390,6 +385,22 @@ HRESULT CGoblin::Make_AI()
 	pMove->Bind_Move_Force(0.5f);
 	pFollow->Set_Timer(5.f);
 	pFollow->Bind_Move_Speed(1.5f);
+
+	CPattern_FollowAtk::ATTACKDESC AttackDesc;
+	SoundDesc.isPlaySound = false;
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_2;
+	SoundDesc.fTime = 0.01f;
+	SoundDesc.fVolum = 0.1f;
+	SoundDesc.wstrSoundTag = L"en_fleamag_scream_long_01.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	AttackDesc.strAttackAnimTag = "Attack_1";
+	pAttack->Add_Attack(AttackDesc);
+
+	AttackDesc.Sounds.clear();
+	SoundDesc.wstrSoundTag = L"en_fleamag_scream_long_02.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	AttackDesc.strAttackAnimTag = "Attack_2";
+	pAttack->Add_Attack(AttackDesc);
 
 	pSequence_Spawn->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
 		{
@@ -454,125 +465,12 @@ HRESULT CGoblin::Make_AI()
 	if (FAILED(pAction_Explosion->Assemble_Behavior(L"Tsk_Dead", pDead)))
 		return E_FAIL;
 
-	if (FAILED(Make_Attack(pAttack)))
+	if (FAILED(pAttack->Assemble_Childs()))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 
 	return S_OK;
-}
-
-HRESULT CGoblin::Make_Attack(CSelector* pSelector)
-{
-	if (nullptr == pSelector)
-		return E_FAIL;
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	CSequence* pSequence_Attack = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
-	if (nullptr == pSequence_Attack)
-		return E_FAIL;
-	CRandomSelector* pRandom_Attack = dynamic_cast<CRandomSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"RandomSelector", this));
-	if (nullptr == pRandom_Attack)
-		return E_FAIL;
-
-	/* Action */
-	CAction* pAction_Follow = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
-	if (nullptr == pAction_Follow)
-		return E_FAIL;
-	CAction* pAction_LookAt = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
-	if (nullptr == pAction_LookAt)
-		return E_FAIL;
-
-	CAction* pAction_Attack1 = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
-	if (nullptr == pAction_Attack1)
-		return E_FAIL;
-	CAction* pAction_Attack2 = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
-	if (nullptr == pAction_Attack2)
-		return E_FAIL;
-
-	/* Movement */
-	CFollow* pFollow = dynamic_cast<CFollow*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Follow", this));
-	if (nullptr == pFollow)
-		return E_FAIL;
-	CLookAtTarget* pLookAtTarget = dynamic_cast<CLookAtTarget*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_LookAtTarget", this));
-	if (nullptr == pLookAtTarget)
-		return E_FAIL;
-
-	pSelector->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			CHealth* pHealth = { nullptr };
-			pBlackBoard->Get_Type(L"pHealth", pHealth);
-			if (nullptr == pHealth)
-				return false;
-
-			if (CHealth::HIT_NONE != pHealth->Get_Current_HitState())
-				return false;
-
-			return true;
-		});
-
-	pSelector->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			_bool* pIsSpawn = { nullptr };
-			pBlackBoard->Get_Type(L"isSpawn", pIsSpawn);
-			if (nullptr == pIsSpawn)
-				return false;
-
-			return *pIsSpawn;
-		});
-
-	pAction_Follow->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			if (true == m_pModelCom->isLoopAnimation() ||
-				true == m_pModelCom->isFinishedAnimation())
-				return true;
-
-			return false;
-		});
-
-	pAction_Follow->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
-		{
-			_bool* pIsAbleAttack = { nullptr };
-
-			pBlackBoard->Get_Type(L"isAbleAttack", pIsAbleAttack);
-			if (nullptr == pIsAbleAttack)
-				return false;
-
-			return !(*pIsAbleAttack);
-		});
-
-	pAction_Follow->Bind_AnimationTag("Run");
-	pAction_LookAt->Bind_AnimationTag("Run");
-
-	pFollow->Bind_Move_Speed(0.9f);
-	pFollow->Bind_Turn_Speed(5.f);
-	pLookAtTarget->Set_Timer(1.5f);
-
-	pAction_Attack1->Bind_AnimationTag("Attack_1");
-	pAction_Attack2->Bind_AnimationTag("Attack_2");
-
-	if (FAILED(pSelector->Assemble_Behavior(L"Action_Follow", pAction_Follow)))
-		return E_FAIL;
-	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Attack", pSequence_Attack)))
-		return E_FAIL;
-
-	if (FAILED(pAction_Follow->Assemble_Behavior(L"Tsk_Follow", pFollow)))
-		return E_FAIL;
-	if (FAILED(pSequence_Attack->Assemble_Behavior(L"Action_LookAt", pAction_LookAt)))
-		return E_FAIL;
-	if (FAILED(pSequence_Attack->Assemble_Behavior(L"Random_Attack", pRandom_Attack)))
-		return E_FAIL;
-
-	if (FAILED(pAction_LookAt->Assemble_Behavior(L"Tsk_LookAtTarget", pLookAtTarget)))
-		return E_FAIL;
-	if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr("Attack_1"), pAction_Attack1)))
-		return E_FAIL;
-	if (FAILED(pRandom_Attack->Assemble_Behavior(pGameInstance->strToWStr("Attack_2"), pAction_Attack2)))
-		return E_FAIL;
-
-	Safe_Release(pGameInstance);
 }
 
 CGoblin* CGoblin::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -602,7 +500,6 @@ CGoblin* CGoblin::Clone(const _uint& iLevelIndex, CComponent* pOwner, void* pArg
 void CGoblin::Free()
 {
 	Safe_Release(m_pAoe);
-	Safe_Release(m_pSpawn);
 	Safe_Release(m_pSprite);
 
 	CMonster::Free();

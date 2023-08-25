@@ -6,6 +6,7 @@
 #include "CGameInstance.h"
 #include "CPlayer.h"
 #include "CUI_Rect.h"
+#include "CQuake_Effect.h"
 
 #include "CSoul.h"
 
@@ -37,6 +38,12 @@ HRESULT CSteamRoller::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 	m_pHealth->Set_Max_Hp(2000);
 	m_pHealth->Set_HP(2000);
 
+	m_pEffect = dynamic_cast<CQuake_Effect*>(CGameInstance::GetInstance()->Clone_Component(LEVEL_GAMEPLAY, L"Quake_Effect", m_pOwner));
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+
+	m_pRoot->Add_Type(L"Quake_Effect", m_pEffect);
+
 	return S_OK;
 }
 
@@ -44,8 +51,15 @@ void CSteamRoller::Tick(const _double& TimeDelta)
 {
 	CMonster::Tick(TimeDelta);
 
+	m_pEffect->Tick(TimeDelta);
+
 	for (auto UI : m_pMonsterUI)
 		UI->Tick(TimeDelta);
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	XMStoreFloat4(&m_vEffectPos1, vPosition + m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 2.8f - m_pTransformCom->Get_State(CTransform::STATE_RIGHT) * 4.2f);
+	XMStoreFloat4(&m_vEffectPos2, vPosition + m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 2.8f + m_pTransformCom->Get_State(CTransform::STATE_RIGHT) * 4.7f);
+	XMStoreFloat4(&m_vEffectPos3, vPosition + m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 4.f);
 
 	if (true == m_isFirstSpawn && true == m_isSpawn)
 	{
@@ -68,8 +82,6 @@ void CSteamRoller::Tick(const _double& TimeDelta)
 			bCheck[1] = true;
 		}
 
-		Safe_Release(pGameInstance);
-
 		if (fTimeAcc > 3.4f)
 		{
 			if (false == bCheck[2])
@@ -88,6 +100,9 @@ void CSteamRoller::Tick(const _double& TimeDelta)
 			m_pRendererCom->Set_Pass(CRenderer::PASS_POSTPROCESSING);
 			m_isFirstSpawn = false;
 		}
+
+		Safe_Release(pGameInstance);
+
 	}
 }
 
@@ -108,6 +123,7 @@ void CSteamRoller::AfterFrustumTick(const _double& TimeDelta)
 			return;
 		}
 
+		m_pEffect->AfterFrustumTick(TimeDelta);
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
@@ -127,7 +143,7 @@ void CSteamRoller::Late_Tick(const _double& TimeDelta)
 
 	for (auto UI : m_pMonsterUI)
 		UI->Late_Tick(TimeDelta);
-
+	
 	On_Colisions(TimeDelta);
 }
 
@@ -205,7 +221,14 @@ void CSteamRoller::Dead_Motion(const _double& TimeDelta)
 
 void CSteamRoller::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CMonster::OnCollisionEnter(Collision, TimeDelta);
+	if (Collision.pOther->Get_Tag() != L"Monster_Goblin" &&
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body" &&
+		Collision.pMyCollider->Get_Tag() == L"Col_Body")
+	{
+		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
+		m_pTransformCom->Repersive(vDir, TimeDelta);
+	}
 
 	if ((Collision.pMyCollider->Get_Tag() == L"Attack_1" || 
 		Collision.pMyCollider->Get_Tag() == L"Attack_2" || 
@@ -219,7 +242,20 @@ void CSteamRoller::OnCollisionEnter(CCollider::COLLISION Collision, const _doubl
 
 void CSteamRoller::OnCollisionStay(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	CMonster::OnCollisionStay(Collision, TimeDelta);
+	if ((Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC ||
+		Collision.pOtherCollider->Get_Tag() == L"Col_Body") &&
+		Collision.pMyCollider->Get_Tag() == L"Col_Body")
+	{
+		_vector vOtherPosition = Collision.pOther->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vOtherPosition);
+		m_pTransformCom->Repersive(vDir, TimeDelta);
+	}
+
+	if (Collision.pMyCollider->Get_Tag() == L"Col_Range" &&
+		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
+	{
+		m_isRangeInPlayer = true;
+	}
 
 	if (Collision.pMyCollider->Get_Tag() == L"Col_Melee_Range" &&
 		nullptr != dynamic_cast<CPlayer*>(Collision.pOther))
@@ -443,9 +479,11 @@ HRESULT CSteamRoller::Make_AI()
 	pTsk_Spawns->Set_NumMonster(12);
 	pTsk_Spawns->Set_SpawnRange(170.f, 195.f, 2.f, 345.f, 375.f);
 	pTsk_Spawns->Add_ModelTag(L"Monster_Goblin");
+	pTsk_Spawns->Add_ModelTag(L"Monster_Goblin_Armor");
 
+	/* Add Sounds */
 	CAction::SOUNDDESC SoundDesc;
-	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_1;
+	SoundDesc.eChennel = CSound_Manager::SOUND_BOSSEFFECT_1;
 	SoundDesc.fTime = 1.f;
 	SoundDesc.fVolum = 0.4f;
 	SoundDesc.isPlaySound = false;
@@ -457,34 +495,52 @@ HRESULT CSteamRoller::Make_AI()
 	SoundDesc.fTime = 3.4f;
 	SoundDesc.wstrSoundTag = L"en_steamroller_attack_impact_03.ogg";
 	pAction_Spawns->Add_Sound(SoundDesc);
-	SoundDesc.eChennel = CSound_Manager::SOUND_ENEMY;
+	SoundDesc.eChennel = CSound_Manager::SOUND_BOSSEFFECT_2;
 	SoundDesc.fTime = 3.4f;
 	SoundDesc.wstrSoundTag = L"en_steamroller_roar_enrage.ogg";
-	 
 	pAction_Spawns->Add_Sound(SoundDesc);
 
+	/* Add Effects */
+	CAction::EFFECTDESC EffectDesc;
+	EffectDesc.fTime = 1.f;
+	EffectDesc.isPlayEffect = false;
+	EffectDesc.pPosition = &m_vEffectPos1;
+	pAction_Detect->Add_Effect(EffectDesc);
+	pAction_Spawns->Add_Effect(EffectDesc);
+	EffectDesc.fTime = 2.f;
+	EffectDesc.pPosition = &m_vEffectPos2;
+	pAction_Detect->Add_Effect(EffectDesc);
+	pAction_Spawns->Add_Effect(EffectDesc);
+
+	/* Add Attacks */
 	CBoss_Attack::ATTACKDESC AttackDesc;
 	AttackDesc.strAttackAnimTag = "Attack_1";
-	SoundDesc.eChennel = CSound_Manager::SOUND_ENEMY;
+	SoundDesc.eChennel = CSound_Manager::SOUND_BOSSEFFECT_1;
 	SoundDesc.fVolum = 0.5f;
 	SoundDesc.fTime = 1.f;
 	SoundDesc.wstrSoundTag = L"en_steamroller_swing_01.ogg";
 	AttackDesc.Sounds.push_back(SoundDesc);
 	pBoss_Attack->Add_Attack(AttackDesc);
+
 	AttackDesc.strAttackAnimTag = "Attack_2";
 	SoundDesc.wstrSoundTag = L"en_steamroller_swing_02.ogg";
 	AttackDesc.Sounds.push_back(SoundDesc);
 	pBoss_Attack->Add_Attack(AttackDesc);
+
 	AttackDesc.strAttackAnimTag = "Attack_3";
 	SoundDesc.fTime = 1.5f;
 	SoundDesc.wstrSoundTag = L"en_steamroller_swing_03.ogg";
 	AttackDesc.Sounds.push_back(SoundDesc);
-	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_1;
+	SoundDesc.eChennel = CSound_Manager::SOUND_BOSSEFFECT_2;
 	SoundDesc.fTime = 2.f;
 	SoundDesc.fVolum = 0.4f;
 	SoundDesc.isPlaySound = false;
 	SoundDesc.wstrSoundTag = L"en_steamroller_attack_impact_01.ogg";
 	AttackDesc.Sounds.push_back(SoundDesc);
+	EffectDesc.fTime = 1.5f;
+	EffectDesc.isPlayEffect = false;
+	EffectDesc.pPosition = &m_vEffectPos3;
+	AttackDesc.Effects.push_back(EffectDesc);
 	pBoss_Attack->Add_Attack(AttackDesc);
 
 	pAction_Rest->Add_Decoration([&](CBlackBoard* pBlackBoard)->_bool
@@ -610,6 +666,8 @@ void CSteamRoller::Free()
 {
 	for (auto UI : m_pMonsterUI)
 		Safe_Release(UI);
+
+	Safe_Release(m_pEffect);
 
 	CMonster::Free();
 }

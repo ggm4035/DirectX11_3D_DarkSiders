@@ -99,6 +99,9 @@ HRESULT CBoss_Attack::Assemble_Childs()
 
 		for (auto& Sound : Desc.Sounds)
 			pAction_Attack->Add_Sound(Sound);
+
+		for (auto& Effect : Desc.Effects)
+			pAction_Attack->Add_Effect(Effect);
 	}
 
 	Safe_Release(pGameInstance);

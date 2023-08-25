@@ -182,7 +182,6 @@
     <ClInclude Include="..\Public\CCursor.h" />
     <ClInclude Include="..\Public\CDead.h" />
     <ClInclude Include="..\Public\CGameManager.h" />
-    <ClInclude Include="..\Public\CGather_Effect.h" />
     <ClInclude Include="..\Public\CHealthCore.h" />
     <ClInclude Include="..\Public\CHollowLord.h" />
     <ClInclude Include="..\Public\CHUD.h">
@@ -198,6 +197,7 @@
     <ClInclude Include="..\Public\CObstacle.h" />
     <ClInclude Include="..\Public\CPattern_Attack.h" />
     <ClInclude Include="..\Public\CPattern_BackDash.h" />
+    <ClInclude Include="..\Public\CPattern_FollowAtk.h" />
     <ClInclude Include="..\Public\CPattern_Patrol.h" />
     <ClInclude Include="..\Public\CLava.h" />
     <ClInclude Include="..\Public\CAction.h" />
@@ -259,6 +259,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\CProjectile.h" />
+    <ClInclude Include="..\Public\CQuake_Effect.h" />
     <ClInclude Include="..\Public\CRandomLook.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -269,7 +270,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\CAttackCore.h" />
     <ClInclude Include="..\Public\CSoul.h" />
-    <ClInclude Include="..\Public\CSpark_Effect.h" />
+    <ClInclude Include="..\Public\CBlood_Effect.h" />
     <ClInclude Include="..\Public\CSpawn.h" />
     <ClInclude Include="..\Public\CSpawnMonster.h" />
     <ClInclude Include="..\Public\CSpawns.h" />
@@ -321,7 +322,6 @@
     <ClCompile Include="..\Private\CCursor.cpp" />
     <ClCompile Include="..\Private\CDead.cpp" />
     <ClCompile Include="..\Private\CGameManager.cpp" />
-    <ClCompile Include="..\Private\CGather_Effect.cpp" />
     <ClCompile Include="..\Private\CHealthCore.cpp" />
     <ClCompile Include="..\Private\CHollowLord.cpp" />
     <ClCompile Include="..\Private\CHUD.cpp">
@@ -343,6 +343,7 @@
     <ClCompile Include="..\Private\CLegion_Champion.cpp" />
     <ClCompile Include="..\Private\CLookAtTarget.cpp" />
     <ClCompile Include="..\Private\CPattern_BackDash.cpp" />
+    <ClCompile Include="..\Private\CPattern_FollowAtk.cpp" />
     <ClCompile Include="..\Private\CPattern_Roll.cpp" />
     <ClCompile Include="..\Private\CPattern_Wheel.cpp" />
     <ClCompile Include="..\Private\CPlayerAttack.cpp">
@@ -397,6 +398,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\CProjectile.cpp" />
+    <ClCompile Include="..\Private\CQuake_Effect.cpp" />
     <ClCompile Include="..\Private\CRandomLook.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -407,7 +409,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\CAttackCore.cpp" />
     <ClCompile Include="..\Private\CSoul.cpp" />
-    <ClCompile Include="..\Private\CSpark_Effect.cpp" />
+    <ClCompile Include="..\Private\CBlood_Effect.cpp" />
     <ClCompile Include="..\Private\CSpawn.cpp" />
     <ClCompile Include="..\Private\CSpawnMonster.cpp" />
     <ClCompile Include="..\Private\CSpawns.cpp" />

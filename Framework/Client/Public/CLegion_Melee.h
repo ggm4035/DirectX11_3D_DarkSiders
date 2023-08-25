@@ -34,6 +34,7 @@ private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Add_Parts();
 	HRESULT Make_AI();
+	HRESULT Make_SpawnAI();
 
 public:
 	static CLegion_Melee* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

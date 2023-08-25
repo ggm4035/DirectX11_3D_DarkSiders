@@ -17,6 +17,7 @@ public:
 	{
 		string strAttackAnimTag;
 		vector<CAction::SOUNDDESC> Sounds;
+		vector<CAction::EFFECTDESC> Effects;
 	}ATTACKDESC;
 
 private:

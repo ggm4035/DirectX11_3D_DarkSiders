@@ -11,6 +11,7 @@ class CTexture;
 class CShader;
 class CModel;
 class CRoot;
+class CSelector;
 
 class CHealth;
 class CAttack;
@@ -66,6 +67,9 @@ protected:
 	class CUI_HpBar* m_pHealthBar = { nullptr };
 	vector<class CSoul*> m_vecSouls;
 
+	class CBlood_Effect* m_pBloodEffect = { nullptr };
+	class CSpawn* m_pSpawn = { nullptr };
+
 protected: /* Status */
 	CHealth* m_pHealth = { nullptr };
 	CAttack* m_pAttack = { nullptr };
@@ -80,6 +84,10 @@ protected:
 
 	_uint m_iPassNum = { 0 };
 	_float m_fTimeAcc = { 0.f };
+	_float m_fSpawnTimeAcc = { 0.f };
+
+	_float4 m_vResponPosition;
+	_float3 m_vDirection;
 
 protected:
 	virtual HRESULT Add_Components() override;

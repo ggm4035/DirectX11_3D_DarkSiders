@@ -100,7 +100,7 @@ HRESULT CVIBuffer_Sprite::Initialize(const _uint& iLevelIndex, CComponent* pOwne
 	if (FAILED(CVIBuffer::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-	SPRITEDESC Desc = *reinterpret_cast<SPRITEDESC*>(pArg);
+	SPRITEDESC Desc = *static_cast<SPRITEDESC*>(pArg);
 
 	m_isRepeat = Desc.bRepeat;
 	m_fFrameTick = Desc.fFrameSpeed / _float(Desc.iNumHeight * Desc.iNumWidth);

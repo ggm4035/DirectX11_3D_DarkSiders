@@ -5,6 +5,7 @@ texture2D g_Texture, g_AlphaTexture;
 
 texture2D g_TextureCircle; // ExplosionData
 float3 g_vHpColor = float3(1.f, 0.f, 0.f);
+float3 g_vColor;
 
 float g_fDetail = 1.f;
 float g_fTimeAcc = 1.f;
@@ -173,7 +174,7 @@ float4 PS_MAIN_COOLTIME(PS_IN In) : SV_TARGET0
     return vColor;
 }
 
-float4 PS_MAIN_COLOR(PS_IN In) : SV_TARGET0
+float4 PS_MAIN_TRAIL(PS_IN In) : SV_TARGET0
 {
     float4 vColor = (float4) 0;
 	
@@ -183,6 +184,8 @@ float4 PS_MAIN_COLOR(PS_IN In) : SV_TARGET0
     
     if (vColor.a < 0.1f)
         discard;
+    
+    vColor.rgb = float3(0.832f, 0.449f, 0.238f);
     
     return vColor;
 }
@@ -242,6 +245,21 @@ float4 PS_MAIN_SPAWN(PS_IN In) : SV_TARGET0
     
     if (vColor.a < 0.1f)
         discard;
+    
+    return vColor;
+}
+
+float4 PS_MAIN_COLOR(PS_IN In) : SV_TARGET0
+{
+    float4 vColor = (float4) 0;
+    float4 vAlphaTexture = (float4) 0;
+    
+    vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+    
+    if (vColor.r < 0.1f)
+        discard;
+    
+    vColor.rgb = g_vColor;
     
     return vColor;
 }
@@ -339,7 +357,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_COOLTIME();
     }
 
-    pass Color // 7: 소드트레일
+    pass Trail // 7: 소드트레일
     {
         SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
@@ -349,7 +367,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
-        PixelShader = compile ps_5_0 PS_MAIN_COLOR();
+        PixelShader = compile ps_5_0 PS_MAIN_TRAIL();
     }
 
     pass Sprite // 8: 텍스처 재생
@@ -415,5 +433,18 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_SPAWN();
+    }
+
+    pass Color // 13: 색 적용
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL /*compile gs_5_0 GS_MAIN()*/;
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_COLOR();
     }
 };

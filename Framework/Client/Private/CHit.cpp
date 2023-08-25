@@ -47,20 +47,15 @@ HRESULT CHit::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pAr
 
 HRESULT CHit::Tick(const _double& TimeDelta)
 {
-
 	CGameObject3D* pTarget = { nullptr };
 	CHealth* pHealth = { nullptr };
-	_float* pHitTimeAcc = { nullptr };
 
 	m_pBlackBoard->Get_Type(L"pHealth", pHealth);
 	m_pBlackBoard->Get_Type(L"pTarget", pTarget);
-	m_pBlackBoard->Get_Type(L"fHitTimeAcc", pHitTimeAcc);
 
 	switch (pHealth->Get_Current_HitState())
 	{
 	case CHealth::HIT_NONE:
-		*pHitTimeAcc = 0.f;
-
 		return BEHAVIOR_FAIL;
 
 	case CHealth::HIT_ENTER:
@@ -75,13 +70,10 @@ HRESULT CHit::Tick(const _double& TimeDelta)
 			m_pModel->Change_Animation("Impact");
 
 		pHealth->Set_HitState(CHealth::HIT_STAY);
-		*pHitTimeAcc = 0.f;
 
 		return BEHAVIOR_SUCCESS;
 
 	case CHealth::HIT_STAY:
-		*pHitTimeAcc += TimeDelta * 4.f;
-
 		if (true == m_pModel->isFinishedAnimation())
 		{
 			pHealth->Set_HitState(CHealth::HIT_NONE);

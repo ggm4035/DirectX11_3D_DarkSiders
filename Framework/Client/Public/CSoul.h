@@ -44,6 +44,7 @@ private:
 	_bool m_isGen = { false };
 	_bool m_isFinishFirstStep = { false }; // 첫 번째 행동이 끝났는지
 	_float m_fTimeAcc = { 0.f };
+	_float m_SoulSpeed = { 4.f };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

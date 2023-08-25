@@ -63,6 +63,8 @@ HRESULT CBoss_Attack_RH::Initialize(const _uint& iLevelIndex, CComponent* pOwner
 
 HRESULT CBoss_Attack_RH::Tick(const _double& TimeDelta)
 {
+	m_fTimeAcc += TimeDelta;
+
 	if (false == Check_Decorations())
 	{
 		m_isFirst = true;
@@ -71,15 +73,23 @@ HRESULT CBoss_Attack_RH::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
-		CGameInstance::GetInstance()->Play_Sound(L"en_hollowlord_atk_swipe_R_vo_01.ogg", CSound_Manager::SOUND_ENEMY, 0.5f);
+		CGameInstance::GetInstance()->Play_Sound(L"en_hollowlord_atk_swipe_R_vo_01.ogg", CSound_Manager::SOUND_BOSSEFFECT_1, 0.5f);
 		m_pModel->Change_Animation("Attack_3");
 		m_isFirst = false;
+	}
+
+	if (false == m_isPlaySound && 2.7f < m_fTimeAcc)
+	{
+		if (FAILED(CGameInstance::GetInstance()->Play_Sound(L"en_steamroller_attack_impact_02.ogg", CSound_Manager::SOUND_BOSSEFFECT_2, 0.7f, true)))
+			return E_FAIL;
+		m_isPlaySound = true;
 	}
 
 	if (true == m_pModel->isAbleChangeAnimation() ||
 		true == m_pModel->isFinishedAnimation())
 	{
 		m_isFirst = true;
+		m_isPlaySound = false;
 		m_fTimeAcc = 0.f;
 
 		return BEHAVIOR_SUCCESS;

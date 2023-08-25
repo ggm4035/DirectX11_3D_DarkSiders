@@ -63,6 +63,8 @@ HRESULT CBoss_Attack_DB::Initialize(const _uint& iLevelIndex, CComponent* pOwner
 
 HRESULT CBoss_Attack_DB::Tick(const _double& TimeDelta)
 {
+	m_fTimeAcc += TimeDelta;
+
 	if (false == Check_Decorations())
 	{
 		m_isFirst = true;
@@ -71,21 +73,54 @@ HRESULT CBoss_Attack_DB::Tick(const _double& TimeDelta)
 
 	if (true == m_isFirst)
 	{
-		CGameInstance::GetInstance()->Play_Sound(L"en_hollowlord_atk_doubleslam_vo_02.ogg", CSound_Manager::SOUND_ENEMY, 0.5f);
+		CGameInstance::GetInstance()->Play_Sound(L"en_hollowlord_atk_doubleslam_vo_02.ogg", CSound_Manager::SOUND_BOSSEFFECT_1, 0.5f);
 		m_pModel->Change_Animation("Attack_1");
 		m_isFirst = false;
+	}
+
+	if (false == m_isPlaySound && 3.2f < m_fTimeAcc)
+	{
+		if (FAILED(CGameInstance::GetInstance()->Play_Sound(L"en_hollowlord_atk_doubleslam_shockwave_01.ogg", CSound_Manager::SOUND_BOSSEFFECT_2, 0.5f, true)))
+			return E_FAIL;
+		m_isPlaySound = true;
 	}
 
 	if (true == m_pModel->isAbleChangeAnimation() ||
 		true == m_pModel->isFinishedAnimation())
 	{
 		m_isFirst = true;
+		m_isPlaySound = false;
 		m_fTimeAcc = 0.f;
 
 		return BEHAVIOR_SUCCESS;
 	}
 
 	return BEHAVIOR_RUNNING;
+}
+
+void CBoss_Attack_DB::PlayEffects(const _double& TimeDelta)
+{
+	/*for (auto& Desc : m_Effects)
+	{
+		if (true == Desc.isPlayEffect)
+			continue;
+
+		if (Desc.fTime > m_fTimeAcc)
+			continue;
+
+		CQuake_Effect* pEffect = { nullptr };
+		m_pBlackBoard->Get_Type(L"Quake_Effect", pEffect);
+		if (nullptr != pEffect)
+		{
+			CTransform* pTransform = { nullptr };
+			if (FAILED(m_pBlackBoard->Get_Type(L"pTransform", pTransform)))
+				continue;
+
+			pEffect->Render_Effect(XMLoadFloat4(Desc.pPosition));
+			Desc.isPlayEffect = true;
+			continue;
+		}
+	}*/
 }
 
 CBoss_Attack_DB* CBoss_Attack_DB::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

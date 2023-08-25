@@ -366,6 +366,11 @@ HRESULT CMainApp::Ready_Behaviors()
 		CPattern_Roll::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* Pattern_FollowAtk */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Pattern_FollowAtk",
+		CPattern_FollowAtk::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* Pattern_BackDash */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, L"Pattern_BackDash",
 		CPattern_BackDash::Create(m_pDevice, m_pContext))))

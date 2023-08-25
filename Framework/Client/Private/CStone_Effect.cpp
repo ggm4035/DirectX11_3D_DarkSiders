@@ -35,7 +35,6 @@ void CStone_Effect::Tick(const _double& TimeDelta)
 
 		if (Particle.dAge > Particle.dLifeTime)
 		{
-			++m_iCount;
 			Particle.isAlive = false;
 			_float4x4 WorldMatrix;
 			XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
@@ -59,10 +58,6 @@ void CStone_Effect::Tick(const _double& TimeDelta)
 		ParticleMatrices.push_back(Particle.WorldMatrix);
 	}
 
-	if (m_iNumParticles == m_iCount)
-		m_isFinishEffect = true;
-
-	m_iCount = 0;
 	m_pBufferCom->Tick(ParticleMatrices, TimeDelta);
 }
 

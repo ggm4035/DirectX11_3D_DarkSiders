@@ -48,8 +48,6 @@ public:
 private:
 	vector<STONEPARTICLE> m_vecParticles;
 	_uint m_iNumParticles = { 0 };
-	_uint m_iCount = { 0 };
-	_bool m_isFinishEffect = { false };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

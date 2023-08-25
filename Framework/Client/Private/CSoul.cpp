@@ -58,8 +58,8 @@ void CSoul::AfterFrustumTick(const _double& TimeDelta)
 	if (false == m_isGen)
 		return;
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 }
 
 void CSoul::Late_Tick(const _double& TimeDelta)
@@ -177,6 +177,8 @@ void CSoul::First_Step(const _double& TimeDelta)
 
 void CSoul::Second_Step(const _double& TimeDelta)
 {
+	m_SoulSpeed += TimeDelta;
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
@@ -186,8 +188,8 @@ void CSoul::Second_Step(const _double& TimeDelta)
 
 	_vector vDir = vPlayerPosition - vPosition;
 	/* MinDistance 보다 거리가 작은 경우 false */
-	m_pTransformCom->Chase(vPlayerPosition, TimeDelta * 4.f);
-	if(0.5f > XMVectorGetX(XMVector3Length(vDir)))
+	m_pTransformCom->Chase(vPlayerPosition, TimeDelta * m_SoulSpeed);
+	if(1.f > XMVectorGetX(XMVector3Length(vDir)))
 		Dead_Motion(TimeDelta);
 
 	Safe_Release(pGameInstance);

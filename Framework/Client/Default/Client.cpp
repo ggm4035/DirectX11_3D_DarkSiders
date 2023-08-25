@@ -5,6 +5,7 @@
 #include "Client.h"
 
 #include "CGameInstance.h"
+#include "CGameManager.h"
 #include "CMainApp.h"
 
 #define MAX_LOADSTRING 100
@@ -97,7 +98,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         {
             pGameInstance->Set_Timer(L"Timer_60");
 
-            pMainApp->Tick(pGameInstance->Get_Timer(L"Timer_60"));
+            _double fTick = pGameInstance->Get_Timer(L"Timer_60");
+            _bool isSlow = CGameManager::GetInstance()->Get_Slow();
+            pMainApp->Tick(fTick);
             pMainApp->Render();
 
             TimerAcc = 0.0;

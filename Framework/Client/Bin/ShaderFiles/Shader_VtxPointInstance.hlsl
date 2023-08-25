@@ -7,6 +7,8 @@ texture2D g_Texture, g_AlphaTexture;
 
 float g_fLengthTexelU = 1.f, g_fLengthTexelV = 1.f;
 
+float3 g_vColor;
+
 struct VS_IN
 {
 	/* 그리기 위한 정점정보 */
@@ -152,6 +154,8 @@ float4 PS_MAIN_SPRITE(PS_IN In) : SV_TARGET0
     if (vColor.a < 0.1f)
         discard;
     
+    vColor.rgb *= float3(0.8f, 0.5f, 0.25f);
+    
     return vColor;
 }
 
@@ -165,6 +169,20 @@ float4 PS_MAIN_ALPHACHANNEL(PS_IN In) : SV_TARGET0
     
     if (vAlphaChannel.a < 0.1f)
         discard;
+    
+    return vColor;
+}
+
+float4 PS_MAIN_COLOR(PS_IN In) : SV_TARGET0
+{
+    float4 vColor = (float4) 0;
+
+    vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+    
+    if (vColor.a < 0.1f)
+        discard;
+    
+    vColor.rgb = g_vColor;
     
     return vColor;
 }
@@ -205,5 +223,17 @@ technique11 DefaultTechnique
         HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
         DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
         PixelShader = compile ps_5_0 PS_MAIN_ALPHACHANNEL();
+    }
+
+    pass Color
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        HullShader = NULL /*compile hs_5_0 HS_MAIN()*/;
+        DomainShader = NULL /*compile ds_5_0 DS_MAIN()*/;
+        PixelShader = compile ps_5_0 PS_MAIN_COLOR();
     }
 }

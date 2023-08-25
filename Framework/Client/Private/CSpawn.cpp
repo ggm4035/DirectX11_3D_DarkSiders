@@ -37,6 +37,7 @@ void CSpawn::Tick(const _float4x4& WorldMatrix, const _double& TimeDelta)
 	_vector vPosition = XMLoadFloat4(&m_vPosition);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	m_pTransformCom->Set_Scales(_float3(m_fScale, m_fScale, m_fScale));
+	m_pTransformCom->Turn_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 }
 
 void CSpawn::AfterFrustumTick(const _double& TimeDelta)

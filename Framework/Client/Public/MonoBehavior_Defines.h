@@ -47,3 +47,4 @@
 #include "CPattern_Patrol.h"
 #include "CPattern_Attack.h"
 #include "CPattern_BackDash.h"
+#include "CPattern_FollowAtk.h"

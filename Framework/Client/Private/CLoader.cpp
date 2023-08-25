@@ -27,6 +27,8 @@
 
 #include "CStone_Effect.h"
 #include "CRoll_Effect.h"
+#include "CBlood_Effect.h"
+#include "CQuake_Effect.h"
 #include "CSoul.h"
 
 #include "CInven.h"
@@ -357,11 +359,6 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/Soul.png"))))
 		return E_FAIL;
 
-	/* For. Texture_SoulAlpha */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_SoulAlpha",
-		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/SoulAlpha.png"))))
-		return E_FAIL;
-
 	/* For. Texture_Currency_Soul */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Currency_Soul",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/UI/UI_CurrencySouls.png"))))
@@ -375,6 +372,11 @@ HRESULT CLoader::Load_Level_GamePlay()
 	/* For. Texture_Dissolve */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Dissolve",
 		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/DissolveMask.png"))))
+		return E_FAIL;
+
+	/* For. Texture_Particle */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Texture_Particle",
+		CTexture::Create(m_pDevice, m_pContext, L"../../Resources/Textures/VFX/Particle.png"))))
 		return E_FAIL;
 
 #pragma endregion
@@ -398,9 +400,19 @@ HRESULT CLoader::Load_Level_GamePlay()
 		CStone_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* Quake_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Quake_Effect",
+		CQuake_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* Roll_Effect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Roll_Effect",
 		CRoll_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* Blood_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Blood_Effect",
+		CBlood_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* Soul */

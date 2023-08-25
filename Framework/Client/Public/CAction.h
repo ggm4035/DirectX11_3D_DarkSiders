@@ -21,7 +21,14 @@ public:
 		wstring wstrSoundTag;
 		CSound_Manager::SOUNDCHANNEL eChennel;
 		_float fVolum;
+		_bool bForcePlay = { true };
 	}SOUNDDESC;
+	typedef struct tagEffectDesc
+	{
+		_bool isPlayEffect;
+		_float fTime;
+		_float4* pPosition;
+	}EFFECTDESC;
 
 private:
 	explicit CAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -39,6 +46,9 @@ public:
 	}
 	void Add_Sound(const SOUNDDESC& SoundDesc) {
 		m_Sounds.push_back(SoundDesc);
+	}
+	void Add_Effect(const EFFECTDESC& EffectDesc) {
+		m_Effects.push_back(EffectDesc);
 	}
 	void Bind_BgmTag(const wstring& wstrSoundTag) {
 		m_wstrBgmTag = wstrSoundTag;
@@ -63,6 +73,7 @@ private:
 
 	string m_strAnimationTag = { "" };
 	vector<SOUNDDESC> m_Sounds;
+	vector<EFFECTDESC> m_Effects;
 	wstring m_wstrBgmTag = { L"" };
 
 	_bool m_isFinishBehaviors = { false };
@@ -77,6 +88,7 @@ private:
 
 private:
 	void PlaySounds(const _double& TimeDelta);
+	void PlayEffects(const _double& TimeDelta);
 
 public:
 	static CAction* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

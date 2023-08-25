@@ -252,13 +252,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(wstring pLayerTag)
 				L"Monster_SteamRoller", pLayerTag, &MonsterDesc)))
 				return E_FAIL;
 		}
-
-		if (wstring::npos != wstrObjTag.find(L"FallenDog"))
-		{
-			if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, L"Monster_FallenDog",
-				L"Monster_FallenDog", pLayerTag, &MonsterDesc)))
-				return E_FAIL;
-		}
 		
 		if (wstring::npos != wstrObjTag.find(L"HollowLord"))
 		{

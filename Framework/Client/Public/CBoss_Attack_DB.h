@@ -33,9 +33,13 @@ private:
 	_float m_fLimit = { 0.f };
 	_float m_fTimeAcc = { 0.f }; // 사운드 체크용
 	_bool m_isFirst = { true };
+	_bool m_isPlaySound = { false };
 
 private:
 	CModel* m_pModel = { nullptr };
+
+private:
+	void PlayEffects(const _double& TimeDelta);
 
 public:
 	static CBoss_Attack_DB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

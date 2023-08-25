@@ -64,9 +64,6 @@ void CRoll_Effect::Tick(const _double& TimeDelta)
 		ParticleMatrices.push_back(Particle.WorldMatrix);
 	}
 
-	if (m_iNumParticles)
-		m_isFinishEffect = true;
-
 	m_pBufferCom->Tick(ParticleMatrices, TimeDelta);
 }
 

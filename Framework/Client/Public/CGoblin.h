@@ -31,17 +31,13 @@ public:
 	virtual void OnCollisionExit(CCollider::COLLISION Collision, const _double& TimeDelta) override;
 
 private:
-	_float4 m_vResponPosition;
 	_float m_fExplosionTimeAcc = { 0.f };
-	_float m_fSpawnTimeAcc = { 0.f };
 	class CAoE* m_pAoe = { nullptr };
 	class CUI_Sprite* m_pSprite = { nullptr };
-	class CSpawn* m_pSpawn = { nullptr };
 
 private:
 	virtual HRESULT Add_Components() override;
 	HRESULT Make_AI();
-	HRESULT Make_Attack(CSelector* pSelector);
 
 public:
 	static CGoblin* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

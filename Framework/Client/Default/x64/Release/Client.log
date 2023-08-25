@@ -1,193 +1,26 @@
-﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
-  
-  compilation object save succeeded; see C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Shader_PostProcessing.cso
-  CAction.cpp
+﻿  CAction.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CAction.cpp(161,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CAction_Hit.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CAoE.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CArmorCore.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CAttackCore.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CBoss_Attack.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CBoss_Attack_DB.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CBoss_Attack_LH.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CBoss_Attack_LHS.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CBoss_Attack_RH.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CBoss_Attack_RHS.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CBreakAbleObject.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CCamera_Free.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(70,16): warning C4244: '인수': 'const Engine::_double'에서 'const Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(95,21): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(124,21): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CCamera_Free.cpp(302,47): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CCursor.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CGameManager.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CGoblin.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CGoblin.cpp(55,31): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CGoblin.cpp(102,34): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CGoblin_Armor.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CHealthCore.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CHellHound.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CHit.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CHit.cpp(83,34): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  컴파일하고 있습니다...
-  CHollowLord.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CHollowLord.cpp(115,23): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CHollowLord.cpp(141,43): warning C4244: '-=': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLava.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CLava.cpp(42,35): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLeapAttack.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CLeapAttack.cpp(50,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CLeapAttack.cpp(77,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLegion_Champion.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLegion_Melee.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLevel_GamePlay.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLevel_Loading.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLevel_Logo.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CAction.cpp(77,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CLoader.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CLookAtTarget.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CLookAtTarget.cpp(46,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CMainApp.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMainApp.cpp(81,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CMonoEffect.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CMonster.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(106,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(199,28): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CMonster.cpp(200,33): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CObstacle.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPattern_Attack.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPattern_BackDash.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPattern_Patrol.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPattern_Roll.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPattern_Wheel.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CPlayer.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(99,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(369,23): warning C4244: '=': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(474,30): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  컴파일하고 있습니다...
-  CPlayerAction.cpp
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(100,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(370,23): warning C4244: '=': 'float'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(475,30): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(488,29): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayer.cpp(492,29): warning C4244: '-=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CQuake_Effect.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayerAction.cpp(143,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPlayerAttack.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPlayerHit.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CPlayerHit.cpp(79,29): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPlayerJump.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CPlayerKnockback.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CProjectile.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CProjectile.cpp(66,79): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CProjectile.cpp(67,78): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CProjectile.cpp(71,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CRoll_Effect.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CRoll_Effect.cpp(56,49): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSky.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSoul.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSoul.cpp(38,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSoul.cpp(157,51): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSoul.cpp(160,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSpark_Effect.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSpark_Effect.cpp(51,49): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSpawn.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSpawn.cpp(28,31): warning C4244: '+=': 'Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSpawnMonster.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSpawns.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSpawns.cpp(30,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CStatic_Object.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CQuake_Effect.cpp(51,49): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   CSteamRoller.cpp
 C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSteamRoller.cpp(54,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSteamRoller.cpp(160,23): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSteamRoller.cpp(235,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CStone_Effect.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CStone_Effect.cpp(51,49): warning C4244: '인수': 'const Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CSwordTrail.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CTerrain.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CTerrain.cpp(48,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CUI_Focus.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CUI_HpBar.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  컴파일하고 있습니다...
-  CUI_Rect.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CUI_Rect.cpp(47,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CUI_Sprite.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CWeapon.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(85,79): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(86,78): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWeapon.cpp(90,24): warning C4267: '인수': 'size_t'에서 'const Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CWheelWind.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWheelWind.cpp(33,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CWheelWind.cpp(38,25): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Client.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CCurrency.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CHUD.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  CInven.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CInven.cpp(495,45): warning C4244: '인수': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSteamRoller.cpp(68,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSteamRoller.cpp(176,23): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CSteamRoller.cpp(271,24): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다.
-  3 of 3719 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  15 of 3979 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    5 functions had inline decision re-evaluated but remain unchanged
+    6 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe

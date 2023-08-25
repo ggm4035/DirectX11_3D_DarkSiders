@@ -6,6 +6,7 @@
 #include "CGameInstance.h"
 #include "CPlayer.h"
 #include "CWeapon.h"
+#include "CSpawn.h"
 
 #include "CSoul.h"
 
@@ -30,8 +31,6 @@ HRESULT CGoblin_Armor::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 	if (FAILED(Add_Parts()))
 		return E_FAIL;
 
-	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
 	m_pAttack->Set_Damage(20);
 	m_pDeffence->Set_Deffence(5);
 	m_pHealth->Set_Max_Hp(100);
@@ -42,7 +41,17 @@ HRESULT CGoblin_Armor::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 
 void CGoblin_Armor::Tick(const _double& TimeDelta)
 {
+	m_fSpawnTimeAcc += TimeDelta;
+
 	CMonster::Tick(TimeDelta);
+
+	if (2.f > m_fSpawnTimeAcc)
+	{
+		_matrix Matrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, 0.1f, 0.f) * m_pTransformCom->Get_WorldMatrix();
+		_float4x4 WorldMatrix;
+		XMStoreFloat4x4(&WorldMatrix, Matrix);
+		m_pSpawn->Tick(WorldMatrix, TimeDelta);
+	}
 }
 
 void CGoblin_Armor::AfterFrustumTick(const _double& TimeDelta)
@@ -163,7 +172,13 @@ HRESULT CGoblin_Armor::Add_Components()
 		m_vecSouls.push_back(pSoul);
 	}
 
-	if (FAILED(Make_AI()))
+	if (true == m_isSpawn)
+	{
+		if (FAILED(Make_SpawnAI()))
+			return E_FAIL;
+	}
+
+	else if (FAILED(Make_AI()))
 		return E_FAIL;
 
 	if (FAILED(m_pModelCom->Setup_Notifys()))
@@ -216,15 +231,33 @@ HRESULT CGoblin_Armor::Make_AI()
 			return !(*pIsSpawn);
 		});
 
+	CAction::SOUNDDESC SoundDesc;
 	pSequence_Hit->Bind_SoundTag(L"en_fleamag_armored_block_01.ogg");
 	pAction_Rest->Bind_AnimationTag("Sit");
 	pAction_Detect->Bind_AnimationTag("Sit_End");
 	pAction_Detect->Just_One_Time_Action();
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_2;
+	SoundDesc.isPlaySound = false;
+	SoundDesc.fTime = 0.01f;
+	SoundDesc.fVolum = 0.1f;
+	SoundDesc.wstrSoundTag = L"en_fleamag_scream_short_02.ogg";
+	SoundDesc.bForcePlay = false;
+	pAction_Detect->Add_Sound(SoundDesc);
 	pPattern_Attack->Bind_FollowAnimTag("Run");
 	CPattern_Attack::ATTACKDESC Desc;
 	Desc.strAttackAnimTag = "Attack_1";
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_2;
+	SoundDesc.isPlaySound = false;
+	SoundDesc.fTime = 0.7f;
+	SoundDesc.fVolum = 0.1f;
+	SoundDesc.wstrSoundTag = L"en_fleamag_armored_swipe_01.ogg";
+	Desc.Sounds.push_back(SoundDesc);
 	pPattern_Attack->Add_Attack(Desc);
-	Desc.strAttackAnimTag = "Attack_2"; /* Sound Ãß°¡ */
+
+	Desc.Sounds.clear();
+	SoundDesc.wstrSoundTag = L"en_fleamag_armored_swipe_02.ogg";
+	Desc.Sounds.push_back(SoundDesc);
+	Desc.strAttackAnimTag = "Attack_2";
 	pPattern_Attack->Add_Attack(Desc);
 
 	/* Assemble */
@@ -251,6 +284,100 @@ HRESULT CGoblin_Armor::Make_AI()
 	pSequence_Patrol->Assemble_Childs();
 	pPattern_BackDash->Assemble_Childs();
 	pPattern_Attack->Assemble_Childs();
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CGoblin_Armor::Make_SpawnAI()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	/* Behaviors */
+	CSelector* pSelector = dynamic_cast<CSelector*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Selector", this));
+	if (nullptr == pSelector)
+		return E_FAIL;
+
+	CSequence* pSequence_Spawn = dynamic_cast<CSequence*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Sequence", this));
+	if (nullptr == pSequence_Spawn)
+		return E_FAIL;
+
+	CRandomLook* pRandomLook = dynamic_cast<CRandomLook*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_RandomLook", this));
+	if (nullptr == pRandomLook)
+		return E_FAIL;
+	CAction* pAction_Spawn = dynamic_cast<CAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Action", this));
+	if (nullptr == pAction_Spawn)
+		return E_FAIL;
+	CAction_Hit* pSequence_Hit = dynamic_cast<CAction_Hit*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Action_Hit", this));
+	if (nullptr == pSequence_Hit)
+		return E_FAIL;
+	CPattern_FollowAtk* pAttack = dynamic_cast<CPattern_FollowAtk*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Pattern_FollowAtk", this));
+	if (nullptr == pAttack)
+		return E_FAIL;
+
+	CJump* pJump = dynamic_cast<CJump*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Jump", this));
+	if (nullptr == pJump)
+		return E_FAIL;
+	CMove* pMove = dynamic_cast<CMove*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"Tsk_Move", this));
+	if (nullptr == pMove)
+		return E_FAIL;
+
+	pSequence_Hit->Bind_SoundTag(L"en_fleamag_armored_block_01.ogg");
+	CAction::SOUNDDESC SoundDesc;
+	pAction_Spawn->Bind_AnimationTag("Sit_End");
+	pAction_Spawn->Just_One_Time_Action();
+	SoundDesc.isPlaySound = false;
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_2;
+	SoundDesc.fVolum = 0.1f;
+	SoundDesc.fTime = 0.01f;
+	SoundDesc.wstrSoundTag = L"en_fleamag_spawn_04.ogg";
+	pAction_Spawn->Add_Sound(SoundDesc);
+	CPattern_FollowAtk::ATTACKDESC AttackDesc;
+	SoundDesc.isPlaySound = false;
+	SoundDesc.eChennel = CSound_Manager::SOUND_EFFECT_2;
+	SoundDesc.fTime = 0.01f;
+	SoundDesc.fVolum = 0.1f;
+	SoundDesc.wstrSoundTag = L"en_fleamag_scream_long_01.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	AttackDesc.strAttackAnimTag = "Attack_1";
+	pAttack->Add_Attack(AttackDesc);
+
+	AttackDesc.Sounds.clear();
+	SoundDesc.wstrSoundTag = L"en_fleamag_scream_long_02.ogg";
+	AttackDesc.Sounds.push_back(SoundDesc);
+	AttackDesc.strAttackAnimTag = "Attack_2";
+	pAttack->Add_Attack(AttackDesc);
+
+	pJump->Bind_Jump_Force(0.7f);
+	pMove->Bind_Move_Force(0.5f);
+
+	/* Assemble */
+	if (FAILED(m_pRoot->Assemble_Behavior(L"Selector", pSelector)))
+		return E_FAIL;
+
+	if (FAILED(pSelector->Assemble_Behavior(L"Sequence_Spawn", pSequence_Spawn)))
+		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Action_Hit", pSequence_Hit)))
+		return E_FAIL;
+	if (FAILED(pSelector->Assemble_Behavior(L"Attack", pAttack)))
+		return E_FAIL;
+
+	if (FAILED(pSequence_Spawn->Assemble_Behavior(L"Tsk_RandomLook", pRandomLook)))
+		return E_FAIL;
+	if (FAILED(pSequence_Spawn->Assemble_Behavior(L"Action_Spawn", pAction_Spawn)))
+		return E_FAIL;
+
+	if (FAILED(pAction_Spawn->Assemble_Behavior(L"Tsk_Jump", pJump)))
+		return E_FAIL;
+	if (FAILED(pAction_Spawn->Assemble_Behavior(L"Tsk_Move", pMove)))
+		return E_FAIL;
+
+	if (FAILED(pSequence_Hit->Assemble_Childs()))
+		return E_FAIL;
+	if (FAILED(pAttack->Assemble_Childs()))
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 

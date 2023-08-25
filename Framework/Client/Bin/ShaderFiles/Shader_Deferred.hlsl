@@ -147,6 +147,16 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     Out.vColor = vDiffuse * vShade;
     
+    float4 vFogColor = vector(1.f, 0.1f, 0.1f, 0.1f);
+    float fFogPower = 0.f;
+    
+    //if (vPosition.y >= 0.f)
+    //    fFogPower = 0.f;
+    //else
+    //    fFogPower = saturate(vPosition.y / -10.f);
+    
+    Out.vColor = fFogPower * vFogColor + (1.f - fFogPower) * (vDiffuse * vShade);
+    
     return Out;
 }
 

@@ -33,11 +33,6 @@ private:
 	virtual ~CRoll_Effect() = default;
 
 public:
-	_bool isFinishEffect() {
-		return m_isFinishEffect;
-	}
-
-public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
 	virtual void Tick(const _double& TimeDelta) override;
@@ -51,7 +46,6 @@ public:
 private:
 	vector<STONEPARTICLE> m_vecParticles;
 	_uint m_iNumParticles = { 0 };
-	_bool m_isFinishEffect = { false };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

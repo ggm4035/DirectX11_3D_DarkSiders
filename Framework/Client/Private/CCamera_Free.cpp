@@ -34,7 +34,7 @@ HRESULT CCamera_Free::Initialize(const _uint& iLevelIndex, CComponent* pOwner, v
 	if (FAILED(CCamera::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
-	m_vOffsets = _float3(0.f, 15.f, -10.f);
+	m_vOffsets = _float3(0.f, 15.f, -12.f);
 
 	return S_OK;
 }

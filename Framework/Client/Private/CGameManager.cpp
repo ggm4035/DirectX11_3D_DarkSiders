@@ -24,12 +24,13 @@ void CGameManager::Tick(const _double& TimeDelta)
 	{
 		if (true == m_isFinalBossDead)
 		{
-			CGameInstance::GetInstance()->Play_BGM(L"mus_hell_low.ogg", 0.6f);
+			
+			CGameInstance::GetInstance()->Play_BGM(L"mus_level02_ambient.ogg", 0.6f);
 			m_isFirst = false;
 		}
 		else
 		{
-			CGameInstance::GetInstance()->Play_BGM(L"mus_level02_ambient.ogg", 0.6f);
+			CGameInstance::GetInstance()->Play_BGM(L"mus_hell_low.ogg", 0.6f);
 			m_isFirst = false;
 		}
 	}

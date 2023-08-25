@@ -1,12 +1,15 @@
-
 #include "CMonster.h"
 
 #include "CRoot.h"
+#include "MonoBehavior_Defines.h"
 #include "CGameInstance.h"
+#include "CBlackBoard.h"
+#include "CBlood_Effect.h"
 #include "CUI_HpBar.h"
 #include "CPlayer.h"
 #include "CAoE.h"
 #include "CSoul.h"
+#include "CSpawn.h"
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject3D(pDevice, pContext)
@@ -20,13 +23,19 @@ CMonster::CMonster(const CMonster& rhs)
 
 void CMonster::Get_Damaged(const CAttack* pAttack)
 {
+	if (0.f == m_pHealth->Get_Current_HP_Percent())
+		return;
+
 	_int iDeffence = m_pDeffence->Get_Deffence();
 	_int iDamage = pAttack->Get_Damage();
+
+	m_pBloodEffect->Render_Effect(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	if (false == pAttack->isIgnoreDeffence())
 		Saturate(iDamage -= iDeffence, 0, iDamage);
 
 	m_pHealth->Damaged(iDamage);
+	m_fHitTimeAcc = 0.f;
 }
 
 void CMonster::Get_Skill_Damaged(const CAttack* pAttack)
@@ -34,7 +43,10 @@ void CMonster::Get_Skill_Damaged(const CAttack* pAttack)
 	_int iDeffence = m_pDeffence->Get_Deffence();
 	_int iDamage = pAttack->Get_Skill_Damage();
 
+	m_pBloodEffect->Render_Effect(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	m_pHealth->Damaged(iDamage);
+	m_fHitTimeAcc = 0.f;
 }
 
 HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
@@ -75,6 +87,10 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 	if (nullptr == m_pHealthBar)
 		return E_FAIL;
 
+	m_pBloodEffect = dynamic_cast<CBlood_Effect*>(pGameInstance->Clone_Component(LEVEL_GAMEPLAY, L"Blood_Effect", this));
+	if (nullptr == m_pBloodEffect)
+		return E_FAIL;
+
 	Safe_Release(pGameInstance);
 
 	if (nullptr != pArg)
@@ -98,12 +114,16 @@ HRESULT CMonster::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void*
 		}
 	}
 
+	XMStoreFloat4(&m_vResponPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	return S_OK;
 }
 
 void CMonster::Tick(const _double& TimeDelta)
 {
 	m_fTimeAcc += TimeDelta;
+
+	m_fHitTimeAcc += TimeDelta * 4.f;
 
 	CGameObject3D::Tick(TimeDelta);
 
@@ -112,6 +132,8 @@ void CMonster::Tick(const _double& TimeDelta)
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta); /* 객체가 진짜 움직임 */
+
+	m_pBloodEffect->Tick(TimeDelta);
 
 	m_pHealthBar->Tick(TimeDelta);
 
@@ -138,6 +160,8 @@ void CMonster::AfterFrustumTick(const _double& TimeDelta)
 		for (auto Pair : m_Parts)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, static_cast<CGameObject*>(Pair.second));
 
+		m_pBloodEffect->AfterFrustumTick(TimeDelta);
+
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 
@@ -156,6 +180,11 @@ void CMonster::AfterFrustumTick(const _double& TimeDelta)
 void CMonster::Late_Tick(const _double& TimeDelta)
 {
 	On_Colisions(TimeDelta);
+
+	if (2.f < m_fSpawnTimeAcc)
+		return;
+
+	m_pSpawn->Late_Tick(TimeDelta);
 }
 /* PassNum
 0 : Default
@@ -298,6 +327,13 @@ HRESULT CMonster::Add_Components()
 		(CComponent**)&m_pDeffence, this, &DeffenceDesc)))
 		return E_FAIL;
 
+	CTransform::TRASNFORMDESC Desc;
+	Desc.RotationPerSec = XMConvertToRadians(30.f);
+	Desc.SpeedPerSec = 3.f;
+	m_pSpawn = dynamic_cast<CSpawn*>(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Spawn", L"Spawn", this, &Desc));
+	if (nullptr == m_pSpawn)
+		return E_FAIL;
+
 	/* Root */
 	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
 		(CComponent**)&m_pRoot, this)))
@@ -317,6 +353,7 @@ HRESULT CMonster::Add_Components()
 
 	m_pRoot->Add_Type(L"pTarget", CGameInstance::GetInstance()->Get_Player());
 	m_pRoot->Add_Type(L"pHealth", m_pHealth);
+	m_pRoot->Add_Type(L"pTransform", m_pTransformCom);
 
 	return S_OK;
 }
@@ -363,6 +400,9 @@ void CMonster::Free()
 
 	for (auto& pSoul : m_vecSouls)
 		Safe_Release(pSoul);
+
+	Safe_Release(m_pBloodEffect);
+	Safe_Release(m_pSpawn);
 
 	Safe_Release(m_pHealth);
 	Safe_Release(m_pAttack);

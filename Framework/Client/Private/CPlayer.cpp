@@ -8,6 +8,7 @@
 #include "CSwordTrail.h"
 #include "CRoot.h"
 
+#include "CQuake_Effect.h"
 #include "CCamera_Free.h"
 #include "CInven.h"
 
@@ -100,8 +101,6 @@ void CPlayer::Tick(const _double& TimeDelta)
 
 	if (CGameInstance::GetInstance()->Key_Down(DIK_F3))
 		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->Set_CamState(CCamera_Free::CAM_FREE);
-	if (CGameInstance::GetInstance()->Key_Down(DIK_2))
-		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->On_Shake(CCamera_Free::SHAKE_Y, 1.f, 0.4f);
 
 	if (true == m_isRenderZoom)
 	{
@@ -120,7 +119,7 @@ void CPlayer::Tick(const _double& TimeDelta)
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
 
 	m_pModelCom->Play_Animation(TimeDelta, m_pNavigationCom);
-
+	
 	m_pInven->Tick(TimeDelta);
 	Tick_Colliders(m_pTransformCom->Get_WorldMatrix());
 }
@@ -139,7 +138,7 @@ void CPlayer::AfterFrustumTick(const _double& TimeDelta)
 			Safe_Release(pGameInstance);
 			return;
 		}
-
+		
 		for (auto Pair : m_Parts)
 			Pair.second->AfterFrustumTick(TimeDelta);
 
@@ -229,7 +228,9 @@ void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& Ti
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS ||
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC))
 	{
-		m_isRenderZoom = true;
+		if(Collision.pMyCollider->Get_Tag() != L"Col_WheelWind")
+			m_isRenderZoom = true;
+
 		if(CPlayerAction::STATE_LEAP != m_pActionCom->Get_State())
 			Collision.pOther->Get_Damaged(m_pAttack);
 		else
@@ -480,6 +481,18 @@ void CPlayer::Set_ZommBlur(const _double& TimeDelta)
 	}
 
 	m_pRendererCom->Set_ZoomInBlurData(5.f - fTimeAcc, 7.f);
+
+	_float fAlpha = { 0.f };
+	if (2.5 > fTimeAcc)
+	{
+		fAlpha += TimeDelta * 10.f;
+	}
+	else
+	{
+		fAlpha -= TimeDelta * 10.f;
+	}
+
+	m_pRendererCom->Set_Focus_Alpha(fAlpha);
 
 	if (5.f < fTimeAcc)
 	{
