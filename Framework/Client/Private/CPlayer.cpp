@@ -80,9 +80,6 @@ HRESULT CPlayer::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* 
 		m_pTransformCom->Set_Angle(reinterpret_cast<PLAYERDESC*>(pArg)->vAngle);
 	}
 
-	if (FAILED(m_pRoot->Assemble_Behavior(L"PlayerAction", m_pActionCom)))
-		return E_FAIL;
-
 	if (FAILED(m_pActionCom->AssembleBehaviors()))
 		return E_FAIL;
 
@@ -103,9 +100,7 @@ void CPlayer::Tick(const _double& TimeDelta)
 		dynamic_cast<CCamera_Free*>(Get_Parts(L"Camera_Free"))->Set_CamState(CCamera_Free::CAM_FREE);
 
 	if (true == m_isRenderZoom)
-	{
-		Set_ZommBlur(TimeDelta);
-	}
+		Set_ZoomBlur(TimeDelta);
 
 	if (CGameInstance::GetInstance()->Key_Down(DIK_I))
 		m_pInven->ToggleSwitch();
@@ -113,7 +108,6 @@ void CPlayer::Tick(const _double& TimeDelta)
 	CGameObject3D::Tick(TimeDelta);
 	
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//cout << vPos.m128_f32[0] << ", " << vPos.m128_f32[1] << ", " << vPos.m128_f32[2] << endl;
 	m_pActionCom->Tick(TimeDelta);
 
 	m_pTransformCom->Animation_Movement(m_pModelCom, TimeDelta);
@@ -222,8 +216,7 @@ HRESULT CPlayer::Render_Shadow()
 
 void CPlayer::OnCollisionEnter(CCollider::COLLISION Collision, const _double& TimeDelta)
 {
-	if ((Collision.pMyCollider->Get_Tag() == L"Col_Attack" ||
-		Collision.pMyCollider->Get_Tag() == L"Col_WheelWind") &&
+	if ((Collision.pMyCollider->Get_Tag() == L"Col_Attack" || Collision.pMyCollider->Get_Tag() == L"Col_WheelWind") &&
 		(Collision.pOtherCollider->Get_Tag() == L"Col_Body" ||
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_BOSS ||
 			Collision.pOtherCollider->Get_Collider_Group() == CCollider::COL_STATIC))
@@ -333,31 +326,22 @@ HRESULT CPlayer::Add_Components()
 		return E_FAIL;
 
 	/* Root */
-	if (FAILED(Add_Component(LEVEL_STATIC, L"Root", L"Com_Root",
-		(CComponent**)&m_pRoot, this)))
+	if (FAILED(Add_Component(LEVEL_STATIC, L"PlayerAction", L"Com_PlayerAction",
+		(CComponent**)&m_pActionCom, this)))
 		return E_FAIL;
 
-	if (FAILED(m_pRoot->Add_Type(L"pShader", m_pShaderCom)))
+	if (FAILED(m_pActionCom->Add_Type(L"pShader", m_pShaderCom)))
 		return E_FAIL;
-	if (FAILED(m_pRoot->Add_Type(L"pModel", m_pModelCom)))
+	if (FAILED(m_pActionCom->Add_Type(L"pModel", m_pModelCom)))
 		return E_FAIL;
-	if (FAILED(m_pRoot->Add_Type(L"pRenderer", m_pRendererCom)))
+	if (FAILED(m_pActionCom->Add_Type(L"pRenderer", m_pRendererCom)))
 		return E_FAIL;
-	if (FAILED(m_pRoot->Add_Type(L"pTransform", m_pTransformCom)))
+	if (FAILED(m_pActionCom->Add_Type(L"pTransform", m_pTransformCom)))
 		return E_FAIL;
-	if (FAILED(m_pRoot->Add_Type(L"pHealth", m_pHealth)))
+	if (FAILED(m_pActionCom->Add_Type(L"pHealth", m_pHealth)))
 		return E_FAIL;
-	if (FAILED(m_pRoot->Add_Type(L"fTimeAcc", &m_fTimeAcc)))
+	if (FAILED(m_pActionCom->Add_Type(L"fTimeAcc", &m_fTimeAcc)))
 		return E_FAIL;
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	m_pActionCom = dynamic_cast<CPlayerAction*>(pGameInstance->Clone_Component(LEVEL_STATIC, L"PlayerAction", this));
-	if (nullptr == m_pActionCom)
-		return E_FAIL;
-
-	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -467,7 +451,7 @@ HRESULT CPlayer::Set_Shader_Shadow_Resources()
 	return S_OK;
 }
 
-void CPlayer::Set_ZommBlur(const _double& TimeDelta)
+void CPlayer::Set_ZoomBlur(const _double& TimeDelta)
 {
 	static _bool isFirst = { true };
 	static _float fTimeAcc = { 0.f };
@@ -534,8 +518,6 @@ void CPlayer::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pRoot);
-
 	Safe_Release(m_pActionCom);
 
 	Safe_Release(m_pHealth);

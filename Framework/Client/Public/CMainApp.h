@@ -35,10 +35,6 @@ private:
 	vector<MODEL_BINARYDATA> m_vecModelDatas;
 
 private:
-	_float m_TimeAcc = { 0.f };
-	wstring m_wstrFPS = { L"" };
-	_uint m_iRanderCount = { 0 };
-
 	class CCursor* m_pCursor = { nullptr };
 
 private:

@@ -14,12 +14,12 @@
 #include "CWeapon.h"
 
 CPlayerAction::CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CBehavior(pDevice, pContext)
+	:CRoot(pDevice, pContext)
 {
 }
 
 CPlayerAction::CPlayerAction(const CPlayerAction& rhs)
-	: CBehavior(rhs)
+	: CRoot(rhs)
 {
 }
 
@@ -105,21 +105,17 @@ const _float* CPlayerAction::Get_WheelCoolTimePtr() const
 
 HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg)
 {
-	if (FAILED(CBehavior::Initialize(iLevelIndex, pOwner, pArg)))
+	if (FAILED(__super::Initialize(iLevelIndex, pOwner, pArg)))
 		return E_FAIL;
 
 	m_eCurState = STATE_IDLE;
 
-	m_pPlayer = dynamic_cast<CPlayer*>(pOwner);
-	if (nullptr == m_pPlayer)
-		return E_FAIL;
-
-	m_pModelCom = dynamic_cast<CModel*>(m_pPlayer->Get_Component(L"Com_Model"));
+	m_pModelCom = dynamic_cast<CModel*>(static_cast<CPlayer*>(m_pOwner)->Get_Component(L"Com_Model"));
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
 	Safe_AddRef(m_pModelCom);
 
-	m_pHealth = dynamic_cast<CHealth*>(m_pPlayer->Get_Component(L"Com_Health"));
+	m_pHealth = dynamic_cast<CHealth*>(static_cast<CPlayer*>(m_pOwner)->Get_Component(L"Com_Health"));
 	if (nullptr == m_pHealth)
 		return E_FAIL;
 	Safe_AddRef(m_pHealth);
@@ -129,6 +125,7 @@ HRESULT CPlayerAction::Initialize(const _uint& iLevelIndex, CComponent* pOwner, 
 HRESULT CPlayerAction::Tick(const _double& TimeDelta)
 {
 	CHealth::HITSTATE eHitState = m_pHealth->Get_Current_HitState();
+
 	if (eHitState != CHealth::HIT_NONE &&
 		false == m_isSuperArmor)
 	{
@@ -326,7 +323,6 @@ void CPlayerAction::Free()
 {
 	if (true == m_isCloned)
 	{
-		Safe_Release(m_pPlayer);
 		Safe_Release(m_pHealth);
 		Safe_Release(m_pModelCom);
 
@@ -339,5 +335,5 @@ void CPlayerAction::Free()
 		Safe_Release(m_pSkillLeapAttack);
 	}
 
-	CBehavior::Free();
+	__super::Free();
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CBehavior.h"
+#include "CRoot.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -11,16 +11,27 @@ class CTransform;
 END
 
 BEGIN(Client)
+class CPlayerHit;
+class CPlayerMove;
+class CPlayerJump;
+class CPlayerAttack;
+class CWheelWind;
+class CLeapAttack;
+END
 
-class CPlayerAction final : public CBehavior
+BEGIN(Client)
+
+class CPlayerAction final : public CRoot
 {
 	friend class CPlayerController;
 
 public:
-	enum STATE { STATE_IDLE, STATE_RUN, STATE_DASH, STATE_HIT, STATE_KNOCKBACK,
+	enum STATE {
+		STATE_IDLE, STATE_RUN, STATE_DASH, STATE_HIT, STATE_KNOCKBACK,
 		STATE_LATK_1, STATE_LATK_2, STATE_LATK_3, STATE_LATK_4,
-		STATE_JUMP, STATE_DOUBLE_JUMP, STATE_JUMP_LAND, 
-		STATE_WHEEL, STATE_LEAP, STATE_END };
+		STATE_JUMP, STATE_DOUBLE_JUMP, STATE_JUMP_LAND,
+		STATE_WHEEL, STATE_LEAP, STATE_END
+	};
 
 private:
 	explicit CPlayerAction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -39,9 +50,7 @@ public:
 	const _float* Get_WheelCoolTimePtr() const;
 
 public:
-	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(const _uint& iLevelIndex, CComponent* pOwner, void* pArg) override;
-	
 	virtual HRESULT Tick(const _double& TimeDelta);
 
 public:
@@ -60,17 +69,16 @@ private:
 	_bool m_isSuperArmor = { false };
 
 private:
-	class CPlayer* m_pPlayer = { nullptr };
 	CHealth* m_pHealth = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
-	class CPlayerHit* m_pHitAction = { nullptr };
-	class CPlayerMove* m_pMoveAction = { nullptr };
-	class CPlayerJump* m_pJumpAction = { nullptr };
-	class CPlayerAttack* m_pAttackAction = { nullptr };
+	CPlayerHit* m_pHitAction = { nullptr };
+	CPlayerMove* m_pMoveAction = { nullptr };
+	CPlayerJump* m_pJumpAction = { nullptr };
+	CPlayerAttack* m_pAttackAction = { nullptr };
 
-	class CWheelWind* m_pSkillWheelWind = { nullptr };
-	class CLeapAttack* m_pSkillLeapAttack = { nullptr };
+	CWheelWind* m_pSkillWheelWind = { nullptr };
+	CLeapAttack* m_pSkillLeapAttack = { nullptr };
 
 public:
 	static CPlayerAction* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

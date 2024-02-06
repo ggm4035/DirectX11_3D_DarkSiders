@@ -146,7 +146,7 @@ void CCollider::On_Collision(CGameObject3D* pOnwer, const _double& TimeDelta)
 	}
 }
 
-void CCollider::Find_Collision(CCollider* pCollider, COLLISION** pCollision)
+void CCollider::Find_Collision(CCollider* pCollider, COLLISION** ppCollision)
 {
 	auto iter = find_if(m_umapCollisions.begin(), m_umapCollisions.end(), [&](auto Pair)
 		{
@@ -158,23 +158,23 @@ void CCollider::Find_Collision(CCollider* pCollider, COLLISION** pCollision)
 
 	if (iter == m_umapCollisions.end())
 	{
-		*pCollision = new COLLISION;
-		(*pCollision)->pOtherCollider = pCollider;
+		*ppCollision = new COLLISION;
+		(*ppCollision)->pOtherCollider = pCollider;
 		Safe_AddRef(pCollider);
-		(*pCollision)->pOther = static_cast<CGameObject3D*>(pCollider->m_pOwner);
+		(*ppCollision)->pOther = static_cast<CGameObject3D*>(pCollider->m_pOwner);
 		Safe_AddRef(pCollider->m_pOwner);
-		(*pCollision)->pMyCollider = this;
-		(*pCollision)->eState = STATE_NONE;
-		(*pCollision)->isCollision = true;
+		(*ppCollision)->pMyCollider = this;
+		(*ppCollision)->eState = STATE_NONE;
+		(*ppCollision)->isCollision = true;
 
-		m_umapCollisions.emplace(pCollider, (*pCollision));
+		m_umapCollisions.emplace(pCollider, (*ppCollision));
 
 		return;
 	}
 
 	iter->second->isCollision = true;
 
-	(*pCollision) = iter->second;
+	(*ppCollision) = iter->second;
 }
 
 CCollider* CCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType)

@@ -4,9 +4,9 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CRoot final : public CBehavior
+class ENGINE_DLL CRoot : public CBehavior
 {
-private:
+protected:
 	explicit CRoot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CRoot(const CRoot& rhs);
 	virtual ~CRoot() = default;

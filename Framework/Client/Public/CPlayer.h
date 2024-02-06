@@ -9,11 +9,15 @@ class CShader;
 class CModel;
 class CCollider;
 class CNavigation;
-class CRoot;
 
 class CHealth;
 class CAttack;
 class CDeffence;
+END
+
+BEGIN(Client)
+class CInven;
+class CPlayerAction;
 END
 
 BEGIN(Client)
@@ -30,10 +34,10 @@ public:
 public:
 	virtual void Get_Damaged(const CAttack* pAttack) override;
 	void Get_Damaged_Knockback(const _float4& _vPosition, const CAttack* pAttack);
-	class CInven* Get_Inven() {
+	CInven* Get_Inven() {
 		return m_pInven;
 	}
-	class CPlayerAction* Get_Action() {
+	CPlayerAction* Get_Action() {
 		return m_pActionCom;
 	}
 	CCollider* Get_Collider(const wstring& wstrColliderTag);
@@ -62,9 +66,7 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CRoot* m_pRoot = { nullptr };
-
-	class CPlayerAction* m_pActionCom = { nullptr };
+	CPlayerAction* m_pActionCom = { nullptr };
 
 private: /* Status */
 	CHealth* m_pHealth = { nullptr };
@@ -72,7 +74,7 @@ private: /* Status */
 	CDeffence* m_pDeffence = { nullptr };
 
 private:
-	class CInven* m_pInven = { nullptr };
+	CInven* m_pInven = { nullptr };
 	_float m_fTimeAcc = { 0.f };
 	_bool m_isRenderZoom = { false };
 
@@ -81,7 +83,7 @@ private:
 	HRESULT Add_Parts();
 	HRESULT Set_Shader_Resources();
 	HRESULT Set_Shader_Shadow_Resources();
-	void Set_ZommBlur(const _double& TimeDelta);
+	void Set_ZoomBlur(const _double& TimeDelta);
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -2,30 +2,30 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\IMGUI.exe</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\IMGUI.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_Deferred.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\Shader_Deferred.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_Vtx.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\Shader_Vtx.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_VtxAnimMesh.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\Shader_VtxAnimMesh.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_VtxCol.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\Shader_VtxCol.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_VtxMesh.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\Shader_VtxMesh.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_VtxNorTex.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\Shader_VtxNorTex.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\IMGUI\Bin\Shader_VtxTex.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\IMGUI\Bin\Shader_VtxTex.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

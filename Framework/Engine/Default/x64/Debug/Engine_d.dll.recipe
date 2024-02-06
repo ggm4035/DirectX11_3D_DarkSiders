@@ -2,18 +2,18 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Engine_d.dll</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\Engine\Bin\Engine_d.dll</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Deferred.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\Engine\Bin\Shader_Deferred.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_Navigation.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\Engine\Bin\Shader_Navigation.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\joo\Documents\GitHub\Jusin\Framework\Engine\Bin\Shader_PostProcessing.cso</FullPath>
+      <FullPath>C:\Users\joo\Documents\GitHub\Joo\Framework\Engine\Bin\Shader_PostProcessing.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

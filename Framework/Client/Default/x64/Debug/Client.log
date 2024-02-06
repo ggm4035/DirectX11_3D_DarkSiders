@@ -1,6 +1,5 @@
-﻿  CHollowLord.cpp
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Reference\Headers\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CHollowLord.cpp(110,23): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Private\CHollowLord.cpp(136,43): warning C4244: '-=': 'Engine::_double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Client.vcxproj -> C:\Users\joo\Documents\GitHub\Jusin\Framework\Client\Bin\Client.exe
+﻿  CPlayerAction.cpp
+C:\Users\joo\Documents\GitHub\Joo\Framework\Reference\Headers\Engine_Function.h(31,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Joo\Framework\Reference\Headers\CNavigation.h(61,1): warning C4267: 'return': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\joo\Documents\GitHub\Joo\Framework\Client\Private\CPlayerAction.cpp(144,26): warning C4244: '+=': 'const Engine::_double'에서 'Engine::_float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Client.vcxproj -> C:\Users\joo\Documents\GitHub\Joo\Framework\Client\Bin\Client.exe

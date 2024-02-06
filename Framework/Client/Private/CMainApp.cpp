@@ -78,8 +78,6 @@ HRESULT Client::CMainApp::Initialize()
 
 void CMainApp::Tick(const _double& TimeDelta)
 {
-	m_TimeAcc += TimeDelta;
-
 	m_pGameInstance->Tick_Engine(TimeDelta);
 
 	m_pCursor->Tick(TimeDelta);
@@ -91,18 +89,6 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_DepthStencil_View();
 
 	m_pRenderer->Draw_RenderGroup();
-
-	++m_iRanderCount;
-
-	if (1.f < m_TimeAcc)
-	{
-		m_wstrFPS = L"FPS : " + to_wstring(m_iRanderCount);
-
-		m_TimeAcc = 0.f;
-		m_iRanderCount = 0;
-	}
-
-	m_pGameInstance->Render_Font(L"Font_135", m_wstrFPS, _float2());
 
 	m_pGameInstance->Present();
 

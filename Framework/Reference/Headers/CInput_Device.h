@@ -14,7 +14,7 @@ public:
 
 private:
 	explicit CInput_Device();
-	virtual ~CInput_Device() = default;
+	virtual ~CInput_Device() = default;		
 
 public:
 	_ubyte	Peek_Message() {
@@ -32,6 +32,7 @@ public:
 		m_Qmessage.pop();
 		return retData;
 	}
+#pragma region 코드 중략
 
 	_ubyte	Get_DIKeyState(const _ubyte& ubyKeyID) {
 		return m_byKeyState[ubyKeyID];
@@ -44,6 +45,8 @@ public:
 	_long	Get_DIMouseMove(MOUSEMOVESTATE eMouseMoveID) {
 		return *(((_long*)&m_tMouseState) + eMouseMoveID);
 	}
+
+#pragma endregion // getter 생략
 
 public:
 	HRESULT	Ready_DInput(HINSTANCE hInst, HWND hWnd);

@@ -47,17 +47,27 @@ HRESULT CInput_Device::Ready_DInput(HINSTANCE hInst, HWND hWnd)
 
 void CInput_Device::Update_DInput(void)
 {
+	// 메시지 처리는 외부에서 이루어진다.
+	// 만약, 큐가 차 있는 경우는 이전에 push한 키를 외부에서 
+	// 처리하지 않았기 때문에 미정의 동작 발생 가능성 때문에 clear 작업 진행.
+	while (!m_Qmessage.empty())
+		m_Qmessage.pop();
+
+	// 현재 키 상태를 이전 키로 옮김.
 	memcpy(m_byPreKeyState, m_byKeyState, sizeof(_ubyte) * MAX_DIK);
 	memcpy(&m_tPreMouseState, &m_tMouseState, sizeof(DIMOUSESTATE));
 
+	// 현재 키를 최신화
 	m_pKeyBoard->GetDeviceState(256, m_byKeyState);
 	m_pMouse->GetDeviceState(sizeof(m_tMouseState), &m_tMouseState);
 }
 
 _bool CInput_Device::Key_Pressing(const _ubyte& ubyKey)
 {
+	// 이전 키가 눌린 상태이면서 현재 키가 눌린 경우
 	if ((m_byPreKeyState[ubyKey] & 0x80) && (m_byKeyState[ubyKey] & 0x80))
 	{
+		// 메시지 큐에 해당 키 값을 push
 		m_Qmessage.push(ubyKey);
 		return true;
 	}
@@ -67,8 +77,10 @@ _bool CInput_Device::Key_Pressing(const _ubyte& ubyKey)
 
 _bool CInput_Device::Key_Down(const _ubyte& ubyKey)
 {
+	// 이전 키가 눌린 상태가 아니면서 현재 키가 눌린 경우
 	if (!(m_byPreKeyState[ubyKey] & 0x80) && (m_byKeyState[ubyKey] & 0x80))
 	{
+		// 메시지 큐에 해당 키 값을 push
 		m_Qmessage.push(ubyKey);
 		return true;
 	}
